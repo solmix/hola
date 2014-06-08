@@ -4,44 +4,32 @@
     <groupId>org.solmix.hola</groupId>
     <artifactId>hola</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
-  <artifactId>hola-core</artifactId>
+  <artifactId>hola-osgi-rsa</artifactId>
   <dependencies>
   	<dependency>
-  		<groupId>org.solmix.common</groupId>
-  		<artifactId>solmix-common-util</artifactId>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-rs-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+
+  	<dependency>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-core</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.solmix.common</groupId>
-  		<artifactId>solmix-common-runtime</artifactId>
-  	</dependency>
-  	<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
-			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<scope>provided</scope>
-		</dependency>
+  	<dependency>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-discovery-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
-  <build>
+   <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -53,7 +41,7 @@
 						<Bundle-Category>solmix</Bundle-Category>
 						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
 						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
-						<Bundle-Activator>org.solmix.hola.core.internal.Activator</Bundle-Activator>
+						<Bundle-Activator>org.solmix.hola.osgi.internal.Activator</Bundle-Activator>
 						<_failok>false</_failok>
 						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
 					</instructions>
@@ -63,15 +51,12 @@
 	</build>
 	<properties>
 		<solmix.osgi.export.pkg>
-		org.solmix.hola.core.identity*,
-		org.solmix.hola.core,
-		org.solmix.hola.core.event*,
-		org.solmix.hola.core.security*
+		org.solmix.hola.osgi.rsa*,org.osgi.service.remoteserviceadmin
 		</solmix.osgi.export.pkg>
 		<solmix.osgi.import.pkg>
 			org.springframework*;resolution:=optional;version="${spring.version}",*
 		</solmix.osgi.import.pkg>
 	</properties>
 	<packaging>bundle</packaging>
-	<name>Hola :: Core</name>
+	<name>Hola :: OSGI :: RemoteServiceAdmin</name>
 </project>
