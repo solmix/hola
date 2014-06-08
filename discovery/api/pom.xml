@@ -66,7 +66,8 @@
 	</build>
 	<properties>
 		<solmix.osgi.export.pkg>
-		org.solmix.hola.discovery*,
+		org.solmix.hola.discovery.event*,
+		org.solmix.hola.discovery.identity*,
 		org.solmix.hola.discovery.support*,
 		org.solmix.hola.discovery
 		</solmix.osgi.export.pkg>

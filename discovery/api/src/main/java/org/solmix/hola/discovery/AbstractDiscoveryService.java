@@ -54,7 +54,7 @@ import org.solmix.runtime.adapter.AdapterManager;
  */
 @ThreadSafe
 public abstract class AbstractDiscoveryService extends AbstractConnectContext
-    implements DiscoveryService
+    implements DiscoveryServiceProvider
 {
 
     protected final Map<ServiceType, Collection<ServiceListener>> serviceListeners;
@@ -302,7 +302,7 @@ public abstract class AbstractDiscoveryService extends AbstractConnectContext
         }
     }
 
-    private Collection<ServiceListener> getListeners(ServiceType serviceType) {
+    protected Collection<ServiceListener> getListeners(ServiceType serviceType) {
         Collection<ServiceListener> listeners = new HashSet<ServiceListener>();
         synchronized (serviceListeners) {
             for (ServiceType type : serviceListeners.keySet()) {

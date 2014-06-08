@@ -5,8 +5,51 @@
     <artifactId>hola</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.solmix.hola</groupId>
   <artifactId>hola-discovery-provider</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>Hola :: Discovery :: Provider</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-discovery-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-core</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.osgi</groupId>
+  		<artifactId>org.osgi.compendium</artifactId>
+  	</dependency>
+  </dependencies>
+   <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Category>solmix</Bundle-Category>
+						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
+						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
+						<Bundle-Activator>org.solmix.hola.discovery.provider.Activator</Bundle-Activator>
+						<_failok>false</_failok>
+						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<solmix.osgi.export.pkg>
+		org.solmix.hola.discovery.provider
+		</solmix.osgi.export.pkg>
+		<solmix.osgi.import.pkg>
+			org.springframework*;resolution:=optional;version="${spring.version}",*
+		</solmix.osgi.import.pkg>
+	</properties>
+	<packaging>bundle</packaging>
+	<name>Hola :: Discovery :: Composite Provider</name>
 </project>

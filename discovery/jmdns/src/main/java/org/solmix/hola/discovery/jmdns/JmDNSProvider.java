@@ -57,6 +57,7 @@ import org.solmix.hola.core.identity.DefaultIDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.discovery.AbstractDiscoveryService;
+import org.solmix.hola.discovery.DiscoveryServiceProvider;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
@@ -73,13 +74,13 @@ import org.solmix.hola.discovery.support.ServicePropertiesImpl;
  * @version $Id$ 2014年5月7日
  */
 @ThreadSafe
-public class JmDNSService extends AbstractDiscoveryService implements
-    javax.jmdns.ServiceListener, javax.jmdns.ServiceTypeListener
+public class JmDNSProvider extends AbstractDiscoveryService implements
+    javax.jmdns.ServiceListener, javax.jmdns.ServiceTypeListener,DiscoveryServiceProvider
 {
 
     public static final int DEFAULT_REQUEST_TIMEOUT = 3000;
 
-    private static final Logger LOG = LoggerFactory.getLogger(JmDNSService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JmDNSProvider.class);
 
     private static final String SCHEME_PROPERTY = "jmdns.ptcl";
 
@@ -112,7 +113,7 @@ public class JmDNSService extends AbstractDiscoveryService implements
     /**
      * @param discoveryNamespace
      */
-    public JmDNSService()
+    public JmDNSProvider()
     {
         super(JmDNSNamespace.NAME);
         serviceTypes = new ArrayList<ServiceType>();
@@ -298,7 +299,7 @@ public class JmDNSService extends AbstractDiscoveryService implements
 
     private ID getDefaultTargetId() {
         return DefaultIDFactory.getDefault().createStringID(
-            JmDNSService.class.getName() + ";" + instanceCount++);
+            JmDNSProvider.class.getName() + ";" + instanceCount++);
     }
 
     private void startQueue() {
@@ -373,7 +374,7 @@ public class JmDNSService extends AbstractDiscoveryService implements
     @Override
     public ID getID() {
         return DefaultIDFactory.getDefault().createStringID(
-            new StringBuilder().append(JmDNSService.class.getName()).append(";").append(
+            new StringBuilder().append(JmDNSProvider.class.getName()).append(";").append(
                 count++).toString());
     }
 
@@ -386,7 +387,7 @@ public class JmDNSService extends AbstractDiscoveryService implements
     public void serviceTypeAdded(ServiceEvent event) {
         if (LOG.isTraceEnabled())
             LOG.trace("serviceTypeAdded:" + event);
-        event.getDNS().addServiceListener(event.getType(), JmDNSService.this);
+        event.getDNS().addServiceListener(event.getType(), JmDNSProvider.this);
     }
 
     /**

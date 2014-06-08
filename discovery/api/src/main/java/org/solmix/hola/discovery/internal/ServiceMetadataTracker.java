@@ -25,7 +25,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
-import org.solmix.hola.discovery.DiscoveryService;
+import org.solmix.hola.discovery.DiscoveryServiceProvider;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -42,7 +42,7 @@ public class ServiceMetadataTracker
 
     private ServiceTracker<ServiceMetadata,ServiceMetadata> serviceTracker;
 
-    public ServiceMetadataTracker(final DiscoveryService ptotocol)
+    public ServiceMetadataTracker(final DiscoveryServiceProvider provider)
     {
         final BundleContext bundleContext = Activator.getDefault().getBundleContext();
         if (bundleContext != null) {
@@ -56,8 +56,8 @@ public class ServiceMetadataTracker
                         ServiceReference<ServiceMetadata> reference) {
                         final ServiceMetadata serviceInfo = bundleContext.getService(reference);
                         final ServiceMetadata specific = convertToProviderSpecific(
-                            ptotocol, serviceInfo);
-                        ptotocol.registerService(specific);
+                            provider, serviceInfo);
+                        provider.registerService(specific);
                         return serviceInfo;
                     }
 
@@ -66,15 +66,15 @@ public class ServiceMetadataTracker
                         ServiceMetadata service) {
                         // TODO discovery containers might require to
                         // unregisterService first
-                        ptotocol.registerService(convertToProviderSpecific(
-                            ptotocol, service));
+                        provider.registerService(convertToProviderSpecific(
+                            provider, service));
                     }
 
                     @Override
                     public void removedService(ServiceReference<ServiceMetadata> reference,
                         ServiceMetadata service) {
-                        ptotocol.unregisterService(convertToProviderSpecific(
-                            ptotocol, service));
+                        provider.unregisterService(convertToProviderSpecific(
+                            provider, service));
                     }
                 });
             serviceTracker.open();

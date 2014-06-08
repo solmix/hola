@@ -36,11 +36,11 @@ import org.solmix.hola.core.ConnectException;
 public class JmDNSServiceTest
 {
 
-    private JmDNSService service;
+    private JmDNSProvider service;
 
     @Before
     public void setup() {
-        service = new JmDNSService();
+        service = new JmDNSProvider();
     }
     @After
     public void tearDown() throws Exception {

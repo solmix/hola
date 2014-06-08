@@ -21,8 +21,8 @@ package org.solmix.hola.discovery.jmdns.internal;
 import org.solmix.hola.core.identity.DefaultIDFactory;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.DiscoveryService;
-import org.solmix.hola.discovery.jmdns.JmDNSService;
+import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.jmdns.JmDNSProvider;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
 import org.solmix.runtime.PluginActivator;
 import org.solmix.runtime.SystemContext;
@@ -61,8 +61,8 @@ public class Plugin implements PluginActivator
     public void setSystemContext(SystemContext context) {
         this.systemContext = context;
         DefaultIDFactory.getDefault().addNamespace(new JmDNSNamespace("Discovery Namespace"));
-        JmDNSService service=new JmDNSService();
-        systemContext.setBean(service, DiscoveryService.class);
+        JmDNSProvider service=new JmDNSProvider();
+        systemContext.setBean(service, DiscoveryServiceProvider.class);
         systemContext.setBean(service, DiscoveryAdvertiser.class);
         systemContext.setBean(service, DiscoveryLocator.class);
     }

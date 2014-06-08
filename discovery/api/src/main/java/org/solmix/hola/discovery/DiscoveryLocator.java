@@ -34,6 +34,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
 public interface DiscoveryLocator
 {
 
+    public static String PROVIDER_NAME="discovery.provider.name";
     /**
      * Synchronously retrieve metadata about the service
      * 

@@ -18,6 +18,7 @@
  */
 package org.solmix.hola.discovery;
 
+import org.solmix.hola.core.ConnectContext;
 import org.solmix.runtime.adapter.Adaptable;
 
 
@@ -27,7 +28,7 @@ import org.solmix.runtime.adapter.Adaptable;
  * @version $Id$  2014年5月4日
  */
 
-public interface DiscoveryService extends DiscoveryAdvertiser,DiscoveryLocator,Adaptable
+public interface DiscoveryServiceProvider extends DiscoveryAdvertiser,DiscoveryLocator,ConnectContext,Adaptable
 {
 
 }

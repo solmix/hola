@@ -32,8 +32,8 @@ import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.DiscoveryService;
-import org.solmix.hola.discovery.jmdns.JmDNSService;
+import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.jmdns.JmDNSProvider;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
 
 /**
@@ -84,7 +84,7 @@ public class Activator implements BundleActivator
         namespaceRegistration = this.context.registerService(
             Namespace.class.getName(),
             new JmDNSNamespace("Discovery Namespace"), null);
-        String[] clazzes = new String[] { DiscoveryService.class.getName(),
+        String[] clazzes = new String[] { DiscoveryServiceProvider.class.getName(),
             DiscoveryAdvertiser.class.getName(),
             DiscoveryLocator.class.getName() };
         final Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -105,7 +105,7 @@ public class Activator implements BundleActivator
             namespaceRegistration.unregister();
         if (jmdnsRegistration != null&&factory.isActive()){
             ServiceReference<?> reference=   jmdnsRegistration.getReference();
-            DiscoveryService service=  (DiscoveryService)context.getService(reference);
+            DiscoveryServiceProvider service=  (DiscoveryServiceProvider)context.getService(reference);
             jmdnsRegistration.unregister();
             ConnectContext cc=service.adaptTo(ConnectContext.class);
             cc.disconnect();
@@ -114,16 +114,16 @@ public class Activator implements BundleActivator
         this.context = null;
 
     }
-    class JmDNSServiceFactory implements ServiceFactory<JmDNSService>{
+    class JmDNSServiceFactory implements ServiceFactory<JmDNSProvider>{
 
-        private volatile JmDNSService service;
+        private volatile JmDNSProvider service;
 
         @Override
-        public JmDNSService getService(Bundle bundle,
-            ServiceRegistration<JmDNSService> registration) {
+        public JmDNSProvider getService(Bundle bundle,
+            ServiceRegistration<JmDNSProvider> registration) {
             if (service == null) {
                 try {
-                    service = new JmDNSService();
+                    service = new JmDNSProvider();
                     service.connect(null, null);
                 } catch (Exception e) {
 
@@ -134,8 +134,8 @@ public class Activator implements BundleActivator
 
         @Override
         public void ungetService(Bundle bundle,
-            ServiceRegistration<JmDNSService> registration,
-            JmDNSService service) {
+            ServiceRegistration<JmDNSProvider> registration,
+            JmDNSProvider service) {
 
         }
         public boolean isActive(){
