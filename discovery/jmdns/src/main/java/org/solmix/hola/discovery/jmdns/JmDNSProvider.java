@@ -299,7 +299,7 @@ public class JmDNSProvider extends AbstractDiscoveryService implements
 
     private ID getDefaultTargetId() {
         return DefaultIDFactory.getDefault().createStringID(
-            JmDNSProvider.class.getName() + ";" + instanceCount++);
+            JmDNSProvider.class.getName() + "@" + instanceCount++);
     }
 
     private void startQueue() {

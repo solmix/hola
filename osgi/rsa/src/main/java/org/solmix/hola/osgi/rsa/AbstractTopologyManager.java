@@ -305,7 +305,7 @@ public abstract class AbstractTopologyManager
     /**
      * @param serviceReference
      */
-    private void handleServiceRegistering(ServiceReference<?> serviceReference) {
+    protected void handleServiceRegistering(ServiceReference<?> serviceReference) {
      // Using OSGI 4.2 Chap 13 Remote Services spec, get the specified remote
         // interfaces for the given service reference
         String[] exportedInterfaces = PropertiesUtil
@@ -320,6 +320,7 @@ public abstract class AbstractTopologyManager
         exportProperties
                     .put(org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTERFACES,
                                 exportedInterfaces);
+        if(LOG.isTraceEnabled())
         LOG.trace( "serviceReference="  
                     + serviceReference + " exportProperties=" + exportProperties); 
         // Do the export with RSA

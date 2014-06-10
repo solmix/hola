@@ -17,13 +17,15 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.osgi.distribution;
+package org.solmix.hola.osgi.topology;
 
 import java.util.Collection;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.hooks.service.ListenerHook.ListenerInfo;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.service.remoteserviceadmin.EndpointListener;
@@ -46,6 +48,7 @@ public class DefaultTopologyManager extends AbstractTopologyManager implements
 {
 
     private final String endpointListenerScope;
+
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTopologyManager.class);
 
     private static final String ONLY_ECF_SCOPE = "("
@@ -130,21 +133,21 @@ public class DefaultTopologyManager extends AbstractTopologyManager implements
         }
 
         switch (eventType) {
-        case RemoteServiceAdminEvent.EXPORT_REGISTRATION:
-              advertiseEndpointDescription(endpointDescription);
-              break;
-        case RemoteServiceAdminEvent.EXPORT_UNREGISTRATION:
-              unadvertiseEndpointDescription(endpointDescription);
-              break;
-        case RemoteServiceAdminEvent.EXPORT_ERROR:
-            LOG.error("Export error with event=" + rsaEvent); 
-              break;
-        case RemoteServiceAdminEvent.IMPORT_REGISTRATION:
-              break;
-        case RemoteServiceAdminEvent.IMPORT_UNREGISTRATION:
-              break;
-        case RemoteServiceAdminEvent.IMPORT_ERROR:
-              break;
+            case RemoteServiceAdminEvent.EXPORT_REGISTRATION:
+                advertiseEndpointDescription(endpointDescription);
+                break;
+            case RemoteServiceAdminEvent.EXPORT_UNREGISTRATION:
+                unadvertiseEndpointDescription(endpointDescription);
+                break;
+            case RemoteServiceAdminEvent.EXPORT_ERROR:
+                LOG.error("Export error with event=" + rsaEvent);
+                break;
+            case RemoteServiceAdminEvent.IMPORT_REGISTRATION:
+                break;
+            case RemoteServiceAdminEvent.IMPORT_UNREGISTRATION:
+                break;
+            case RemoteServiceAdminEvent.IMPORT_ERROR:
+                break;
         }
     }
 
@@ -155,6 +158,41 @@ public class DefaultTopologyManager extends AbstractTopologyManager implements
     public void event(ServiceEvent event,
         Map<BundleContext, Collection<ListenerInfo>> listeners) {
         handleEvent(event, listeners);
+    }
+
+    /**
+     * @param object
+     * @param string
+     */
+    public void exportRegisteredServices(String className, String filterString) {
+        try {
+            // 如果className为空,返回所有带filter的服务
+            final ServiceReference<?>[] existingServiceRefs = getContext().getAllServiceReferences(
+                className, filterString);
+            if(existingServiceRefs!=null&&existingServiceRefs.length>0){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                          for (int i = 0; i < existingServiceRefs.length; i++) {
+                                // This method will check the service properties for
+                                // remote service props. If previously registered as
+                                // a
+                                // remote service, it will export the remote
+                                // service if not it will simply return/skip
+                                handleServiceRegistering(existingServiceRefs[i]);
+                          }
+                    }
+              }, "BasicTopologyManagerPreRegSrvExporter").start(); 
+            }
+            
+        } catch (InvalidSyntaxException e) {
+            LOG.error(
+                "Could not retrieve existing service references for exportRegisteredSvcsClassname=" //$NON-NLS-1$
+                    + className
+                    + " and exportRegisteredSvcsFilter="
+                    + filterString, e);
+        }
+
     }
 
 }

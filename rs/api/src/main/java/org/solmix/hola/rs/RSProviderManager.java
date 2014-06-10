@@ -83,11 +83,13 @@ public class RSProviderManager implements RemoteServiceProviderManager
             return providerDescriptions.get(description.getName());
       }
     }
+    @Override
     public List<RemoteServiceProviderDescription> getDescriptions(){
         synchronized (providerDescriptions) {
             return new ArrayList<RemoteServiceProviderDescription>(providerDescriptions.values());
         }
     }
+    @Override
     public RemoteServiceProvider createProvider(String descriptionName) throws ProviderCreateException{
         return createProvider(getDescriptionByName(descriptionName),(Object[]) null);
     }
@@ -347,6 +349,32 @@ public class RSProviderManager implements RemoteServiceProviderManager
             }
         }
         managerListeners.clear();
+    }
+    /**
+     * {@inheritDoc}
+     * @throws ProviderCreateException 
+     * 
+     * @see org.solmix.hola.rs.RemoteServiceProviderManager#createProvider(java.lang.String, java.util.Map)
+     */
+    @Override
+    public RemoteServiceProvider createProvider(String descriptionName,
+        Map<String, Object> properties) throws ProviderCreateException {
+        if(properties==null)
+            return createProvider(descriptionName);
+        return createProvider(descriptionName,new Object[]{properties});
+    }
+    /**
+     * @param descriptionName
+     * @param parameters
+     * @return
+     * @throws ProviderCreateException 
+     */
+    private RemoteServiceProvider createProvider(String descriptionName,
+        Object[] parameters) throws ProviderCreateException {
+        RemoteServiceProviderDescription desc=getDescriptionByName(descriptionName);
+        if(desc==null)
+            throw new ProviderCreateException("RemoteServiceProviderDescription is null with name="+descriptionName);
+        return createProvider(desc,parameters);
     }
 
 }

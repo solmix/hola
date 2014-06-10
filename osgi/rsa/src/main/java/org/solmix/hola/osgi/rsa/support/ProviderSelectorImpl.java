@@ -22,6 +22,8 @@ package org.solmix.hola.osgi.rsa.support;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.osgi.rsa.AbstractSelector;
 import org.solmix.hola.osgi.rsa.HolaRemoteConstants;
 import org.solmix.hola.osgi.rsa.ProviderSelector;
-import org.solmix.hola.rs.RSProviderManager;
+import org.solmix.hola.rs.ProviderCreateException;
 import org.solmix.hola.rs.RemoteServiceProvider;
 import org.solmix.hola.rs.RemoteServiceProviderDescription;
 import org.solmix.hola.rs.RemoteServiceProviderManager;
@@ -70,11 +72,145 @@ public class ProviderSelectorImpl extends AbstractSelector implements
             serviceReference, overridingProperties, exportedInterfaces,
             exportedConfigs, serviceIntents);
         if (rsProvider == null || rsProvider.size() == 0) {
-            //XXX
-         // finding/creating/configuring/connecting
+            // finding/creating/configuring/connecting
+            rsProvider = createProviders(serviceReference,
+                overridingProperties, exportedInterfaces, exportedConfigs,
+                serviceIntents);
+        }
+        Object target = overridingProperties.get(HolaRemoteConstants.ENDPOINT_CONNECTTARGET_ID);
+        if (target != null) {
 
+            for (RemoteServiceProvider provider : rsProvider) {
+                ID targetID = null;
+                if (target instanceof String)
+                    targetID = DefaultIDFactory.getDefault().createID(
+                        provider.getRemoteServiceNamespace(), (String) target);
+                else
+                    targetID = DefaultIDFactory.getDefault().createID(
+                        provider.getRemoteServiceNamespace(),
+                        new Object[] { target });
+                Object security = overridingProperties.get("hola.endpoint.securitycontext");
+                ConnectSecurityContext scontext = null;
+                if (security instanceof ConnectSecurityContext)
+                    scontext = (ConnectSecurityContext) security;
+                provider.connect(targetID, scontext);
+            }
         }
         return rsProvider.toArray(new RemoteServiceProvider[] {});
+    }
+
+    private Collection<RemoteServiceProvider> createProviders(
+        ServiceReference<?> serviceReference,
+        Map<String, ?> overridingProperties, String[] exportedInterfaces,
+        String[] requireConfigs, String[] serviceIntents)
+        throws ProviderCreateException {
+        List<RemoteServiceProviderDescription> descs = getRemoteServiceProviderManager().getDescriptions();
+        if (descs == null)
+            return Collections.emptyList();
+        List<RemoteServiceProvider> results = new ArrayList<RemoteServiceProvider>();
+        if (requireConfigs == null || requireConfigs.length == 0) {
+            createDefaultProvider(serviceReference, overridingProperties,
+                exportedInterfaces, serviceIntents, results, descs);
+        } else {
+            for (RemoteServiceProviderDescription desc : descs) {
+                RemoteServiceProvider match = createMatchingProvider(desc,
+                    serviceReference, overridingProperties, exportedInterfaces,
+                    requireConfigs, serviceIntents);
+                if (match != null)
+                    results.add(match);
+            }
+        }
+        return results;
+    }
+
+    private RemoteServiceProvider createMatchingProvider(
+        RemoteServiceProviderDescription desc,
+        ServiceReference<?> serviceReference, Map<String, ?> properties,
+        String[] exportedInterfaces, String[] requireConfigs,
+        String[] serviceIntents) throws ProviderCreateException {
+        if (matchSupportedConfigTypes(requireConfigs, desc)
+            && matchSupportedIntents(serviceIntents, desc)) {
+            return createProvider(serviceReference, properties, desc);
+        }
+        return null;
+    }
+
+    private RemoteServiceProvider createProvider(
+        ServiceReference<?> serviceReference, Map<String, ?> properties,
+        RemoteServiceProviderDescription desc) throws ProviderCreateException {
+        String configNamePrefix = desc.getName();
+        Map<String, Object> results = new HashMap<String, Object>();
+        for (String origKey : properties.keySet()) {
+            if (origKey.startsWith(configNamePrefix + ".")) {
+                String key = origKey.substring(configNamePrefix.length() + 1);
+                if (key != null)
+                    results.put(key, properties.get(origKey));
+            }
+        }
+        RemoteServiceProviderManager manager = getRemoteServiceProviderManager();
+
+        return manager.createProvider(desc.getName(), results);
+    }
+
+    private void createDefaultProvider(ServiceReference<?> serviceReference,
+        Map<String, ?> properties, String[] exportedInterfaces,
+        String[] serviceIntents, List<RemoteServiceProvider> results,
+        List<RemoteServiceProviderDescription> descs)
+        throws ProviderCreateException {
+        RemoteServiceProviderDescription[] defaultDescs = getDefaultDescriptions(descs);
+
+        for (RemoteServiceProviderDescription desc : defaultDescs) {
+            RemoteServiceProvider pro = createMatchingProvider(desc,
+                serviceReference, properties, exportedInterfaces, null,
+                serviceIntents);
+            if (pro != null)
+                results.add(pro);
+        }
+
+    }
+
+    /**
+     * @param descs
+     * @return
+     */
+    private RemoteServiceProviderDescription[] getDefaultDescriptions(
+        List<RemoteServiceProviderDescription> descs) {
+
+        String[] defaultConfigTypes = getDefaultConfigTypes();
+        if (defaultConfigTypes == null || defaultConfigTypes.length == 0)
+            return null;
+        List<RemoteServiceProviderDescription> results = new ArrayList<RemoteServiceProviderDescription>();
+        for (RemoteServiceProviderDescription desc : descs) {
+            String[] support = desc.getSupportedConfigs();
+            if (support != null
+                && matchDefaultConfigs(defaultConfigTypes, support)) {
+                results.add(desc);
+            }
+        }
+        return results.toArray(new RemoteServiceProviderDescription[] {});
+    }
+
+    /**
+     * @param defaultConfigTypes
+     * @param support
+     * @return
+     */
+    private boolean matchDefaultConfigs(String[] defaultConfigTypes,
+        String[] support) {
+        List<String> supportedConfigTypesList = Arrays.asList(support);
+        for (int i = 0; i < defaultConfigTypes.length; i++) {
+            if (supportedConfigTypesList.contains(defaultConfigTypes[i]))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return
+     */
+    public String[] getDefaultConfigTypes() {
+        // XXX 通过配置实现
+        return null;
     }
 
     private Collection<RemoteServiceProvider> selectExistingProviders(
@@ -93,31 +229,30 @@ public class ProviderSelectorImpl extends AbstractSelector implements
             if (!desc.isServer())
                 continue;
 
-            if (matchExistingProvider(serviceReference,
-                overridingProperties, provider, desc, exportedConfigs,
-                serviceIntents)) {
-                LOG.trace(
-                    "selectExistingHostContainers",
-                    "INCLUDING containerID="
-                        + provider.getID()
-                        + " configs="
-                        + ((exportedConfigs == null) ? "null" : Arrays.asList(
-                            exportedConfigs).toString())
-                        + " intents=" 
-                        + ((serviceIntents == null) ? "null" : Arrays.asList(
-                            serviceIntents).toString()));
+            if (matchExistingProvider(serviceReference, overridingProperties,
+                provider, desc, exportedConfigs, serviceIntents)) {
+                if (LOG.isTraceEnabled())
+                    LOG.trace("selectExistingHostContainers",
+                        "INCLUDING containerID="
+                            + provider.getID()
+                            + " configs="
+                            + ((exportedConfigs == null) ? "null"
+                                : Arrays.asList(exportedConfigs).toString())
+                            + " intents="
+                            + ((serviceIntents == null) ? "null"
+                                : Arrays.asList(serviceIntents).toString()));
                 results.add(provider);
             } else {
-                LOG.trace(
-                    "selectExistingHostContainers",
-                    "EXCLUDING containerID="
-                        + provider.getID()
-                        + " configs="
-                        + ((exportedConfigs == null) ? "null" : Arrays.asList(
-                            exportedConfigs).toString())
-                        + " intents="
-                        + ((serviceIntents == null) ? "null" : Arrays.asList(
-                            serviceIntents).toString()));
+                if (LOG.isTraceEnabled())
+                    LOG.trace("selectExistingHostContainers",
+                        "EXCLUDING containerID="
+                            + provider.getID()
+                            + " configs="
+                            + ((exportedConfigs == null) ? "null"
+                                : Arrays.asList(exportedConfigs).toString())
+                            + " intents="
+                            + ((serviceIntents == null) ? "null"
+                                : Arrays.asList(serviceIntents).toString()));
             }
         }
         return results;
@@ -132,7 +267,7 @@ public class ProviderSelectorImpl extends AbstractSelector implements
             && matchID(serviceReference, overridingProperties, provider)
             && matchTargetID(serviceReference, overridingProperties, provider);
     }
-   
+
     private boolean matchTargetID(ServiceReference<?> serviceReference,
         Map<String, ?> properties, RemoteServiceProvider provider) {
         String target = (String) properties.get(HolaRemoteConstants.ENDPOINT_CONNECTTARGET_ID);
@@ -147,11 +282,10 @@ public class ProviderSelectorImpl extends AbstractSelector implements
         if (connectedID == null) {
             // connect to the target and we have a match
             try {
-                connectProvider(serviceReference, properties, provider,
-                    target);
+                connectProvider(serviceReference, properties, provider, target);
             } catch (Exception e) {
-                LOG.error("doConnectContainer containerID=" 
-                    + provider.getID() + " target=" + target, e); 
+                LOG.error("doConnectContainer containerID=" + provider.getID()
+                    + " target=" + target, e);
                 return false;
             }
             return true;
@@ -164,7 +298,6 @@ public class ProviderSelectorImpl extends AbstractSelector implements
         }
         return false;
     }
-
 
     /**
      * @param remoteNamespace
@@ -235,10 +368,6 @@ public class ProviderSelectorImpl extends AbstractSelector implements
         for (Iterator<String> i = requiredConfigTypesList.iterator(); i.hasNext();)
             result &= supportedConfigTypesList.contains(i.next());
         return result;
-    }
-
-    private RemoteServiceProviderManager getRemoteServiceProviderManager() {
-        return RSProviderManager.getDefault();
     }
 
     /**

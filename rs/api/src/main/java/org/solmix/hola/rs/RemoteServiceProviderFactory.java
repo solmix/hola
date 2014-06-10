@@ -34,4 +34,11 @@ public interface RemoteServiceProviderFactory
      String[] getSupportedIntents(RemoteServiceProviderDescription description);
     
      String[] getSupportedConfigs(RemoteServiceProviderDescription description);
+    /**
+     * @param remoteServiceProviderDescription
+     * @param remoteSupportedConfigs
+     */
+     String[] getImportedConfigs(
+        RemoteServiceProviderDescription remoteServiceProviderDescription,
+        String[] remoteSupportedConfigs);
 }

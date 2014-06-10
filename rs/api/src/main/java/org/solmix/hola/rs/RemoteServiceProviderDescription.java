@@ -130,6 +130,16 @@ public class RemoteServiceProviderDescription
         this.name = name;
     }
 
+    /**
+     * @param remoteSupportedConfigs
+     * @return
+     */
+    public String[] getImportedConfigs(String[] remoteSupportedConfigs) {
+       if(remoteSupportedConfigs==null)
+           return null;
+        return  getFactory().getImportedConfigs(this,remoteSupportedConfigs);
+    }
+
     
 
 }

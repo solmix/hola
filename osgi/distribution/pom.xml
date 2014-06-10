@@ -6,9 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
-  <groupId>org.solmix.hola</groupId>
   <artifactId>hola-osgi-distribution</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <dependencies>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
@@ -16,4 +14,34 @@
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
+    <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Category>solmix</Bundle-Category>
+						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
+						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
+						<Bundle-Activator>org.solmix.hola.osgi.topology.Activator</Bundle-Activator>
+						<_failok>false</_failok>
+						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<solmix.osgi.export.pkg>
+		org.solmix.hola.osgi.topology*
+		</solmix.osgi.export.pkg>
+		<solmix.osgi.import.pkg>
+			org.springframework*;resolution:=optional;version="${spring.version}",*
+		</solmix.osgi.import.pkg>
+	</properties>
+	<packaging>bundle</packaging>
+	<name>Hola :: OSGI :: RemoteService TopplogyManager</name>
 </project>

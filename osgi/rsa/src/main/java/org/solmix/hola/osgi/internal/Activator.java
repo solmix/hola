@@ -19,9 +19,11 @@
 
 package org.solmix.hola.osgi.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -35,6 +37,8 @@ import org.osgi.service.remoteserviceadmin.RemoteConstants;
 import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
 import org.solmix.hola.osgi.rsa.EndpointDescriptionLocator;
 import org.solmix.hola.osgi.rsa.HolaRemoteServiceAdmin;
+import org.solmix.hola.rs.RSProviderManager;
+import org.solmix.hola.rs.RemoteServiceProviderDescription;
 
 /**
  * 
@@ -115,8 +119,8 @@ public class Activator implements BundleActivator
         // make remote service admin available
         Hashtable<String,Object> rsaProps = new Hashtable<String,Object>();
         rsaProps.put(HolaRemoteServiceAdmin.RSA_SUPPORT_KEY, new Boolean(true));
-        rsaProps.put(RemoteConstants.REMOTE_CONFIGS_SUPPORTED,getRemoteConfigsSupported());
-        rsaProps.put(RemoteConstants.REMOTE_INTENTS_SUPPORTED,getRemoteIntentsSupported());
+        rsaProps.put(RemoteConstants.REMOTE_CONFIGS_SUPPORTED,getRemoteSupportedConfigs());
+        rsaProps.put(RemoteConstants.REMOTE_INTENTS_SUPPORTED,getRemoteSupportedIntents());
         
         //注册OSGI RSA 服务,为每个使用RSA服务的Bundle创建RSA实例
         remoteServiceAdminRegistration = context.registerService(
@@ -165,21 +169,41 @@ public class Activator implements BundleActivator
      * 
      * @return
      */
-    private String[] getRemoteIntentsSupported() {
-        // TODO Auto-generated method stub
-        return null;
+    private String[] getRemoteSupportedIntents() {
+        List<RemoteServiceProviderDescription> descs = RSProviderManager.getDefault().getDescriptions();
+        List<String> supportedIntents = new ArrayList<String>();
+        for(RemoteServiceProviderDescription desc:descs){
+            String[]  intents= desc.getSupportedIntents();
+            if(intents!=null){
+                for(String intent:intents){
+                    supportedIntents.add(intent); 
+                }
+            }
+        }
+        return supportedIntents.toArray(new String[supportedIntents.size()]);
     }
 
     /**
+     * 
      * 服务提供者支持的配置类型
+     * NOTE:RemoteService 的启动等级需高于该bundle启动等级,才能在注册RSA时可以根据已经注册的RS生产对应参数
      * Service property identifying the configuration types supported by a distribution 
      * provider. Registered by the distribution provider on one of its services to indicate 
      * the supported configuration types.
      * @return
      */
-    private String[] getRemoteConfigsSupported() {
-        // TODO Auto-generated method stub
-        return null;
+    private String[] getRemoteSupportedConfigs() {
+        List<RemoteServiceProviderDescription> descs = RSProviderManager.getDefault().getDescriptions();
+        List<String> supportedConfigs = new ArrayList<String>();
+        for(RemoteServiceProviderDescription desc:descs){
+            String[]  configs= desc.getSupportedConfigs();
+            if(configs!=null){
+                for(String config:configs){
+                    supportedConfigs.add(config); 
+                }
+            }
+        }
+        return supportedConfigs.toArray(new String[supportedConfigs.size()]);
     }
 
     /**

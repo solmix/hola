@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.osgi.distribution;
+package org.solmix.hola.osgi.topology;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -80,7 +80,7 @@ public class Activator implements BundleActivator
             null);
         eventListenerHookRegistration = this.context.registerService(
             EventListenerHook.class, topologyComp, null);
-        topologyComp.activate();
+        topologyComp.exportRegistedService();
     }
 
     /**

@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.osgi.rsa;
 
-import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.solmix.hola.rs.RemoteServiceProvider;
 
 
@@ -31,7 +30,7 @@ import org.solmix.hola.rs.RemoteServiceProvider;
 public interface ConsumerSelector 
 {
 
-    RemoteServiceProvider selectConsumer(EndpointDescription endpointDescription) throws Exception;
+    RemoteServiceProvider selectConsumer(HolaEndpointDescription endpointDescription) throws Exception;
 
     /**
      * 

@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.osgi.distribution;
+package org.solmix.hola.osgi.topology;
 
 import java.util.Collection;
 import java.util.Map;
@@ -51,9 +51,10 @@ public class DefaultTopologyComponent implements EventListenerHook,
         defaultManager.handleRemoteAdminEvent(event);
 
     }
-    void activate() {
-//        defaultManager.exportRegisteredServices(
-//                          exportRegisteredSvcsClassname, exportRegisteredSvcsFilter);
+    void exportRegistedService() {
+        //XXX-CF
+        defaultManager.exportRegisteredServices(
+                          null, "(service.exported.interfaces=*)");
   }
     /**
      * {@inheritDoc}

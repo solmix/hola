@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.osgi.rsa.EndpointDescriptionReader;
 import org.solmix.hola.osgi.rsa.EndpointDescriptionReaderException;
+import org.solmix.hola.osgi.rsa.HolaEndpointDescription;
 
 
 /**
@@ -54,16 +55,16 @@ private static final Logger LOG= LoggerFactory.getLogger(EndpointDescriptionRead
         parser.parse(input);
         // Get possible endpoint descriptions
         List<Map<String,Object>> parsedDescriptions = parser.getEndpointDescriptions();
-        List<EndpointDescription> results = new ArrayList<EndpointDescription>();
+        List<HolaEndpointDescription> results = new ArrayList<HolaEndpointDescription>();
         for (Map<String,Object> parsedProperties : parsedDescriptions) {
               try {
-                    results.add(new EndpointDescription(parsedProperties));
+                    results.add(new HolaEndpointDescription(parsedProperties));
               } catch (Exception e) {
                   LOG.error("Exception parsing endpoint description properties", e); 
                     throw new IOException("Error creating endpoint description: " + e.getMessage());
               }
         }
-        return results.toArray(new EndpointDescription[results.size()]);
+        return results.toArray(new HolaEndpointDescription[results.size()]);
     }
 
 }

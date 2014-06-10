@@ -12,5 +12,7 @@
   <modules>
   	<module>osgi/rsa</module>
   	<module>osgi/rsa-proxy</module>
+  	<module>test</module>
+  	<module>examples</module>
   </modules>
 </project>

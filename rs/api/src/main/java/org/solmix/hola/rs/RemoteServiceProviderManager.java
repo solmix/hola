@@ -19,6 +19,9 @@
 
 package org.solmix.hola.rs;
 
+import java.util.List;
+import java.util.Map;
+
 import org.solmix.hola.core.identity.ID;
 
 /**
@@ -53,5 +56,16 @@ public interface RemoteServiceProviderManager
     RemoteServiceProviderDescription addDescription(RemoteServiceProviderDescription description);
     
     RemoteServiceProviderDescription removeDescription(RemoteServiceProviderDescription description);
+    
+    List<RemoteServiceProviderDescription> getDescriptions();
+    public RemoteServiceProvider createProvider(String descriptionName) throws ProviderCreateException;
+
+    /**
+     * @param descriptionName
+     * @param properties
+     * @return
+     */
+    RemoteServiceProvider createProvider(String descriptionName,
+        Map<String, Object> properties)throws ProviderCreateException;
 
 }

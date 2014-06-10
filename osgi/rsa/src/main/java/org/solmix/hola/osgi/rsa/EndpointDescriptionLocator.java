@@ -174,6 +174,7 @@ public class EndpointDescriptionLocator
             });
 
         endpointListenerTracker.open();
+         locatorListeners=new HashMap<DiscoveryLocator, LocatorServiceListener>();
         //跟踪OSGI中注册的DiscoveryLocator
         locatorServiceTracker = new ServiceTracker(ctx,
             DiscoveryLocator.class.getName(),
@@ -205,7 +206,7 @@ public class EndpointDescriptionLocator
             
         });
             locatorServiceTracker.open();
-            //发现本地服务
+            //发现本地Endpoint
             localLocatorServiceListener = new LocatorServiceListener(null);
             endpointDescriptionFileTracker = new EndpointDescriptionFileTracker();
             //发现Bundle中的EndpointDescription
@@ -353,7 +354,7 @@ public class EndpointDescriptionLocator
    
     protected EndpointListenerHolder[] getMatchingEndpointListenerHolders(
         final EndpointDescription description) {
-   
+        //根据注册的配置,在OSGI中找到适合的EndpointListener
         return AccessController
               .doPrivileged(new PrivilegedAction<EndpointListenerHolder[]>() {
                     @Override
@@ -398,6 +399,10 @@ public class EndpointDescriptionLocator
 
     }
 
+    /**
+     * 收集所有的EndpointDescription,包括本服务收集的和其他注册的DiscoveryLocator收集的
+     * @return
+     */
     Collection<EndpointDescription> getAllDiscoveredEndpointDescriptions() {
         Collection<EndpointDescription> result = new ArrayList<EndpointDescription>();
         if (localLocatorServiceListener == null)
@@ -627,6 +632,7 @@ public class EndpointDescriptionLocator
                       discoveredEndpointDescriptions.add(endpointDescription);
                 } else
                       discoveredEndpointDescriptions.remove(endpointDescription);
+                //通知EndpointDescription 删除/添加
                 dispatchEndpointDescription(endpointDescription, discovered);
           }
         }

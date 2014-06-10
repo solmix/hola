@@ -28,6 +28,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.ServiceTracker;
 import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
@@ -72,6 +74,12 @@ public class Activator implements BundleActivator
 
     private ServiceRegistration<?> jmdnsRegistration;
 
+    private final Object logServiceTrackerLock=new Object();
+
+    private ServiceTracker<?,?> logServiceTracker;
+
+    private LogService logService;
+
     /**
      * {@inheritDoc}
      * 
@@ -93,7 +101,19 @@ public class Activator implements BundleActivator
         jmdnsRegistration = context.registerService(clazzes, factory, props);
 
     }
-
+    public LogService getLogService() {
+        if (context == null)
+              return null;
+        synchronized (logServiceTrackerLock) {
+              if (logServiceTracker == null) {
+                    logServiceTracker = new ServiceTracker<LogService,LogService>(context,
+                                LogService.class.getName(), null);
+                    logServiceTracker.open();
+              }
+              logService = (LogService) logServiceTracker.getService();
+              return logService;
+        }
+  }
     /**
      * {@inheritDoc}
      * 
@@ -111,6 +131,10 @@ public class Activator implements BundleActivator
             cc.disconnect();
             cc.destroy();
         }
+        synchronized (logServiceTrackerLock) {
+            if(logServiceTracker!=null)
+                logServiceTracker.close();
+        }
         this.context = null;
 
     }
@@ -126,7 +150,7 @@ public class Activator implements BundleActivator
                     service = new JmDNSProvider();
                     service.connect(null, null);
                 } catch (Exception e) {
-
+                    getLogService().log(LogService.LOG_ERROR, e.getMessage());
                 }
             }
             return service;
@@ -141,8 +165,6 @@ public class Activator implements BundleActivator
         public boolean isActive(){
             return service!=null;
         }
-     
-        
     }
 
 }

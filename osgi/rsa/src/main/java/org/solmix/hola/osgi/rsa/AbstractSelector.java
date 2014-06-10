@@ -18,6 +18,9 @@
  */
 package org.solmix.hola.osgi.rsa;
 
+import org.solmix.hola.rs.RSProviderManager;
+import org.solmix.hola.rs.RemoteServiceProviderManager;
+
 
 /**
  * 
@@ -27,5 +30,7 @@ package org.solmix.hola.osgi.rsa;
 
 public class AbstractSelector
 {
-
+    protected RemoteServiceProviderManager getRemoteServiceProviderManager() {
+        return RSProviderManager.getDefault();
+    }
 }

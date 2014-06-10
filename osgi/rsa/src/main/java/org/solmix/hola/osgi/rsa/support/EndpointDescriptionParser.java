@@ -264,10 +264,20 @@ public class EndpointDescriptionParser
     void initReader() throws ParserConfigurationException, SAXException {
           if(xmlReader==null){
               SAXParserFactory saxParserFactory = SAXParserFactory.newInstance(); 
+              
+              saxParserFactory.setNamespaceAware(true);
+              saxParserFactory.setValidating(false);
+              try {
+                  saxParserFactory.setFeature(
+                              "http://xml.org/sax/features/string-interning", true); //$NON-NLS-1$
+            } catch (SAXException se) {
+                  // some parsers may not support string interning
+            }
               SAXParser saxParser = saxParserFactory.newSAXParser(); 
               if (saxParser == null) {
                   throw new SAXException("Unable to create sax parser"); 
             }
+             
             xmlReader = saxParser.getXMLReader();
           }
     }
