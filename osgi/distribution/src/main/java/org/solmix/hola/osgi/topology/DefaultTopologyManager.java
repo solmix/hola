@@ -175,8 +175,7 @@ public class DefaultTopologyManager extends AbstractTopologyManager implements
                     public void run() {
                           for (int i = 0; i < existingServiceRefs.length; i++) {
                                 // This method will check the service properties for
-                                // remote service props. If previously registered as
-                                // a
+                                // remote service props. If previously registered as a
                                 // remote service, it will export the remote
                                 // service if not it will simply return/skip
                                 handleServiceRegistering(existingServiceRefs[i]);
