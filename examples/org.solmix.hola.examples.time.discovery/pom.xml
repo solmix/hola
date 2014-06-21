@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.solmix.hola.examples</groupId>
+    <artifactId>examples</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.solmix.hola.examples.time.discovery</groupId>
+  <artifactId>org.solmix.hola.examples.time.discovery</artifactId>
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Category>solmix</Bundle-Category>
+						<Remote-Service>timeEndpoint.xml</Remote-Service>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<packaging>bundle</packaging>
+	<name>Hola :: Example :: TimeService Discovery</name>
+</project>

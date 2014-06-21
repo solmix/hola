@@ -51,7 +51,7 @@
 	</build>
 	<properties>
 		<solmix.osgi.export.pkg>
-		org.solmix.hola.osgi.rsa*,org.osgi.service.remoteserviceadmin
+		org.solmix.hola.osgi.rsa*
 		</solmix.osgi.export.pkg>
 		<solmix.osgi.import.pkg>
 			org.springframework*;resolution:=optional;version="${spring.version}",*

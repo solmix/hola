@@ -155,7 +155,7 @@ public class DefaultTopologyManager extends AbstractTopologyManager implements
      * @param event
      * @param listeners
      */
-    public void event(ServiceEvent event,
+    public void handle(ServiceEvent event,
         Map<BundleContext, Collection<ListenerInfo>> listeners) {
         handleEvent(event, listeners);
     }

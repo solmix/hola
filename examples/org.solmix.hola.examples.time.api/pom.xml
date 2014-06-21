@@ -1,13 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.solmix.hola</groupId>
-    <artifactId>hola</artifactId>
+    <groupId>org.solmix.hola.examples</groupId>
+    <artifactId>examples</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
   </parent>
-  <artifactId>hola-osgi-rsa-proxy</artifactId>
-  <packaging>bundle</packaging>
+  <artifactId>org.solmix.hola.examples.time.api</artifactId>
   <build>
 		<plugins>
 			<plugin>
@@ -16,20 +14,21 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>org.solmix.hola.remoteserviceadmin.proxy</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Category>solmix</Bundle-Category>
 						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
 						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
-						<_failok>false</_failok>
-						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
 					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<properties>
-		<solmix.osgi.export.pkg></solmix.osgi.export.pkg>
-		<solmix.osgi.import.pkg></solmix.osgi.import.pkg>
+		<solmix.osgi.export.pkg>
+		org.solmix.hola.examples.time.api
+		</solmix.osgi.export.pkg>
+		<solmix.osgi.import.pkg>*</solmix.osgi.import.pkg>
 	</properties>
-	<name>Hola :: OSGI :: Remote Service Admin Proxy</name>
+	<packaging>bundle</packaging>
+	<name>Hola :: Example :: TimeService API</name>
 </project>

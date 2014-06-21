@@ -5,12 +5,12 @@
     <artifactId>hola</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>hola-shared-api</artifactId>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-core</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  </dependencies>
+  <groupId>org.solmix.hola.examples</groupId>
+  <artifactId>examples</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+  <!-- 	<module>org.solmix.hola.examples.time.api</module>
+  	<module>org.solmix.hola.examples.time.discovery</module>
+  	<module>org.solmix.hola.examples.time.provider</module> -->
+  </modules>
 </project>

@@ -1,24 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.solmix.hola</groupId>
-    <artifactId>hola</artifactId>
+    <groupId>org.solmix.hola.examples</groupId>
+    <artifactId>examples</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>hola-rs-api</artifactId>
-  <name>Hola :: RemoteService :: API</name>
+  <artifactId>org.solmix.hola.examples.time.provider</artifactId>
   <dependencies>
   	<dependency>
-  		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-core</artifactId>
+  		<groupId>org.solmix.hola.examples</groupId>
+  		<artifactId>org.solmix.hola.examples.time.api</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
-  	<dependency>
-  		<groupId>org.solmix.common</groupId>
-  		<artifactId>solmix-common-runtime</artifactId>
-  	</dependency>
   </dependencies>
-   <build>
+  <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -30,9 +25,6 @@
 						<Bundle-Category>solmix</Bundle-Category>
 						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
 						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
-						<Bundle-Activator>org.solmix.hola.rs.internal.Activator</Bundle-Activator>
-						<_failok>false</_failok>
-						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -40,15 +32,10 @@
 	</build>
 	<properties>
 		<solmix.osgi.export.pkg>
-		org.solmix.hola.rs.identity*,
-		org.solmix.hola.rs.event*,
-		org.solmix.hola.rs.support*,
-		org.solmix.hola.rs,
-		org.osgi.service.remoteserviceadmin
+		org.solmix.hola.examples.time.provider
 		</solmix.osgi.export.pkg>
-		<solmix.osgi.import.pkg>
-			org.springframework*;resolution:=optional;version="${spring.version}",*
-		</solmix.osgi.import.pkg>
+		<solmix.osgi.import.pkg>*</solmix.osgi.import.pkg>
 	</properties>
 	<packaging>bundle</packaging>
+	<name>Hola :: Example :: TimeService Provider</name>
 </project>

@@ -31,6 +31,7 @@ import org.osgi.service.remoteserviceadmin.RemoteServiceAdminEvent;
 import org.osgi.service.remoteserviceadmin.RemoteServiceAdminListener;
 
 /**
+ * EventListenerHook监控注册的服务.
  * 
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年5月29日
@@ -52,6 +53,7 @@ public class DefaultTopologyComponent implements EventListenerHook,
 
     }
     void exportRegistedService() {
+        //已经注册的服务需要导出
         //XXX-CF
         defaultManager.exportRegisteredServices(
                           null, "(service.exported.interfaces=*)");
@@ -65,8 +67,7 @@ public class DefaultTopologyComponent implements EventListenerHook,
     @Override
     public void event(ServiceEvent event,
         Map<BundleContext, Collection<ListenerInfo>> listeners) {
-        defaultManager.event(event, listeners);
-
+        defaultManager.handle(event, listeners);
     }
     
     
