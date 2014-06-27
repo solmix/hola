@@ -31,6 +31,14 @@ public class SharedServiceConnectException extends HolaException
 {
 
     /**
+     * @param string
+     */
+    public SharedServiceConnectException(String string)
+    {
+        super(string);
+    }
+
+    /**
      * 
      */
     private static final long serialVersionUID = -5010574607359820580L;

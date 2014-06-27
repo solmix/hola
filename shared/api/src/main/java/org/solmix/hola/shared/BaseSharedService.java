@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Identifiable;
-import org.solmix.runtime.Event;
-import org.solmix.runtime.EventProcessor;
 import org.solmix.runtime.SystemContext;
 import org.solmix.runtime.SystemContextFactory;
 import org.solmix.runtime.adapter.AdapterManager;
+import org.solmix.runtime.event.Event;
+import org.solmix.runtime.event.EventProcessor;
 
 /**
  * 基础服务类,可通过继承该类来扩展.
@@ -89,7 +89,7 @@ public class BaseSharedService implements SharedService, Identifiable
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.SharedService#handleEvent(org.solmix.runtime.Event)
+     * @see org.solmix.hola.shared.SharedService#handleEvent(org.solmix.runtime.event.Event)
      */
     @Override
     public void handleEvent(Event event) {
@@ -102,7 +102,7 @@ public class BaseSharedService implements SharedService, Identifiable
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.SharedService#handleEvents(org.solmix.runtime.Event[])
+     * @see org.solmix.hola.shared.SharedService#handleEvents(org.solmix.runtime.event.Event[])
      */
     @Override
     public void handleEvents(Event[] events) {
@@ -212,7 +212,7 @@ public class BaseSharedService implements SharedService, Identifiable
     protected final boolean isConnected() {
         return (getTargetID() != null);
   }
-    protected ID getTargetID() {
+    public ID getTargetID() {
         SharedServiceContext context = getContext();
         return context == null ? null : context.getTargetID();
   }
@@ -226,11 +226,8 @@ public class BaseSharedService implements SharedService, Identifiable
         if(context!=null){
             Assert.isNotNull(message,"message must be not null");
             context.sendMessage(target,message);
-            
         }else{
-            //XXX warn
+            LOG.trace("No SharedServiceContext no message send");
         }
-        // TODO Auto-generated method stub
-        
     }
 }

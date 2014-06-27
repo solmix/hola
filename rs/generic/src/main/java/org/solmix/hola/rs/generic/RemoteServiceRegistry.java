@@ -16,35 +16,93 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rs.generic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import org.solmix.hola.core.identity.DefaultIDFactory;
 import org.solmix.hola.core.identity.ID;
-
+import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.rs.RemoteConstants;
+import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月19日
+ * @version $Id$ 2014年5月19日
  */
 
 public class RemoteServiceRegistry implements Serializable
 {
 
     private static long nextServiceId = 1;
+
     private static final long serialVersionUID = 6523354816462309411L;
+
     private ID providerID;
-    public RemoteServiceRegistry(){
+
+    public RemoteServiceRegistry()
+    {
     }
+
     /**
      * @param local
      */
     public RemoteServiceRegistry(ID local)
     {
-        providerID=local;
+        providerID = local;
     }
+
     protected long getNextServiceId() {
         return nextServiceId++;
-  }
+    }
+
+    /**
+     * 
+     */
+    public ID getProviderID() {
+        return providerID;
+
+    }
+
+    protected HashMap<String, List<HolaRemoteServiceRegistration<?>>> publishedServicesByClass = new HashMap<String, List<HolaRemoteServiceRegistration<?>>>(
+        50);
+
+    protected ArrayList<HolaRemoteServiceRegistration<?>> allPublishedServices = new ArrayList<HolaRemoteServiceRegistration<?>>(
+        50);
+
+    public void publishService(HolaRemoteServiceRegistration<?> reg) {
+        final String[] clazzes = (String[]) reg.getReference().getProperty(
+            RemoteConstants.OBJECTCLASS);
+        final int size = clazzes.length;
+
+        for (int i = 0; i < size; i++) {
+            final String clazz = clazzes[i];
+
+            List<HolaRemoteServiceRegistration<?>> services = publishedServicesByClass.get(clazz);
+
+            if (services == null) {
+                services = new ArrayList<HolaRemoteServiceRegistration<?>>(10);
+                publishedServicesByClass.put(clazz, services);
+            }
+
+            services.add(reg);
+        }
+        allPublishedServices.add(reg);
+    }
+
+    /**
+     * @param nextServiceId2
+     * @return
+     */
+    public RemoteServiceID createRemoteServiceID(long seq) {
+        Namespace ns = DefaultIDFactory.getDefault().getNamespaceByName(
+            HolaNamespace.NAME);
+        return (RemoteServiceID) DefaultIDFactory.getDefault().createID(ns,
+            new Object[] { getProviderID(), new Long(seq) });
+    }
 }

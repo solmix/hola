@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.shared;
 
+import org.solmix.runtime.event.Event;
+
 
 /**
  * 
@@ -25,7 +27,7 @@ package org.solmix.hola.shared;
  * @version $Id$  2014年5月13日
  */
 
-public class SharedServiceEvent
+public class SharedServiceEvent implements Event
 {
 
 }

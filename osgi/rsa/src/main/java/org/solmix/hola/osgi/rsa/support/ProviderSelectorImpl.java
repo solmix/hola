@@ -210,7 +210,7 @@ public class ProviderSelectorImpl extends AbstractSelector implements
      */
     public String[] getDefaultConfigTypes() {
         // XXX 通过配置实现
-        return null;
+        return new String[]{"hola"};
     }
 
     private Collection<RemoteServiceProvider> selectExistingProviders(

@@ -182,7 +182,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
             throw new IllegalArgumentException(
                 org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTERFACES
                     + " not set");
-        // validate interfaces
+        // 验证接口,发布的接口必须是服务已经实现的接口
         if (!validExportedInterfaces(reference, exportedInterfaces))
             return Collections.emptyList();
         // Get optional exported configs

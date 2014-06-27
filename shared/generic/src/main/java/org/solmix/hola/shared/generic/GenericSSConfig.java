@@ -24,7 +24,7 @@ import java.util.Queue;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.shared.SharedServiceConfig;
 import org.solmix.hola.shared.SharedServiceContext;
-import org.solmix.runtime.Event;
+import org.solmix.runtime.event.Event;
 
 
 /**
@@ -33,17 +33,17 @@ import org.solmix.runtime.Event;
  * @version $Id$  2014年5月18日
  */
 
-public class GenericServiceConfig implements SharedServiceConfig
+public class GenericSSConfig implements SharedServiceConfig
 {
     
     private final ID serviceID;
     private final ID providerID;
-    private final GenericProvider provider;
+    private final GenericSSProvider provider;
     private final Map<String,?> properties;
     protected boolean isActive;
-    private GenericContext context;
+    private GenericSSContext context;
     
-    public GenericServiceConfig(ID serviceID,ID providerID,GenericProvider provider,Map<String,?> properties){
+    public GenericSSConfig(ID serviceID,ID providerID,GenericSSProvider provider,Map<String,?> properties){
         this.serviceID=serviceID;
         this.providerID=providerID;
         this.provider=provider;
@@ -52,7 +52,7 @@ public class GenericServiceConfig implements SharedServiceConfig
     }
     protected void active(Queue<Event> queue){
         isActive=true;
-       context=provider.createSharedContext(this,queue);
+        context=provider.createSharedContext(this,queue);
     }
     /**
      * {@inheritDoc}

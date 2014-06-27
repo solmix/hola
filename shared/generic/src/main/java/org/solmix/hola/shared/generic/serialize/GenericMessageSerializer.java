@@ -28,7 +28,7 @@ import java.io.Serializable;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.shared.SharedMessageSerializer;
 import org.solmix.hola.shared.SharedService;
-import org.solmix.hola.shared.generic.GenericProvider;
+import org.solmix.hola.shared.generic.GenericSSProvider;
 
 
 /**
@@ -40,8 +40,8 @@ import org.solmix.hola.shared.generic.GenericProvider;
 public class GenericMessageSerializer implements SharedMessageSerializer
 {
 
-    private final GenericProvider provider;
-    public GenericMessageSerializer(GenericProvider provider){
+    private final GenericSSProvider provider;
+    public GenericMessageSerializer(GenericSSProvider provider){
         this.provider=provider;
     }
     /**
@@ -77,7 +77,7 @@ public class GenericMessageSerializer implements SharedMessageSerializer
                           }
                           if (found == null)
                                 return null;
-                          SharedService service = provider.getService(found);
+                          SharedService service = provider.getSharedService(found);
                           if (service == null)
                                 return null;
                           return service.getClass().getClassLoader();

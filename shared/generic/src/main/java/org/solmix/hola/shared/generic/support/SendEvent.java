@@ -16,16 +16,33 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.shared.generic;
 
+package org.solmix.hola.shared.generic.support;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月17日
+ * @version $Id$ 2014年6月25日
  */
 
-public class TcpClient extends SharedProviderClient
+public class SendEvent extends SharedConnectionEvent
 {
+
+    /**
+     * @param conn
+     * @param data
+     */
+    public SendEvent(Channel conn, Object data)
+    {
+        super(conn, data);
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Synchronous Send Event[ connection=").append(
+            getSharedConnection()).append(",data=").append(getData()).append("]");
+        return sb.toString();
+    }
 
 }

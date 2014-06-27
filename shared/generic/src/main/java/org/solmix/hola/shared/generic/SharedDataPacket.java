@@ -109,41 +109,165 @@ public class SharedDataPacket implements java.io.Serializable
     /**
      * @return
      */
-    public static SharedDataPacket createPacket(ID fromId, ID toId, long seq, ID serviceID,Serializable data) {
-        return new SharedDataPacket(fromId,toId,seq,new MessagePacket(serviceID,data));
+    public static SharedDataPacket createPacket(ID fromId, ID toId, long seq,
+        ID serviceID, Serializable data) {
+        return new SharedDataPacket(fromId, toId, seq, new MessagePacket(
+            serviceID, data));
     }
-    public static final class MessagePacket implements java.io.Serializable{
+
+    public static final class MessagePacket implements java.io.Serializable
+    {
+
         private static final long serialVersionUID = -473853437731777672L;
+
         private final Serializable data;
+
         private final ID fromSharedObjectID;
 
-        MessagePacket(ID fromSharedObject, Serializable data) {
-              this.fromSharedObjectID = fromSharedObject;
-              this.data = data;
+        MessagePacket(ID fromSharedObject, Serializable data)
+        {
+            this.fromSharedObjectID = fromSharedObject;
+            this.data = data;
         }
 
         @Override
         public String toString() {
-              final StringBuffer sb = new StringBuffer("SharedObjectMessage["); 
-              sb.append(fromSharedObjectID).append(";").append(data).append("]");
-              return sb.toString();
+            final StringBuffer sb = new StringBuffer("SharedObjectMessage[");
+            sb.append(fromSharedObjectID).append(";").append(data).append("]");
+            return sb.toString();
         }
 
         /**
          * @return Returns the data.
          */
         public Serializable getData() {
-              return data;
+            return data;
         }
 
         /**
          * @return Returns the fromSharedObjectID.
          */
         public ID getFromSharedObjectID() {
-              return fromSharedObjectID;
+            return fromSharedObjectID;
         }
-        
+
     }
+
+    public static Serializable createServiceLeavePacket(ID from, ID to,
+        long seq, Serializable data) {
+        return new SharedDataPacket(from, to, seq, new LeaveGroupPacket(data));
+    }
+
+    public static final class LeaveGroupPacket implements Serializable
+    {
+
+        private static final long serialVersionUID = 3258128072350972213L;
+
+        private final Serializable data;
+
+        public LeaveGroupPacket(Serializable data)
+        {
+            this.data = data;
+        }
+
+        public Serializable getData() {
+            return data;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuffer sb = new StringBuffer("LeaveGroupMessage[");
+            sb.append(data).append("]");
+            return sb.toString();
+        }
+    }
+
+   
+    public static SharedDataPacket createViewChangePacket(ID from, ID to, long seq,
+        ID[] ids, boolean add, Serializable data) {
+        return new SharedDataPacket(from, to, seq, new ViewChangePacket(ids,
+            add, data));
+    }
+
+    public static final class ViewChangePacket implements Serializable
+    {
+
+        private static final long serialVersionUID = 3256999977782882869L;
+
+        private final ID changeIDs[];
+
+        private final boolean add;
+
+        private final Serializable data;
+
+        ViewChangePacket(ID id[], boolean a, Serializable data)
+        {
+            this.changeIDs = id;
+            this.add = a;
+            this.data = data;
+        }
+
+        protected String printChangeIDs() {
+            if (changeIDs == null)
+                return "null";
+            final StringBuffer buf = new StringBuffer();
+            for (int i = 0; i < changeIDs.length; i++) {
+                buf.append(changeIDs[i]);
+                if (i != (changeIDs.length - 1))
+                    buf.append(",");
+            }
+            return buf.toString();
+        }
+
+        @Override
+        public String toString() {
+            final StringBuffer sb = new StringBuffer("ViewChangeMessage[");
+            sb.append(printChangeIDs()).append(";").append(add).append(";") //$NON-NLS-2$
+            .append(data).append("]");
+            return sb.toString();
+        }
+
+        /**
+         * @return Returns the add.
+         */
+        public boolean isAdd() {
+            return add;
+        }
+
+        /**
+         * @return Returns the changeIDs.
+         */
+        public ID[] getChangeIDs() {
+            return changeIDs;
+        }
+
+        /**
+         * @return Returns the data.
+         */
+        public Serializable getData() {
+            return data;
+        }
+    }
+    public static SharedDataPacket createJoinGroupPacket(ID from, ID to, long seq, Serializable data) {
+        return new SharedDataPacket(from, to, seq, new JoinGroupPacket(data));
+    }
+    public static final class JoinGroupPacket implements Serializable {
+        private static final long serialVersionUID = 3257564022885855287L;
+        private final Serializable data;
+
+        public JoinGroupPacket(Serializable data) {
+              this.data = data;
+        }
+
+        public Serializable getData() {
+              return data;
+        }
+
+        @Override
+        public String toString() {
+              final StringBuffer sb = new StringBuffer("JoinGroupMessage["); //$NON-NLS-1$
+              sb.append(data).append("]"); //$NON-NLS-1$
+              return sb.toString();
+        }
+  }
 }
-
-

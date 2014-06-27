@@ -18,9 +18,10 @@
  */
 package org.solmix.hola.shared.generic;
 
-import org.solmix.hola.core.ConnectException;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.security.ConnectSecurityContext;
+import org.solmix.hola.shared.SharedServiceProviderConfig;
+import org.solmix.hola.shared.generic.support.Channel;
 
 
 /**
@@ -29,41 +30,31 @@ import org.solmix.hola.core.security.ConnectSecurityContext;
  * @version $Id$  2014年5月17日
  */
 
-public abstract class SharedProviderClient extends GenericProvider
+public class TcpClientSSProvider extends ClientSSProvider
 {
-
+    public static final int DEFAULT_TCP_CONNECT_TIMEOUT = 30000;
     /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.ConnectContext#connect(org.solmix.hola.core.identity.ID, org.solmix.hola.core.security.ConnectSecurityContext)
+     * @param config
      */
-    @Override
-    public void connect(ID remoteID, ConnectSecurityContext securityContext)
-        throws ConnectException {
-        // TODO Auto-generated method stub
-
+    public TcpClientSSProvider(SharedServiceProviderConfig config)
+    {
+        super(config);
+        // TODO Auto-generated constructor stub
     }
-
+    @Override
+    protected int getConnectTimeout() {
+        return DEFAULT_TCP_CONNECT_TIMEOUT;
+  }
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.ConnectContext#getTargetID()
+     * @see org.solmix.hola.shared.generic.ClientSSProvider#createChannel(org.solmix.hola.core.identity.ID, org.solmix.hola.core.security.ConnectSecurityContext)
      */
     @Override
-    public ID getTargetID() {
+    protected Channel createChannel(ID remoteID,
+        ConnectSecurityContext securityContext) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.ConnectContext#disconnect()
-     */
-    @Override
-    public void disconnect() {
-        // TODO Auto-generated method stub
-
     }
 
 }

@@ -28,7 +28,7 @@ import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.shared.SharedMessage;
 import org.solmix.hola.shared.SharedServiceContext;
 import org.solmix.hola.shared.SharedServiceProvider;
-import org.solmix.runtime.Event;
+import org.solmix.runtime.event.Event;
 
 
 /**
@@ -37,11 +37,11 @@ import org.solmix.runtime.Event;
  * @version $Id$  2014年5月18日
  */
 
-public class GenericContext implements SharedServiceContext
+public class GenericSSContext implements SharedServiceContext
 {
 
     private boolean isActive;
-    private final GenericProvider provider;
+    private final GenericSSProvider provider;
     private final ID serviceID;
     private final ID providerID;
     private final Map<String, ?> properties;
@@ -54,8 +54,8 @@ public class GenericContext implements SharedServiceContext
      * @param properties
      * @param queue
      */
-    public GenericContext(ID sharedServiceID, ID homeProviderID,
-        GenericProvider provider, Map<String, ?> properties,
+    public GenericSSContext(ID sharedServiceID, ID homeProviderID,
+        GenericSSProvider provider, Map<String, ?> properties,
         Queue<Event> queue)
     {
         this.provider=provider;

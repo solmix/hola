@@ -16,44 +16,69 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.shared.generic.member;
 
+import java.util.Iterator;
 import java.util.Observable;
-
+import java.util.TreeSet;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月17日
+ * @version $Id$ 2014年5月17日
  */
 
 public class GroupMemberManager extends Observable
 {
 
+    final TreeSet<Member> cacheSet;
+
+    public GroupMemberManager()
+    {
+        cacheSet = new TreeSet<Member>();
+    }
+
     /**
      * @return
      */
     public int getSize() {
-        // TODO Auto-generated method stub
-        return 0;
+        return cacheSet.size();
     }
 
     /**
      * @param local
      * @return
      */
-    public boolean addMember(Member local) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean addMember(Member member) {
+        final boolean res = cacheSet.add(member);
+        if (res) {
+            setChanged();
+            notifyObservers(new MemberChanged(member, true));
+        }
+        return res;
     }
 
     /**
      * @param m
      * @return
      */
-    public boolean removeMember(Member m) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean removeMember(Member member) {
+        final boolean res = cacheSet.remove(member);
+        if (res) {
+            setChanged();
+            notifyObservers(new MemberChanged(member, false));
+        }
+        return res;
     }
 
+    /**
+     * @return
+     */
+        public Object[] getMembers() {
+            return cacheSet.toArray();
+      }
+        public Iterator<Member> iterator() {
+            return cacheSet.iterator();
+      }
 }

@@ -22,6 +22,7 @@ package org.solmix.hola.core.event;
 import java.util.EventObject;
 
 import org.solmix.hola.core.identity.ID;
+import org.solmix.runtime.event.Event;
 
 /**
  * 
@@ -29,7 +30,7 @@ import org.solmix.hola.core.identity.ID;
  * @version $Id$ 2014年5月4日
  */
 
-public abstract class ConnectEvent extends EventObject
+public abstract class ConnectEvent extends EventObject implements Event
 {
 
     private static final long serialVersionUID = 3193099827006507969L;

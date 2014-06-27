@@ -21,9 +21,13 @@ package org.solmix.hola.shared.generic;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.AbstractConnectContext;
 import org.solmix.hola.core.identity.DefaultIDFactory;
@@ -36,6 +40,7 @@ import org.solmix.hola.shared.SharedMessageSerializer;
 import org.solmix.hola.shared.SharedService;
 import org.solmix.hola.shared.SharedServiceAddException;
 import org.solmix.hola.shared.SharedServiceConnectException;
+import org.solmix.hola.shared.SharedServiceDisconnectException;
 import org.solmix.hola.shared.SharedServiceProvider;
 import org.solmix.hola.shared.SharedServiceProviderConfig;
 import org.solmix.hola.shared.SharedTransaction;
@@ -43,7 +48,8 @@ import org.solmix.hola.shared.event.SharedMessageSendingEvent;
 import org.solmix.hola.shared.generic.member.Member;
 import org.solmix.hola.shared.generic.member.MemberObserver;
 import org.solmix.hola.shared.generic.serialize.GenericMessageSerializer;
-import org.solmix.runtime.Event;
+import org.solmix.hola.shared.generic.support.Channel;
+import org.solmix.runtime.event.Event;
 
 /**
  * 
@@ -51,19 +57,27 @@ import org.solmix.runtime.Event;
  * @version $Id$ 2014年5月17日
  */
 
-public abstract class GenericProvider extends AbstractConnectContext implements
-    SharedServiceProvider
+public abstract class GenericSSProvider extends AbstractConnectContext
+    implements SharedServiceProvider
 {
 
     protected final SharedServiceProviderConfig config;
 
-    private final MemberObserver observer;
+    protected final MemberObserver observer;
 
     protected ThreadGroup providerThreadGroup = null;
 
     private long sequenceNumber = 0L;
 
-    public GenericProvider(SharedServiceProviderConfig config)
+    private SharedMessageSerializer messageSerializer;
+
+    private final Vector<SharedConnetor> connectors = null;
+
+    protected boolean isClosing=false;
+    
+    protected Logger log= LoggerFactory.getLogger(this.getClass().getName());
+    
+    public GenericSSProvider(SharedServiceProviderConfig config)
     {
         this.config = config;
         Assert.isNotNull(config);
@@ -71,7 +85,6 @@ public abstract class GenericProvider extends AbstractConnectContext implements
         providerThreadGroup = new ThreadGroup(getID() + "::ThreadGroup");
     }
 
-    private SharedMessageSerializer messageSerializer;
 
     /**
      * {@inheritDoc}
@@ -83,7 +96,6 @@ public abstract class GenericProvider extends AbstractConnectContext implements
         return DefaultIDFactory.getDefault().getNamespaceByName(
             StringID.class.getName());
     }
-
     /**
      * {@inheritDoc}
      * 
@@ -101,12 +113,13 @@ public abstract class GenericProvider extends AbstractConnectContext implements
      *      org.solmix.hola.shared.SharedService, java.util.Map)
      */
     @Override
-    public ID addService(ID sharedServiceID, SharedService sharedService,
+    public ID addSharedService(ID sharedServiceID, SharedService sharedService,
         Map<String, Object> properties) throws SharedServiceAddException {
         if (sharedService == null || sharedServiceID == null)
             throw new SharedServiceAddException("Id or service is null");
         addServiceAndWait(sharedServiceID, sharedService, properties);
 
+        // XXX FIRE SharedServiceAddEvent.
         return sharedServiceID;
     }
 
@@ -127,37 +140,36 @@ public abstract class GenericProvider extends AbstractConnectContext implements
     protected SharedTransaction addService0(ID sharedServiceID,
         SharedService sharedService, Map<String, Object> properties)
         throws SharedServiceAddException {
-        GenericWrapper wrapper = createWrapper(sharedServiceID, sharedService,
+        GenericSSHolder holer = createHolder(sharedServiceID, sharedService,
             properties);
         SharedTransaction transaction = null;
         synchronized (getOberserLock()) {
-            final GenericWrapper obj = observer.getFromAny(sharedServiceID);
+            final GenericSSHolder obj = observer.getFromAny(sharedServiceID);
             if (obj != null) {
                 throw new SharedServiceAddException("service " + obj
                     + "already in");
             }
             try {
-                wrapper.init();
+                holer.init();
             } catch (Exception e) {
                 throw new SharedServiceAddException(e);
             }
             transaction = sharedService.adaptTo(SharedTransaction.class);
-            observer.addServiceToActive(wrapper);
+            observer.addServiceToActive(holer);
         }
         return transaction;
 
     }
 
-    protected GenericWrapper createWrapper(ID sharedServiceID,
+    protected GenericSSHolder createHolder(ID sharedServiceID,
         SharedService sharedService, Map<String, Object> properties) {
-        return new GenericWrapper(createServiceConfig(sharedServiceID,
+        return new GenericSSHolder(createServiceConfig(sharedServiceID,
             sharedService, properties), sharedService, this);
     }
 
-    private GenericServiceConfig createServiceConfig(ID sharedServiceID,
+    private GenericSSConfig createServiceConfig(ID sharedServiceID,
         SharedService sharedService, Map<String, Object> properties) {
-        return new GenericServiceConfig(sharedServiceID, getID(), this,
-            properties);
+        return new GenericSSConfig(sharedServiceID, getID(), this, properties);
     }
 
     protected Object getOberserLock() {
@@ -171,10 +183,34 @@ public abstract class GenericProvider extends AbstractConnectContext implements
      *      org.solmix.hola.core.identity.ID)
      */
     @Override
-    public SharedConnetor connectService(ID fromID, ID toID)
+    public SharedConnetor connectSharedService(ID sendId, ID[] receiveIds)
         throws SharedServiceConnectException {
-        // TODO Auto-generated method stub
-        return null;
+        if (sendId == null)
+            throw new SharedServiceConnectException("Sender Id is not null");
+        if (receiveIds == null)
+            throw new SharedServiceConnectException("Recieve  Ids is not null");
+        Hashtable<ID, Queue<Event>> queues = new Hashtable<ID, Queue<Event>>();
+        SharedConnetor __return = null;
+        synchronized (getOberserLock()) {
+            GenericSSHolder holder = getSharedServiceHolder(sendId);
+            if (holder == null)
+                throw new SharedServiceConnectException("Sender Id is not null");
+            for (ID id : receiveIds) {
+                if (holder == null) {
+                    throw new SharedServiceConnectException("Reciever :"
+                        + id.getName() + " not found");
+                }
+                queues.put(id, holder.getQueue());
+            }
+            __return = new GenericSharedConnetor(sendId, queues);
+            addConnector(__return);
+            // XXX fire SharedServiceConnectEvent();
+        }
+        return __return;
+    }
+
+    protected void addConnector(SharedConnetor conn) {
+        connectors.add(conn);
     }
 
     /**
@@ -183,9 +219,18 @@ public abstract class GenericProvider extends AbstractConnectContext implements
      * @see org.solmix.hola.shared.SharedServiceProvider#disconnectService(org.solmix.hola.shared.SharedConnetor)
      */
     @Override
-    public void disconnectService(SharedConnetor channel) {
-        // TODO Auto-generated method stub
+    public void disconnectSharedService(SharedConnetor connetor)
+        throws SharedServiceDisconnectException {
+        if (connetor == null)
+            throw new SharedServiceDisconnectException(
+                "SharedService connector can't be null");
 
+        if (connectors.remove(connetor)) {
+            throw new SharedServiceDisconnectException(" connector " + connetor
+                + " can't found");
+        }
+        connetor.dispose();
+        // XXX fire SharedServiceDisconnectEvent.
     }
 
     /**
@@ -194,9 +239,17 @@ public abstract class GenericProvider extends AbstractConnectContext implements
      * @see org.solmix.hola.shared.SharedServiceProvider#getService(org.solmix.hola.core.identity.ID)
      */
     @Override
-    public SharedService getService(ID sharedServiceID) {
-        // TODO Auto-generated method stub
-        return null;
+    public SharedService getSharedService(ID sharedServiceID) {
+        GenericSSHolder holder = getSharedServiceHolder(sharedServiceID);
+        return holder == null ? null : holder.sharedService;
+    }
+
+    /**
+     * @param sharedServiceID
+     * @return
+     */
+    private GenericSSHolder getSharedServiceHolder(ID sharedServiceID) {
+        return observer.getFromActive(sharedServiceID);
     }
 
     /**
@@ -205,16 +258,26 @@ public abstract class GenericProvider extends AbstractConnectContext implements
      * @see org.solmix.hola.shared.SharedServiceProvider#removeService(org.solmix.hola.core.identity.ID)
      */
     @Override
-    public SharedService removeService(ID sharedServiceID) {
-        // TODO Auto-generated method stub
-        return null;
+    public SharedService removeSharedService(ID sharedServiceID) {
+        // XXX fire SharedServiceRemoveEvent.
+        synchronized (getOberserLock()) {
+            GenericSSHolder holder = observer.getFromActive(sharedServiceID);
+            if (holder == null) {
+                return null;
+            }
+            observer.removeSharedService(sharedServiceID);
+            return holder.sharedService;
+        }
     }
 
     /**
      * @param serviceID
      */
     public void notifyServiceActivated(ID serviceID) {
-        // TODO Auto-generated method stub
+        synchronized (getOberserLock()) {
+            observer.notigyOthresActivated(serviceID);
+            // XXX fire SharedServiceActivateEvent
+        }
 
     }
 
@@ -222,8 +285,10 @@ public abstract class GenericProvider extends AbstractConnectContext implements
      * @param serviceID
      */
     public void notifyServiceDeactivated(ID serviceID) {
-        // TODO Auto-generated method stub
-
+        synchronized (getOberserLock()) {
+            observer.notigyOthresDeactivated(serviceID);
+            // XXX fire SharedServiceDeactivateEvent
+        }
     }
 
     /**
@@ -241,10 +306,10 @@ public abstract class GenericProvider extends AbstractConnectContext implements
      * @param queue
      * @return
      */
-    public GenericContext createSharedContext(GenericServiceConfig config,
+    public GenericSSContext createSharedContext(GenericSSConfig config,
         Queue<Event> queue) {
 
-        return new GenericContext(config.getSharedServiceID(),
+        return new GenericSSContext(config.getSharedServiceID(),
             config.getHomeProviderID(), this, config.getProperties(), queue);
     }
 
@@ -322,6 +387,7 @@ public abstract class GenericProvider extends AbstractConnectContext implements
     /**
      * @param messageSerialier the messageSerialier to set
      */
+    @Override
     public void setMessageSerializer(SharedMessageSerializer messageSerializer) {
         this.messageSerializer = messageSerializer;
     }
@@ -332,5 +398,42 @@ public abstract class GenericProvider extends AbstractConnectContext implements
     public ID[] getServiceIDs() {
         return observer.getServiceIDs();
     }
+
+    /**
+     * @param removeID
+     */
+    public void destroySharedService(ID removeID) {
+        observer.removeSharedService(removeID);
+    }
+    
+    @Override
+    public void destroy(){
+        isClosing = true;
+        if(observer!=null){
+            observer.removeAllMembers();
+        }
+    }
+    protected void disconnect(Channel conn) {
+        if (conn != null && conn.isConnected())
+            conn.disconnect();
+    }
+
+    protected void handleLeave(ID leaveID, Channel conn) {
+        if (leaveID == null)
+            return;
+      if (observer.removeMember(leaveID)) {
+            try {
+                  forwardExcluding(getID(), leaveID, SharedDataPacket.createViewChangePacket(getID(), null, getNextSequenceNumber(), new ID[] {leaveID}, false, null));
+            } catch (final IOException e) {
+            }
+      }
+      if (conn != null)
+            disconnect(conn);
+        
+    }
+    protected boolean addNewRemoteMember(ID memberID, Object data) {
+        return observer.addMember(new Member(memberID, data));
+  }
+    abstract protected void forwardExcluding(ID from, ID excluding, SharedDataPacket data) throws IOException;
 
 }

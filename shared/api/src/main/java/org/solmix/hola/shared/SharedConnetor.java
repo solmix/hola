@@ -30,5 +30,5 @@ public interface SharedConnetor
     
     
     SharedChannel[] getChannels();
-
+     void dispose() ;
 }

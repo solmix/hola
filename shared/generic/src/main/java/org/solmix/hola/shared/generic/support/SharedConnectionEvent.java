@@ -16,32 +16,44 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.shared;
 
-import org.solmix.runtime.adapter.Adaptable;
+package org.solmix.hola.shared.generic.support;
+
 import org.solmix.runtime.event.Event;
-
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月13日
+ * @version $Id$ 2014年6月25日
  */
 
-public interface SharedService extends Adaptable
+public class SharedConnectionEvent implements Event
 {
 
-    /**
-     * @param serviceConfig
-     */
-    void init(SharedServiceConfig serviceConfig);
+    private final Channel channel;
 
-    /**
-     * @param evt
-     */
-    void handleEvent(Event event);
-    void handleEvents(Event[] events);
+    private final Object data;
+
+    public SharedConnectionEvent(Channel conn, Object data)
+    {
+        this.channel = conn;
+        this.data = data;
+    }
+
     
-    void destroy();
+    /**
+     * @return the channel
+     */
+    public Channel getSharedConnection() {
+        return channel;
+    }
 
+    
+    /**
+     * @return the data
+     */
+    public Object getData() {
+        return data;
+    }
+    
 }

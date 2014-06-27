@@ -16,32 +16,46 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.shared;
 
-import org.solmix.runtime.adapter.Adaptable;
-import org.solmix.runtime.event.Event;
-
+package org.solmix.hola.shared.generic.support;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月13日
+ * @version $Id$ 2014年6月25日
  */
 
-public interface SharedService extends Adaptable
+public class DisconnectEvent extends SharedConnectionEvent
 {
 
-    /**
-     * @param serviceConfig
-     */
-    void init(SharedServiceConfig serviceConfig);
+    private final Throwable exception;
 
     /**
-     * @param evt
+     * @param conn
+     * @param data
      */
-    void handleEvent(Event event);
-    void handleEvents(Event[] events);
-    
-    void destroy();
+    public DisconnectEvent(Channel conn, Object data,
+        Throwable exception)
+    {
+        super(conn, data);
+        this.exception = exception;
+    }
 
+    /**
+     * @return the exception
+     */
+    public Throwable getException() {
+        return exception;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Disconnect Event[ connection=")
+        .append(getSharedConnection())
+        .append(",data=").append(getData())
+        .append(",exception=").append(exception)
+        .append("]");
+        return sb.toString();
+    }
 }

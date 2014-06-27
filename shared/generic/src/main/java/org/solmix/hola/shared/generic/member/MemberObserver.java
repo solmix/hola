@@ -27,8 +27,8 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.shared.generic.GenericProvider;
-import org.solmix.hola.shared.generic.GenericWrapper;
+import org.solmix.hola.shared.generic.GenericSSHolder;
+import org.solmix.hola.shared.generic.GenericSSProvider;
 
 /**
  * 
@@ -39,7 +39,7 @@ import org.solmix.hola.shared.generic.GenericWrapper;
 public class MemberObserver implements java.util.Observer
 {
 
-    private final GenericProvider provider;
+    private final GenericSSProvider provider;
 
     private final GroupMemberManager groupManager;
 
@@ -47,17 +47,17 @@ public class MemberObserver implements java.util.Observer
 
     private static final Logger LOG = LoggerFactory.getLogger(MemberObserver.class.getName());
 
-    TreeMap<ID, GenericWrapper> loading, active;
+    TreeMap<ID, GenericSSHolder> loading, active;
 
     Member localMember;
 
-    public MemberObserver(GenericProvider provider, Member local)
+    public MemberObserver(GenericSSProvider provider, Member local)
     {
         this.provider = provider;
         groupManager = new GroupMemberManager();
         groupManager.addObserver(this);
-        loading = new TreeMap<ID, GenericWrapper>();
-        active = new TreeMap<ID, GenericWrapper>();
+        loading = new TreeMap<ID, GenericSSHolder>();
+        active = new TreeMap<ID, GenericSSHolder>();
         localMember = local;
         addMember(local);
 
@@ -80,6 +80,23 @@ public class MemberObserver implements java.util.Observer
         return groupManager.getSize();
     }
 
+    public synchronized boolean removeMember(ID id) {
+        final Member m = getMemberForID(id);
+        if (m == null)
+            return false;
+        return removeMember(m);
+    }
+
+    synchronized Member getMemberForID(ID id) {
+        final Member newMem = new Member(id);
+        for (final Iterator<Member> i = groupManager.iterator(); i.hasNext();) {
+            final Member oldMem = i.next();
+            if (newMem.equals(oldMem))
+                return oldMem;
+        }
+        return null;
+    }
+
     public synchronized boolean removeMember(Member m) {
         final boolean res = groupManager.removeMember(m);
         if (res) {
@@ -96,16 +113,27 @@ public class MemberObserver implements java.util.Observer
      * @param m
      */
     private void removeSharedServices(Member m, boolean match) {
-        final HashSet set = getRemoveIDs(m.getID(), match);
-        final Iterator i = set.iterator();
+        final HashSet<ID> set = getRemoveIDs(m.getID(), match);
+        final Iterator<ID> i = set.iterator();
         while (i.hasNext()) {
-            final ID removeID = (ID) i.next();
+            final ID removeID = i.next();
             if (isLoading(removeID)) {
-                removeSharedObjectFromLoading(removeID);
+                removeSharedServiceFromLoading(removeID);
             } else {
-                container.destroySharedObject(removeID);
+                provider.destroySharedService(removeID);
             }
         }
+
+    }
+
+    /**
+     * @param removeID
+     */
+    private boolean removeSharedServiceFromLoading(ID removeID) {
+        if (loading.remove(removeID) != null) {
+            return true;
+        }
+        return false;
 
     }
 
@@ -134,9 +162,10 @@ public class MemberObserver implements java.util.Observer
 
     }
 
-    void notifyAllOfMemberChange(Member m, TreeMap<ID, GenericWrapper>  map, boolean add) {
-        for (final Iterator<GenericWrapper> i = map.values().iterator(); i.hasNext();) {
-            final GenericWrapper ro = i.next();
+    void notifyAllOfMemberChange(Member m, TreeMap<ID, GenericSSHolder> map,
+        boolean add) {
+        for (final Iterator<GenericSSHolder> i = map.values().iterator(); i.hasNext();) {
+            final GenericSSHolder ro = i.next();
             ro.memberChanged(m, add);
         }
     }
@@ -171,8 +200,8 @@ public class MemberObserver implements java.util.Observer
      * @param id
      * @return
      */
-    public GenericWrapper getFromAny(ID id) {
-        GenericWrapper found = active.get(id);
+    public GenericSSHolder getFromAny(ID id) {
+        GenericSSHolder found = active.get(id);
         if (found != null)
             return found;
         found = loading.get(id);
@@ -180,15 +209,15 @@ public class MemberObserver implements java.util.Observer
     }
 
     /**
-     * @param wrapper
+     * @param holder
      */
-    public void addServiceToActive(GenericWrapper wrapper) {
-        if (wrapper == null)
+    public void addServiceToActive(GenericSSHolder holder) {
+        if (holder == null)
             return;
         if (LOG.isDebugEnabled())
-            LOG.debug("addServiceToActive " + wrapper.toString());
-        active.put(wrapper.getServiceID(), wrapper);
-        wrapper.activated();
+            LOG.debug("addServiceToActive " + holder.toString());
+        active.put(holder.getServiceID(), holder);
+        holder.activated();
     }
 
     /**
@@ -198,6 +227,76 @@ public class MemberObserver implements java.util.Observer
         return active.keySet().toArray(new ID[0]);
     }
 
+    /**
+     * @param sharedServiceID
+     * @return
+     */
+    public GenericSSHolder getFromActive(ID sharedServiceID) {
+        return active.get(sharedServiceID);
+    }
+
+    /**
+     * @param sharedServiceID
+     */
+    public boolean removeSharedService(ID sharedServiceID) {
+        GenericSSHolder holder = active.remove(sharedServiceID);
+        if (holder == null)
+            return false;
+        holder.deactivated();
+        return true;
+
+    }
+
+    /**
+     * @param serviceID
+     */
+    public void notigyOthresActivated(ID serviceID) {
+        notifyOtherChanged(serviceID, active, true);
+
+    }
+
+    /**
+     * @param serviceID
+     */
+    public void notigyOthresDeactivated(ID serviceID) {
+        notifyOtherChanged(serviceID, active, false);
+
+    }
+
+    private void notifyOtherChanged(ID serviceID,
+        TreeMap<ID, GenericSSHolder> active, boolean activated) {
+        for (GenericSSHolder holder : active.values()) {
+            if (serviceID.equals(holder.getServiceID())) {
+                holder.otherChanged(serviceID, activated);
+            }
+        }
+
+    }
+
+    synchronized void removeAllMembers(Member exception) {
+
+        final Object m[] = getMembers();
+        for (int i = 0; i < m.length; i++) {
+            final Member mem = (Member) m[i];
+            if (exception == null || !exception.equals(mem))
+                removeMember(mem);
+        }
+    }
+
+    synchronized Object[] getMembers() {
+        return groupManager.getMembers();
+    }
+
+    public void removeAllMembers() {
+        removeAllMembers(null);
+    }
+
+    /**
+     * 
+     */
+    public void removeNonLocalMembers() {
+        removeAllMembers(localMember);
+    }
 }
 
 class DestroyIterator implements Iterator<ID>
@@ -207,11 +306,11 @@ class DestroyIterator implements Iterator<ID>
 
     ID homeID;
 
-    Iterator<GenericWrapper> i;
+    Iterator<GenericSSHolder> i;
 
     boolean match;
 
-    public DestroyIterator(TreeMap<ID, GenericWrapper> map, ID hID, boolean m)
+    public DestroyIterator(TreeMap<ID, GenericSSHolder> map, ID hID, boolean m)
     {
         i = map.values().iterator();
         homeID = hID;
@@ -238,7 +337,7 @@ class DestroyIterator implements Iterator<ID>
 
     ID getNext() {
         while (i.hasNext()) {
-            final GenericWrapper ro = i.next();
+            final GenericSSHolder ro = i.next();
             if (homeID == null
                 || (match ^ !ro.getLocalProviderID().equals(homeID))) {
                 return ro.getServiceID();

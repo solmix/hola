@@ -16,32 +16,32 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.shared;
-
-import org.solmix.runtime.adapter.Adaptable;
-import org.solmix.runtime.event.Event;
+package org.solmix.hola.shared.generic.support;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月13日
+ * @version $Id$  2014年6月25日
  */
 
-public interface SharedService extends Adaptable
+public class PostEvent extends SharedConnectionEvent
 {
 
     /**
-     * @param serviceConfig
+     * @param conn
+     * @param data
      */
-    void init(SharedServiceConfig serviceConfig);
+    public PostEvent(Channel conn, Object data)
+    {
+        super(conn, data);
+    }
 
-    /**
-     * @param evt
-     */
-    void handleEvent(Event event);
-    void handleEvents(Event[] events);
-    
-    void destroy();
-
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Asynchronous Post Event[ connection=").append(
+            getSharedConnection()).append(",data=").append(getData()).append("]");
+        return sb.toString();
+    }
 }

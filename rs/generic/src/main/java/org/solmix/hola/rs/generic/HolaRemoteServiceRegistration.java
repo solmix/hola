@@ -62,6 +62,8 @@ public class HolaRemoteServiceRegistration<S> implements
 
     private int serviceRanking;
 
+    private String[] clazzes;
+
     @Override
     public RemoteServiceID getID() {
         return id;
@@ -78,7 +80,7 @@ public class HolaRemoteServiceRegistration<S> implements
     }
 
     @Override
-    public void setProperties(Dictionary<String,Object> properties) {
+    public void setProperties(Dictionary<String, Object> properties) {
         synchronized (registrationLock) {
             /* in the process of unregistering */
             if (state != REGISTERED) {
@@ -92,16 +94,19 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * 添加额外的参数
      */
-    private Properties createProperties(Dictionary<String,Object> props) {
+    private Properties createProperties(Dictionary<String, ?> props) {
         final Properties resultProps = new Properties(props);
 
         resultProps.setProperty(RemoteConstants.OBJECTCLASS, clazzes);
 
-        resultProps.setProperty(RemoteConstants.SERVICE_ID, new Long(getID().getContainerRelativeID()));
+        resultProps.setProperty(RemoteConstants.SERVICE_ID, new Long(
+            getID().getRelativeID()));
 
-        final Object ranking = (props == null) ? null : props.get(RemoteConstants.SERVICE_RANKING);
+        final Object ranking = (props == null) ? null
+            : props.get(RemoteConstants.SERVICE_RANKING);
 
-        serviceRanking = (ranking instanceof Integer) ? ((Integer) ranking).intValue() : 0;
+        serviceRanking = (ranking instanceof Integer) ? ((Integer) ranking).intValue()
+            : 0;
 
         return resultProps;
     }
@@ -164,8 +169,9 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * 存放远程服务的配置信息
      */
-    static class Properties extends Hashtable<String,Object>
+    static class Properties extends Hashtable<String, Object>
     {
+
         private static final long serialVersionUID = -3684607010228779249L;
 
         private Properties(int size, Dictionary<String, ?> props)
@@ -256,7 +262,8 @@ public class HolaRemoteServiceRegistration<S> implements
             }
             // must use reflection because Object clone method is protected!!
             try {
-                return (clazz.getMethod("clone", (Class[]) null).invoke(value, (Object[]) null));
+                return (clazz.getMethod("clone", (Class[]) null).invoke(value,
+                    (Object[]) null));
             } catch (final Exception e) {
                 /* clone is not a public method on value's class */
             } catch (final Error e) {
@@ -264,8 +271,8 @@ public class HolaRemoteServiceRegistration<S> implements
                 if (value instanceof Vector<?>) {
                     return (((Vector<?>) value).clone());
                 }
-                if (value instanceof Hashtable<?,?>) {
-                    return (((Hashtable<?,?>) value).clone());
+                if (value instanceof Hashtable<?, ?>) {
+                    return (((Hashtable<?, ?>) value).clone());
                 }
             }
             return (value);
@@ -285,7 +292,7 @@ public class HolaRemoteServiceRegistration<S> implements
                 final String key = keys[i];
                 if (!key.equals(RemoteConstants.OBJECTCLASS)) {
                     if (n > 0) {
-                        sb.append(", "); 
+                        sb.append(", ");
                     }
                     sb.append(key);
                     sb.append('=');
@@ -311,12 +318,32 @@ public class HolaRemoteServiceRegistration<S> implements
         }
     }
 
-  
-    public void publish(RegistryService registryService,
-        RemoteServiceRegistry registry, String[] clazzes, Object service,
-        Dictionary<String, ?> properties2) {
-        // TODO Auto-generated method stub
-        
+    protected String[] getClasses() {
+        return clazzes;
     }
 
+    private RegistryService registryService;
+
+    private Object service;
+
+    private RemoteServiceID remoteServiceID;
+
+    public void publish(RegistryService registryService,
+        RemoteServiceRegistry registry, String[] clazzes, Object service,
+        Dictionary<String, ?> properties) {
+        this.registryService = registryService;
+        this.service = service;
+        this.reference = new HolaRemoteServiceReference<S>(this);
+        this.clazzes = clazzes;
+        synchronized (registry) {
+            ID id = registry.getProviderID();
+            if (id == null)
+                throw new NullPointerException(
+                    "Local ProviderID must be non-null to register remote services");
+            this.remoteServiceID = registry.createRemoteServiceID(registry.getNextServiceId());
+            this.properties = createProperties(properties);
+            registry.publishService(this);
+        }
+
+    }
 }

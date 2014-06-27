@@ -21,6 +21,7 @@ package org.solmix.hola.shared;
 
 import java.util.Map;
 
+import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.identity.ID;
 
 /**
@@ -29,21 +30,21 @@ import org.solmix.hola.core.identity.ID;
  * @version $Id$ 2014年5月16日
  */
 
-public interface SharedServiceProvider
+public interface SharedServiceProvider extends ConnectContext
 {
 
-    ID addService(ID sharedServiceID, SharedService sharedService,
+    ID addSharedService(ID sharedServiceID, SharedService sharedService,
         Map<String, Object> properties) throws SharedServiceAddException;
 
-    SharedConnetor connectService(ID fromID, ID toID)  throws SharedServiceConnectException;
+    SharedConnetor connectSharedService(ID sendId, ID[] receiveId)  throws SharedServiceConnectException;
     
-    void disconnectService(SharedConnetor channel);
+    void disconnectSharedService(SharedConnetor channel) throws SharedServiceDisconnectException;
     
-    SharedService getService(ID sharedServiceID);
+    SharedService getSharedService(ID sharedServiceID);
     
-    SharedService removeService(ID sharedServiceID);
+    SharedService removeSharedService(ID sharedServiceID);
     
-    
+    void setMessageSerializer(SharedMessageSerializer messageSerializer);
     
     
 

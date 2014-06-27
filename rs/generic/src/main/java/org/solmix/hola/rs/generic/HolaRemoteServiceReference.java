@@ -42,6 +42,7 @@ public class HolaRemoteServiceReference<S> implements org.solmix.hola.rs.RemoteS
         this.registration=holaRemoteServiceRegistration;
     }
 
+
     /**
      * {@inheritDoc}
      * 

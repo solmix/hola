@@ -19,6 +19,7 @@
 
 package org.solmix.hola.rs.generic;
 
+import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -48,39 +49,44 @@ import org.solmix.hola.rs.RemoteServiceRegistration;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 import org.solmix.hola.shared.BaseSharedService;
 import org.solmix.hola.shared.SharedMessage;
-import org.solmix.runtime.Event;
-import org.solmix.runtime.EventProcessor;
+import org.solmix.runtime.event.Event;
+import org.solmix.runtime.event.EventProcessor;
 
 /**
  * 注册远程服务
+ * 
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年5月19日
  */
 
-public class RegistryService extends BaseSharedService implements RemoteServiceProvider
+public class RegistryService extends BaseSharedService implements
+    RemoteServiceProvider
 {
+
     private RemoteServiceRegistry registry;
+
     @Override
-    public void initialize(){
+    public void initialize() {
         super.initialize();
-        ID local=getLocalProviderID();
-        registry=(local==null)?new RemoteServiceRegistry():new RemoteServiceRegistry(local);
-        addEventProcessor(new EventProcessor(){
+        ID local = getLocalProviderID();
+        registry = (local == null) ? new RemoteServiceRegistry()
+            : new RemoteServiceRegistry(local);
+        addEventProcessor(new EventProcessor() {
 
             @Override
             public boolean process(Event event) {
-                if(event instanceof ConnectedEvent){
-                    
-                }else if(event instanceof DisconnectedEvent){
-                    
-                }else if(event instanceof EjectedConnectEvent){
-                    
+                if (event instanceof ConnectedEvent) {
+
+                } else if (event instanceof DisconnectedEvent) {
+
+                } else if (event instanceof EjectedConnectEvent) {
+
                 }
                 return false;
             }
-            
+
         });
-        
+
     }
 
     @Override
@@ -102,49 +108,55 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
             throw new IllegalArgumentException("Service=" + invalidService
                 + " is invalid");
         }
-        final HolaRemoteServiceRegistration<Object> reg= new HolaRemoteServiceRegistration<Object>();
-        synchronized(registry){
-            reg.publish(this,registry,clazzes,service,properties);
-            if(isConnected()){
+        final HolaRemoteServiceRegistration<Object> reg = new HolaRemoteServiceRegistration<Object>();
+        synchronized (registry) {
+            reg.publish(this, registry, clazzes, service, properties);
+            if (isConnected()) {
                 final ID[] targets = getTargetsFromProperties(properties);
-                HolaRemoteServiceRegistration<?>[] regs = new HolaRemoteServiceRegistration[] {reg};
+                HolaRemoteServiceRegistration<?>[] regs = new HolaRemoteServiceRegistration[] { reg };
                 if (targets == null)
-                      sendAddRegistrations(null, null, regs);
+                    sendAddRegistrations(null, null, regs);
                 else
-                      for (int i = 0; i < targets.length; i++){
-                          sendAddRegistrations(targets[i], null, regs);
-                      }
+                    for (int i = 0; i < targets.length; i++) {
+                        sendAddRegistrations(targets[i], null, regs);
+                    }
             }
         }
         return reg;
 
     }
-    protected void sendAddRegistrations(ID receiver, Integer requestId, HolaRemoteServiceRegistration<?>[] regs) {
-        sendSharedMessage(receiver,SharedMessage.create());
-        if(receiver!=null&& requestId!=null){
-            for (int i = 0; i < regs.length; i++)
-                addTargetForUnregister(regs[i], receiver);
+    private static final String ADD_REGISTRATIONS = "handleAddRegistrations";
+    protected void sendAddRegistrations(ID receiver, Integer requestId,
+        HolaRemoteServiceRegistration<?>[] regs) {
+        try {
+            sendSharedMessage(receiver, new SharedMessage(null,ADD_REGISTRATIONS,getLocalProviderID(),receiver,regs));
+            if (receiver != null && requestId != null) {
+                for (int i = 0; i < regs.length; i++)
+                    addTargetForUnregister(regs[i], receiver);
+            }
+        } catch (IOException e) {
+            LOG.error("Exception registration service",e);
         }
+       
     }
 
-        
     /**
      * @param holaRemoteServiceRegistration
      * @param receiver
      */
     private void addTargetForUnregister(
-        HolaRemoteServiceRegistration<?> serviceRegistration,
-        ID targetID) {
-        List existingTargets = (List) localRegistryUnregistrationTargets.get(serviceRegistration);
+        HolaRemoteServiceRegistration<?> serviceRegistration, ID targetID) {
+        List<ID> existingTargets = localRegistryUnregistrationTargets.get(serviceRegistration);
         if (existingTargets == null) {
-              existingTargets = new ArrayList();
+            existingTargets = new ArrayList<ID>();
         }
         existingTargets.add(targetID);
-        localRegistryUnregistrationTargets.put(serviceRegistration, existingTargets);
-        
+        localRegistryUnregistrationTargets.put(serviceRegistration,
+            existingTargets);
+
     }
-    private final Map localRegistryUnregistrationTargets = new HashMap();
-   
+
+    private final Map<HolaRemoteServiceRegistration<?>,List<ID>> localRegistryUnregistrationTargets = new HashMap<HolaRemoteServiceRegistration<?>,List<ID>>();
 
     /**
      * @param properties
@@ -153,69 +165,83 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     private ID[] getTargetsFromProperties(Dictionary<String, ?> properties) {
         if (properties == null)
             return null;
-      List<ID> results = new ArrayList<ID> ();
-      Object o = properties.get(RemoteConstants.SERVICE_REGISTRATION_TARGETS);
-      if (o != null) {
+        List<ID> results = new ArrayList<ID>();
+        Object o = properties.get(RemoteConstants.SERVICE_REGISTRATION_TARGETS);
+        if (o != null) {
             if (o instanceof ID)
-                  results.add((ID)o);
+                results.add((ID) o);
             if (o instanceof ID[]) {
-                  ID[] targets = (ID[]) o;
-                  for (int i = 0; i < targets.length; i++)
-                        results.add(targets[i]);
+                ID[] targets = (ID[]) o;
+                for (int i = 0; i < targets.length; i++)
+                    results.add(targets[i]);
             }
-      }
-      if (results.size() == 0)
+        }
+        if (results.size() == 0)
             return null;
-      return results.toArray(new ID[] {});
+        return results.toArray(new ID[] {});
     }
-
+    /**
+     * 检查服务是否为接口的实例
+     * @param clazzes
+     * @param service
+     * @return
+     */
     static String checkServiceClass(final String[] clazzes, final Object service) {
         final ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
             @Override
             public ClassLoader run() {
-                  return service.getClass().getClassLoader();
+                return service.getClass().getClassLoader();
             }
-      });
-      for (int i = 0; i < clazzes.length; i++) {
+        });
+        for (int i = 0; i < clazzes.length; i++) {
             try {
-                  final Class<?> serviceClazz = cl == null ? Class.forName(clazzes[i]) : cl.loadClass(clazzes[i]);
-                  if (!serviceClazz.isInstance(service)) {
-                        return clazzes[i];
-                  }
+                final Class<?> serviceClazz = cl == null ? Class.forName(clazzes[i])
+                    : cl.loadClass(clazzes[i]);
+                if (!serviceClazz.isInstance(service)) {
+                    return clazzes[i];
+                }
             } catch (final ClassNotFoundException e) {
-                  // This check is rarely done
-                  if (extensiveCheckServiceClass(clazzes[i], service.getClass())) {
-                        return clazzes[i];
-                  }
+                // This check is rarely done
+                if (extensiveCheckServiceClass(clazzes[i], service.getClass())) {
+                    return clazzes[i];
+                }
             }
-      }
-      return null;
+        }
+        return null;
     }
-
-    static boolean extensiveCheckServiceClass(String clazz, Class<?> serviceClazz) {
+    /**
+     * 检查父类和接口
+     * @param clazz
+     * @param serviceClazz
+     * @return
+     */
+    static boolean extensiveCheckServiceClass(String clazz,
+        Class<?> serviceClazz) {
         if (clazz.equals(serviceClazz.getName())) {
-              return false;
+            return false;
         }
         final Class<?>[] interfaces = serviceClazz.getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
-              if (!extensiveCheckServiceClass(clazz, interfaces[i])) {
-                    return false;
-              }
+            if (!extensiveCheckServiceClass(clazz, interfaces[i])) {
+                return false;
+            }
         }
         final Class<?> superClazz = serviceClazz.getSuperclass();
         if (superClazz != null) {
-              if (!extensiveCheckServiceClass(clazz, superClazz)) {
-                    return false;
-              }
+            if (!extensiveCheckServiceClass(clazz, superClazz)) {
+                return false;
+            }
         }
         return true;
-  }
-
+    }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteServiceProvider#getRemoteServiceReferences(org.solmix.hola.core.identity.ID, org.solmix.hola.core.identity.ID[], java.lang.String, java.lang.String)
+     * @see org.solmix.hola.rs.RemoteServiceProvider#getRemoteServiceReferences(org.solmix.hola.core.identity.ID,
+     *      org.solmix.hola.core.identity.ID[], java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public RemoteServiceReference<?>[] getRemoteServiceReferences(ID target,
@@ -228,7 +254,8 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteServiceProvider#getRemoteServiceReferences(org.solmix.hola.core.identity.ID, java.lang.String, java.lang.String)
+     * @see org.solmix.hola.rs.RemoteServiceProvider#getRemoteServiceReferences(org.solmix.hola.core.identity.ID,
+     *      java.lang.String, java.lang.String)
      */
     @Override
     public RemoteServiceReference<?>[] getRemoteServiceReferences(ID target,
@@ -241,7 +268,8 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteServiceProvider#getAllRemoteServiceReferences(java.lang.String, java.lang.String)
+     * @see org.solmix.hola.rs.RemoteServiceProvider#getAllRemoteServiceReferences(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public RemoteServiceReference<?>[] getAllRemoteServiceReferences(
@@ -315,7 +343,7 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     @Override
     public void addRemoteServiceListener(RemoteServiceListener listener) {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
@@ -326,19 +354,20 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     @Override
     public void removeRemoteServiceListener(RemoteServiceListener listener) {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.ConnectContext#connect(org.solmix.hola.core.identity.ID, org.solmix.hola.core.security.ConnectSecurityContext)
+     * @see org.solmix.hola.core.ConnectContext#connect(org.solmix.hola.core.identity.ID,
+     *      org.solmix.hola.core.security.ConnectSecurityContext)
      */
     @Override
     public void connect(ID remoteID, ConnectSecurityContext securityContext)
         throws ConnectException {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
@@ -360,7 +389,7 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     @Override
     public void disconnect() {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
@@ -371,7 +400,7 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     @Override
     public void addListener(ConnectListener listener) {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
@@ -382,7 +411,7 @@ public class RegistryService extends BaseSharedService implements RemoteServiceP
     @Override
     public void removeListener(ConnectListener listener) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
