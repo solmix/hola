@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.shared.generic.support;
+package org.solmix.hola.shared.transport;
 
 import java.io.IOException;
 
@@ -117,7 +117,7 @@ public interface Channel
      * @param data
      * @throws IOException
      */
-    void post(ID receiver, byte[] data) throws IOException;
+    void send(ID receiver, byte[] data) throws IOException;
 
     /**
      * 同步发送数据,发送数据后阻塞至道返回结果.
@@ -127,6 +127,6 @@ public interface Channel
      * @return
      * @throws IOException
      */
-    Object send(ID receiver, byte[] data) throws IOException;
+//    Object send(ID receiver, byte[] data) throws IOException;
 
 }

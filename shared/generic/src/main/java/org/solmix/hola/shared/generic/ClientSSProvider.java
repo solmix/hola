@@ -39,7 +39,7 @@ import org.solmix.hola.core.security.CallbackHandler;
 import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.core.security.UnsupportedCallbackException;
 import org.solmix.hola.shared.SharedServiceProviderConfig;
-import org.solmix.hola.shared.generic.support.Channel;
+import org.solmix.hola.shared.transport.Channel;
 
 /**
  * 
@@ -297,7 +297,7 @@ public abstract class ClientSSProvider extends GenericSSProvider
                 }
                 synchronized (connection) {
                     try {
-                        connection.post(
+                        connection.send(
                             remoteId,
                             serialize(SharedDataPacket.createServiceLeavePacket(
                                 getID(), remoteId, getNextSequenceNumber(),
@@ -351,7 +351,7 @@ public abstract class ClientSSProvider extends GenericSSProvider
     @Override
     protected void queueDataPacket(SharedDataPacket createPacket)
         throws IOException {
-        connection.post(createPacket.getToID(), serialize(createPacket));
+        connection.send(createPacket.getToID(), serialize(createPacket));
 
     }
 

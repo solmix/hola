@@ -36,10 +36,14 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
 public interface RemoteServiceRegistration<S>
 {
 
-    RemoteServiceID getID();
+    /**
+     * 返回非空RemoteServiceID
+     * @return
+     */
+    RemoteServiceID getRemoteServiceID();
 
     /**
-     * 返回注冊该服务的节点ＩＤ
+     * 返回服务提供者ID
      * 
      * @return
      */

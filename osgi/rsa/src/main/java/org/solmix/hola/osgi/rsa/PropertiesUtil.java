@@ -48,13 +48,15 @@ public class PropertiesUtil
 
     /**
      * 配置合并
+     * 
      * @param reference
      * @param map
      * @return
      */
-    public static Map<String, Object> mergeProperties(ServiceReference<?> reference,
-        Map<String,Object> map) {
-        return mergeProperties(copyProperties(reference, new HashMap<String,Object>()), map);
+    public static Map<String, Object> mergeProperties(
+        ServiceReference<?> reference, Map<String, Object> map) {
+        return mergeProperties(
+            copyProperties(reference, new HashMap<String, Object>()), map);
     }
 
     public static Map<String, Object> copyProperties(
@@ -74,12 +76,12 @@ public class PropertiesUtil
         return target;
     }
 
-    public static Map<String,Object> mergeProperties(final Map<String, Object> source,
-        final Map<String, Object> overrides) {
+    public static Map<String, Object> mergeProperties(
+        final Map<String, Object> source, final Map<String, Object> overrides) {
 
         // copy to target from service reference
-        final Map<String,Object> target = copyProperties(source, new TreeMap<String, Object>(
-            String.CASE_INSENSITIVE_ORDER));
+        final Map<String, Object> target = copyProperties(source,
+            new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER));
 
         // now do actual merge
         final Set<String> keySet = overrides.keySet();
@@ -105,7 +107,7 @@ public class PropertiesUtil
     }
 
     public static String[] getExportedInterfaces(
-        ServiceReference serviceReference) {
+        ServiceReference<?> serviceReference) {
         return getExportedInterfaces(
             serviceReference,
             serviceReference.getProperty(org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTERFACES));
@@ -123,7 +125,7 @@ public class PropertiesUtil
             if (stringArrayValue == null)
                 return null;
             else if (stringArrayValue.length == 1
-                && stringArrayValue[0].equals("*")) { 
+                && stringArrayValue[0].equals("*")) {
                 // this will support the idiom: new String[] { "*" }
                 return origin;
             } else
@@ -145,7 +147,8 @@ public class PropertiesUtil
     }
 
     public static String[] getExportedInterfaces(
-        ServiceReference<?> serviceReference, Map<String, ?> overridingProperties) {
+        ServiceReference<?> serviceReference,
+        Map<String, ?> overridingProperties) {
         Object overridingPropValue = overridingProperties.get(RemoteConstants.SERVICE_EXPORTED_INTERFACES);
         if (overridingPropValue != null)
             return getExportedInterfaces(serviceReference, overridingPropValue);
@@ -195,7 +198,8 @@ public class PropertiesUtil
     }
 
     @SuppressWarnings("unchecked")
-    public static List<String> getStringPlusProperty(Map<String,Object> properties, String key) {
+    public static List<String> getStringPlusProperty(
+        Map<String, Object> properties, String key) {
         Object value = properties.get(key);
         if (value == null) {
             return Collections.emptyList();
@@ -217,7 +221,7 @@ public class PropertiesUtil
         }
 
         if (value instanceof Collection<?>) {
-            Collection<String> values =(Collection<String>) value;
+            Collection<String> values = (Collection<String>) value;
             List<String> result = new ArrayList<String>(values.size());
             for (Iterator<String> iter = values.iterator(); iter.hasNext();) {
                 String v = iter.next();
@@ -244,7 +248,7 @@ public class PropertiesUtil
         return def;
     }
 
-    public static String getStringWithDefault(Map props, String key, String def) {
+    public static String getStringWithDefault(Map<String,?> props, String key, String def) {
         Object o = props.get(key);
         if (o == null || (!(o instanceof String)))
             return def;
@@ -258,34 +262,35 @@ public class PropertiesUtil
     public static Object convertToStringPlusValue(List<String> values) {
         if (values == null)
             return null;
-      int valuesSize = values.size();
-      switch (valuesSize) {
-      case 0:
-            return null;
-      case 1:
-            return values.get(0);
-      default:
-            return values.toArray(new String[valuesSize]);
-      }
+        int valuesSize = values.size();
+        switch (valuesSize) {
+            case 0:
+                return null;
+            case 1:
+                return values.get(0);
+            default:
+                return values.toArray(new String[valuesSize]);
+        }
     }
+
     public static boolean isOSGiProperty(String key) {
         return osgiProperties.contains(key)
-                    || key.startsWith(org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_PACKAGE_VERSION_);
-  }
+            || key.startsWith(org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_PACKAGE_VERSION_);
+    }
 
-  public static boolean isECFProperty(String key) {
+    public static boolean isECFProperty(String key) {
         return ecfProperties.contains(key);
-  }
+    }
 
-  // skip dotted (private) properties (R4.2 enterprise spec. table 122.1)
-  public static boolean isPrivateProperty(String key) {
+    // skip dotted (private) properties (R4.2 enterprise spec. table 122.1)
+    public static boolean isPrivateProperty(String key) {
         return (key.startsWith(".")); //$NON-NLS-1$
-  }
+    }
 
-  public static boolean isReservedProperty(String key) {
+    public static boolean isReservedProperty(String key) {
         return isOSGiProperty(key) || isECFProperty(key)
-                    || isPrivateProperty(key);
-  }
+            || isPrivateProperty(key);
+    }
 
     public static Object getPropertyValue(ServiceReference<?> serviceReference,
         Map<String, Object> overridingProperties, String key) {
@@ -309,14 +314,16 @@ public class PropertiesUtil
                 target.put(key, source.get(key));
         return target;
     }
+
     public static Map<String, Object> copyNonReservedProperties(
         RemoteServiceReference<?> rsReference, Map<String, Object> target) {
-  String[] keys = rsReference.getPropertyKeys();
-  for (int i = 0; i < keys.length; i++)
-        if (!isReservedProperty(keys[i]))
-              target.put(keys[i], rsReference.getProperty(keys[i]));
-  return target;
-}
+        String[] keys = rsReference.getPropertyKeys();
+        for (int i = 0; i < keys.length; i++)
+            if (!isReservedProperty(keys[i]))
+                target.put(keys[i], rsReference.getProperty(keys[i]));
+        return target;
+    }
+
     public static Map<String, Object> copyNonReservedProperties(
         ServiceReference<?> serviceReference, Map<String, Object> target) {
         String[] keys = serviceReference.getPropertyKeys();
@@ -325,55 +332,60 @@ public class PropertiesUtil
                 target.put(keys[i], serviceReference.getProperty(keys[i]));
         return target;
     }
-    public static Dictionary<String,Object> createDictionaryFromMap(Map<String,Object> propMap) {
+
+    /**
+     * @param propMap
+     * @return
+     */
+    public static Dictionary<String, ?> createDictionaryFromMap(
+        Map<String, ?> propMap) {
         if (propMap == null)
-              return null;
-        Dictionary<String,Object> result = new Hashtable<String,Object>();
+            return null;
+        Dictionary<String, Object> result = new Hashtable<String, Object>();
         for (Iterator<String> i = propMap.keySet().iterator(); i.hasNext();) {
-              String key = i.next();
-              Object val = propMap.get(key);
-              if (key != null && val != null)
-                    result.put(key, val);
+            String key = i.next();
+            Object val = propMap.get(key);
+            if (key != null && val != null)
+                result.put(key, val);
         }
         return result;
-  }
-  protected static final List osgiProperties = Arrays
-      .asList(new String[] {
-                  // OSGi properties
-                  org.osgi.framework.Constants.OBJECTCLASS,
-                  org.osgi.framework.Constants.SERVICE_ID,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_FRAMEWORK_UUID,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_ID,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_SERVICE_ID,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.REMOTE_CONFIGS_SUPPORTED,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.REMOTE_INTENTS_SUPPORTED,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTENTS,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTENTS_EXTRA,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTERFACES,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED_CONFIGS,
-                  org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_INTENTS });
+    }
 
-protected static final List ecfProperties = Arrays.asList(new String[] {
-    org.solmix.hola.rs.RemoteConstants.OBJECTCLASS,
-    org.solmix.hola.rs.RemoteConstants.SERVICE_ID,
-      HolaRemoteConstants.DISCOVERY_SERVICE_NAME_PREFIX,
-      HolaRemoteConstants.DISCOVERY_AUTH,
-      HolaRemoteConstants.DISCOVERY_PROTOCOL,
-      HolaRemoteConstants.DISCOVERY_SCOPE,
-      HolaRemoteConstants.DISCOVERY_SERVICE_NAME,
-      HolaRemoteConstants.ENDPOINT_CONNECTTARGET_ID,
-      HolaRemoteConstants.ENDPOINT_ID,
-      HolaRemoteConstants.ENDPOINT_NAMESPACE,
-      HolaRemoteConstants.ENDPOINT_TIMESTAMP,
-      HolaRemoteConstants.ENDPOINT_IDFILTER_IDS,
-      HolaRemoteConstants.ENDPOINT_REMOTESERVICE_FILTER,
-//      HolaRemoteConstants.SERVICE_EXPORTED_CONTAINER_CONNECT_CONTEXT,
-//      HolaRemoteConstants.SERVICE_EXPORTED_CONTAINER_FACTORY_ARGS,
-//      HolaRemoteConstants.SERVICE_EXPORTED_CONTAINER_ID,
-//      HolaRemoteConstants.SERVICE_IMPORTED_VALUETYPE,
-      HolaRemoteConstants.DISCOVERY_SERVICE_TYPE });
+    protected static final List<String> osgiProperties = Arrays.asList(new String[] {
+        // OSGi properties
+        org.osgi.framework.Constants.OBJECTCLASS,
+        org.osgi.framework.Constants.SERVICE_ID,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_FRAMEWORK_UUID,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_ID,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.ENDPOINT_SERVICE_ID,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.REMOTE_CONFIGS_SUPPORTED,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.REMOTE_INTENTS_SUPPORTED,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_CONFIGS,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTENTS,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTENTS_EXTRA,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_EXPORTED_INTERFACES,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_IMPORTED_CONFIGS,
+        org.osgi.service.remoteserviceadmin.RemoteConstants.SERVICE_INTENTS });
 
+    protected static final List<String> ecfProperties = Arrays.asList(new String[] {
+        org.solmix.hola.rs.RemoteConstants.OBJECTCLASS,
+        org.solmix.hola.rs.RemoteConstants.SERVICE_ID,
+        HolaRemoteConstants.DISCOVERY_SERVICE_NAME_PREFIX,
+        HolaRemoteConstants.DISCOVERY_AUTH,
+        HolaRemoteConstants.DISCOVERY_PROTOCOL,
+        HolaRemoteConstants.DISCOVERY_SCOPE,
+        HolaRemoteConstants.DISCOVERY_SERVICE_NAME,
+        HolaRemoteConstants.ENDPOINT_CONNECTTARGET_ID,
+        HolaRemoteConstants.ENDPOINT_ID,
+        HolaRemoteConstants.ENDPOINT_NAMESPACE,
+        HolaRemoteConstants.ENDPOINT_TIMESTAMP,
+        HolaRemoteConstants.ENDPOINT_IDFILTER_IDS,
+        HolaRemoteConstants.ENDPOINT_REMOTESERVICE_FILTER,
+        // HolaRemoteConstants.SERVICE_EXPORTED_CONTAINER_CONNECT_CONTEXT,
+        // HolaRemoteConstants.SERVICE_EXPORTED_CONTAINER_FACTORY_ARGS,
+        // HolaRemoteConstants.SERVICE_EXPORTED_CONTAINER_ID,
+        // HolaRemoteConstants.SERVICE_IMPORTED_VALUETYPE,
+        HolaRemoteConstants.DISCOVERY_SERVICE_TYPE });
 
 }

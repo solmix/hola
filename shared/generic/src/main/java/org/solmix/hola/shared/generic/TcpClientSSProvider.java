@@ -21,7 +21,7 @@ package org.solmix.hola.shared.generic;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.shared.SharedServiceProviderConfig;
-import org.solmix.hola.shared.generic.support.Channel;
+import org.solmix.hola.shared.transport.Channel;
 
 
 /**

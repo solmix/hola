@@ -48,7 +48,7 @@ import org.solmix.hola.shared.event.SharedMessageSendingEvent;
 import org.solmix.hola.shared.generic.member.Member;
 import org.solmix.hola.shared.generic.member.MemberObserver;
 import org.solmix.hola.shared.generic.serialize.GenericMessageSerializer;
-import org.solmix.hola.shared.generic.support.Channel;
+import org.solmix.hola.shared.transport.Channel;
 import org.solmix.runtime.event.Event;
 
 /**

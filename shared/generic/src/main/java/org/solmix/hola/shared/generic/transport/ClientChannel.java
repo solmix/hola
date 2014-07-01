@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.shared.generic.support;
+package org.solmix.hola.shared.generic.transport;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,6 +27,8 @@ import java.net.URISyntaxException;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.HolaException;
 import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.shared.transport.Channel;
+import org.solmix.hola.shared.transport.ChannelHandler;
 
 
 /**
@@ -45,7 +47,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#connect(org.solmix.hola.core.identity.ID, java.lang.Object, int)
+     * @see org.solmix.hola.shared.transport.Channel#connect(org.solmix.hola.core.identity.ID, java.lang.Object, int)
      */
     @Override
     public Object connect(ID targetId, Object authData, int timeout)
@@ -83,7 +85,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#disconnect()
+     * @see org.solmix.hola.shared.transport.Channel#disconnect()
      */
     @Override
     public void disconnect() {
@@ -94,7 +96,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#isConnected()
+     * @see org.solmix.hola.shared.transport.Channel#isConnected()
      */
     @Override
     public boolean isConnected() {
@@ -105,7 +107,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#getLocalID()
+     * @see org.solmix.hola.shared.transport.Channel#getLocalID()
      */
     @Override
     public ID getLocalID() {
@@ -116,7 +118,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#start()
+     * @see org.solmix.hola.shared.transport.Channel#start()
      */
     @Override
     public void start() {
@@ -127,7 +129,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#stop()
+     * @see org.solmix.hola.shared.transport.Channel#stop()
      */
     @Override
     public void stop() {
@@ -138,7 +140,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#isStarted()
+     * @see org.solmix.hola.shared.transport.Channel#isStarted()
      */
     @Override
     public boolean isStarted() {
@@ -149,7 +151,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#getAttribute(java.lang.String)
+     * @see org.solmix.hola.shared.transport.Channel#getAttribute(java.lang.String)
      */
     @Override
     public Object getAttribute(String key) {
@@ -160,7 +162,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#setAttribute(java.lang.String, java.lang.Object)
+     * @see org.solmix.hola.shared.transport.Channel#setAttribute(java.lang.String, java.lang.Object)
      */
     @Override
     public void setAttribute(String key, Object value) {
@@ -171,7 +173,7 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#removeAttribute(java.lang.String)
+     * @see org.solmix.hola.shared.transport.Channel#removeAttribute(java.lang.String)
      */
     @Override
     public void removeAttribute(String key) {
@@ -182,23 +184,14 @@ public class ClientChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.shared.generic.support.Channel#post(org.solmix.hola.core.identity.ID, byte[])
+     * @see org.solmix.hola.shared.transport.Channel#send(org.solmix.hola.core.identity.ID, byte[])
      */
     @Override
-    public void post(ID receiver, byte[] data) throws IOException {
+    public void send(ID receiver, byte[] data) throws IOException {
         // TODO Auto-generated method stub
 
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.shared.generic.support.Channel#send(org.solmix.hola.core.identity.ID, byte[])
-     */
-    @Override
-    public Object send(ID receiver, byte[] data) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-    }
+ 
 
 }

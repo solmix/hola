@@ -65,7 +65,7 @@ public class HolaRemoteServiceRegistration<S> implements
     private String[] clazzes;
 
     @Override
-    public RemoteServiceID getID() {
+    public RemoteServiceID getRemoteServiceID() {
         return id;
     }
 
@@ -100,7 +100,7 @@ public class HolaRemoteServiceRegistration<S> implements
         resultProps.setProperty(RemoteConstants.OBJECTCLASS, clazzes);
 
         resultProps.setProperty(RemoteConstants.SERVICE_ID, new Long(
-            getID().getRelativeID()));
+            getRemoteServiceID().getRelativeID()));
 
         final Object ranking = (props == null) ? null
             : props.get(RemoteConstants.SERVICE_RANKING);
@@ -158,12 +158,12 @@ public class HolaRemoteServiceRegistration<S> implements
             return false;
         if (!(o.getClass().equals(this.getClass())))
             return false;
-        return getID().equals(((HolaRemoteServiceRegistration<?>) o).getID());
+        return getRemoteServiceID().equals(((HolaRemoteServiceRegistration<?>) o).getRemoteServiceID());
     }
 
     @Override
     public int hashCode() {
-        return getID().hashCode();
+        return getRemoteServiceID().hashCode();
     }
 
     /**

@@ -50,7 +50,7 @@ public class HolaRemoteServiceReference<S> implements org.solmix.hola.rs.RemoteS
      */
     @Override
     public RemoteServiceID getID() {
-        return registration.getID();
+        return registration.getRemoteServiceID();
     }
 
     /**

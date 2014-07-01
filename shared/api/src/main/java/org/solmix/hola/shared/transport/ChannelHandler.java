@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.shared.generic.support;
+package org.solmix.hola.shared.transport;
 
 import org.solmix.hola.core.HolaException;
 

@@ -167,12 +167,22 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
 
     }
 
+    /**
+     * {@link org.solmix.hola.osgi.topology.DefaultTopologyComponent#event(
+     * ServiceEvent, Map<BundleContext, Collection<ListenerInfo>>)}监听所有注册的服务
+     * 检测ServiceProperties中是否包含service.exported.interfaces参数,由此来判断是否导出为远程服务.<br>
+     * 如需暴露远程服务,就调用该方法.<br>
+     * {@inheritDoc}
+     * 
+     * @see org.osgi.service.remoteserviceadmin.RemoteServiceAdmin#exportService(org.osgi.framework.ServiceReference,
+     *      java.util.Map)
+     */
     @Override
     public Collection<ExportRegistration> exportService(
         final ServiceReference reference, Map<String, ?> properties) {
         if (LOG.isTraceEnabled())
-            LOG.trace( "serviceReference=" + reference
-                + ",properties=" + properties);
+            LOG.trace("serviceReference=" + reference + ",properties="
+                + properties);
         @SuppressWarnings("unchecked")
         final Map<String, Object> overridingProperties = PropertiesUtil.mergeProperties(
             reference, properties == null ? Collections.EMPTY_MAP : properties);
@@ -235,10 +245,10 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
         synchronized (exportedRegistrations) {
             for (RemoteServiceProvider provider : providers) {
                 ExportRegistrationImpl exportRegistration = null;
+                // export是幂等的,也就是export两次和export一次是一样的.
                 ExportEndpoint exportEndpoint = findExistingExportEndpoint(
                     reference, provider.getID());
-                // If we've already got one, then create a new
-                // ExportRegistration for it and we're done
+                // 如果找到了对应的Endpoint,直接返回
                 if (exportEndpoint != null)
                     exportRegistration = new ExportRegistrationImpl(
                         exportEndpoint);
@@ -371,10 +381,14 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
         }
         ImportRegistrationImpl importRegistration = null;
         synchronized (importedRegistrations) {
-            // 已经导入
+
             ImportEndpoint importEndpoint = findImportEndpoint(desc);
-            importRegistration = ((importEndpoint != null) ? new ImportRegistrationImpl(
-                importEndpoint) : importService(desc, rsProvider));
+            if (importEndpoint != null) {
+                // 已经导入幂等,即导入多次和导入一次是相等的
+                importRegistration = new ImportRegistrationImpl(importEndpoint);
+            } else {
+                importRegistration = importService(desc, rsProvider);
+            }
             addImportRegistration(importRegistration);
         }
         publishImportEvent(importRegistration);
@@ -429,14 +443,16 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
             connectID = providerID;
         }
         final ID targetID = connectID;
+        // 过滤服务提供者
         final ID[] idFilter = getIdFilter(desc, providerID);
+        // SERVICE_ID osgi filter
         final String rsFilter = getRemoteServiceFilter(desc);
         Collection<RemoteServiceReference<?>> rsRefs = new ArrayList<RemoteServiceReference<?>>();
         ID rsProviderID = rsProvider.getID();
         try {
             // Get first interface name for service reference
             // lookup
-            final String intf = interfaces.iterator().next();
+            final String interf = interfaces.iterator().next();
             // Get/lookup remote service references
             RemoteServiceReference<?>[] refs = AccessController.doPrivileged(new PrivilegedExceptionAction<RemoteServiceReference<?>[]>() {
 
@@ -445,14 +461,20 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
                     throws ConnectException, InvalidSyntaxException,
                     RemoteConnectException {
                     return rsProvider.getRemoteServiceReferences(targetID,
-                        idFilter, intf, rsFilter);
+                        idFilter, interf, rsFilter);
                 }
             });
             if (refs == null) {
-                LOG.warn("getRemoteServiceReferences return null for targetID="
-                    + targetID + ",idFilter=" + idFilter + ",intf=" + intf
-                    + ",rsFilter=" + rsFilter + " on rsContainerID="
-                    + rsProviderID);
+                if (LOG.isWarnEnabled())
+                    LOG.warn("getRemoteServiceReferences return null for targetID="
+                        + targetID
+                        + ",idFilter="
+                        + idFilter
+                        + ",intf="
+                        + interf
+                        + ",rsFilter="
+                        + rsFilter
+                        + " on rsContainerID=" + rsProviderID);
             } else
                 for (int i = 0; i < refs.length; i++)
                     rsRefs.add(refs[i]);
@@ -550,11 +572,11 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
             }, proxyRegistration, desc);
     }
 
-    private Map createProxyProperties(ID importContainerID,
+    private Map<String,Object> createProxyProperties(ID importContainerID,
         EndpointDescription endpointDescription,
         RemoteServiceReference<?> rsReference, RemoteService remoteService) {
 
-        Map resultProperties = new TreeMap<String, Object>(
+        Map<String, Object> resultProperties = new TreeMap<String, Object>(
             String.CASE_INSENSITIVE_ORDER);
         PropertiesUtil.copyNonReservedProperties(rsReference, resultProperties);
         PropertiesUtil.copyNonReservedProperties(
@@ -649,6 +671,8 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
     }
 
     /**
+     * 根据SERVICE_ID生成OSGI filter.
+     * 
      * @param desc
      * @return
      */
@@ -959,11 +983,18 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
         }
     }
 
+    /**
+     * 已经暴露的服务中是否已经包含了Endpoint
+     * 
+     * @param serviceReference
+     * @param ProviderID
+     * @return
+     */
     private ExportEndpoint findExistingExportEndpoint(
-        ServiceReference<?> serviceReference, ID containerID) {
+        ServiceReference<?> serviceReference, ID providerID) {
         for (ExportRegistrationImpl eReg : exportedRegistrations) {
             ExportEndpoint exportEndpoint = eReg.getExportEndpoint(
-                serviceReference, containerID);
+                serviceReference, providerID);
             if (exportEndpoint != null)
                 return exportEndpoint;
         }

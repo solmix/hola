@@ -37,6 +37,7 @@ import org.solmix.hola.rs.AsyncRemoteServiceProxy;
 
 /**
  * 扩展OSGI RSA中的{@link EndpointDescription} ,添加元数据描述信息
+ * 
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年4月2日
  */
@@ -52,8 +53,6 @@ public class HolaEndpointDescription extends EndpointDescription
 
     private String idNamespace;
 
-//    private ID containerID;
-
     private Long rsId;
 
     private ID connectTargetID;
@@ -64,7 +63,7 @@ public class HolaEndpointDescription extends EndpointDescription
 
     private List<String> asyncInterfaces;
 
-    private Map<String,Object> overrides;
+    private Map<String, Object> overrides;
 
     private ID providerID;
 
@@ -115,7 +114,6 @@ public class HolaEndpointDescription extends EndpointDescription
         }
     }
 
-  
     public ID getProviderID() {
         return providerID;
     }
@@ -153,7 +151,7 @@ public class HolaEndpointDescription extends EndpointDescription
             this.timestamp = getServiceId();
         }
         this.idNamespace = verifyStringProperty(HolaRemoteConstants.ENDPOINT_NAMESPACE);
-       this.providerID = verifyIDProperty(idNamespace, this.id);
+        this.providerID = verifyIDProperty(idNamespace, this.id);
         this.rsId = verifyLongProperty(Constants.SERVICE_ID);
         if (this.rsId == null)
             this.rsId = getServiceId();
@@ -189,16 +187,20 @@ public class HolaEndpointDescription extends EndpointDescription
         }
         return Collections.unmodifiableList(resultInterfaces);
     }
+
     private String convertInterfaceToAsync(String interfaceName) {
         if (interfaceName == null)
-              return null;
-        String asyncProxyName = (String) getProperties().get(org.solmix.hola.rs.RemoteConstants.SERVICE_ASYNC_RSPROXY_CLASS_ + interfaceName);
+            return null;
+        String asyncProxyName = (String) getProperties().get(
+            org.solmix.hola.rs.RemoteConstants.SERVICE_ASYNC_RSPROXY_CLASS_
+                + interfaceName);
         if (asyncProxyName != null)
-              return asyncProxyName;
+            return asyncProxyName;
         if (interfaceName.endsWith(AsyncRemoteServiceProxy.ASYNC_INTERFACE_SUFFIX))
-              return interfaceName;
+            return interfaceName;
         return interfaceName + AsyncRemoteServiceProxy.ASYNC_INTERFACE_SUFFIX;
-  }
+    }
+
     private ID[] verifyIDFilter() {
         List<String> idNames = PropertiesUtil.getStringPlusProperty(
             getProperties(), HolaRemoteConstants.ENDPOINT_IDFILTER_IDS);
@@ -259,7 +261,7 @@ public class HolaEndpointDescription extends EndpointDescription
      */
     public ID[] getIDFilter() {
         return idFilter;
-  }
+    }
 
     /**
      * @return
@@ -274,26 +276,27 @@ public class HolaEndpointDescription extends EndpointDescription
     public String getIdNamespace() {
         return idNamespace;
     }
+
     @Override
     public Map<String, Object> getProperties() {
-          if (overrides != null)
-                return overrides;
-          return super.getProperties();
+        if (overrides != null)
+            return overrides;
+        return super.getProperties();
     }
+
     @Override
     public boolean isSameService(EndpointDescription other) {
-          // If same ed instance then they are for same service
-          if (this == other)
-                return true;
-          // Like superclass, check to see that the framework id is not null
-          String frameworkId = getFrameworkUUID();
-          if (frameworkId == null)
-                return false;
-          // The id, the service id and the frameworkid have to be identical
-          // to be considered the same service
-          return (getId().equals(other.getId())
-                      && getServiceId() == other.getServiceId() && frameworkId
-                            .equals(other.getFrameworkUUID()));
+        // If same ed instance then they are for same service
+        if (this == other)
+            return true;
+        // Like superclass, check to see that the framework id is not null
+        String frameworkId = getFrameworkUUID();
+        if (frameworkId == null)
+            return false;
+        // The id, the service id and the frameworkid have to be identical
+        // to be considered the same service
+        return (getId().equals(other.getId())
+            && getServiceId() == other.getServiceId() && frameworkId.equals(other.getFrameworkUUID()));
     }
 
     /**
@@ -303,8 +306,8 @@ public class HolaEndpointDescription extends EndpointDescription
         return this.rsId;
     }
 
-    void setPropertiesOverrides(Map<String,Object> propertiesOverrides) {
+    void setPropertiesOverrides(Map<String, Object> propertiesOverrides) {
         this.overrides = PropertiesUtil.mergeProperties(super.getProperties(),
-                    propertiesOverrides);
-  }
+            propertiesOverrides);
+    }
 }

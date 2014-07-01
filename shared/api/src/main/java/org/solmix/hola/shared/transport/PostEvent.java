@@ -16,44 +16,32 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.shared.transport;
 
-package org.solmix.hola.shared.generic.support;
-
-import org.solmix.runtime.event.Event;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月25日
+ * @version $Id$  2014年6月25日
  */
 
-public class SharedConnectionEvent implements Event
+public class PostEvent extends SharedConnectionEvent
 {
 
-    private final Channel channel;
-
-    private final Object data;
-
-    public SharedConnectionEvent(Channel conn, Object data)
+    /**
+     * @param conn
+     * @param data
+     */
+    public PostEvent(Channel conn, Object data)
     {
-        this.channel = conn;
-        this.data = data;
+        super(conn, data);
     }
 
-    
-    /**
-     * @return the channel
-     */
-    public Channel getSharedConnection() {
-        return channel;
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Asynchronous Post Event[ connection=").append(
+            getSharedConnection()).append(",data=").append(getData()).append("]");
+        return sb.toString();
     }
-
-    
-    /**
-     * @return the data
-     */
-    public Object getData() {
-        return data;
-    }
-    
 }
