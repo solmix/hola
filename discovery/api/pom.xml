@@ -16,7 +16,7 @@
   	<dependency>
   		<groupId>org.solmix.common</groupId>
   		<artifactId>solmix-common-runtime</artifactId>
-  		<version>0.5.1-SNAPSHOT</version>
+  		<version>0.6.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
 			<groupId>org.osgi</groupId>

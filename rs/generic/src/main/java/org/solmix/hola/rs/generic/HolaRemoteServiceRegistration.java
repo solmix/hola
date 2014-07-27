@@ -20,13 +20,14 @@
 package org.solmix.hola.rs.generic;
 
 import java.lang.reflect.Array;
-import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
+import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.rs.RemoteConstants;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.RemoteServiceRegistration;
 import org.solmix.hola.rs.identity.RemoteServiceID;
@@ -78,9 +79,11 @@ public class HolaRemoteServiceRegistration<S> implements
     public Object getProperty(String key) {
         return properties.getProperty(key);
     }
+    
+ 
 
     @Override
-    public void setProperties(Dictionary<String, Object> properties) {
+    public void setProperties(Map<String, Object> properties) {
         synchronized (registrationLock) {
             /* in the process of unregistering */
             if (state != REGISTERED) {
@@ -94,16 +97,16 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * 添加额外的参数
      */
-    private Properties createProperties(Dictionary<String, ?> props) {
+    private Properties createProperties(Map<String, ?> props) {
         final Properties resultProps = new Properties(props);
 
-        resultProps.setProperty(RemoteConstants.OBJECTCLASS, clazzes);
+        resultProps.setProperty(HolaConstants.REMOTE_OBJECTCLASS, clazzes);
 
-        resultProps.setProperty(RemoteConstants.SERVICE_ID, new Long(
+        resultProps.setProperty(HolaConstants.REMOTE_SERVICE_ID, new Long(
             getRemoteServiceID().getRelativeID()));
 
         final Object ranking = (props == null) ? null
-            : props.get(RemoteConstants.SERVICE_RANKING);
+            : props.get(HolaConstants.REMOTE_RANKING);
 
         serviceRanking = (ranking instanceof Integer) ? ((Integer) ranking).intValue()
             : 0;
@@ -138,7 +141,8 @@ public class HolaRemoteServiceRegistration<S> implements
      */
     @Override
     public void unregister() {
-        // TODO Auto-generated method stub
+       if(provider!=null)
+           provider.unregisterRemoteService(this);
 
     }
 
@@ -174,14 +178,14 @@ public class HolaRemoteServiceRegistration<S> implements
 
         private static final long serialVersionUID = -3684607010228779249L;
 
-        private Properties(int size, Dictionary<String, ?> props)
+        private Properties(int size, Map<String, ?> props)
         {
             super((size << 1) + 1);
             if (props != null) {
                 synchronized (props) {
-                    final Enumeration<String> keysEnum = props.keys();
-                    while (keysEnum.hasMoreElements()) {
-                        final Object key = keysEnum.nextElement();
+                    final Iterator<String> keysEnum = props.keySet().iterator();
+                    while (keysEnum.hasNext()) {
+                        final Object key = keysEnum.next();
                         if (key instanceof String) {
                             final String header = (String) key;
                             setProperty(header, props.get(header));
@@ -191,7 +195,7 @@ public class HolaRemoteServiceRegistration<S> implements
             }
         }
 
-        protected Properties(Dictionary<String, ?> props)
+        protected Properties(Map<String, ?> props)
         {
             this((props == null) ? 2 : Math.max(2, props.size()), props);
         }
@@ -279,7 +283,7 @@ public class HolaRemoteServiceRegistration<S> implements
         }
 
         /**
-         * 剔除{@link RemoteConstants#OBJECTCLASS}
+         * 剔除{@link HolaConstants#REMOTE_OBJECTCLASS}
          */
         @Override
         public synchronized String toString() {
@@ -290,7 +294,7 @@ public class HolaRemoteServiceRegistration<S> implements
             int n = 0;
             for (int i = 0; i < size; i++) {
                 final String key = keys[i];
-                if (!key.equals(RemoteConstants.OBJECTCLASS)) {
+                if (!key.equals(HolaConstants.REMOTE_OBJECTCLASS)) {
                     if (n > 0) {
                         sb.append(", ");
                     }
@@ -322,16 +326,16 @@ public class HolaRemoteServiceRegistration<S> implements
         return clazzes;
     }
 
-    private RegistryService registryService;
-
     private Object service;
 
     private RemoteServiceID remoteServiceID;
+    
+    private HolaRemoteServiceProvider provider;
 
-    public void publish(RegistryService registryService,
+    public void publish(HolaRemoteServiceProvider provider,
         RemoteServiceRegistry registry, String[] clazzes, Object service,
-        Dictionary<String, ?> properties) {
-        this.registryService = registryService;
+        Map<String, ?> properties) {
+        this.provider=provider;
         this.service = service;
         this.reference = new HolaRemoteServiceReference<S>(this);
         this.clazzes = clazzes;
@@ -346,4 +350,5 @@ public class HolaRemoteServiceRegistration<S> implements
         }
 
     }
+
 }

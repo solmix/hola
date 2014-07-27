@@ -62,7 +62,6 @@ import org.solmix.runtime.event.EventProcessor;
 public class RegistryService extends BaseSharedService implements
     RemoteServiceProvider
 {
-
     private RemoteServiceRegistry registry;
 
     @Override
@@ -91,11 +90,11 @@ public class RegistryService extends BaseSharedService implements
 
     @Override
     public RemoteServiceRegistration<?> registerRemoteService(String[] clazzes,
-        Object service, Dictionary<String, ?> properties) {
+        Object service, Map<String, ?> properties) {
         Assert.isNotNull(service);
         final int size = clazzes.length;
         if (size == 0) {
-            throw new java.lang.IllegalArgumentException(
+            throw new IllegalArgumentException(
                 "Service classes list is empty");
         }
         final String[] copy = new String[clazzes.length];

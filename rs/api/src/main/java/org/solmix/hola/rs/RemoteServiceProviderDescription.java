@@ -42,6 +42,19 @@ public class RemoteServiceProviderDescription
     private RemoteServiceProviderFactory factory;
 
     /**
+     * @param name2
+     * @param holaRemoteProviderFactory
+     * @param string
+     */
+    public RemoteServiceProviderDescription(String name,
+        RemoteServiceProviderFactory factory, String description)
+    {
+       this.name=name;
+       this.description=description;
+       this.factory=factory;
+    }
+
+    /**
      * @return
      */
     public boolean isServer() {

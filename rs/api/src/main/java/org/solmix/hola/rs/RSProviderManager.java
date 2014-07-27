@@ -337,6 +337,9 @@ public class RSProviderManager implements RemoteServiceProviderManager
             return providerDescriptions.get(descriptionName);
         }
     }
+    /**
+     * 当Bundle停止是关闭所有的provider.
+     */
     public static void close(){
         synchronized(providers){
             for(Iterator<ID> i=providers.keySet().iterator();i.hasNext();){

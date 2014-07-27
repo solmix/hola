@@ -83,7 +83,7 @@ public class RemoteServiceEvent extends EventObject
      * @see ServiceRegistration#unregister
      * @see BundleContext#ungetService
      */
-    public final static int UNREGISTERING = 0x00000004;
+    public final static int UNREGISTERED = 0x00000004;
 
     public RemoteServiceEvent(int type, RemoteServiceReference<?> reference)
     {

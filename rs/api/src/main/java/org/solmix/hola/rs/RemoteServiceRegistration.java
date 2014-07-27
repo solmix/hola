@@ -20,6 +20,7 @@
 package org.solmix.hola.rs;
 
 import java.util.Dictionary;
+import java.util.Map;
 
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.rs.identity.RemoteServiceID;
@@ -56,7 +57,7 @@ public interface RemoteServiceRegistration<S>
     /**
      * @param properties
      */
-    void setProperties(Dictionary<String, Object> properties);
+    void setProperties(Map<String, Object> properties);
 
     /**
      * 返回服务引用

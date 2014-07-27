@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.identity.DefaultIDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.rs.RemoteConstants;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
@@ -77,14 +77,12 @@ public class RemoteServiceRegistry implements Serializable
 
     public void publishService(HolaRemoteServiceRegistration<?> reg) {
         final String[] clazzes = (String[]) reg.getReference().getProperty(
-            RemoteConstants.OBJECTCLASS);
+            HolaConstants.REMOTE_OBJECTCLASS);
         final int size = clazzes.length;
 
         for (int i = 0; i < size; i++) {
             final String clazz = clazzes[i];
-
             List<HolaRemoteServiceRegistration<?>> services = publishedServicesByClass.get(clazz);
-
             if (services == null) {
                 services = new ArrayList<HolaRemoteServiceRegistration<?>>(10);
                 publishedServicesByClass.put(clazz, services);
@@ -104,5 +102,34 @@ public class RemoteServiceRegistry implements Serializable
             HolaNamespace.NAME);
         return (RemoteServiceID) DefaultIDFactory.getDefault().createID(ns,
             new Object[] { getProviderID(), new Long(seq) });
+    }
+
+    /**
+     * @param reg
+     */
+    public void unplublishService(HolaRemoteServiceRegistration<?> reg) {
+     // Remove the ServiceRegistration from the list of Services published by
+        // Class Name.
+        final String[] clazzes = (String[]) reg.getReference().getProperty(HolaConstants.REMOTE_OBJECTCLASS);
+        final int size = clazzes.length;
+
+        for (int i = 0; i < size; i++) {
+              final String clazz = clazzes[i];
+              final List<HolaRemoteServiceRegistration<?>>  services =  publishedServicesByClass.get(clazz);
+              // Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=329161
+              if (services != null)
+                    services.remove(reg);
+        }
+        // Remove the ServiceRegistration from the list of all published
+        // Services.
+        allPublishedServices.remove(reg);
+    }
+
+    /**
+     * 
+     */
+    public void destroy() {
+        publishedServicesByClass.clear();
+        allPublishedServices.clear();
     }
 }

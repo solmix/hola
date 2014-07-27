@@ -19,14 +19,12 @@
 
 package org.solmix.hola.rs;
 
-import java.util.Dictionary;
+import java.util.Map;
 
 import org.osgi.framework.InvalidSyntaxException;
-import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Identifiable;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
  * 
@@ -34,7 +32,7 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
  * @version $Id$ 2014年4月30日
  */
 
-public interface RemoteServiceProvider extends Identifiable,ConnectContext
+public interface RemoteServiceProvider extends Identifiable
 {
 
 
@@ -47,7 +45,7 @@ public interface RemoteServiceProvider extends Identifiable,ConnectContext
      * @return
      */
     RemoteServiceRegistration<?> registerRemoteService(String[] clazzes,
-        Object service, Dictionary<String, ?> properties);
+        Object service, Map<String, ?> properties);
 
     /**
      * 获取远程服务引用
@@ -60,10 +58,10 @@ public interface RemoteServiceProvider extends Identifiable,ConnectContext
      * @throws InvalidSyntaxException
      * @throws RemoteConnectException
      */
-    RemoteServiceReference<?>[] getRemoteServiceReferences(ID target,
+/*    RemoteServiceReference<?>[] getRemoteServiceReferences(ID target,
         ID[] idFilter, String clazz, String filter)
         throws InvalidSyntaxException, RemoteConnectException;
-
+*/
     /**
      * 获取远程服务引用
      * 
@@ -74,8 +72,8 @@ public interface RemoteServiceProvider extends Identifiable,ConnectContext
      * @throws InvalidSyntaxException
      * @throws RemoteConnectException
      */
-    RemoteServiceReference<?>[] getRemoteServiceReferences(ID target,
-        String clazz, String filter) throws InvalidSyntaxException,
+    RemoteServiceReference<?> getRemoteServiceReferences(ID target,
+        String clazz) throws InvalidSyntaxException,
         RemoteConnectException;
 
     RemoteServiceReference<?>[] getAllRemoteServiceReferences(String clazz,
@@ -83,7 +81,7 @@ public interface RemoteServiceProvider extends Identifiable,ConnectContext
 
     Namespace getRemoteServiceNamespace();
 
-    RemoteServiceReference<?> getRemoteServiceReference(RemoteServiceID serviceID);
+//    RemoteServiceReference<?> getRemoteServiceReference(RemoteServiceID serviceID);
 
     /**
      * 根据远程服务引用，获取远程服务，调用远程服务成功后，如果不在使用服务需要｛@link
@@ -98,7 +96,7 @@ public interface RemoteServiceProvider extends Identifiable,ConnectContext
     
     RemoteFilter createRemoteFilter(String filter) throws InvalidSyntaxException;
     
-    
+    void destroy();
     void addRemoteServiceListener(RemoteServiceListener listener);
 
     void removeRemoteServiceListener(RemoteServiceListener listener);

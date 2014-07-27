@@ -72,7 +72,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.Assert;
-import org.solmix.commons.util.DataUtil;
+import org.solmix.commons.util.DataUtils;
 import org.solmix.hola.core.ConnectException;
 import org.solmix.hola.core.HolaException;
 import org.solmix.hola.core.identity.ID;
@@ -433,7 +433,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
     private ImportRegistrationImpl importService(HolaEndpointDescription desc,
         final RemoteServiceProvider rsProvider) {
         Collection<String> interfaces = desc.getInterfaces();
-        if (DataUtil.isNullOrEmpty(interfaces)) {
+        if (DataUtils.isNullOrEmpty(interfaces)) {
             throw new IllegalArgumentException(
                 "endpoint inteface must be not null or empty");
         }
@@ -967,8 +967,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
             }
         });
         RemoteServiceRegistration<?> registration = provider.registerRemoteService(
-            exportedInterfaces, service,
-            PropertiesUtil.createDictionaryFromMap(remoteServiceProperties));
+            exportedInterfaces, service, remoteServiceProperties);
         // endpointDescriptionProperties.put(RemoteConstants.SERVICE_ID,
         // registration.getRelativeId)
 
