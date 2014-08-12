@@ -70,7 +70,7 @@ public class JmDNSNamespace extends Namespace
         if (parameters == null || parameters.length < 1
             || parameters.length > 2) {
             throw new IDCreateException(
-                "Parameters cannot be null and must be of length 1 or 2");
+                "EndpointInfo cannot be null and must be of length 1 or 2");
         }
         String type = null;
         if (parameters[0] instanceof String) {

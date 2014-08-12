@@ -1,6 +1,7 @@
 package org.solmix.hola.transport.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,12 +9,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
 import java.io.IOException;
-import java.nio.channels.Channels;
 import java.util.List;
 
-import org.apache.commons.collections.BufferUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.codec.Codec;
 
 final class NettyCodecAdapter {
@@ -24,17 +23,17 @@ final class NettyCodecAdapter {
 
     private final Codec         codec;
     
-    private final Parameters            param;
+    private final EndpointInfo            endpointInfo;
     
     private final int            bufferSize;
     
     private final org.solmix.hola.transport.channel.ChannelHandler handler;
 
-    public NettyCodecAdapter(Codec codec, Parameters param, org.solmix.hola.transport.channel.ChannelHandler handler) {
+    public NettyCodecAdapter(Codec codec, EndpointInfo endpointInfo, org.solmix.hola.transport.channel.ChannelHandler handler) {
         this.codec = codec;
-        this.param = param;
+        this.endpointInfo = endpointInfo;
         this.handler = handler;
-        int b = param.getInt(HolaConstants.KEY_BUFFER, HolaConstants.DEFAULT_BUFFER_SIZE,true);
+        int b = endpointInfo.getInt(HolaConstants.KEY_BUFFER, HolaConstants.DEFAULT_BUFFER_SIZE,true);
         this.bufferSize = b >= HolaConstants.MIN_BUFFER_SIZE && b <= HolaConstants.MAX_BUFFER_SIZE ? b : HolaConstants.DEFAULT_BUFFER_SIZE;
     }
 
@@ -58,10 +57,12 @@ final class NettyCodecAdapter {
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg,
             List<Object> out) throws Exception {
-            ByteBuf buffer =BufferUtils.dynamicBuffer(1024);
-            NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), param, handler);
+            ByteBufAllocator alloc= ctx.alloc();
+            ByteBuf buffer =alloc.buffer(1024);
+            NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), endpointInfo, handler);
             try {
                codec .encode(channel, buffer, msg);
+               out.add(buffer);
             } finally {
                 NettyChannel.removeChannelIfDisconnected(ctx.channel());
             }
@@ -73,97 +74,58 @@ final class NettyCodecAdapter {
 
     private class InternalDecoder extends SimpleChannelInboundHandler<io.netty.buffer.ByteBuf> {
 
-        private ByteBuf buffer = BufferUtils.EMPTY_BUFFER;
+        private ByteBuf buffer ;
         @Override
         protected void messageReceived(ChannelHandlerContext ctx,
-            io.netty.buffer.ByteBuf msg) throws Exception {
-            int readable = msg.readableBytes();
+            io.netty.buffer.ByteBuf bf) throws Exception {
+            int readable = bf.readableBytes();
             if(readable<=0)
                 return;
-            if(buffer.readable()){
-                
+            if(buffer==null){
+               buffer= ctx.alloc().buffer();
             }
-            
-        }
-        @Override
-        public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws Exception {
-            Object o = event.getMessage();
-            if (! (o instanceof io.netty.buffer.ByteBuf)) {
-                ctx.fireChannelRead(msg);
-                return;
+            if(buffer.isReadable()){
+                buffer.writeBytes(bf);
+            }else{
+                buffer=bf;
             }
-
-            ChannelBuffer input = (ChannelBuffer) o;
-            int readable = input.readableBytes();
-            if (readable <= 0) {
-                return;
-            }
-
-            com.alibaba.dubbo.remoting.buffer.ChannelBuffer message;
-            if (buffer.readable()) {
-                if (buffer instanceof DynamicChannelBuffer) {
-                    buffer.writeBytes(input.toByteBuffer());
-                    message = buffer;
-                } else {
-                    int size = buffer.readableBytes() + input.readableBytes();
-                    message = com.alibaba.dubbo.remoting.buffer.ChannelBuffers.dynamicBuffer(
-                        size > bufferSize ? size : bufferSize);
-                    message.writeBytes(buffer, buffer.readableBytes());
-                    message.writeBytes(input.toByteBuffer());
-                }
-            } else {
-                message = com.alibaba.dubbo.remoting.buffer.ChannelBuffers.wrappedBuffer(
-                    input.toByteBuffer());
-            }
-
-            NettyChannel channel = NettyChannel.getOrAddChannel(ctx.getChannel(), url, handler);
+            NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), endpointInfo, handler);
             Object msg;
             int saveReaderIndex;
-
             try {
                 // decode object.
                 do {
-                    saveReaderIndex = message.readerIndex();
+                    saveReaderIndex = buffer.readerIndex();
                     try {
-                        msg = codec.decode(channel, message);
+                        msg = codec.decode(channel, buffer);
                     } catch (IOException e) {
-                        buffer = com.alibaba.dubbo.remoting.buffer.ChannelBuffers.EMPTY_BUFFER;
+                        buffer =buffer.clear();
                         throw e;
                     }
-                    if (msg == Codec2.DecodeResult.NEED_MORE_INPUT) {
-                        message.readerIndex(saveReaderIndex);
+                    if (msg == Codec.DecodeResult.NEED_MORE_INPUT) {
+                        buffer.readerIndex(saveReaderIndex);
                         break;
                     } else {
-                        if (saveReaderIndex == message.readerIndex()) {
-                            buffer = com.alibaba.dubbo.remoting.buffer.ChannelBuffers.EMPTY_BUFFER;
+                        if (saveReaderIndex == buffer.readerIndex()) {
+                            buffer.clear();
                             throw new IOException("Decode without read data.");
                         }
                         if (msg != null) {
-                            Channels.fireMessageReceived(ctx, msg, event.getRemoteAddress());
+                            ctx.fireChannelRead(msg);
                         }
                     }
-                } while (message.readable());
+                } while (buffer.isReadable());
             } finally {
-                if (message.readable()) {
-                    message.discardReadBytes();
-                    buffer = message;
+                if (buffer.isReadable()) {
+                    buffer.discardReadBytes();
                 } else {
-                    buffer = com.alibaba.dubbo.remoting.buffer.ChannelBuffers.EMPTY_BUFFER;
+                    buffer.clear();
                 }
-                NettyChannel.removeChannelIfDisconnected(ctx.getChannel());
+                NettyChannel.removeChannelIfDisconnected(ctx.channel());
             }
+          
+            
         }
-
-        @Override
-        public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-            ctx.sendUpstream(e);
-        }
-
-        /**
-         * {@inheritDoc}
-         * 
-         * @see io.netty.channel.SimpleChannelInboundHandler#messageReceived(io.netty.channel.ChannelHandlerContext, java.lang.Object)
-         */
        
     }
 }

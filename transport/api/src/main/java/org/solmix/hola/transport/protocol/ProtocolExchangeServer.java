@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -74,8 +74,8 @@ public class ProtocolExchangeServer implements ExchangeServer
             throw new IllegalArgumentException("server == null");
         }
         this.server = server;
-        this.heartbeat = server.getParameters().getInt(HolaConstants.KEY_HEARTBEAT, 0);
-        this.heartbeatTimeout = server.getParameters().getInt(HolaConstants.KEY_HEARTBEAT_TIMEOUT, heartbeat * 3);
+        this.heartbeat = server.getEndpointInfo().getInt(HolaConstants.KEY_HEARTBEAT, 0);
+        this.heartbeatTimeout = server.getEndpointInfo().getInt(HolaConstants.KEY_HEARTBEAT_TIMEOUT, heartbeat * 3);
         if (heartbeatTimeout < heartbeat * 2) {
             throw new IllegalStateException("heartbeatTimeout < heartbeatInterval * 2");
         }
@@ -112,7 +112,7 @@ public class ProtocolExchangeServer implements ExchangeServer
         if (timeout > 0) {
             final long max = timeout;
             final long start = System.currentTimeMillis();
-            if (getParameters().getBoolean(HolaConstants.KEY_CHANNEL_SEND_READONLYEVENT, false)){
+            if (getEndpointInfo().getBoolean(HolaConstants.KEY_CHANNEL_SEND_READONLYEVENT, false)){
                 sendChannelReadOnlyEvent();
             }
             while (ProtocolExchangeServer.this.isRunning() 
@@ -137,7 +137,7 @@ public class ProtocolExchangeServer implements ExchangeServer
         Collection<Channel> channels = getChannels();
         for (Channel channel : channels) {
             try {
-                if (channel.isConnected())channel.send(request,getParameters().getBoolean(HolaConstants.KEY_CHANNEL_READONLYEVENT_SENT, true));
+                if (channel.isConnected())channel.send(request,getEndpointInfo().getBoolean(HolaConstants.KEY_CHANNEL_READONLYEVENT_SENT, true));
             } catch (TransportException e) {
                 logger.warn("send connot write messge error.", e);
             }
@@ -197,8 +197,8 @@ public class ProtocolExchangeServer implements ExchangeServer
     }
 
     @Override
-    public Parameters getParameters() {
-        return server.getParameters();
+    public EndpointInfo getEndpointInfo() {
+        return server.getEndpointInfo();
     }
 
     @Override
@@ -207,7 +207,7 @@ public class ProtocolExchangeServer implements ExchangeServer
     }
 
     @Override
-    public void refresh(Parameters param) {
+    public void refresh(EndpointInfo param) {
         server.refresh(param);
         try {
             if (param.hasParameter(HolaConstants.KEY_HEARTBEAT)

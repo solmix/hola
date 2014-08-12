@@ -53,8 +53,9 @@ public class DefaultIDFactory implements IDFactory
         return instance;
     }
 
-    private DefaultIDFactory()
+    public DefaultIDFactory()
     {
+       instance=this;
     }
 
     /**

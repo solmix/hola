@@ -17,12 +17,14 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.core;
+package org.solmix.hola.core.model;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.solmix.hola.core.HolaConstants;
 
 /**
  * 
@@ -30,17 +32,17 @@ import java.util.Map;
  * @version $Id$ 2014年7月14日
  */
 
-public class Parameters
+public class EndpointInfo
 {
 
     private final Map<String, Object> parameters;
 
-    protected Parameters()
+    protected EndpointInfo()
     {
         parameters = null;
     }
 
-    public Parameters(Map<String, ?> parameters)
+    public EndpointInfo(Map<String, ?> parameters)
     {
         if (parameters == null) {
             parameters = new HashMap<String, Object>();
@@ -126,8 +128,8 @@ public class Parameters
             return new Long(value.toString().trim());
     }
     
-    public Object getHost(){
-      return getParameter(HolaConstants.KEY_HOST);
+    public String getHost(){
+      return getString(HolaConstants.KEY_HOST,null);
     }
 
     /**
@@ -142,14 +144,14 @@ public class Parameters
      * @param defaultHeartbeat
      * @return
      */
-    public Parameters addParameterIfNotSet(String key, Object value) {
+    public EndpointInfo addParameterIfNotSet(String key, Object value) {
         if (key == null || key.length() == 0 || value == null)
             return this;
         if (hasParameter(key))
             return this;
         Map<String, Object> map = new HashMap<String, Object>(getParameters());
         map.put(key, value);
-        return new Parameters(map);
+        return new EndpointInfo(map);
     }
 
     public Map<String, Object> getParameters() {
@@ -169,14 +171,14 @@ public class Parameters
      * @param value
      * @return
      */
-    public Parameters addParameter(String key, Object value) {
+    public EndpointInfo addParameter(String key, Object value) {
         if (key == null || key.length() == 0 || value == null)
             return this;
         if (value.equals(getParameter(key)))
             return this;
         Map<String, Object> map = new HashMap<String, Object>(getParameters());
         map.put(key, value);
-        return new Parameters(map);
+        return new EndpointInfo(map);
     }
 
     /**
@@ -191,7 +193,7 @@ public class Parameters
      * @param parameters
      * @return
      */
-    public Parameters addParameters(Map<String, Object> parameters2) {
+    public EndpointInfo addParameters(Map<String, Object> parameters2) {
         if (parameters == null || parameters.size() == 0) {
             return this;
         }
@@ -209,22 +211,24 @@ public class Parameters
 
         Map<String, Object> map = new HashMap<String, Object>(getParameters());
         map.putAll(parameters);
-        return  new Parameters(map);
+        return  new EndpointInfo(map);
     }
 
     /**
      * @return
      */
     public InetSocketAddress toInetSocketAddress() {
-        // TODO Auto-generated method stub
-        return null;
+        return  new InetSocketAddress(getHost(), getPort());
     }
 
     /**
      * @return
      */
     public String getAddress() {
-        // TODO Auto-generated method stub
-        return null;
+        return getPort()<=1?getHost():getHost()+":"+getPort();
+    }
+    
+    public SerializeInfo getSerializeInfo(){
+        return new SerializeInfo();
     }
 }

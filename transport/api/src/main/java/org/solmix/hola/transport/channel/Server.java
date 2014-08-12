@@ -21,7 +21,7 @@ package org.solmix.hola.transport.channel;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 
 
@@ -33,8 +33,8 @@ import org.solmix.hola.transport.TransportException;
 
 public interface Server 
 {
-    Parameters getParameters();
-    void refresh(Parameters param);
+    EndpointInfo getEndpointInfo();
+    void refresh(EndpointInfo param);
     /**
      * @return
      */

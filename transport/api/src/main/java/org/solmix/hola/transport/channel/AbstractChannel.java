@@ -21,7 +21,7 @@ package org.solmix.hola.transport.channel;
 import java.net.InetSocketAddress;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 
 
@@ -33,13 +33,13 @@ import org.solmix.hola.transport.TransportException;
 
 public abstract class AbstractChannel implements Channel
 {
-    private volatile Parameters param;
+    private volatile EndpointInfo param;
     
     private volatile boolean     closed;
 
     private final ChannelHandler handler;
     
-    public AbstractChannel(Parameters param,ChannelHandler handler){
+    public AbstractChannel(EndpointInfo param,ChannelHandler handler){
         Assert.isNotNull(param);
         Assert.isNotNull(handler);
         this.param=param;
@@ -144,10 +144,10 @@ public abstract class AbstractChannel implements Channel
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.channel.Channel#getParameters()
+     * @see org.solmix.hola.transport.channel.Channel#getEndpointInfo()
      */
     @Override
-    public Parameters getParameters() {
+    public EndpointInfo getEndpointInfo() {
         return param;
     }
 

@@ -67,7 +67,7 @@ public class BaseSharedService implements SharedService, Identifiable
             return type.cast(this);
         SystemContext sc = SystemContextFactory.getThreadDefaultSystemContext();
         if (sc != null) {
-            AdapterManager am = sc.getBean(AdapterManager.class);
+            AdapterManager am = sc.getExtension(AdapterManager.class);
             if (am == null)
                 return null;
             return am.getAdapter(this, type);

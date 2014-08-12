@@ -57,7 +57,7 @@ public class DiscoveryServiceTest
     @Before
     public void setup() {
         SystemContext sc = SystemContextFactory.getThreadDefaultSystemContext();
-        service = sc.getBean(DiscoveryServiceProvider.class).adaptTo(JmDNSProvider.class);
+        service = sc.getExtension(DiscoveryServiceProvider.class).adaptTo(JmDNSProvider.class);
         try {
             service.connect(null, null);
         } catch (ConnectException e) {

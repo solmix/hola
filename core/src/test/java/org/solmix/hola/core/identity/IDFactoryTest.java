@@ -21,8 +21,7 @@ package org.solmix.hola.core.identity;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.solmix.runtime.SystemContext;
-import org.solmix.runtime.SystemContextFactory;
+import org.solmix.runtime.Containers;
 
 /**
  * 
@@ -35,9 +34,11 @@ public class IDFactoryTest
 
     @Test
     public void testGetIdFactory() {
-        SystemContext sc = SystemContextFactory.getDefaultSystemContext(true);
-        IDFactory idf = sc.getBean(IDFactory.class);
+        IDFactory idf =Containers.get().getExtension(IDFactory.class);
         Assert.assertNotNull(idf);
+        //已经通过Container重新实例化了对象,他们应该是同一个对象
+        IDFactory idff =DefaultIDFactory.getDefault();
+       Assert.assertSame(idf, idff);
     }
 
 }

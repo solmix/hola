@@ -27,26 +27,25 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractServer;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Server;
-import org.solmix.hola.transport.handler.MultiMessageHandler;
 
 /**
  * 
@@ -54,30 +53,29 @@ import org.solmix.hola.transport.handler.MultiMessageHandler;
  * @version $Id$ 2014年7月15日
  */
 
-public class NettyServer extends AbstractServer implements Server,org.solmix.hola.transport.channel.ChannelHandler
+public class NettyServer extends AbstractServer implements Server,
+    org.solmix.hola.transport.channel.ChannelHandler
 {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
     private Map<String, Channel> channels;
-    private ServerBootstrap                 bootstrap;
+
+    private ServerBootstrap bootstrap;
 
     private io.netty.channel.Channel channel;
+    EventLoopGroup bossGroup ;
+    EventLoopGroup workerGroup;
     /**
-     * @param parameters
+     * @param endpointInfo
      * @param handler
      * @throws TransportException
      */
-    public NettyServer(Parameters parameters, ChannelHandler handler)
+    public NettyServer(EndpointInfo endpointInfo, ChannelHandler handler)
         throws TransportException
     {
-        super(parameters, handler);
-    }
-
-    ChannelHandler wrapper(ChannelHandler hander) {
-        // TODO Dispatcher.dispatch();
-        return new MultiMessageHandler(hander);
-
+        super(endpointInfo, wrapChannelHandler(handler,
+            setThreadName(endpointInfo, SERVER_THREAD_POOL_NAME)));
     }
 
     /**
@@ -87,30 +85,43 @@ public class NettyServer extends AbstractServer implements Server,org.solmix.hol
      */
     @Override
     protected void doOpen() throws Throwable {
-        
-        EventLoopGroup bossGroup = new NioEventLoopGroup(8,new NamedThreadFactory("NettyServerBoss", true)); 
-        EventLoopGroup workerGroup = new NioEventLoopGroup(getParameters().getInt(HolaConstants.KEY_IO_THREADS, HolaConstants.DEFAULT_IO_THREADS),new NamedThreadFactory("NettyServerWorker", true));
-        ExecutorService boss = Executors.newCachedThreadPool(new NamedThreadFactory("NettyServerBoss", true));
-        ExecutorService worker = Executors.newCachedThreadPool(new NamedThreadFactory("NettyServerWorker", true));
-        
+         bossGroup = new NioEventLoopGroup(8,
+                new NamedThreadFactory(
+                new StringBuilder().append("NettyServerBoss")
+                    .append("-")
+                    .append(getEndpointInfo().getAddress()).toString(), 
+                    true));
+         workerGroup = new NioEventLoopGroup(
+                getEndpointInfo().getInt(HolaConstants.KEY_IO_THREADS,
+                HolaConstants.DEFAULT_IO_THREADS), 
+                new NamedThreadFactory(
+                    new StringBuilder()
+                    .append("NettyServerWorker")
+                    .append("-")
+                    .append(getEndpointInfo().getAddress()).toString(),
+                    true));
+       
         bootstrap = new ServerBootstrap();
-        bootstrap.group(bossGroup, workerGroup)
-        .channel(NioServerSocketChannel.class) 
-        .option(ChannelOption.SO_BACKLOG, 128)        
-        .childOption(ChannelOption.SO_KEEPALIVE, true); 
-        
-        final NettyHandler nettyHandler = new NettyHandler(getParameters(), this);
-        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+        bootstrap.group(bossGroup, workerGroup).channel(
+            NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 128).childOption(
+            ChannelOption.SO_KEEPALIVE, true);
+
+        final NettyChannelHandler nettyChannelHandler = new NettyChannelHandler(
+            getEndpointInfo(), this);
+        channels=nettyChannelHandler.getChannels();
+        bootstrap.handler(new LoggingHandler(LogLevel.DEBUG))
+                 .childHandler(new ChannelInitializer<SocketChannel>() {
+
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
                 NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(),
-                    getParameters(), NettyServer.this);
+                    getEndpointInfo(), NettyServer.this);
                 ch.pipeline().addLast("decoder", adapter.getDecoder());
                 ch.pipeline().addLast("encoder", adapter.getEncoder());
-                ch.pipeline().addLast("handler", nettyHandler);
+                ch.pipeline().addLast("handler", nettyChannelHandler);
             }
         });
-        ChannelFuture f = bootstrap.bind(getBindAddress()).sync(); 
+        ChannelFuture f = bootstrap.bind(getBindAddress()).sync();
         // bind
         channel = f.channel();
     }
@@ -133,7 +144,7 @@ public class NettyServer extends AbstractServer implements Server,org.solmix.hol
         try {
             Collection<org.solmix.hola.transport.channel.Channel> channels = getChannels();
             if (channels != null && channels.size() > 0) {
-                for (org.solmix.hola.transport.channel.Channel channel: channels) {
+                for (org.solmix.hola.transport.channel.Channel channel : channels) {
                     try {
                         channel.close();
                     } catch (Throwable e) {
@@ -144,7 +155,10 @@ public class NettyServer extends AbstractServer implements Server,org.solmix.hol
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
-       
+        if (bossGroup != null)
+            bossGroup.shutdownGracefully();
+        if (workerGroup != null)
+            workerGroup.shutdownGracefully();
         try {
             if (channels != null) {
                 channels.clear();
@@ -195,26 +209,28 @@ public class NettyServer extends AbstractServer implements Server,org.solmix.hol
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.channel.ChannelHandler#sent(org.solmix.hola.transport.channel.Channel, java.lang.Object)
+     * @see org.solmix.hola.transport.channel.ChannelHandler#sent(org.solmix.hola.transport.channel.Channel,
+     *      java.lang.Object)
      */
     @Override
     public void sent(org.solmix.hola.transport.channel.Channel channel,
         Object message) throws TransportException {
-       if(isClosed())
-           return;
-       getChannelHandler().sent(channel, message);
-        
+        if (isClosed())
+            return;
+        getChannelHandler().sent(channel, message);
+
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.channel.ChannelHandler#received(org.solmix.hola.transport.channel.Channel, java.lang.Object)
+     * @see org.solmix.hola.transport.channel.ChannelHandler#received(org.solmix.hola.transport.channel.Channel,
+     *      java.lang.Object)
      */
     @Override
     public void received(org.solmix.hola.transport.channel.Channel channel,
         Object message) throws TransportException {
-        if(isClosed())
+        if (isClosed())
             return;
         getChannelHandler().received(channel, message);
     }
@@ -222,12 +238,13 @@ public class NettyServer extends AbstractServer implements Server,org.solmix.hol
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.channel.ChannelHandler#caught(org.solmix.hola.transport.channel.Channel, java.lang.Throwable)
+     * @see org.solmix.hola.transport.channel.ChannelHandler#caught(org.solmix.hola.transport.channel.Channel,
+     *      java.lang.Throwable)
      */
     @Override
     public void caught(org.solmix.hola.transport.channel.Channel channel,
         Throwable exception) throws TransportException {
-        if(isClosed())
+        if (isClosed())
             return;
         getChannelHandler().caught(channel, exception);
     }

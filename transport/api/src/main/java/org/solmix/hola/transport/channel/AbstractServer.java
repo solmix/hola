@@ -26,8 +26,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ExecutorUtils;
+import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.handler.WrappedChannelHandler;
 
@@ -41,18 +42,23 @@ import org.solmix.hola.transport.handler.WrappedChannelHandler;
 public abstract class AbstractServer extends AbstractPeer implements Server
 {
     private static final Logger logger = LoggerFactory.getLogger(AbstractServer.class);
-    private InetSocketAddress              localAddress;
+    private final InetSocketAddress              localAddress;
 
-    private InetSocketAddress              bindAddress;
+    private final InetSocketAddress              bindAddress;
  
     private int                  accepts;
 
     private int idleTimeout         = 600;
+    protected static final String SERVER_THREAD_POOL_NAME  ="HolaServerHandler";
     ExecutorService executor;
-    public AbstractServer(Parameters param,ChannelHandler handler) throws TransportException{
-        super(param,handler);
-        this.accepts =param.getInt(HolaConstants.KEY_CHANNEL_ACCEPTS, HolaConstants.DEFAULT_CHANNEL_ACCEPTS);
-        this.idleTimeout = param.getInt(HolaConstants.KEY_IDLE_TIMEOUT, HolaConstants.DEFAULT_IDLE_TIMEOUT);
+    public AbstractServer(EndpointInfo endpointInfo,ChannelHandler handler) throws TransportException{
+        super(endpointInfo,handler);
+        localAddress=endpointInfo.toInetSocketAddress();
+        String host = NetUtils.isInvalidLocalHost(endpointInfo.getHost()) 
+            ? NetUtils.ANYHOST : endpointInfo.getHost();
+        bindAddress = new InetSocketAddress(host, endpointInfo.getPort());
+        this.accepts =endpointInfo.getInt(HolaConstants.KEY_CHANNEL_ACCEPTS, HolaConstants.DEFAULT_CHANNEL_ACCEPTS);
+        this.idleTimeout = endpointInfo.getInt(HolaConstants.KEY_IDLE_TIMEOUT, HolaConstants.DEFAULT_IDLE_TIMEOUT);
         try {
             doOpen();
             if (logger.isInfoEnabled()) {
@@ -69,12 +75,12 @@ public abstract class AbstractServer extends AbstractPeer implements Server
   
     
     @Override
-    public void refresh(Parameters param) {
-        if(param==null)
+    public void refresh(EndpointInfo endpointInfo) {
+        if(endpointInfo==null)
             return ;
         try {
-            if (param.hasParameter(HolaConstants.KEY_CHANNEL_ACCEPTS)) {
-                int a = param.getInt(HolaConstants.KEY_CHANNEL_ACCEPTS, 0);
+            if (endpointInfo.hasParameter(HolaConstants.KEY_CHANNEL_ACCEPTS)) {
+                int a = endpointInfo.getInt(HolaConstants.KEY_CHANNEL_ACCEPTS, 0);
                 if (a > 0) {
                     this.accepts = a;
                 }
@@ -83,8 +89,8 @@ public abstract class AbstractServer extends AbstractPeer implements Server
             logger.error(t.getMessage(), t);
         }
         try {
-            if (param.hasParameter(HolaConstants.KEY_IDLE_TIMEOUT)) {
-                int t = param.getInt(HolaConstants.KEY_IDLE_TIMEOUT, 0);
+            if (endpointInfo.hasParameter(HolaConstants.KEY_IDLE_TIMEOUT)) {
+                int t = endpointInfo.getInt(HolaConstants.KEY_IDLE_TIMEOUT, 0);
                 if (t > 0) {
                     this.idleTimeout = t;
                 }
@@ -93,10 +99,10 @@ public abstract class AbstractServer extends AbstractPeer implements Server
             logger.error(t.getMessage(), t);
         }
         try {
-            if (param.hasParameter(HolaConstants.KEY_THREADS) 
+            if (endpointInfo.hasParameter(HolaConstants.KEY_THREADS) 
                     && executor instanceof ThreadPoolExecutor && !executor.isShutdown()) {
                 ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
-                int threads = param.getInt(HolaConstants.KEY_THREADS, 0);
+                int threads = endpointInfo.getInt(HolaConstants.KEY_THREADS, 0);
                 int max = threadPoolExecutor.getMaximumPoolSize();
                 int core = threadPoolExecutor.getCorePoolSize();
                 if (threads > 0 && (threads != max || threads != core)) {
@@ -116,7 +122,7 @@ public abstract class AbstractServer extends AbstractPeer implements Server
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
         }
-        setParameters(getParameters().addParameters(param.getParameters()));
+        setEndpointInfo(getEndpointInfo().addParameters(endpointInfo.getParameters()));
     }
     @Override
     public void send(Object message, boolean sent) throws TransportException {
@@ -129,7 +135,7 @@ public abstract class AbstractServer extends AbstractPeer implements Server
     }
     @Override
     public void send(Object message) throws TransportException {
-        send(message, getParameters().getBoolean(HolaConstants.KEY_SENT, false));
+        send(message, getEndpointInfo().getBoolean(HolaConstants.KEY_SENT, false));
     }
     @Override
     public void close(int timeout) {

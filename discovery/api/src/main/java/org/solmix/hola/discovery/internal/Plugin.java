@@ -20,7 +20,7 @@ package org.solmix.hola.discovery.internal;
 
 import org.solmix.hola.core.identity.DefaultIDFactory;
 import org.solmix.hola.discovery.identity.DiscoveryNamespace;
-import org.solmix.runtime.PluginActivator;
+import org.solmix.runtime.ContainerExtension;
 import org.solmix.runtime.SystemContext;
 import org.solmix.runtime.SystemContextFactory;
 
@@ -31,7 +31,7 @@ import org.solmix.runtime.SystemContextFactory;
  * @version $Id$  2014年5月10日
  */
 
-public class Plugin implements PluginActivator
+public class Plugin implements ContainerExtension
 {
     private static Plugin plugin;
 

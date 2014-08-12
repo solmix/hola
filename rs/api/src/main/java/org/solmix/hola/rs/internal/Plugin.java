@@ -19,7 +19,7 @@
 package org.solmix.hola.rs.internal;
 
 import org.solmix.hola.rs.RemoteServiceProxyFactory;
-import org.solmix.runtime.PluginActivator;
+import org.solmix.runtime.ContainerExtension;
 import org.solmix.runtime.SystemContext;
 
 
@@ -29,7 +29,7 @@ import org.solmix.runtime.SystemContext;
  * @version $Id$  2014年4月30日
  */
 
-public class Plugin implements PluginActivator
+public class Plugin implements ContainerExtension
 {
     private static Plugin plugin;
     private SystemContext systemContext;
@@ -64,12 +64,12 @@ public class Plugin implements PluginActivator
      * @return
      */
     public ClassLoader getPluginClassLoader(){
-      return  systemContext.getBean(ClassLoader.class);
+      return  systemContext.getExtension(ClassLoader.class);
     }
     
     public RemoteServiceProxyFactory getRemoteServiceProxyFactory(){
         if(systemContext!=null){
-            return systemContext.getBean(RemoteServiceProxyFactory.class);
+            return systemContext.getExtension(RemoteServiceProxyFactory.class);
         }
         return null;
     }

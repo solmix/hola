@@ -24,7 +24,7 @@ import org.solmix.hola.discovery.DiscoveryLocator;
 import org.solmix.hola.discovery.DiscoveryServiceProvider;
 import org.solmix.hola.discovery.jmdns.JmDNSProvider;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
-import org.solmix.runtime.PluginActivator;
+import org.solmix.runtime.ContainerExtension;
 import org.solmix.runtime.SystemContext;
 import org.solmix.runtime.SystemContextFactory;
 
@@ -35,7 +35,7 @@ import org.solmix.runtime.SystemContextFactory;
  * @version $Id$  2014年5月10日
  */
 
-public class Plugin implements PluginActivator
+public class Plugin implements ContainerExtension
 {
     private static Plugin plugin;
 
@@ -62,9 +62,9 @@ public class Plugin implements PluginActivator
         this.systemContext = context;
         DefaultIDFactory.getDefault().addNamespace(new JmDNSNamespace("Discovery Namespace"));
         JmDNSProvider service=new JmDNSProvider();
-        systemContext.setBean(service, DiscoveryServiceProvider.class);
-        systemContext.setBean(service, DiscoveryAdvertiser.class);
-        systemContext.setBean(service, DiscoveryLocator.class);
+        systemContext.setExtension(service, DiscoveryServiceProvider.class);
+        systemContext.setExtension(service, DiscoveryAdvertiser.class);
+        systemContext.setExtension(service, DiscoveryLocator.class);
     }
 
     /**

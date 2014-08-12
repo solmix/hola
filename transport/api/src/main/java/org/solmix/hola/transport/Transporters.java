@@ -19,12 +19,13 @@
 package org.solmix.hola.transport;
 
 
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
 import org.solmix.hola.transport.handler.ChannelHandlerAdapter;
 import org.solmix.hola.transport.handler.ChannelHandlerDispatcher;
+import org.solmix.runtime.Containers;
 
 
 /**
@@ -42,15 +43,15 @@ public final class Transporters
      * @return
      * @throws TransportException 
      */
-    public static Server newServer(Parameters parameter, ChannelHandler... handlers) throws TransportException {
+    public static Server newServer(EndpointInfo parameter, ChannelHandler... handlers) throws TransportException {
         ChannelHandler handler;
         if (handlers.length == 1) {
             handler = handlers[0];
         } else {
             handler = new ChannelHandlerDispatcher(handlers);
         }
-//        SystemContextFactory.getThreadDefaultSystemContext().getBean(beanType)
-        return new NettyTransporter().newServer(handler, parameter);
+        TransporterProvider provider= Containers.get().getExtensionLoader(TransporterProvider.class).getDefault();
+        return provider.newServer(handler, parameter);
     }
 
     /**
@@ -59,7 +60,7 @@ public final class Transporters
      * @return
      * @throws TransportException 
      */
-    public static Client newClient(Parameters parameter, ChannelHandler... handlers) throws TransportException {
+    public static Client newClient(EndpointInfo parameter, ChannelHandler... handlers) throws TransportException {
         ChannelHandler handler;
         if (handlers == null || handlers.length == 0) {
             handler = new ChannelHandlerAdapter();
@@ -68,7 +69,8 @@ public final class Transporters
         } else {
             handler = new ChannelHandlerDispatcher(handlers);
         }
-        return new NettyTransporter().newClient(handler, parameter);
+        TransporterProvider provider= Containers.get().getExtensionLoader(TransporterProvider.class).getDefault();
+        return provider.newClient(handler, parameter);
     }
 
 }

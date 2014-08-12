@@ -22,9 +22,12 @@ package org.solmix.hola.transport.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.codec.Codec;
+import org.solmix.hola.transport.codec.ExchangeCodec;
+import org.solmix.hola.transport.handler.MultiMessageHandler;
+import org.solmix.runtime.Containers;
 
 /**
  * 
@@ -34,36 +37,46 @@ import org.solmix.hola.transport.codec.Codec;
 
 public class AbstractPeer
 {
+
     private static final Logger logger = LoggerFactory.getLogger(AbstractPeer.class);
 
     private final ChannelHandler handler;
 
-    private  Codec codec;
+    private Codec codec;
 
-    private volatile Parameters parameters;
-    private  int                   timeout;
+    private volatile EndpointInfo endpointInfo;
 
-    private  int                   connectTimeout;
-    private volatile boolean     closed;
-    public AbstractPeer(Parameters param, ChannelHandler handler)
+    private int timeout;
+
+    private int connectTimeout;
+
+    private volatile boolean closed;
+
+    public AbstractPeer(EndpointInfo endpointInfo, ChannelHandler handler)
     {
-        this.parameters = param;
+        this.endpointInfo = endpointInfo;
         this.handler = handler;
-        this.codec = getCodec(param);
-        this.timeout=param.getInt(HolaConstants.KEY_TIMEOUT, 0,true);
-        this.connectTimeout=param.getInt(HolaConstants.KEY_CONNECT_TIMEOUT, 0,true);
+        this.codec = getAdaptorCodec(endpointInfo);
+        this.timeout = endpointInfo.getInt(HolaConstants.KEY_TIMEOUT, 0, true);
+        this.connectTimeout = endpointInfo.getInt(
+            HolaConstants.KEY_CONNECT_TIMEOUT, 0, true);
     }
 
     /**
-     * @param param
+     * @endpointInfo endpointInfo
      * @return
      */
-    private Codec getCodec(Parameters param) {
-        return null;
+    protected static Codec getAdaptorCodec(EndpointInfo endpointInfo) {
+       String codec= endpointInfo.getString(HolaConstants.KEY_CODEC, ExchangeCodec.NAME);
+       if(codec==null){
+           return Containers.get().getExtensionLoader(Codec.class).getDefault();
+       }else{
+           return  Containers.get().getExtensionLoader(Codec.class).getExtension(codec);
+       }
     }
 
-    public Parameters getParameters() {
-        return parameters;
+    public EndpointInfo getEndpointInfo() {
+        return endpointInfo;
     }
 
     public ChannelHandler getChannelHandler() {
@@ -71,23 +84,24 @@ public class AbstractPeer
     }
 
     /**
-     * @param parameters the parameters to set
+     * @endpointInfo endpointInfo the endpointInfo to set
      */
-    public void setParameters(Parameters parameters) {
-        this.parameters = parameters;
+    public void setEndpointInfo(EndpointInfo endpointInfo) {
+        this.endpointInfo = endpointInfo;
     }
-    
+
     public boolean isClosed() {
         return closed;
     }
-    public void refresh(Parameters param) {
+
+    public void refresh(EndpointInfo endpointInfo) {
         if (isClosed()) {
-            throw new IllegalStateException("Failed to reset parameters "
-                                        + param + ", cause: Channel closed.");
+            throw new IllegalStateException("Failed to reset endpointInfo "
+                + endpointInfo + ", cause: Channel closed.");
         }
         try {
-            if (param.hasParameter(HolaConstants.KEY_HEARTBEAT)) {
-                int t = param.getInt(HolaConstants.KEY_TIMEOUT, 0);
+            if (endpointInfo.hasParameter(HolaConstants.KEY_HEARTBEAT)) {
+                int t = endpointInfo.getInt(HolaConstants.KEY_TIMEOUT, 0);
                 if (t > 0) {
                     this.timeout = t;
                 }
@@ -96,8 +110,9 @@ public class AbstractPeer
             logger.error(t.getMessage(), t);
         }
         try {
-            if (param.hasParameter(HolaConstants.KEY_CONNECT_TIMEOUT)) {
-                int t = param.getInt(HolaConstants.KEY_CONNECT_TIMEOUT, 0);
+            if (endpointInfo.hasParameter(HolaConstants.KEY_CONNECT_TIMEOUT)) {
+                int t = endpointInfo.getInt(HolaConstants.KEY_CONNECT_TIMEOUT,
+                    0);
                 if (t > 0) {
                     this.connectTimeout = t;
                 }
@@ -106,19 +121,18 @@ public class AbstractPeer
             logger.error(t.getMessage(), t);
         }
         try {
-            if (param.hasParameter(HolaConstants.KEY_CODEC)) {
-                this.codec = getCodec(param);
+            if (endpointInfo.hasParameter(HolaConstants.KEY_CODEC)) {
+                this.codec = getAdaptorCodec(endpointInfo);
             }
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
         }
     }
-    
+
     public void close() {
         closed = true;
     }
 
-    
     /**
      * @return the codec
      */
@@ -129,6 +143,7 @@ public class AbstractPeer
     public void close(int timeout) {
         close();
     }
+
     public void connected(Channel ch) throws TransportException {
         if (closed) {
             return;
@@ -140,7 +155,6 @@ public class AbstractPeer
         handler.disconnected(ch);
     }
 
-    
     /**
      * @return the timeout
      */
@@ -148,7 +162,6 @@ public class AbstractPeer
         return timeout;
     }
 
-    
     /**
      * @return the connectTimeout
      */
@@ -156,4 +169,21 @@ public class AbstractPeer
         return connectTimeout;
     }
     
+   protected static ChannelHandler wrapChannelHandler(ChannelHandler hander, EndpointInfo endpointInfo2) {
+        // TODO Dispatcher.dispatch();
+        return new MultiMessageHandler(hander);
+
+    }
+   /**
+ * @param info
+ * @param defaultName
+ * @return
+ */
+protected static EndpointInfo setThreadName(EndpointInfo info ,String defaultName){
+       String name = info.getString(HolaConstants.KEY_THREAD_NAME, defaultName);
+       name=new StringBuilder(32).append(name).append("-").append(info.getAddress()).toString();
+       info = info.addParameter(HolaConstants.KEY_THREAD_NAME, name);
+       return info;
+   }
+
 }

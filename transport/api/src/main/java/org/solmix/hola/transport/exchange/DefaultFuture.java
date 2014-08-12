@@ -50,7 +50,7 @@ public class DefaultFuture implements ResponseFuture {
         this.channel = channel;
         this.request = request;
         this.id = request.getId();
-        this.timeout = timeout > 0 ? timeout : channel.getParameters().getInt(HolaConstants.KEY_TIMEOUT, HolaConstants.DEFAULT_TIMEOUT);
+        this.timeout = timeout > 0 ? timeout : channel.getEndpointInfo().getInt(HolaConstants.KEY_TIMEOUT, HolaConstants.DEFAULT_TIMEOUT);
         // put into waiting map.
         FUTURES.put(id, this);
         CHANNELS.put(id, channel);

@@ -21,6 +21,8 @@ package org.solmix.hola.core.identity;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
+
 
 /**
  * 
@@ -34,7 +36,8 @@ public class FinalTest
     /**
      * @param args
      */
-    public static void main(String[] args) {
+    @Test
+    public  void main() {
        String a=new String("aaaaaaaaaaaa");
        String b=a;
        System.out.println(b);

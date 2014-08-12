@@ -80,7 +80,7 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
                 res.setEvent(Response.HEARTBEAT_EVENT);
                 channel.send(res);
                 if (logger.isInfoEnabled()) {
-                    int heartbeat = channel.getParameters().getInt(HolaConstants.KEY_HEARTBEAT, 0);
+                    int heartbeat = channel.getEndpointInfo().getInt(HolaConstants.KEY_HEARTBEAT, 0);
                     if(logger.isDebugEnabled()) {
                         logger.debug("Received heartbeat from remote channel " + channel.getRemoteAddress()
                                         + ", cause: The channel has no data-transmission exceeds a heartbeat period"

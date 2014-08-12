@@ -21,8 +21,8 @@ package org.solmix.hola.core.identity;
 
 import java.io.Serializable;
 
-import org.solmix.runtime.SystemContext;
-import org.solmix.runtime.SystemContextFactory;
+import org.solmix.runtime.Container;
+import org.solmix.runtime.Containers;
 import org.solmix.runtime.adapter.Adaptable;
 import org.solmix.runtime.adapter.AdapterManager;
 
@@ -156,10 +156,10 @@ public abstract class Namespace implements Serializable, Adaptable
     public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
         if(type.isInstance(this))
             return type.cast(this);
-        SystemContext sc= SystemContextFactory.getThreadDefaultSystemContext();
+        Container sc= Containers.get();
         if(sc==null)
             return null;
-        AdapterManager apm= sc.getBean(AdapterManager.class);
+        AdapterManager apm= sc.getExtension(AdapterManager.class);
         if(apm==null)
             return null;
        return apm.getAdapter(this, type);

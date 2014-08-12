@@ -29,9 +29,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rs.RemoteConnectException;
 import org.solmix.hola.rs.RemoteFilter;
 import org.solmix.hola.rs.RemoteService;
@@ -111,7 +111,7 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
      * @param reg
      */
     private void adapteServer(Map<String, ?> parameters) {
-        Parameters param = new Parameters(parameters);
+        EndpointInfo param = new EndpointInfo(parameters);
        boolean isServer= param.getBoolean(HolaConstants.IS_SERVER,true);
        String key = getServerKey(param);
        if(isServer){
@@ -128,7 +128,7 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
      * @param param
      * @return
      */
-    private ExchangeServer createServer(Parameters param) {
+    private ExchangeServer createServer(EndpointInfo param) {
         param=  param.addParameterIfNotSet(HolaConstants.KEY_HEARTBEAT,HolaConstants.DEFAULT_HEARTBEAT);
         param=param.addParameter(HolaConstants.KEY_CODEC,HolaCodec.CODEC_NAME);
         //TODO
@@ -142,7 +142,7 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
         return server;
     }
 
-    private String getServerKey(Parameters param) {
+    private String getServerKey(EndpointInfo param) {
        int port= param.getPort();
        String host=param.getHost()==null?TCPServer.DEFAULT_HOST:param.getHost().toString();
        if(port<=0){

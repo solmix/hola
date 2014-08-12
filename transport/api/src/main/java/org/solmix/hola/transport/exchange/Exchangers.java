@@ -19,7 +19,7 @@
 package org.solmix.hola.transport.exchange;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.protocol.ProtocolExchanger;
 
@@ -33,14 +33,14 @@ import org.solmix.hola.transport.protocol.ProtocolExchanger;
 public class Exchangers
 {
 
-    public static ExchangeServer newServer(ExchangeHandler handler,Parameters parameter) throws TransportException{
+    public static ExchangeServer newServer(ExchangeHandler handler,EndpointInfo parameter) throws TransportException{
         Assert.isNotNull(handler);
         Assert.isNotNull(parameter);
         //暂时完全不管扩展,扩展考虑使用SytemContext.getExtensionForClass(Exchanger.class).get
         return new ProtocolExchanger().newServer(handler, parameter);
     }
     
-    public static ExchangeClient newClient(ExchangeHandler handler,Parameters parameter) throws TransportException{
+    public static ExchangeClient newClient(ExchangeHandler handler,EndpointInfo parameter) throws TransportException{
         Assert.isNotNull(handler);
         Assert.isNotNull(parameter);
         return new ProtocolExchanger().newClient(handler, parameter);

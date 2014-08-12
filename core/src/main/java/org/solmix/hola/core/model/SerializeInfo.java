@@ -16,27 +16,31 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.core.model;
 
-package org.solmix.hola.transport;
-
-import org.solmix.hola.core.Parameters;
-import org.solmix.hola.transport.channel.ChannelHandler;
-import org.solmix.hola.transport.channel.Client;
-import org.solmix.hola.transport.channel.Server;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年7月14日
+ * @version $Id$  2014年8月11日
  */
 
-public interface Transporter
+public class SerializeInfo
 {
 
-    Server newServer(ChannelHandler handler, Parameters parameter)
-        throws TransportException;
-
-    Client newClient(ChannelHandler handler, Parameters parameter)
-        throws TransportException;
+    private String name;
+    /**
+     * @return
+     */
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

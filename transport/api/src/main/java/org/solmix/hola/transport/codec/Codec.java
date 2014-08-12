@@ -20,7 +20,10 @@ package org.solmix.hola.transport.codec;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.IOException;
+
 import org.solmix.hola.transport.channel.Channel;
+import org.solmix.runtime.Extension;
 
 
 /**
@@ -28,7 +31,7 @@ import org.solmix.hola.transport.channel.Channel;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年7月14日
  */
-
+@Extension(name="hola")
 public interface Codec
 {
 
@@ -37,6 +40,16 @@ public interface Codec
      * @param buffer
      * @param msg
      */
-    void encode(Channel channel, ByteBuf buffer, Object msg);
-
+    void encode(Channel channel, ByteBuf buffer, Object msg)throws IOException;
+    /**
+     * @param channel
+     * @param buffer
+     * @return
+     * @throws IOException
+     */
+    Object decode(Channel channel, ByteBuf buffer) throws IOException;
+    
+    enum DecodeResult {
+        NEED_MORE_INPUT, SKIP_SOME_INPUT
+    }
 }

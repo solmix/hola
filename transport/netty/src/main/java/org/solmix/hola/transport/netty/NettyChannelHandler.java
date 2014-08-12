@@ -28,20 +28,26 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.solmix.commons.util.NetUtils;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
 
+/**
+ * 将Netty {@link io.netty.channel.ChannelHandler channelHandler} 转换为内部
+ * {@link org.solmix.hola.transport.channel.ChannelHandler ChannelHandler}
+ * @author solmix.f@gmail.com
+ * @version $Id$  2014年8月10日
+ */
 @Sharable
-public class NettyHandler extends ChannelHandlerAdapter {
+public class NettyChannelHandler extends ChannelHandlerAdapter {
 
     private final Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>(); // <ip:port, channel>
     
-    private final Parameters param;
+    private final EndpointInfo param;
     
     private final ChannelHandler handler;
     
-    public NettyHandler(Parameters param, org.solmix.hola.transport.channel.ChannelHandler handler){
+    public NettyChannelHandler(EndpointInfo param, org.solmix.hola.transport.channel.ChannelHandler handler){
         if (param == null) {
             throw new IllegalArgumentException("url == null");
         }
@@ -84,7 +90,7 @@ public class NettyHandler extends ChannelHandlerAdapter {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-       
+       super.channelRead(ctx, msg);
         NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), param, handler);
         try {
             handler.received(channel, msg);

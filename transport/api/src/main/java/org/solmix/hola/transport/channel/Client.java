@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.channel;
 
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 
 
@@ -36,5 +36,5 @@ public interface Client extends Channel
      * 
      */
     void reconnect() throws TransportException;
-    void refresh(Parameters param);
+    void refresh(EndpointInfo param);
 }

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractChannel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -26,7 +26,7 @@ final class NettyChannel extends AbstractChannel {
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    private NettyChannel(io.netty.channel.Channel channel, Parameters param, ChannelHandler handler){
+    private NettyChannel(io.netty.channel.Channel channel, EndpointInfo param, ChannelHandler handler){
         super(param, handler);
         if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
@@ -34,7 +34,7 @@ final class NettyChannel extends AbstractChannel {
         this.channel = channel;
     }
 
-    static NettyChannel getOrAddChannel(io.netty.channel.Channel ch, Parameters param, ChannelHandler handler) {
+    static NettyChannel getOrAddChannel(io.netty.channel.Channel ch, EndpointInfo param, ChannelHandler handler) {
         if (ch == null) {
             return null;
         }
@@ -79,10 +79,12 @@ final class NettyChannel extends AbstractChannel {
         boolean success = true;
         int timeout = 0;
         try {
-            ChannelFuture future = channel.write(message);
+            ChannelFuture future = channel.writeAndFlush(message);
             if (sent) {
-                timeout =getParameters().getInt(HolaConstants.KEY_TIMEOUT, HolaConstants.DEFAULT_TIMEOUT);
+                timeout =getEndpointInfo().getInt(HolaConstants.KEY_TIMEOUT, HolaConstants.DEFAULT_TIMEOUT);
                 success = future.await(timeout);
+            }else{
+                future=future.sync();
             }
             Throwable cause = future.cause();
             if (cause != null) {

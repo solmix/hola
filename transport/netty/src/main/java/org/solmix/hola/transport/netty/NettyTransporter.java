@@ -18,12 +18,13 @@
  */
 package org.solmix.hola.transport.netty;
 
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.Transporter;
+import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
+import org.solmix.runtime.Extension;
 
 
 /**
@@ -31,17 +32,17 @@ import org.solmix.hola.transport.channel.Server;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年7月15日
  */
-
-public class NettyTransporter implements Transporter
+@Extension(name="netty")
+public class NettyTransporter implements TransporterProvider
 {
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.Transporter#newServer(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.Parameters)
+     * @see org.solmix.hola.transport.TransporterProvider#newServer(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public Server newServer(ChannelHandler handler, Parameters parameter)
+    public Server newServer(ChannelHandler handler, EndpointInfo parameter)
         throws TransportException {
         return new NettyServer(parameter, handler);
     }
@@ -49,10 +50,10 @@ public class NettyTransporter implements Transporter
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.Transporter#newClient(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.Parameters)
+     * @see org.solmix.hola.transport.TransporterProvider#newClient(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public Client newClient(ChannelHandler handler, Parameters parameter)
+    public Client newClient(ChannelHandler handler, EndpointInfo parameter)
         throws TransportException {
         return new NettyClient(parameter, handler);
     }

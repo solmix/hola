@@ -62,7 +62,7 @@ public class HolaNamespace extends Namespace
     @Override
     public ID createID(Object[] parameters) throws IDCreateException {
         if (parameters == null || parameters.length != 2)
-            throw new IDCreateException("Parameters incorrect for remote ID creation");
+            throw new IDCreateException("EndpointInfo incorrect for remote ID creation");
       try {
             return new RemoteServiceIDImpl(this, (ID) parameters[0], ((Long) parameters[1]).longValue());
       } catch (Exception e) {

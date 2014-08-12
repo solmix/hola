@@ -130,4 +130,12 @@ public class HolaConstants
 
     public static final int     MIN_BUFFER_SIZE                    = 1 * 1024;
 
+    public static final String KEY_SERIALIZATION = "serialization";
+
+    public static final String DEFAULT_SERIALIZATION = "hola";
+
+    public static final String KEY_DATALENGTH = "data.length";
+
+    public static final int DEFAULT_DATALENGTH = 8 * 1024 * 1024;   
+
 }

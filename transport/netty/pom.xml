@@ -23,5 +23,20 @@
 			<artifactId>netty-handler</artifactId>
 			<version>5.0.0.Alpha1</version>
 		</dependency>
+		<dependency>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-example</artifactId>
+    <version>5.0.0.Alpha1</version>
+</dependency>
+<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
 </project>

@@ -22,7 +22,7 @@ import org.solmix.hola.transport.channel.ChannelHandler;
 
 
 /**
- * 
+ * Delegate ChannelHandler.
  * @author solmix.f@gmail.com
  * @version $Id$  2014年7月14日
  */

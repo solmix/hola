@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -21,11 +21,12 @@ public class WrappedChannelHandler implements ChannelHandlerDelegate {
     
     protected  ChannelHandler handler;
 
-    protected final Parameters param;
+    protected final EndpointInfo param;
     
-    public WrappedChannelHandler(ChannelHandler handler, Parameters param) {
+    public WrappedChannelHandler(ChannelHandler handler, EndpointInfo param) {
         this.handler = handler;
         this.param = param;
+        //TODO used extensionpoint.
 //        executor = (ExecutorService) ExtensionLoader.getExtensionLoader(ThreadPool.class).getAdaptiveExtension().getExecutor(url);
 //
 //        String componentKey = Constants.EXECUTOR_SERVICE_COMPONENT_KEY;

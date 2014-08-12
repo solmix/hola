@@ -18,8 +18,9 @@
  */
 package org.solmix.hola.transport.dispatcher;
 
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
+import org.solmix.runtime.Extension;
 
 
 /**
@@ -27,8 +28,8 @@ import org.solmix.hola.transport.channel.ChannelHandler;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年7月15日
  */
-
+@Extension(name="all")
 public interface Dispatcher
 {
-    ChannelHandler dispatch(ChannelHandler handler, Parameters param);
+    ChannelHandler dispatch(ChannelHandler handler, EndpointInfo param);
 }

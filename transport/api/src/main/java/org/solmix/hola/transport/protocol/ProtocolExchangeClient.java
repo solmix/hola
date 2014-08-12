@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -70,9 +70,9 @@ public class ProtocolExchangeClient implements ExchangeClient
         }
         this.client = client;
         this.channel = new ProtocolExchangeChannel(client);
-        String dubbo = client.getParameters().getParameter(HolaConstants.VERSION_KEY).toString();
-        this.heartbeat = client.getParameters().getInt( HolaConstants.KEY_HEARTBEAT, dubbo != null && dubbo.startsWith("1.0.") ? HolaConstants.DEFAULT_HEARTBEAT : 0 );
-        this.heartbeatTimeout = client.getParameters().getInt( HolaConstants.KEY_HEARTBEAT_TIMEOUT, heartbeat * 3 );
+        String dubbo = client.getEndpointInfo().getParameter(HolaConstants.VERSION_KEY).toString();
+        this.heartbeat = client.getEndpointInfo().getInt( HolaConstants.KEY_HEARTBEAT, dubbo != null && dubbo.startsWith("1.0.") ? HolaConstants.DEFAULT_HEARTBEAT : 0 );
+        this.heartbeatTimeout = client.getEndpointInfo().getInt( HolaConstants.KEY_HEARTBEAT_TIMEOUT, heartbeat * 3 );
         if ( heartbeatTimeout < heartbeat * 2 ) {
             throw new IllegalStateException( "heartbeatTimeout < heartbeatInterval * 2" );
         }
@@ -84,8 +84,8 @@ public class ProtocolExchangeClient implements ExchangeClient
     }
 
     @Override
-    public Parameters getParameters() {
-        return channel.getParameters();
+    public EndpointInfo getEndpointInfo() {
+        return channel.getEndpointInfo();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class ProtocolExchangeClient implements ExchangeClient
     }
 
     @Override
-    public void refresh(Parameters param) {
+    public void refresh(EndpointInfo param) {
         client.refresh(param);
     }
     

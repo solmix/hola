@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.Parameters;
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractClient;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -54,18 +54,21 @@ public class NettyClient extends AbstractClient implements ChannelHandler
    
     private Bootstrap bootstrap;
 
-    private volatile Channel channel; // volatile, please copy reference to use
+    private volatile Channel channel; 
 
-    public NettyClient(final Parameters param, final ChannelHandler handler)
+    public NettyClient(final EndpointInfo endpointInfo, final ChannelHandler handler)
         throws TransportException
     {
-        super(param, wrapChannelHandler(param, handler));
+        super(endpointInfo, wrapChannelHandler(endpointInfo, handler));
     }
 
     @Override
     protected void doOpen() throws Throwable {
         workerGroup = new NioEventLoopGroup(HolaConstants.DEFAULT_IO_THREADS,
-            new NamedThreadFactory("NettyClientBoss",true) );
+            new NamedThreadFactory(new StringBuilder()
+            .append("NettyClient")
+            .append("-")
+            .append(getEndpointInfo().getAddress()).toString(),true) );
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
         bootstrap.channel(NioSocketChannel.class); 
@@ -73,15 +76,15 @@ public class NettyClient extends AbstractClient implements ChannelHandler
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
         bootstrap.option(ChannelOption.SO_TIMEOUT, getTimeout());
       
-        final NettyHandler nettyHandler = new NettyHandler(getParameters(), this);
+        final NettyChannelHandler nettyChannelHandler = new NettyChannelHandler(getEndpointInfo(), this);
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
                 NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(),
-                    getParameters(), NettyClient.this);
+                    getEndpointInfo(), NettyClient.this);
                 ch.pipeline().addLast("decoder", adapter.getDecoder());
                 ch.pipeline().addLast("encoder", adapter.getEncoder());
-                ch.pipeline().addLast("handler", nettyHandler);
+                ch.pipeline().addLast("handler", nettyChannelHandler);
             }
         });
        
@@ -159,10 +162,6 @@ public class NettyClient extends AbstractClient implements ChannelHandler
 
     @Override
     protected void doClose() throws Throwable {
-        /*
-         * try { bootstrap.releaseExternalResources(); } catch (Throwable t) {
-         * logger.warn(t.getMessage()); }
-         */
         if(workerGroup!=null)
             workerGroup.shutdownGracefully();
     }
@@ -172,7 +171,7 @@ public class NettyClient extends AbstractClient implements ChannelHandler
         Channel c = channel;
         if (c == null || !c.isActive())
             return null;
-        return NettyChannel.getOrAddChannel(c, getParameters(), this);
+        return NettyChannel.getOrAddChannel(c, getEndpointInfo(), this);
     }
 
     /**
