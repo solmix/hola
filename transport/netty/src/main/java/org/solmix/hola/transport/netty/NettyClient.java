@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractClient;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -56,7 +56,7 @@ public class NettyClient extends AbstractClient implements ChannelHandler
 
     private volatile Channel channel; 
 
-    public NettyClient(final EndpointInfo endpointInfo, final ChannelHandler handler)
+    public NettyClient(final ChannelInfo endpointInfo, final ChannelHandler handler)
         throws TransportException
     {
         super(endpointInfo, wrapChannelHandler(endpointInfo, handler));
@@ -68,20 +68,20 @@ public class NettyClient extends AbstractClient implements ChannelHandler
             new NamedThreadFactory(new StringBuilder()
             .append("NettyClient")
             .append("-")
-            .append(getEndpointInfo().getAddress()).toString(),true) );
+            .append(getInfo().getAddress()).toString(),true) );
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
         bootstrap.channel(NioSocketChannel.class); 
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
-        bootstrap.option(ChannelOption.SO_TIMEOUT, getTimeout());
+        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, getTimeout());
       
-        final NettyChannelHandler nettyChannelHandler = new NettyChannelHandler(getEndpointInfo(), this);
+        final NettyChannelHandler nettyChannelHandler = new NettyChannelHandler(getInfo(), this);
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
                 NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(),
-                    getEndpointInfo(), NettyClient.this);
+                    getInfo(), NettyClient.this);
                 ch.pipeline().addLast("decoder", adapter.getDecoder());
                 ch.pipeline().addLast("encoder", adapter.getEncoder());
                 ch.pipeline().addLast("handler", nettyChannelHandler);
@@ -171,7 +171,7 @@ public class NettyClient extends AbstractClient implements ChannelHandler
         Channel c = channel;
         if (c == null || !c.isActive())
             return null;
-        return NettyChannel.getOrAddChannel(c, getEndpointInfo(), this);
+        return NettyChannel.getOrAddChannel(c, getInfo(), this);
     }
 
     /**

@@ -12,28 +12,28 @@ import java.io.IOException;
 import java.util.List;
 
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.codec.Codec;
 
 final class NettyCodecAdapter {
 
-    private final ChannelHandler encoder = new InternalEncoder();
+    private final ChannelHandler encoder = new NettyEncoder();
     
-    private final ChannelHandler decoder = new InternalDecoder();
+    private final ChannelHandler decoder = new NettyDecoder();
 
     private final Codec         codec;
     
-    private final EndpointInfo            endpointInfo;
+    private final ChannelInfo            endpointInfo;
     
     private final int            bufferSize;
     
     private final org.solmix.hola.transport.channel.ChannelHandler handler;
 
-    public NettyCodecAdapter(Codec codec, EndpointInfo endpointInfo, org.solmix.hola.transport.channel.ChannelHandler handler) {
+    public NettyCodecAdapter(Codec codec, ChannelInfo endpointInfo, org.solmix.hola.transport.channel.ChannelHandler handler) {
         this.codec = codec;
         this.endpointInfo = endpointInfo;
         this.handler = handler;
-        int b = endpointInfo.getInt(HolaConstants.KEY_BUFFER, HolaConstants.DEFAULT_BUFFER_SIZE,true);
+        int b = endpointInfo.getBuffer( HolaConstants.DEFAULT_BUFFER_SIZE);
         this.bufferSize = b >= HolaConstants.MIN_BUFFER_SIZE && b <= HolaConstants.MAX_BUFFER_SIZE ? b : HolaConstants.DEFAULT_BUFFER_SIZE;
     }
 
@@ -46,7 +46,7 @@ final class NettyCodecAdapter {
     }
 
     @Sharable
-    private class InternalEncoder extends MessageToMessageEncoder<Object> {
+    private class NettyEncoder extends MessageToMessageEncoder<Object> {
 
         
         /**
@@ -58,7 +58,7 @@ final class NettyCodecAdapter {
         protected void encode(ChannelHandlerContext ctx, Object msg,
             List<Object> out) throws Exception {
             ByteBufAllocator alloc= ctx.alloc();
-            ByteBuf buffer =alloc.buffer(1024);
+            ByteBuf buffer =alloc.buffer(bufferSize);
             NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), endpointInfo, handler);
             try {
                codec .encode(channel, buffer, msg);
@@ -66,13 +66,10 @@ final class NettyCodecAdapter {
             } finally {
                 NettyChannel.removeChannelIfDisconnected(ctx.channel());
             }
-            
         }
-
-        
     }
 
-    private class InternalDecoder extends SimpleChannelInboundHandler<io.netty.buffer.ByteBuf> {
+    private class NettyDecoder extends SimpleChannelInboundHandler<io.netty.buffer.ByteBuf> {
 
         private ByteBuf buffer ;
         @Override

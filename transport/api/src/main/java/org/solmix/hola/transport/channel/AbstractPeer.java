@@ -22,7 +22,7 @@ package org.solmix.hola.transport.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.hola.transport.codec.ExchangeCodec;
@@ -44,7 +44,7 @@ public class AbstractPeer
 
     private Codec codec;
 
-    private volatile EndpointInfo endpointInfo;
+    private volatile ChannelInfo info;
 
     private int timeout;
 
@@ -52,22 +52,21 @@ public class AbstractPeer
 
     private volatile boolean closed;
 
-    public AbstractPeer(EndpointInfo endpointInfo, ChannelHandler handler)
+    public AbstractPeer(ChannelInfo info, ChannelHandler handler)
     {
-        this.endpointInfo = endpointInfo;
+        this.info = info;
         this.handler = handler;
-        this.codec = getAdaptorCodec(endpointInfo);
-        this.timeout = endpointInfo.getInt(HolaConstants.KEY_TIMEOUT, 0, true);
-        this.connectTimeout = endpointInfo.getInt(
-            HolaConstants.KEY_CONNECT_TIMEOUT, 0, true);
+        this.codec = getAdaptorCodec(info);
+        this.timeout = info.getTimeout();
+        this.connectTimeout = info.getConnectTimeout(HolaConstants.DEFAULT_TIMEOUT);
     }
 
     /**
      * @endpointInfo endpointInfo
      * @return
      */
-    protected static Codec getAdaptorCodec(EndpointInfo endpointInfo) {
-       String codec= endpointInfo.getString(HolaConstants.KEY_CODEC, ExchangeCodec.NAME);
+    protected static Codec getAdaptorCodec(ChannelInfo info) {
+       String codec=info.getCodec(ExchangeCodec.NAME);
        if(codec==null){
            return Containers.get().getExtensionLoader(Codec.class).getDefault();
        }else{
@@ -75,8 +74,8 @@ public class AbstractPeer
        }
     }
 
-    public EndpointInfo getEndpointInfo() {
-        return endpointInfo;
+    public ChannelInfo getInfo() {
+        return info;
     }
 
     public ChannelHandler getChannelHandler() {
@@ -86,22 +85,22 @@ public class AbstractPeer
     /**
      * @endpointInfo endpointInfo the endpointInfo to set
      */
-    public void setEndpointInfo(EndpointInfo endpointInfo) {
-        this.endpointInfo = endpointInfo;
+    public void setInfo(ChannelInfo endpointInfo) {
+        this.info = info;
     }
 
     public boolean isClosed() {
         return closed;
     }
 
-    public void refresh(EndpointInfo endpointInfo) {
+    public void refresh(ChannelInfo info) {
         if (isClosed()) {
             throw new IllegalStateException("Failed to reset endpointInfo "
-                + endpointInfo + ", cause: Channel closed.");
+                + info + ", cause: Channel closed.");
         }
         try {
-            if (endpointInfo.hasParameter(HolaConstants.KEY_HEARTBEAT)) {
-                int t = endpointInfo.getInt(HolaConstants.KEY_TIMEOUT, 0);
+            if (info.getHeartbeat()!=null) {
+                int t = info.getHeartbeatTimeout();
                 if (t > 0) {
                     this.timeout = t;
                 }
@@ -110,9 +109,8 @@ public class AbstractPeer
             logger.error(t.getMessage(), t);
         }
         try {
-            if (endpointInfo.hasParameter(HolaConstants.KEY_CONNECT_TIMEOUT)) {
-                int t = endpointInfo.getInt(HolaConstants.KEY_CONNECT_TIMEOUT,
-                    0);
+            if (info.getConnectTimeout()!=null) {
+                int t = info.getConnectTimeout(0);
                 if (t > 0) {
                     this.connectTimeout = t;
                 }
@@ -121,8 +119,8 @@ public class AbstractPeer
             logger.error(t.getMessage(), t);
         }
         try {
-            if (endpointInfo.hasParameter(HolaConstants.KEY_CODEC)) {
-                this.codec = getAdaptorCodec(endpointInfo);
+            if (info.getCodec()!=null) {
+                this.codec = getAdaptorCodec(info);
             }
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
@@ -169,7 +167,7 @@ public class AbstractPeer
         return connectTimeout;
     }
     
-   protected static ChannelHandler wrapChannelHandler(ChannelHandler hander, EndpointInfo endpointInfo2) {
+   protected static ChannelHandler wrapChannelHandler(ChannelHandler hander, ChannelInfo endpointInfo2) {
         // TODO Dispatcher.dispatch();
         return new MultiMessageHandler(hander);
 
@@ -179,10 +177,10 @@ public class AbstractPeer
  * @param defaultName
  * @return
  */
-protected static EndpointInfo setThreadName(EndpointInfo info ,String defaultName){
-       String name = info.getString(HolaConstants.KEY_THREAD_NAME, defaultName);
+protected static ChannelInfo setThreadName(ChannelInfo info ,String defaultName){
+       String name = info.getThreadName(defaultName);
        name=new StringBuilder(32).append(name).append("-").append(info.getAddress()).toString();
-       info = info.addParameter(HolaConstants.KEY_THREAD_NAME, name);
+        info.setThreadName(name);
        return info;
    }
 

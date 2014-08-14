@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -56,7 +56,7 @@ final class ProtocolExchangeChannel implements ExchangeChannel {
     
     @Override
     public void send(Object message) throws TransportException {
-        send(message, getEndpointInfo().getBoolean(HolaConstants.KEY_SENT, false));
+        send(message, getInfo().getAwait(false));
     }
     
     @Override
@@ -79,7 +79,7 @@ final class ProtocolExchangeChannel implements ExchangeChannel {
 
     @Override
     public ResponseFuture request(Object request) throws TransportException {
-        return request(request, channel.getEndpointInfo().getInt(HolaConstants.KEY_TIMEOUT, HolaConstants.DEFAULT_TIMEOUT));
+        return request(request, channel.getInfo().getTimeout( HolaConstants.DEFAULT_TIMEOUT));
     }
 
     @Override
@@ -147,8 +147,8 @@ final class ProtocolExchangeChannel implements ExchangeChannel {
         return channel.getRemoteAddress();
     }
     @Override
-    public EndpointInfo getEndpointInfo() {
-        return channel.getEndpointInfo();
+    public ChannelInfo getInfo() {
+        return channel.getInfo();
     }
 
     @Override

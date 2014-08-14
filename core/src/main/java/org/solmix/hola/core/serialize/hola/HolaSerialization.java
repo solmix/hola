@@ -24,7 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 
-import org.solmix.hola.core.model.SerializeInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.core.serialize.Serialization;
 import org.solmix.runtime.Extension;
 
@@ -54,7 +54,7 @@ public class HolaSerialization implements Serialization
      * @see org.solmix.hola.core.serialize.Serialization#serialize(org.solmix.hola.core.model.SerializeInfo, java.io.OutputStream)
      */
     @Override
-    public ObjectOutput serialize(SerializeInfo info, OutputStream output)
+    public ObjectOutput serialize(ChannelInfo info, OutputStream output)
         throws IOException {
         // TODO Auto-generated method stub
         return null;
@@ -66,7 +66,7 @@ public class HolaSerialization implements Serialization
      * @see org.solmix.hola.core.serialize.Serialization#deserialize(org.solmix.hola.core.model.SerializeInfo, java.io.InputStream)
      */
     @Override
-    public ObjectInput deserialize(SerializeInfo info, InputStream input)
+    public ObjectInput deserialize(ChannelInfo info, InputStream input)
         throws IOException {
         // TODO Auto-generated method stub
         return null;

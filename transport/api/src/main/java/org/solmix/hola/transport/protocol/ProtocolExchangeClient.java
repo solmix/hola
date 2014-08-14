@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -70,9 +70,9 @@ public class ProtocolExchangeClient implements ExchangeClient
         }
         this.client = client;
         this.channel = new ProtocolExchangeChannel(client);
-        String dubbo = client.getEndpointInfo().getParameter(HolaConstants.VERSION_KEY).toString();
-        this.heartbeat = client.getEndpointInfo().getInt( HolaConstants.KEY_HEARTBEAT, dubbo != null && dubbo.startsWith("1.0.") ? HolaConstants.DEFAULT_HEARTBEAT : 0 );
-        this.heartbeatTimeout = client.getEndpointInfo().getInt( HolaConstants.KEY_HEARTBEAT_TIMEOUT, heartbeat * 3 );
+//        String dubbo = client.getInfo().getParameter(HolaConstants.VERSION_KEY).toString();
+        this.heartbeat = client.getInfo().getHeartbeat( HolaConstants.DEFAULT_HEARTBEAT  );
+        this.heartbeatTimeout = client.getInfo().getHeartbeatTimeout(heartbeat*3);
         if ( heartbeatTimeout < heartbeat * 2 ) {
             throw new IllegalStateException( "heartbeatTimeout < heartbeatInterval * 2" );
         }
@@ -84,8 +84,8 @@ public class ProtocolExchangeClient implements ExchangeClient
     }
 
     @Override
-    public EndpointInfo getEndpointInfo() {
-        return channel.getEndpointInfo();
+    public ChannelInfo getInfo() {
+        return channel.getInfo();
     }
 
     @Override
@@ -137,13 +137,14 @@ public class ProtocolExchangeClient implements ExchangeClient
         channel.close();
     }
 
+    @Override
     public void close(int timeout) {
         doClose();
         channel.close(timeout);
     }
 
     @Override
-    public void refresh(EndpointInfo param) {
+    public void refresh(ChannelInfo param) {
         client.refresh(param);
     }
     

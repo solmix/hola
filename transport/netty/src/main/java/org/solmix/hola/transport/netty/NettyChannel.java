@@ -2,6 +2,7 @@ package org.solmix.hola.transport.netty;
 
 import io.netty.channel.ChannelFuture;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,7 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractChannel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -26,21 +27,21 @@ final class NettyChannel extends AbstractChannel {
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    private NettyChannel(io.netty.channel.Channel channel, EndpointInfo param, ChannelHandler handler){
-        super(param, handler);
+    private NettyChannel(io.netty.channel.Channel channel, ChannelInfo info, ChannelHandler handler){
+        super(info, handler);
         if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
         }
         this.channel = channel;
     }
 
-    static NettyChannel getOrAddChannel(io.netty.channel.Channel ch, EndpointInfo param, ChannelHandler handler) {
+    static NettyChannel getOrAddChannel(io.netty.channel.Channel ch, ChannelInfo info, ChannelHandler handler) {
         if (ch == null) {
             return null;
         }
         NettyChannel ret = channelMap.get(ch);
         if (ret == null) {
-            NettyChannel nc = new NettyChannel(ch, param, handler);
+            NettyChannel nc = new NettyChannel(ch, info, handler);
             if (ch.isActive()) {
                 ret = channelMap.putIfAbsent(ch, nc);
             }
@@ -81,14 +82,15 @@ final class NettyChannel extends AbstractChannel {
         try {
             ChannelFuture future = channel.writeAndFlush(message);
             if (sent) {
-                timeout =getEndpointInfo().getInt(HolaConstants.KEY_TIMEOUT, HolaConstants.DEFAULT_TIMEOUT);
+                timeout =getInfo().getTimeout(HolaConstants.DEFAULT_TIMEOUT);
                 success = future.await(timeout);
             }else{
-                future=future.sync();
-            }
-            Throwable cause = future.cause();
-            if (cause != null) {
-                throw cause;
+                if(!future.isDone()){
+                    future.await();
+                }
+                if (!future.isSuccess()) {
+                    throw new IOException("Error writing buffers", future.cause());
+                }
             }
         } catch (Throwable e) {
             throw new TransportException(this, "Failed to send message " + message + " to " + getRemoteAddress() + ", cause: " + e.getMessage(), e);

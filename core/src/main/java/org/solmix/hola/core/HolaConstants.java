@@ -136,6 +136,6 @@ public class HolaConstants
 
     public static final String KEY_DATALENGTH = "data.length";
 
-    public static final int DEFAULT_DATALENGTH = 8 * 1024 * 1024;   
+    public static final int DEFAULT_PALYLOAD = 8 * 1024 * 1024;   
 
 }

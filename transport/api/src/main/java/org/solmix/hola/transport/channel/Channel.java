@@ -20,7 +20,7 @@ package org.solmix.hola.transport.channel;
 
 import java.net.InetSocketAddress;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 
 
@@ -93,7 +93,7 @@ public interface Channel
     /**
      * @return
      */
-    EndpointInfo getEndpointInfo();
+    ChannelInfo getInfo();
 
     /**
      * @return

@@ -18,15 +18,13 @@
  */
 package org.solmix.hola.transport.netty;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
@@ -46,22 +44,24 @@ public class NetttThreadTest
     private NettyServer server;
     private TestHandler serverhandler;
     private TestHandler clienthandler;
+  private  CountDownLatch allMessages ;
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        Map<String, Object> parameters = new HashMap<String,Object>();
-        parameters.put(HolaConstants.KEY_HOST, "localhost");
-        parameters.put(HolaConstants.KEY_PORT, "1314");
-        parameters.put(HolaConstants.KEY_SERIALIZATION, JavaSerialization.NAME);
-//        parameters.put(HolaConstants.KEY_SENT, true);
-//        parameters.put(HolaConstants.KEY_TIMEOUT, 60000);
-        EndpointInfo info = new EndpointInfo(parameters);
+      
+        ChannelInfo info = new ChannelInfo();
+        info.setHost("localhost");
+        info.setPort(1314);
+        info.setSerialName(JavaSerialization.NAME);
+        info.setAwait(true);
+        info.setTimeout(6000);
         serverhandler= new TestHandler("1314", false);
         clienthandler= new TestHandler("1314", true);
         server=new NettyServer(info, serverhandler);
         client= new NettyClient(info, clienthandler);
+       
        
     }
     class TestHandler implements ChannelHandler{
@@ -111,6 +111,7 @@ public class NetttThreadTest
         public void sent(Channel channel, Object message)
             throws TransportException {
             checkThreadName();
+            allMessages.countDown();
             output("sent");
             
         }
@@ -124,7 +125,7 @@ public class NetttThreadTest
         public void received(Channel channel, Object message)
             throws TransportException {
             checkThreadName();
-           output("received");
+           output("received-"+message);
             
         }
 
@@ -169,8 +170,9 @@ public class NetttThreadTest
 
     @Test
     public void test() throws Exception {
+         allMessages = new CountDownLatch(10000);
+         for(int i=0;i<10000;i++)
         client.send("hello");
-        Thread.sleep(1000L * 5L);
         if (!serverhandler.isSuccess() || !clienthandler.isSuccess()) {
             Assert.fail();
         }

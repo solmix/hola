@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractServer;
 import org.solmix.hola.transport.channel.Channel;
@@ -71,11 +71,11 @@ public class NettyServer extends AbstractServer implements Server,
      * @param handler
      * @throws TransportException
      */
-    public NettyServer(EndpointInfo endpointInfo, ChannelHandler handler)
+    public NettyServer(ChannelInfo info, ChannelHandler handler)
         throws TransportException
     {
-        super(endpointInfo, wrapChannelHandler(handler,
-            setThreadName(endpointInfo, SERVER_THREAD_POOL_NAME)));
+        super(info, wrapChannelHandler(handler,
+            setThreadName(info, SERVER_THREAD_POOL_NAME)));
     }
 
     /**
@@ -89,16 +89,15 @@ public class NettyServer extends AbstractServer implements Server,
                 new NamedThreadFactory(
                 new StringBuilder().append("NettyServerBoss")
                     .append("-")
-                    .append(getEndpointInfo().getAddress()).toString(), 
+                    .append(getInfo().getAddress()).toString(), 
                     true));
          workerGroup = new NioEventLoopGroup(
-                getEndpointInfo().getInt(HolaConstants.KEY_IO_THREADS,
-                HolaConstants.DEFAULT_IO_THREADS), 
+                getInfo().getIoThreads( HolaConstants.DEFAULT_IO_THREADS), 
                 new NamedThreadFactory(
                     new StringBuilder()
                     .append("NettyServerWorker")
                     .append("-")
-                    .append(getEndpointInfo().getAddress()).toString(),
+                    .append(getInfo().getAddress()).toString(),
                     true));
        
         bootstrap = new ServerBootstrap();
@@ -107,7 +106,7 @@ public class NettyServer extends AbstractServer implements Server,
             ChannelOption.SO_KEEPALIVE, true);
 
         final NettyChannelHandler nettyChannelHandler = new NettyChannelHandler(
-            getEndpointInfo(), this);
+            getInfo(), this);
         channels=nettyChannelHandler.getChannels();
         bootstrap.handler(new LoggingHandler(LogLevel.DEBUG))
                  .childHandler(new ChannelInitializer<SocketChannel>() {
@@ -115,7 +114,7 @@ public class NettyServer extends AbstractServer implements Server,
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
                 NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(),
-                    getEndpointInfo(), NettyServer.this);
+                    getInfo(), NettyServer.this);
                 ch.pipeline().addLast("decoder", adapter.getDecoder());
                 ch.pipeline().addLast("encoder", adapter.getEncoder());
                 ch.pipeline().addLast("handler", nettyChannelHandler);
@@ -199,10 +198,10 @@ public class NettyServer extends AbstractServer implements Server,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.channel.Server#isBound()
+     * @see org.solmix.hola.transport.channel.Server#isActive()
      */
     @Override
-    public boolean isBound() {
+    public boolean isActive() {
         return channel.isActive();
     }
 

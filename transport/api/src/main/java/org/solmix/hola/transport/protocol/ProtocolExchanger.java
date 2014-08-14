@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.protocol;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.Transporters;
 import org.solmix.hola.transport.channel.Client;
@@ -48,7 +48,7 @@ public class ProtocolExchanger implements Exchanger
      */
     @Override
     public ExchangeServer newServer(ExchangeHandler handler,
-        EndpointInfo parameter) throws TransportException {
+        ChannelInfo parameter) throws TransportException {
       Server server =Transporters.newServer(parameter,new DecodeHandler(new ProtocolExchangeHandler(handler)));
         return new ProtocolExchangeServer(server);
     }
@@ -60,7 +60,7 @@ public class ProtocolExchanger implements Exchanger
      */
     @Override
     public ExchangeClient newClient(ExchangeHandler handler,
-        EndpointInfo parameter) throws TransportException {
+        ChannelInfo parameter) throws TransportException {
         Client client =Transporters.newClient(parameter,new DecodeHandler(new ProtocolExchangeHandler(handler)));
         return new ProtocolExchangeClient(client);
     }

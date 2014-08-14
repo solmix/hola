@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.netty;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -42,7 +42,7 @@ public class NettyTransporter implements TransporterProvider
      * @see org.solmix.hola.transport.TransporterProvider#newServer(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public Server newServer(ChannelHandler handler, EndpointInfo parameter)
+    public Server newServer(ChannelHandler handler, ChannelInfo parameter)
         throws TransportException {
         return new NettyServer(parameter, handler);
     }
@@ -53,7 +53,7 @@ public class NettyTransporter implements TransporterProvider
      * @see org.solmix.hola.transport.TransporterProvider#newClient(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public Client newClient(ChannelHandler handler, EndpointInfo parameter)
+    public Client newClient(ChannelHandler handler, ChannelInfo parameter)
         throws TransportException {
         return new NettyClient(parameter, handler);
     }

@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.exchange;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 
 
@@ -30,7 +30,7 @@ import org.solmix.hola.transport.TransportException;
 
 public interface Exchanger
 {
-    ExchangeServer newServer(ExchangeHandler handler,EndpointInfo parameter)throws TransportException;
+    ExchangeServer newServer(ExchangeHandler handler,ChannelInfo parameter)throws TransportException;
     
-    ExchangeClient newClient(ExchangeHandler handler,EndpointInfo parameter)throws TransportException;
+    ExchangeClient newClient(ExchangeHandler handler,ChannelInfo parameter)throws TransportException;
 }

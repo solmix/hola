@@ -21,7 +21,7 @@ package org.solmix.hola.transport.channel;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 
 
@@ -33,8 +33,8 @@ import org.solmix.hola.transport.TransportException;
 
 public interface Server 
 {
-    EndpointInfo getEndpointInfo();
-    void refresh(EndpointInfo param);
+    ChannelInfo getInfo();
+    void refresh(ChannelInfo param);
     /**
      * @return
      */
@@ -46,10 +46,9 @@ public interface Server
     Channel getChannel(InetSocketAddress remoteAddress);
     /**
      * @return
-     * isactived();
      */
-    @Deprecated 
-    boolean isBound();
+    
+    boolean isActive();
     ChannelHandler getChannelHandler();
 
     /**

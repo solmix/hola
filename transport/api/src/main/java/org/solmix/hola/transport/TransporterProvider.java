@@ -19,7 +19,7 @@
 
 package org.solmix.hola.transport;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
@@ -34,10 +34,10 @@ import org.solmix.runtime.Extension;
 public interface TransporterProvider
 {
 
-    Server newServer(ChannelHandler handler, EndpointInfo parameter)
+    Server newServer(ChannelHandler handler, ChannelInfo parameter)
         throws TransportException;
 
-    Client newClient(ChannelHandler handler, EndpointInfo parameter)
+    Client newClient(ChannelHandler handler, ChannelInfo parameter)
         throws TransportException;
 
 }

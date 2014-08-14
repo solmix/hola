@@ -228,7 +228,7 @@ public class EndpointInfo
         return getPort()<=1?getHost():getHost()+":"+getPort();
     }
     
-    public SerializeInfo getSerializeInfo(){
-        return new SerializeInfo();
+    public ChannelInfo getChannel(){
+        return new ChannelInfo();
     }
 }

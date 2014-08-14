@@ -19,7 +19,7 @@
 package org.solmix.hola.transport;
 
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
@@ -43,7 +43,7 @@ public final class Transporters
      * @return
      * @throws TransportException 
      */
-    public static Server newServer(EndpointInfo parameter, ChannelHandler... handlers) throws TransportException {
+    public static Server newServer(ChannelInfo parameter, ChannelHandler... handlers) throws TransportException {
         ChannelHandler handler;
         if (handlers.length == 1) {
             handler = handlers[0];
@@ -60,7 +60,7 @@ public final class Transporters
      * @return
      * @throws TransportException 
      */
-    public static Client newClient(EndpointInfo parameter, ChannelHandler... handlers) throws TransportException {
+    public static Client newClient(ChannelInfo parameter, ChannelHandler... handlers) throws TransportException {
         ChannelHandler handler;
         if (handlers == null || handlers.length == 0) {
             handler = new ChannelHandlerAdapter();

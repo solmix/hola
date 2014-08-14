@@ -27,7 +27,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.SerializeInfo;
 import org.solmix.hola.core.serialize.Serialization;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.runtime.Containers;
@@ -51,9 +50,9 @@ public class SerializeCodec implements Codec
     @Override
     public void encode(Channel channel, ByteBuf buffer, Object msg)
         throws IOException {
-       String implementor=channel.getEndpointInfo().getString(HolaConstants.KEY_SERIALIZATION, HolaConstants.DEFAULT_SERIALIZATION);
+       String implementor=channel.getInfo().getSerialName( HolaConstants.DEFAULT_SERIALIZATION);
       ByteBufOutputStream output= new ByteBufOutputStream(buffer);
-      ObjectOutput objectOutput= getSerialization(implementor).serialize((SerializeInfo)null, output);
+      ObjectOutput objectOutput= getSerialization(implementor).serialize(channel.getInfo(), output);
       encodeData(channel, objectOutput, msg);
       objectOutput.flush();
     }
@@ -78,9 +77,9 @@ public class SerializeCodec implements Codec
      */
     @Override
     public Object decode(Channel channel, ByteBuf buffer) throws IOException {
-        String implementor=channel.getEndpointInfo().getString(HolaConstants.KEY_SERIALIZATION, HolaConstants.DEFAULT_SERIALIZATION);
+        String implementor=channel.getInfo().getSerialName( HolaConstants.DEFAULT_SERIALIZATION);
         ByteBufInputStream input= new ByteBufInputStream(buffer);
-        ObjectInput objectinput= getSerialization(implementor).deserialize((SerializeInfo)null, input);
+        ObjectInput objectinput= getSerialization(implementor).deserialize(channel.getInfo(), input);
         return decodeData(channel, objectinput);
     }
     protected Object decodeData(Channel channel, ObjectInput input) throws IOException {
@@ -96,8 +95,5 @@ public class SerializeCodec implements Codec
     }
     static Serialization getSerialization(String implementor){
         return Containers.getExtensionLoader(Serialization.class).getExtension(implementor);
-    }
-    static Serialization getSerialization(SerializeInfo info){
-        return Containers.get().getExtensionLoader(Serialization.class).getExtension(info.getName());
     }
 }

@@ -18,11 +18,10 @@
  */
 package org.solmix.hola.transport.channel;
 
-import java.net.InetSocketAddress;
-
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
+import org.solmix.hola.transport.handler.ChannelHandlerDelegate;
 
 
 /**
@@ -33,73 +32,18 @@ import org.solmix.hola.transport.TransportException;
 
 public abstract class AbstractChannel implements Channel
 {
-    private volatile EndpointInfo param;
+    private volatile ChannelInfo info;
     
     private volatile boolean     closed;
 
     private final ChannelHandler handler;
     
-    public AbstractChannel(EndpointInfo param,ChannelHandler handler){
-        Assert.isNotNull(param);
+    public AbstractChannel(ChannelInfo info,ChannelHandler handler){
+        Assert.isNotNull(info);
         Assert.isNotNull(handler);
-        this.param=param;
+        this.info=info;
         this.handler=handler;
     }
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.channel.Channel#isConnected()
-     */
-    @Override
-    public boolean isConnected() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.channel.Channel#hasAttribute(java.lang.String)
-     */
-    @Override
-    public boolean hasAttribute(String key) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.channel.Channel#getAttribute(java.lang.String)
-     */
-    @Override
-    public Object getAttribute(String key) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.channel.Channel#setAttribute(java.lang.String, java.lang.Object)
-     */
-    @Override
-    public void setAttribute(String key, Object value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.channel.Channel#removeAttribute(java.lang.String)
-     */
-    @Override
-    public void removeAttribute(String key) {
-        // TODO Auto-generated method stub
-
-    }
-
     /**
      * {@inheritDoc}
      * 
@@ -137,40 +81,18 @@ public abstract class AbstractChannel implements Channel
      */
     @Override
     public void send(Object res) throws TransportException {
-        // TODO Auto-generated method stub
-
+        send(res,info.getAwait(false));
+        
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.channel.Channel#getEndpointInfo()
+     * @see org.solmix.hola.transport.channel.Channel#getInfo()
      */
     @Override
-    public EndpointInfo getEndpointInfo() {
-        return param;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.channel.Channel#getRemoteAddress()
-     */
-    @Override
-    public InetSocketAddress getRemoteAddress() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.channel.Channel#getLocalAddress()
-     */
-    @Override
-    public InetSocketAddress getLocalAddress() {
-        // TODO Auto-generated method stub
-        return null;
+    public ChannelInfo getInfo() {
+        return info;
     }
 
     /**
@@ -179,9 +101,12 @@ public abstract class AbstractChannel implements Channel
      * @see org.solmix.hola.transport.channel.Channel#send(java.lang.Object, boolean)
      */
     @Override
-    public void send(Object message, boolean sent) throws TransportException {
-        // TODO Auto-generated method stub
-
+    public void send(Object message, boolean wait) throws TransportException {
+        if (isClosed()) {
+            throw new TransportException(this, "Failed to send message "
+                                              + (message == null ? "" : message.getClass().getName()) + ":" + message
+                                              + ", cause: Channel closed. channel: " + getLocalAddress() + " -> " + getRemoteAddress());
+        }
     }
 
     /**
@@ -191,8 +116,15 @@ public abstract class AbstractChannel implements Channel
      */
     @Override
     public ChannelHandler getChannelHandler() {
-        // TODO Auto-generated method stub
-        return null;
+        if (handler instanceof ChannelHandlerDelegate) {
+            return ((ChannelHandlerDelegate) handler).getHandler();
+        } else {
+            return handler;
+        }
     }
-
+    
+    @Override
+    public String toString() {
+        return getLocalAddress() + " -> " + getRemoteAddress();
+    }
 }

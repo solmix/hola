@@ -22,7 +22,7 @@ package org.solmix.hola.core.serialize;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.solmix.hola.core.model.SerializeInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.core.serialize.hola.HolaSerialization;
 import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.runtime.Containers;
@@ -49,12 +49,12 @@ public class SerializationManager
         return ID_SERIALIZATION_MAP.get(id);
     }
 
-    public static Serialization getSerialization(SerializeInfo info) {
+    public static Serialization getSerialization(ChannelInfo info) {
         return Containers.getExtensionLoader(Serialization.class).getExtension(
-            info.getName());
+            info.getSerialName());
     }
 
-    public static Serialization getSerialization(SerializeInfo info, byte id) {
+    public static Serialization getSerialization(ChannelInfo info, byte id) {
         Serialization s = getSerialization(id);
         if (s == null) {
             s = getSerialization(info);

@@ -21,7 +21,6 @@ package org.solmix.hola.transport.protocol;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -80,7 +79,7 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
                 res.setEvent(Response.HEARTBEAT_EVENT);
                 channel.send(res);
                 if (logger.isInfoEnabled()) {
-                    int heartbeat = channel.getEndpointInfo().getInt(HolaConstants.KEY_HEARTBEAT, 0);
+                    int heartbeat = channel.getInfo().getHeartbeat(0);
                     if(logger.isDebugEnabled()) {
                         logger.debug("Received heartbeat from remote channel " + channel.getRemoteAddress()
                                         + ", cause: The channel has no data-transmission exceeds a heartbeat period"

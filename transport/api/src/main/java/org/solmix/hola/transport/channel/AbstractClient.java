@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.handler.MultiMessageHandler;
 
@@ -57,7 +57,8 @@ public abstract class AbstractClient extends AbstractPeer implements Client
     private final int reconnectWarningPeriod;
 
     private final boolean sendReconnect;
-
+    public static boolean KEY_CHECK=true;
+    
     private static final ScheduledThreadPoolExecutor reconnectExecutorService = new ScheduledThreadPoolExecutor(
         2, new NamedThreadFactory("ClientReconnectTimer", true));
 
@@ -75,22 +76,18 @@ public abstract class AbstractClient extends AbstractPeer implements Client
      * @param handler
      * @throws TransportException
      */
-    public AbstractClient(EndpointInfo param, ChannelHandler handler)
+    public AbstractClient(ChannelInfo info, ChannelHandler handler)
         throws TransportException
     {
-        super(param, handler);
-        sendReconnect = param.getBoolean(HolaConstants.KEY_SEND_RECONNECT,
-            false);
-        shutdownTimeout = param.getLong(HolaConstants.KEY_SHUTDOWN_TIMEOUT,
-            HolaConstants.DEFAULT_SHUTDOWN_TIMEOUT);
-        reconnectWarningPeriod = param.getInt(
-            HolaConstants.KEY_RECONNECT_WARNING_PERIOD,
-            HolaConstants.DEFAULT_RECONNECT_WARNING_PERIOD);
+        super(info, handler);
+        sendReconnect =info.getReconnect(false);
+        shutdownTimeout = info.getShutdownTimeout(HolaConstants.DEFAULT_SHUTDOWN_TIMEOUT);
+        reconnectWarningPeriod = info.getReconnectWarningPeriod(HolaConstants.DEFAULT_RECONNECT_WARNING_PERIOD);
         try {
             doOpen();
         } catch (Throwable t) {
             close();
-            throw new TransportException(param.toInetSocketAddress(), null,
+            throw new TransportException(info.toInetSocketAddress(), null,
                 "Failed to start " + getClass().getSimpleName() + " "
                     + NetUtils.getLocalAddress() + " connect to the server "
                     + getRemoteAddress() + ", cause: " + t.getMessage(), t);
@@ -104,7 +101,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
                     + getRemoteAddress());
             }
         } catch (TransportException t) {
-            if (param.getBoolean(HolaConstants.KEY_CHECK, true)) {
+            if (KEY_CHECK) {
                 close();
                 throw t;
             } else {
@@ -117,22 +114,17 @@ public abstract class AbstractClient extends AbstractPeer implements Client
             }
         } catch (Throwable t) {
             close();
-            throw new TransportException(param.toInetSocketAddress(), null,
+            throw new TransportException(info.toInetSocketAddress(), null,
                 "Failed to start " + getClass().getSimpleName() + " "
                     + NetUtils.getLocalAddress() + " connect to the server "
                     + getRemoteAddress() + ", cause: " + t.getMessage(), t);
         }
     }
 
-    protected static ChannelHandler wrapChannelHandler(EndpointInfo param,
+    protected static ChannelHandler wrapChannelHandler(ChannelInfo info,
         ChannelHandler handler) {
-        String name = param.getString(HolaConstants.KEY_THREAD_NAME,
-            THREAD_POOL_NAME);
-        name = new StringBuilder(32).append(name).append("-").append(
-            param.getClass()).toString();
-        param = param.addParameter(HolaConstants.KEY_THREAD_NAME, name);
-        param = param.addParameterIfNotSet(HolaConstants.KEY_THREADPOOL,
-            HolaConstants.DEFAULT_THREADPOOL);
+        info.setThreadName(THREAD_POOL_NAME);
+        info.setThreadPool(HolaConstants.DEFAULT_THREADPOOL);
         return new MultiMessageHandler(handler);
     }
 
@@ -177,7 +169,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
      * 
      */
     private void initConnectStatusCheckCommand() {
-        int reconnect = getReconnectParam(getEndpointInfo());
+        int reconnect = getReconnectParam(getInfo());
         if (reconnect > 0
             && (reconnectExecutorFuture == null || reconnectExecutorFuture.isCancelled())) {
             Runnable connectStatusCheckCommand = new Runnable() {
@@ -192,7 +184,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
                         }
                     } catch (Throwable t) {
                         String errorMsg = "client reconnect to "
-                            + getEndpointInfo().getAddress();
+                            + getInfo().getAddress();
                         // wait registry sync provider list
                         if (System.currentTimeMillis() - lastConnectedTime > shutdownTimeout) {
                             if (!reconnect_error_log_flag.get()) {
@@ -218,26 +210,13 @@ public abstract class AbstractClient extends AbstractPeer implements Client
      * @param parameters
      * @return
      */
-    private int getReconnectParam(EndpointInfo param) {
+    private int getReconnectParam(ChannelInfo info) {
         int reconnect;
-        Object re = param.getParameter(HolaConstants.KEY_RECONNECT);
-        if (re == null || "true".equalsIgnoreCase(re.toString())) {
-            reconnect = HolaConstants.DEFAULT_RECONNECT_PERIOD;
-        } else if ("false".equalsIgnoreCase(param.toString())) {
-            reconnect = 0;
+        Boolean re=info.getReconnect();
+        if (re!=null&&re.booleanValue()) {
+            reconnect =info.getReconnectPeriod( HolaConstants.DEFAULT_RECONNECT_PERIOD);
         } else {
-            try {
-                reconnect = Integer.parseInt(param.toString());
-            } catch (Exception e) {
-                throw new IllegalArgumentException(
-                    "reconnect param must be nonnegative integer or false/true. input is:"
-                        + param);
-            }
-            if (reconnect < 0) {
-                throw new IllegalArgumentException(
-                    "reconnect param must be nonnegative integer or false/true. input is:"
-                        + param);
-            }
+            reconnect=0;
         }
         return reconnect;
     }
@@ -313,7 +292,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
     public InetSocketAddress getRemoteAddress() {
         Channel channel = getChannel();
         if (channel == null)
-            return getEndpointInfo().toInetSocketAddress();
+            return getInfo().toInetSocketAddress();
         return channel.getRemoteAddress();
     }
 
@@ -328,8 +307,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
 
     @Override
     public void send(Object message) throws TransportException {
-        send(message,
-            getEndpointInfo().getBoolean(HolaConstants.KEY_SENT, false));
+        send(message, getInfo().getAwait(false));
     }
 
     /**
@@ -402,8 +380,8 @@ public abstract class AbstractClient extends AbstractPeer implements Client
 
     protected InetSocketAddress getConnectAddress() {
         return new InetSocketAddress(
-            NetUtils.filterLocalHost(getEndpointInfo().getHost()),
-            getEndpointInfo().getPort());
+            NetUtils.filterLocalHost(getInfo().getHost()),
+            getInfo().getPort());
     }
 
     /**

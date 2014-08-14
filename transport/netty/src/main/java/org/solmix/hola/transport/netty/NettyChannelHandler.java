@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.solmix.commons.util.NetUtils;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
 
@@ -43,11 +43,11 @@ public class NettyChannelHandler extends ChannelHandlerAdapter {
 
     private final Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>(); // <ip:port, channel>
     
-    private final EndpointInfo param;
+    private final ChannelInfo param;
     
     private final ChannelHandler handler;
     
-    public NettyChannelHandler(EndpointInfo param, org.solmix.hola.transport.channel.ChannelHandler handler){
+    public NettyChannelHandler(ChannelInfo param, org.solmix.hola.transport.channel.ChannelHandler handler){
         if (param == null) {
             throw new IllegalArgumentException("url == null");
         }
@@ -100,11 +100,24 @@ public class NettyChannelHandler extends ChannelHandlerAdapter {
     }
     
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+    public void write(ChannelHandlerContext ctx, final Object msg, ChannelPromise promise) throws Exception {
         super.write(ctx, msg, promise);
-        NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), param, handler);
+       final NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), param, handler);
         try {
-            handler.sent(channel, msg);
+            /*  EventExecutor executor= ctx.executor();
+            EventExecutorGroup group=   executor.parent();
+            group.execute(new Runnable() {
+                
+                @Override
+                public void run() {
+                    try {*/
+                        handler.sent(channel, msg);
+                   /* } catch (TransportException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });*/
+           
         } finally {
             NettyChannel.removeChannelIfDisconnected(ctx.channel());
         }

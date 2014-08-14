@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.ExecutionException;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
@@ -156,7 +156,7 @@ public class ProtocolExchangeHandler implements ChannelHandlerDelegate
 
     private static boolean isClientSide(Channel channel) {
         InetSocketAddress address = channel.getRemoteAddress();
-        EndpointInfo url = channel.getEndpointInfo();
+        ChannelInfo url = channel.getInfo();
         return url.getPort() == address.getPort() && 
                     NetUtils.filterLocalHost(url.getIp())
                     .equals(NetUtils.filterLocalHost(address.getAddress().getHostAddress()));

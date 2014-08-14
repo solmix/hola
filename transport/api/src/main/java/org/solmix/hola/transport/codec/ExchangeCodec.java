@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.io.Bytes;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.SerializeInfo;
 import org.solmix.hola.core.serialize.Serialization;
 import org.solmix.hola.core.serialize.SerializationManager;
 import org.solmix.hola.transport.channel.Channel;
@@ -93,7 +92,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      */
     protected void encodeResponse(Channel channel, ByteBuf buffer, Response res) throws IOException {
         try {
-            Serialization serialization = getSerialization(channel.getEndpointInfo().getSerializeInfo());
+            Serialization serialization = getSerialization(channel.getInfo().getSerialName());
             // header.
             byte[] header = new byte[HEADER_LENGTH];
             // set magic number.
@@ -110,7 +109,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
             int savedWriteIndex = buffer.writerIndex();
             buffer.writerIndex(savedWriteIndex + HEADER_LENGTH);
             ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
-            ObjectOutput out = serialization.serialize(channel.getEndpointInfo().getSerializeInfo(), bos);
+            ObjectOutput out = serialization.serialize(channel.getInfo(), bos);
             // encode response data or error message.
             if (status == Response.OK) {
                 if (res.isHeartbeat()) {
@@ -181,7 +180,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      * @throws IOException 
      */
     protected void encodeRequest(Channel channel, ByteBuf buffer, Request req) throws IOException {
-        Serialization serialization = getSerialization(channel.getEndpointInfo().getSerializeInfo());
+        Serialization serialization = getSerialization(channel.getInfo().getSerialName());
         // header.
         byte[] header = new byte[HEADER_LENGTH];
         // set magic number.
@@ -198,7 +197,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
         int savedWriteIndex = buffer.writerIndex();
         buffer.writerIndex(savedWriteIndex + HEADER_LENGTH);
         ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
-        ObjectOutput out = serialization.serialize(channel.getEndpointInfo().getSerializeInfo(), bos);
+        ObjectOutput out = serialization.serialize(channel.getInfo(), bos);
         if (req.isEvent()) {
             encodeEventData(channel, out, req.getData());
         } else {
@@ -292,10 +291,9 @@ public class ExchangeCodec extends SerializeCodec implements Codec
     private Object decodeBody(Channel channel, ByteBufInputStream input,
         byte[] header) throws IOException {
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
-        SerializeInfo sinfo=channel.getEndpointInfo().getSerializeInfo();
-        Serialization ser= SerializationManager.getSerialization(sinfo, proto);
+        Serialization ser= SerializationManager.getSerialization(channel.getInfo(), proto);
         
-        ObjectInput in = ser.deserialize(sinfo, input);
+        ObjectInput in = ser.deserialize(channel.getInfo(), input);
         long id = Bytes.bytes2long(header, 4);
         if ((flag & FLAG_REQUEST) == 0) {
             Response res = new Response(id);
@@ -397,10 +395,9 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      * @throws IOException 
      */
     protected void checkLength(Channel channel, int len) throws IOException {
-        int limit = HolaConstants.DEFAULT_DATALENGTH;
-        if (channel != null && channel.getEndpointInfo() != null)
-            limit = channel.getEndpointInfo().getInt(
-                HolaConstants.KEY_DATALENGTH, HolaConstants.DEFAULT_DATALENGTH);
+        int limit = HolaConstants.DEFAULT_PALYLOAD;
+        if (channel != null && channel.getInfo() != null)
+            limit = channel.getInfo().getPayload(HolaConstants.DEFAULT_PALYLOAD);
         if (limit > 0 && len < limit) {
             IOException e = new IOException("Data length too large: " + len
                 + ", limit: " + limit + ", channel: " + channel);
