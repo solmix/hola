@@ -26,10 +26,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.solmix.hola.core.HolaConstants;
+import javax.annotation.Resource;
+
+import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.core.serialize.Serialization;
+import org.solmix.hola.core.serialize.SerializationManager;
 import org.solmix.hola.transport.channel.Channel;
-import org.solmix.runtime.Containers;
 import org.solmix.runtime.Extension;
 
 
@@ -41,7 +43,8 @@ import org.solmix.runtime.Extension;
 @Extension(name="serialize")
 public class SerializeCodec implements Codec
 {
-
+    @Resource
+    protected SerializationManager serializationManager;
     /**
      * {@inheritDoc}
      * 
@@ -50,9 +53,8 @@ public class SerializeCodec implements Codec
     @Override
     public void encode(Channel channel, ByteBuf buffer, Object msg)
         throws IOException {
-       String implementor=channel.getInfo().getSerialName( HolaConstants.DEFAULT_SERIALIZATION);
       ByteBufOutputStream output= new ByteBufOutputStream(buffer);
-      ObjectOutput objectOutput= getSerialization(implementor).serialize(channel.getInfo(), output);
+      ObjectOutput objectOutput= getSerialization(channel.getInfo()).serialize(channel.getInfo(), output);
       encodeData(channel, objectOutput, msg);
       objectOutput.flush();
     }
@@ -77,9 +79,8 @@ public class SerializeCodec implements Codec
      */
     @Override
     public Object decode(Channel channel, ByteBuf buffer) throws IOException {
-        String implementor=channel.getInfo().getSerialName( HolaConstants.DEFAULT_SERIALIZATION);
         ByteBufInputStream input= new ByteBufInputStream(buffer);
-        ObjectInput objectinput= getSerialization(implementor).deserialize(channel.getInfo(), input);
+        ObjectInput objectinput= getSerialization(channel.getInfo()).deserialize(channel.getInfo(), input);
         return decodeData(channel, objectinput);
     }
     protected Object decodeData(Channel channel, ObjectInput input) throws IOException {
@@ -93,7 +94,7 @@ public class SerializeCodec implements Codec
             throw new IOException("ClassNotFoundException: " + e.getMessage());
         }
     }
-    static Serialization getSerialization(String implementor){
-        return Containers.getExtensionLoader(Serialization.class).getExtension(implementor);
+     Serialization getSerialization(ChannelInfo info){
+        return serializationManager.getSerialization(info);
     }
 }

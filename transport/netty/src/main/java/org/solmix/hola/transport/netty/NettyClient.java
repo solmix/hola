@@ -39,6 +39,7 @@ import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractClient;
 import org.solmix.hola.transport.channel.ChannelHandler;
+import org.solmix.runtime.Container;
 
 /**
  * 
@@ -56,28 +57,33 @@ public class NettyClient extends AbstractClient implements ChannelHandler
 
     private volatile Channel channel; 
 
-    public NettyClient(final ChannelInfo endpointInfo, final ChannelHandler handler)
+    public NettyClient(final ChannelInfo info, final ChannelHandler handler,final Container container)
         throws TransportException
     {
-        super(endpointInfo, wrapChannelHandler(endpointInfo, handler));
+            
+        super(info,handler,container);
     }
-
+    @Override
+    protected   ChannelHandler wrapChannelHandler(ChannelInfo info,
+        ChannelHandler handler) {
+        return super.wrapChannelHandler(setThreadName(info, THREAD_POOL_NAME), handler);
+    }
     @Override
     protected void doOpen() throws Throwable {
-        workerGroup = new NioEventLoopGroup(HolaConstants.DEFAULT_IO_THREADS,
-            new NamedThreadFactory(new StringBuilder()
-            .append("NettyClient")
-            .append("-")
-            .append(getInfo().getAddress()).toString(),true) );
+        workerGroup = new NioEventLoopGroup(getInfo().getIoThreads(
+            HolaConstants.DEFAULT_IO_THREADS), new NamedThreadFactory(
+            "NettyClient"));
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
-        bootstrap.channel(NioSocketChannel.class); 
+        bootstrap.channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, getTimeout());
-      
-        final NettyChannelHandler nettyChannelHandler = new NettyChannelHandler(getInfo(), this);
+
+        final NettyChannelHandler nettyChannelHandler = new NettyChannelHandler(
+            getInfo(), this);
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
                 NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(),
@@ -87,7 +93,7 @@ public class NettyClient extends AbstractClient implements ChannelHandler
                 ch.pipeline().addLast("handler", nettyChannelHandler);
             }
         });
-       
+
     }
 
     @Override
@@ -102,8 +108,7 @@ public class NettyClient extends AbstractClient implements ChannelHandler
                 Channel newChannel = future.channel();
                 try {
                     // 关闭旧的连接
-                    Channel oldChannel = NettyClient.this.channel; // copy
-                                                                   // reference
+                    Channel oldChannel = NettyClient.this.channel;
                     if (oldChannel != null) {
                         try {
                             if (logger.isInfoEnabled()) {

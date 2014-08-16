@@ -35,7 +35,7 @@ import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.handler.MultiMessageHandler;
+import org.solmix.runtime.Container;
 
 /**
  * 
@@ -76,10 +76,10 @@ public abstract class AbstractClient extends AbstractPeer implements Client
      * @param handler
      * @throws TransportException
      */
-    public AbstractClient(ChannelInfo info, ChannelHandler handler)
+    public AbstractClient(ChannelInfo info, ChannelHandler handler,Container container)
         throws TransportException
     {
-        super(info, handler);
+        super(info, handler,container);
         sendReconnect =info.getReconnect(false);
         shutdownTimeout = info.getShutdownTimeout(HolaConstants.DEFAULT_SHUTDOWN_TIMEOUT);
         reconnectWarningPeriod = info.getReconnectWarningPeriod(HolaConstants.DEFAULT_RECONNECT_WARNING_PERIOD);
@@ -121,12 +121,6 @@ public abstract class AbstractClient extends AbstractPeer implements Client
         }
     }
 
-    protected static ChannelHandler wrapChannelHandler(ChannelInfo info,
-        ChannelHandler handler) {
-        info.setThreadName(THREAD_POOL_NAME);
-        info.setThreadPool(HolaConstants.DEFAULT_THREADPOOL);
-        return new MultiMessageHandler(handler);
-    }
 
     protected void connect() throws TransportException {
         connectLock.lock();

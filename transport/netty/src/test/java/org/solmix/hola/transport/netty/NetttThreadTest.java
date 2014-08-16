@@ -27,8 +27,12 @@ import org.junit.Test;
 import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.hola.transport.TransportException;
+import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
+import org.solmix.hola.transport.channel.Client;
+import org.solmix.hola.transport.channel.Server;
+import org.solmix.runtime.Containers;
 
 
 /**
@@ -40,8 +44,8 @@ import org.solmix.hola.transport.channel.ChannelHandler;
 public class NetttThreadTest
 {
 
-    private NettyClient client;
-    private NettyServer server;
+    private Client client;
+    private Server server;
     private TestHandler serverhandler;
     private TestHandler clienthandler;
   private  CountDownLatch allMessages ;
@@ -59,8 +63,9 @@ public class NetttThreadTest
         info.setTimeout(6000);
         serverhandler= new TestHandler("1314", false);
         clienthandler= new TestHandler("1314", true);
-        server=new NettyServer(info, serverhandler);
-        client= new NettyClient(info, clienthandler);
+        TransporterProvider t= Containers.get().getExtensionLoader(TransporterProvider.class).getExtension(NettyTransporter.NAME);
+        server=t.newServer(serverhandler, info);
+        client= t.newClient(clienthandler,info);
        
        
     }

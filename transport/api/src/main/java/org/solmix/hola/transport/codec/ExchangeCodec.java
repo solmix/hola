@@ -32,7 +32,6 @@ import org.solmix.commons.io.Bytes;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.serialize.Serialization;
-import org.solmix.hola.core.serialize.SerializationManager;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.exchange.DefaultFuture;
 import org.solmix.hola.transport.exchange.Request;
@@ -52,6 +51,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
     private static final Logger LOG = LoggerFactory.getLogger(ExchangeCodec.class.getName());
     public static final String NAME="exchange";
     private static final int HEADER_LENGTH = 0x16;
+    
     protected static final short    MAGIC              = (short) 0xdabb;
     
     protected static final byte     MAGIC_HIGH         = Bytes.short0(MAGIC);
@@ -92,7 +92,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      */
     protected void encodeResponse(Channel channel, ByteBuf buffer, Response res) throws IOException {
         try {
-            Serialization serialization = getSerialization(channel.getInfo().getSerialName());
+            Serialization serialization = getSerialization(channel.getInfo());
             // header.
             byte[] header = new byte[HEADER_LENGTH];
             // set magic number.
@@ -180,7 +180,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      * @throws IOException 
      */
     protected void encodeRequest(Channel channel, ByteBuf buffer, Request req) throws IOException {
-        Serialization serialization = getSerialization(channel.getInfo().getSerialName());
+        Serialization serialization = getSerialization(channel.getInfo());
         // header.
         byte[] header = new byte[HEADER_LENGTH];
         // set magic number.
@@ -291,7 +291,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
     private Object decodeBody(Channel channel, ByteBufInputStream input,
         byte[] header) throws IOException {
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
-        Serialization ser= SerializationManager.getSerialization(channel.getInfo(), proto);
+        Serialization ser= serializationManager.getSerialization(channel.getInfo(), proto);
         
         ObjectInput in = ser.deserialize(channel.getInfo(), input);
         long id = Bytes.bytes2long(header, 4);

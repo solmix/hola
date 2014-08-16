@@ -16,50 +16,20 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-
 package org.solmix.hola.core.serialize;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.solmix.hola.core.model.ChannelInfo;
-import org.solmix.hola.core.serialize.hola.HolaSerialization;
-import org.solmix.hola.core.serialize.java.JavaSerialization;
-import org.solmix.runtime.Containers;
+
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年8月11日
+ * @version $Id$  2014年8月16日
  */
 
-public class SerializationManager
+public interface SerializationManager
 {
-
-    private static Map<Byte, Serialization> ID_SERIALIZATION_MAP = new HashMap<Byte, Serialization>();
-
-    static {
-        HolaSerialization hola = new HolaSerialization();
-        ID_SERIALIZATION_MAP.put(hola.getSerializeId(), hola);
-        JavaSerialization java = new JavaSerialization();
-        ID_SERIALIZATION_MAP.put(java.getSerializeId(), java);
-    }
-
-    public static Serialization getSerialization(byte id) {
-        return ID_SERIALIZATION_MAP.get(id);
-    }
-
-    public static Serialization getSerialization(ChannelInfo info) {
-        return Containers.getExtensionLoader(Serialization.class).getExtension(
-            info.getSerialName());
-    }
-
-    public static Serialization getSerialization(ChannelInfo info, byte id) {
-        Serialization s = getSerialization(id);
-        if (s == null) {
-            s = getSerialization(info);
-        }
-        return s;
-    }
-
+    Serialization getSerialization(byte id);
+    Serialization getSerialization(ChannelInfo info);
+    Serialization getSerialization(ChannelInfo info, byte id);
 }

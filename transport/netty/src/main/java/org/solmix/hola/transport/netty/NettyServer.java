@@ -46,6 +46,7 @@ import org.solmix.hola.transport.channel.AbstractServer;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Server;
+import org.solmix.runtime.Container;
 
 /**
  * 
@@ -71,13 +72,16 @@ public class NettyServer extends AbstractServer implements Server,
      * @param handler
      * @throws TransportException
      */
-    public NettyServer(ChannelInfo info, ChannelHandler handler)
+    public NettyServer(ChannelInfo info, ChannelHandler handler,final Container container)
         throws TransportException
     {
-        super(info, wrapChannelHandler(handler,
-            setThreadName(info, SERVER_THREAD_POOL_NAME)));
+        super(info,handler,container);
     }
-
+    @Override
+    protected   ChannelHandler wrapChannelHandler(ChannelInfo info,
+        ChannelHandler handler) {
+        return super.wrapChannelHandler(setThreadName(info, SERVER_THREAD_POOL_NAME), handler);
+    }
     /**
      * {@inheritDoc}
      * 
@@ -86,19 +90,10 @@ public class NettyServer extends AbstractServer implements Server,
     @Override
     protected void doOpen() throws Throwable {
          bossGroup = new NioEventLoopGroup(8,
-                new NamedThreadFactory(
-                new StringBuilder().append("NettyServerBoss")
-                    .append("-")
-                    .append(getInfo().getAddress()).toString(), 
-                    true));
+                new NamedThreadFactory("NettyServerBoss", true));
          workerGroup = new NioEventLoopGroup(
                 getInfo().getIoThreads( HolaConstants.DEFAULT_IO_THREADS), 
-                new NamedThreadFactory(
-                    new StringBuilder()
-                    .append("NettyServerWorker")
-                    .append("-")
-                    .append(getInfo().getAddress()).toString(),
-                    true));
+                new NamedThreadFactory("NettyServerWorker",true));
        
         bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup).channel(

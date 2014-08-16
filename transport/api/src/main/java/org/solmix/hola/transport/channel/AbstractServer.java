@@ -33,6 +33,7 @@ import org.solmix.hola.core.model.ExecutorInfo;
 import org.solmix.hola.core.model.InfoUtils;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.handler.WrappedChannelHandler;
+import org.solmix.runtime.Container;
 
 
 /**
@@ -53,8 +54,8 @@ public abstract class AbstractServer extends AbstractPeer implements Server
     private int idleTimeout         = 600;
     protected static final String SERVER_THREAD_POOL_NAME  ="HolaServerHandler";
     ExecutorService executor;
-    public AbstractServer(ChannelInfo info,ChannelHandler handler) throws TransportException{
-        super(info,handler);
+    public AbstractServer(ChannelInfo info,ChannelHandler handler,Container container) throws TransportException{
+        super(info,handler,container);
         localAddress=info.toInetSocketAddress();
         String host = NetUtils.isInvalidLocalHost(info.getHost()) 
             ? NetUtils.ANYHOST : info.getHost();

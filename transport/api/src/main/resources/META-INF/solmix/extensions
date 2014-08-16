@@ -1,0 +1,2 @@
+org.solmix.hola.transport.codec.SerializeCodec:org.solmix.hola.transport.codec.Codec:true
+org.solmix.hola.transport.codec.ExchangeCodec:org.solmix.hola.transport.codec.Codec:true

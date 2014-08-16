@@ -27,7 +27,7 @@ import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.hola.transport.codec.ExchangeCodec;
 import org.solmix.hola.transport.handler.MultiMessageHandler;
-import org.solmix.runtime.Containers;
+import org.solmix.runtime.Container;
 
 /**
  * 
@@ -51,26 +51,34 @@ public class AbstractPeer
     private int connectTimeout;
 
     private volatile boolean closed;
+    
+    private final Container container;
 
-    public AbstractPeer(ChannelInfo info, ChannelHandler handler)
+    public AbstractPeer(ChannelInfo info, ChannelHandler handler,Container container)
     {
+        this.container=container;
         this.info = info;
-        this.handler = handler;
+        this.handler = wrapChannelHandler(info,handler);
         this.codec = getAdaptorCodec(info);
         this.timeout = info.getTimeout();
         this.connectTimeout = info.getConnectTimeout(HolaConstants.DEFAULT_TIMEOUT);
     }
 
+    protected Container getContainer(){
+        if(container==null)
+            throw new IllegalStateException("container is null");
+        return container;
+    }
     /**
      * @endpointInfo endpointInfo
      * @return
      */
-    protected static Codec getAdaptorCodec(ChannelInfo info) {
+    protected  Codec getAdaptorCodec(ChannelInfo info) {
        String codec=info.getCodec(ExchangeCodec.NAME);
        if(codec==null){
-           return Containers.get().getExtensionLoader(Codec.class).getDefault();
+           return getContainer().getExtensionLoader(Codec.class).getDefault();
        }else{
-           return  Containers.get().getExtensionLoader(Codec.class).getExtension(codec);
+           return  getContainer().getExtensionLoader(Codec.class).getExtension(codec);
        }
     }
 
@@ -167,21 +175,27 @@ public class AbstractPeer
         return connectTimeout;
     }
     
-   protected static ChannelHandler wrapChannelHandler(ChannelHandler hander, ChannelInfo endpointInfo2) {
-        // TODO Dispatcher.dispatch();
-        return new MultiMessageHandler(hander);
-
+    /**
+     * 扩展channelHandler功能
+     * @param info
+     * @param handler
+     * @return
+     */
+    protected   ChannelHandler wrapChannelHandler(ChannelInfo info,
+        ChannelHandler handler) {
+        //XXX
+        return new MultiMessageHandler(handler);
     }
-   /**
- * @param info
- * @param defaultName
- * @return
- */
-protected static ChannelInfo setThreadName(ChannelInfo info ,String defaultName){
-       String name = info.getThreadName(defaultName);
-       name=new StringBuilder(32).append(name).append("-").append(info.getAddress()).toString();
-        info.setThreadName(name);
-       return info;
-   }
+    /**
+     * @param info
+     * @param defaultName
+     * @return
+     */
+    protected  ChannelInfo setThreadName(ChannelInfo info ,String defaultName){
+           String name = info.getThreadName(defaultName);
+           name=new StringBuilder(32).append(name).append("-").append(info.getAddress()).toString();
+            info.setThreadName(name);
+           return info;
+       }
 
 }

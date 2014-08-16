@@ -24,6 +24,7 @@ import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
+import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
 
@@ -32,10 +33,17 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年7月15日
  */
-@Extension(name="netty")
+@Extension(name=NettyTransporter.NAME)
 public class NettyTransporter implements TransporterProvider
 {
 
+    public static final String NAME="netty";
+    
+    private final Container container;
+    
+    public NettyTransporter(Container container){
+        this.container=container;
+    }
     /**
      * {@inheritDoc}
      * 
@@ -44,7 +52,7 @@ public class NettyTransporter implements TransporterProvider
     @Override
     public Server newServer(ChannelHandler handler, ChannelInfo parameter)
         throws TransportException {
-        return new NettyServer(parameter, handler);
+        return new NettyServer(parameter, handler,container);
     }
 
     /**
@@ -55,7 +63,7 @@ public class NettyTransporter implements TransporterProvider
     @Override
     public Client newClient(ChannelHandler handler, ChannelInfo parameter)
         throws TransportException {
-        return new NettyClient(parameter, handler);
+        return new NettyClient(parameter, handler,container);
     }
 
 }

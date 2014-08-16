@@ -48,7 +48,6 @@ final class NettyCodecAdapter {
     @Sharable
     private class NettyEncoder extends MessageToMessageEncoder<Object> {
 
-        
         /**
          * {@inheritDoc}
          * 

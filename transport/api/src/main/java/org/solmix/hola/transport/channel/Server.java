@@ -34,6 +34,7 @@ import org.solmix.hola.transport.TransportException;
 public interface Server 
 {
     ChannelInfo getInfo();
+    
     void refresh(ChannelInfo param);
     /**
      * @return
@@ -49,6 +50,7 @@ public interface Server
      */
     
     boolean isActive();
+    
     ChannelHandler getChannelHandler();
 
     /**
