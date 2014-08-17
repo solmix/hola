@@ -23,6 +23,7 @@ import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
+import org.solmix.hola.transport.exchange.AbstractExchanger;
 import org.solmix.hola.transport.exchange.ExchangeClient;
 import org.solmix.hola.transport.exchange.ExchangeHandler;
 import org.solmix.hola.transport.exchange.ExchangeServer;
@@ -38,7 +39,7 @@ import org.solmix.runtime.Extension;
  * @version $Id$  2014年7月14日
  */
 @Extension(name=ProtocolExchanger.NAME)
-public class ProtocolExchanger implements ExchangerProvider
+public class ProtocolExchanger extends AbstractExchanger implements ExchangerProvider
 {
     
     public static final String NAME="protocol";

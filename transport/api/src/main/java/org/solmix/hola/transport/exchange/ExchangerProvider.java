@@ -20,6 +20,7 @@ package org.solmix.hola.transport.exchange;
 
 import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
+import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.protocol.ProtocolExchanger;
 import org.solmix.runtime.Extension;
 
@@ -33,6 +34,8 @@ import org.solmix.runtime.Extension;
 public interface ExchangerProvider
 {
     ExchangeServer bind(ChannelInfo info,ExchangeHandler handler)throws TransportException;
+    ExchangeServer bind(ChannelInfo info,ChannelHandler handler,Replier<?> replier)throws TransportException;
     
     ExchangeClient connect(ChannelInfo info,ExchangeHandler handler)throws TransportException;
+    ExchangeClient connect(ChannelInfo info,ChannelHandler handler,Replier<?> replier)throws TransportException;
 }

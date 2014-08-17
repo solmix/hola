@@ -57,7 +57,6 @@ public abstract class AbstractClient extends AbstractPeer implements Client
     private final int reconnectWarningPeriod;
 
     private final boolean sendReconnect;
-    public static boolean KEY_CHECK=true;
     
     private static final ScheduledThreadPoolExecutor reconnectExecutorService = new ScheduledThreadPoolExecutor(
         2, new NamedThreadFactory("ClientReconnectTimer", true));
@@ -101,7 +100,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
                     + getRemoteAddress());
             }
         } catch (TransportException t) {
-            if (KEY_CHECK) {
+            if (info.getCheck(true)) {
                 close();
                 throw t;
             } else {

@@ -19,23 +19,15 @@
 package org.solmix.hola.transport.exchange;
 
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.channel.ChannelHandler;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version $Id$  2014年8月17日
  */
 
-public interface ExchangeHandler extends ChannelHandler
+public interface Replier<T>
 {
-
-    /**
-     * @param channel
-     * @param msg
-     * @return
-     */
-    Object reply(ExchangeChannel channel, Object msg) throws TransportException;
-
+    Object reply(ExchangeChannel channel, T request) throws TransportException;
 }

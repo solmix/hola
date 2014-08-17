@@ -166,6 +166,11 @@ public class ChannelInfo
     private volatile Integer reconnectWarningPeriod;
     
     /**
+     * 是否检查启动错误,如果为true,当出现错误时抛错.
+     */
+    private volatile Boolean check;
+    
+    /**
      * @return the reconnectPeriod
      */
     public Integer getReconnectPeriod() {
@@ -184,19 +189,28 @@ public class ChannelInfo
     public void setReconnectPeriod(Integer reconnectPeriod) {
         this.reconnectPeriod = reconnectPeriod;
     }
-
-
-
+    
+    /**
+     * @return the check
+     */
+    public Boolean getCheck() {
+        return check;
+    }
+    public Boolean getCheck(boolean df) {
+        return check==null?df:check;
+    }
+    /**
+     * @param check the check to set
+     */
+    public void setCheck(Boolean check) {
+        this.check = check;
+    }
     /**
      * @return the host
      */
     public String getHost() {
         return host;
     }
-
-    
-    
-    
     /**
      * @return the transport
      */
@@ -727,6 +741,7 @@ public class ChannelInfo
         private   Integer port;
         private  ExecutorInfo executor;
         private  Integer reconnectWarningPeriod;
+        private Boolean check;
         private Builder()
         {
         }
@@ -764,6 +779,7 @@ public class ChannelInfo
             this.threadName=info.threadName;
             this.threadPool=info.threadPool;
             this.timeout=info.timeout;
+            this.check=info.check;
         }
         /**
          * @param heartbeat the heartbeat to set
@@ -964,15 +980,19 @@ public class ChannelInfo
             return this;
         }
         /**
-         * @param reconnectWarningPeriod the reconnectWarningPeriod to set
+         * 多少次连接失败后输出一次警告信息.
          */
         public Builder setReconnectWarningPeriod(Integer reconnectWarningPeriod) {
             this.reconnectWarningPeriod = reconnectWarningPeriod;
             return this;
         }
-
-
-
+        /**
+         *启动错误检查
+         */
+        public Builder setCheck(Boolean check) {
+            this.check = check;
+            return this;
+        }
         public ChannelInfo build(){
             ChannelInfo info=   new ChannelInfo();
             info.accepts=this.accepts;
@@ -1004,6 +1024,7 @@ public class ChannelInfo
             info.threadName=this.threadName;
             info.threadPool=this.threadPool;
             info.timeout=this.timeout;
+            info.check=this.check;
             return info;
         }
     }
