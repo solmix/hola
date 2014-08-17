@@ -1,2 +1,6 @@
 org.solmix.hola.transport.codec.SerializeCodec:org.solmix.hola.transport.codec.Codec:true
 org.solmix.hola.transport.codec.ExchangeCodec:org.solmix.hola.transport.codec.Codec:true
+org.solmix.hola.transport.dispatch.AllDispatcher:org.solmix.hola.transport.dispatch.Dispatcher:true
+org.solmix.hola.transport.dispatch.DirectDispatcher:org.solmix.hola.transport.dispatch.Dispatcher:true
+org.solmix.hola.transport.dispatch.ExecutionDispatcher:org.solmix.hola.transport.dispatch.Dispatcher:true
+org.solmix.hola.transport.dispatch.ReadonlyDispatcher:org.solmix.hola.transport.dispatch.Dispatcher:true

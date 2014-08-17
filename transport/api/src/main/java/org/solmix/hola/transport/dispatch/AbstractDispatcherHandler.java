@@ -1,19 +1,25 @@
-package org.solmix.hola.transport.handler;
+package org.solmix.hola.transport.dispatch;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.NamedThreadFactory;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.HolaConstants;
+import org.solmix.hola.core.executor.ExecutorProvider;
+import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.ExecutorInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
+import org.solmix.hola.transport.handler.ChannelHandlerDelegate;
+import org.solmix.runtime.Container;
 
-public class WrappedChannelHandler implements ChannelHandlerDelegate {
+public class AbstractDispatcherHandler implements ChannelHandlerDelegate {
     
-    protected static final Logger logger = LoggerFactory.getLogger(WrappedChannelHandler.class);
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractDispatcherHandler.class);
 
     protected static final ExecutorService SHARED_EXECUTOR = Executors.newCachedThreadPool(new NamedThreadFactory("DubboSharedHandler", true));
     
@@ -21,11 +27,20 @@ public class WrappedChannelHandler implements ChannelHandlerDelegate {
     
     protected  ChannelHandler handler;
 
-    protected final EndpointInfo param;
+    protected final ChannelInfo info;
     
-    public WrappedChannelHandler(ChannelHandler handler, EndpointInfo param) {
+    private final Container container;
+    
+    public AbstractDispatcherHandler(ChannelHandler handler, ChannelInfo info,Container container) {
         this.handler = handler;
-        this.param = param;
+        this.info = info;
+        this.container=container;
+        ExecutorInfo einfo=info.getExecutor();
+        if(einfo.getThreadName()==null){
+            einfo.setThreadName(info.getThreadName());
+        }
+        String eprovider=info.getThreadPool(HolaConstants.DEFAULT_THREADPOOL);
+        executor= (ExecutorService) container.getExtensionLoader(ExecutorProvider.class).getExtension(eprovider).getExecutor(einfo);
         //TODO used extensionpoint.
 //        executor = (ExecutorService) ExtensionLoader.getExtensionLoader(ThreadPool.class).getAdaptiveExtension().getExecutor(url);
 //
@@ -86,5 +101,9 @@ public class WrappedChannelHandler implements ChannelHandlerDelegate {
         }
     }
     
+    protected Container getContainer(){
+        Assert.isNotNull(container);
+        return container;
+    }
    
 }

@@ -308,7 +308,9 @@ public class ChannelInfo
     public String getThreadPool() {
         return threadPool;
     }
-
+    public String getThreadPool(String df) {
+        return threadPool==null?df:threadPool;
+    }
     
     /**
      * @param threadPool the threadPool to set

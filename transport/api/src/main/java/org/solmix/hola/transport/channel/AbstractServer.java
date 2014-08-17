@@ -32,7 +32,7 @@ import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.core.model.ExecutorInfo;
 import org.solmix.hola.core.model.InfoUtils;
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.handler.WrappedChannelHandler;
+import org.solmix.hola.transport.dispatch.AbstractDispatcherHandler;
 import org.solmix.runtime.Container;
 
 
@@ -71,8 +71,8 @@ public abstract class AbstractServer extends AbstractPeer implements Server
             throw new TransportException(localAddress, null, "Failed to bind " + getClass().getSimpleName() 
                                         + " on " + getLocalAddress() + ", cause: " + t.getMessage(), t);
         }
-        if (handler instanceof WrappedChannelHandler ){
-            executor = ((WrappedChannelHandler)handler).getExecutor();
+        if (handler instanceof AbstractDispatcherHandler ){
+            executor = ((AbstractDispatcherHandler)handler).getExecutor();
         }
     }
   
