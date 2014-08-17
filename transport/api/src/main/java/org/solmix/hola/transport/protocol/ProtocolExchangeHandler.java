@@ -35,6 +35,7 @@ import org.solmix.hola.transport.exchange.ExchangeHandler;
 import org.solmix.hola.transport.exchange.Request;
 import org.solmix.hola.transport.exchange.Response;
 import org.solmix.hola.transport.handler.ChannelHandlerDelegate;
+import org.solmix.hola.transport.handler.HeartbeatHandler;
 
 
 /**

@@ -26,6 +26,8 @@ import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.hola.transport.codec.ExchangeCodec;
+import org.solmix.hola.transport.dispatch.Dispatcher;
+import org.solmix.hola.transport.handler.HeartbeatHandler;
 import org.solmix.hola.transport.handler.MultiMessageHandler;
 import org.solmix.runtime.Container;
 
@@ -60,7 +62,7 @@ public class AbstractPeer
         this.info = info;
         this.handler = wrapChannelHandler(info,handler);
         this.codec = getAdaptorCodec(info);
-        this.timeout = info.getTimeout();
+        this.timeout = info.getTimeout(HolaConstants.DEFAULT_TIMEOUT);
         this.connectTimeout = info.getConnectTimeout(HolaConstants.DEFAULT_TIMEOUT);
     }
 
@@ -181,10 +183,13 @@ public class AbstractPeer
      * @param handler
      * @return
      */
-    protected   ChannelHandler wrapChannelHandler(ChannelInfo info,
+    protected ChannelHandler wrapChannelHandler(ChannelInfo info,
         ChannelHandler handler) {
-        //XXX
-        return new MultiMessageHandler(handler);
+        String dispatch = info.getDispather(HolaConstants.DEFAULT_DISPATHER);
+        ChannelHandler dis = getContainer().getExtensionLoader(Dispatcher.class)
+            .getExtension(dispatch)
+            .dispatch(handler, info);
+        return new MultiMessageHandler(new HeartbeatHandler(dis));
     }
     /**
      * @param info

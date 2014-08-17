@@ -18,31 +18,41 @@
  */
 package org.solmix.hola.transport.exchange;
 
-import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.protocol.ProtocolExchanger;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version $Id$  2014年8月17日
  */
 
-public class Exchangers
+public abstract class AbstractExchanger implements ExchangerProvider
 {
 
-    public static ExchangeServer bind(ExchangeHandler handler,ChannelInfo parameter) throws TransportException{
-        Assert.isNotNull(handler);
-        Assert.isNotNull(parameter);
-        //暂时完全不管扩展,扩展考虑使用SytemContext.getExtensionForClass(Exchanger.class).get
-        return new ProtocolExchanger().newServer(handler, parameter);
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.transport.exchange.ExchangerProvider#bind(org.solmix.hola.core.model.ChannelInfo, org.solmix.hola.transport.exchange.ExchangeHandler)
+     */
+    @Override
+    public ExchangeServer bind(ChannelInfo info, ExchangeHandler handler)
+        throws TransportException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public static ExchangeClient connect(ExchangeHandler handler,ChannelInfo parameter) throws TransportException{
-        Assert.isNotNull(handler);
-        Assert.isNotNull(parameter);
-        return new ProtocolExchanger().newClient(handler, parameter);
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.transport.exchange.ExchangerProvider#connect(org.solmix.hola.core.model.ChannelInfo, org.solmix.hola.transport.exchange.ExchangeHandler)
+     */
+    @Override
+    public ExchangeClient connect(ChannelInfo info, ExchangeHandler handler)
+        throws TransportException {
+        // TODO Auto-generated method stub
+        return null;
     }
+
 }

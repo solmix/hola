@@ -134,7 +134,7 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
         //TODO
         ExchangeServer server=null;
         try {
-            server=Exchangers.newServer(handler, param);
+            server=Exchangers.bind(handler, param);
         } catch (TransportException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

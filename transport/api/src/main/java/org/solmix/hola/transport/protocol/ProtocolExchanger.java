@@ -20,14 +20,16 @@ package org.solmix.hola.transport.protocol;
 
 import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.Transporters;
+import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
 import org.solmix.hola.transport.exchange.ExchangeClient;
 import org.solmix.hola.transport.exchange.ExchangeHandler;
 import org.solmix.hola.transport.exchange.ExchangeServer;
-import org.solmix.hola.transport.exchange.Exchanger;
+import org.solmix.hola.transport.exchange.ExchangerProvider;
 import org.solmix.hola.transport.handler.DecodeHandler;
+import org.solmix.runtime.Container;
+import org.solmix.runtime.Extension;
 
 
 /**
@@ -35,34 +37,51 @@ import org.solmix.hola.transport.handler.DecodeHandler;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年7月14日
  */
-
-public class ProtocolExchanger implements Exchanger
+@Extension(name=ProtocolExchanger.NAME)
+public class ProtocolExchanger implements ExchangerProvider
 {
     
     public static final String NAME="protocol";
 
+    private final Container container;
+    
+    public  ProtocolExchanger(Container container){
+        this.container=container;
+    }
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.exchange.Exchanger#newServer(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
+     * @see org.solmix.hola.transport.exchange.Exchanger#bind(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public ExchangeServer newServer(ExchangeHandler handler,
-        ChannelInfo parameter) throws TransportException {
-      Server server =Transporters.newServer(parameter,new DecodeHandler(new ProtocolExchangeHandler(handler)));
+    public ExchangeServer bind(ChannelInfo info,ExchangeHandler handler) throws TransportException {
+        Server server=  getTransporterProvider(info).bind(info, new DecodeHandler(new ProtocolExchangeHandler(handler)));
         return new ProtocolExchangeServer(server);
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.exchange.Exchanger#newClient(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
+     * @see org.solmix.hola.transport.exchange.Exchanger#connect(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public ExchangeClient newClient(ExchangeHandler handler,
-        ChannelInfo parameter) throws TransportException {
-        Client client =Transporters.newClient(parameter,new DecodeHandler(new ProtocolExchangeHandler(handler)));
+    public ExchangeClient connect(ChannelInfo info,ExchangeHandler handler) throws TransportException {
+        Client client=  getTransporterProvider(info).connect( info,new DecodeHandler(new ProtocolExchangeHandler(handler)));
         return new ProtocolExchangeClient(client);
+    }
+    
+    private TransporterProvider getTransporterProvider(ChannelInfo info){
+        if(container==null)
+            throw new IllegalArgumentException("container is null");
+        String t=info.getTransport();
+        TransporterProvider provider;
+        if(t==null){
+            provider= container.getExtensionLoader(TransporterProvider.class).getDefault();
+        }else{
+            provider= container.getExtensionLoader(TransporterProvider.class).getExtension(t);
+        }
+       return provider;
+        
     }
 
 }

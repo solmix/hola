@@ -37,7 +37,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年8月16日
  */
-@Extension(name = "fixed")
+@Extension(name = "pooled")
 public class PooledExecutorProvider implements ExecutorProvider
 {
 

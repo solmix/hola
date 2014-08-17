@@ -75,7 +75,7 @@ public class ChannelInfoTest extends Assert
         MonitorInfo info = ms.getMonitorInfo();
         List<ChannelInfo> lists= new ArrayList<ChannelInfo>();
        long b=System.currentTimeMillis();
-        for(int i=0;i<100000;i++){
+        for(int i=0;i<1000;i++){
             ChannelInfo cc=ChannelInfo.newBuilder().setAccepts(10).setBuffer(1024).setCharset("UTF-9").setAwait(true)
                 .setCodec("hola").setConnections(100).setConnectTimeout(10000).setDispather("default").setExchangeName("exchange")
                 .setExecutor(null).setHeartbeat(10000).setHost("127.0.0.1").build();
@@ -84,6 +84,19 @@ public class ChannelInfoTest extends Assert
         MonitorInfo last = ms.getMonitorInfo();
         System.out.println(System.currentTimeMillis()-b);
         System.out.println(last.getUsedMemory()-info.getUsedMemory());
+    }
+    @Test
+    public void testcopy(){
+        ChannelInfo cc=ChannelInfo.newBuilder().setAccepts(10).setBuffer(1024).setCharset("UTF-9").setAwait(true)
+            .setCodec("hola").setConnections(100).setConnectTimeout(10000).setDispather("default").setExchangeName("exchange")
+            .setExecutor(null).setHeartbeat(10000).setHost("127.0.0.1").build();
+        ChannelInfo dd=ChannelInfo.newBuilder(cc).build();
+        dd.setCodec("nohola");
+        dd.setHeartbeat(null);
+        Assert.assertTrue(!dd.getCodec().equals(cc.getCodec()));
+        Assert.assertTrue(dd.getHost().equals(cc.getHost()));
+        Assert.assertNotSame(dd.getCodec(), cc.getCodec());
+        Assert.assertNull(dd.getHeartbeat());
     }
     
     

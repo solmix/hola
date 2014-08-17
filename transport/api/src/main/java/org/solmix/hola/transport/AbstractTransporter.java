@@ -18,59 +18,67 @@
  */
 package org.solmix.hola.transport;
 
-
 import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
-import org.solmix.hola.transport.handler.ChannelHandlerAdapter;
 import org.solmix.hola.transport.handler.ChannelHandlerDispatcher;
-import org.solmix.runtime.Containers;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version $Id$  2014年8月17日
  */
 
-public final class Transporters
+public abstract class AbstractTransporter implements TransporterProvider
 {
 
     /**
-     * @param parameter
-     * @param handler
-     * @return
-     * @throws TransportException 
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.transport.TransporterProvider#bind(org.solmix.hola.core.model.ChannelInfo, org.solmix.hola.transport.channel.ChannelHandler[])
      */
-    public static Server newServer(ChannelInfo parameter, ChannelHandler... handlers) throws TransportException {
+    @Override
+    public Server bind(ChannelInfo info, ChannelHandler... handlers)
+        throws TransportException {
+        if (info == null) {
+            throw new IllegalArgumentException("ChannelInfo is null");
+        }
+        if (handlers == null || handlers.length == 0) {
+            throw new IllegalArgumentException("handlers == null");
+        }
         ChannelHandler handler;
         if (handlers.length == 1) {
             handler = handlers[0];
         } else {
             handler = new ChannelHandlerDispatcher(handlers);
         }
-        TransporterProvider provider= Containers.get().getExtensionLoader(TransporterProvider.class).getDefault();
-        return provider.newServer(handler, parameter);
+        return newServer(info, handler);
     }
-
+    protected abstract Server newServer(ChannelInfo info, ChannelHandler handler)throws TransportException ;
+    protected abstract Client newClient(ChannelInfo info, ChannelHandler handler) throws TransportException;
     /**
-     * @param parameter
-     * @param decodeHandler
-     * @return
-     * @throws TransportException 
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.transport.TransporterProvider#connect(org.solmix.hola.core.model.ChannelInfo, org.solmix.hola.transport.channel.ChannelHandler[])
      */
-    public static Client newClient(ChannelInfo parameter, ChannelHandler... handlers) throws TransportException {
-        ChannelHandler handler;
+    @Override
+    public Client connect(ChannelInfo info, ChannelHandler... handlers)
+        throws TransportException {
+        if (info == null) {
+            throw new IllegalArgumentException("ChannelInfo is null");
+        }
         if (handlers == null || handlers.length == 0) {
-            handler = new ChannelHandlerAdapter();
-        } else if (handlers.length == 1) {
+            throw new IllegalArgumentException("handlers == null");
+        }
+        ChannelHandler handler;
+        if (handlers.length == 1) {
             handler = handlers[0];
         } else {
             handler = new ChannelHandlerDispatcher(handlers);
         }
-        TransporterProvider provider= Containers.get().getExtensionLoader(TransporterProvider.class).getDefault();
-        return provider.newClient(handler, parameter);
+        return newClient(info, handler);
     }
 
 }

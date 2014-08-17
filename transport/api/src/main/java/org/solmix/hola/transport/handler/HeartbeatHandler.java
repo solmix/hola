@@ -16,8 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport.protocol;
-
+package org.solmix.hola.transport.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,22 +25,21 @@ import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.exchange.Request;
 import org.solmix.hola.transport.exchange.Response;
-import org.solmix.hola.transport.handler.AbstractChannelHandlerDelegate;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version $Id$  2014年8月17日
  */
 
 public class HeartbeatHandler extends AbstractChannelHandlerDelegate
 {
-    private static final Logger logger = LoggerFactory.getLogger(HeartbeatHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HeartbeatHandler.class);
+    
+    public static String KEY_READ_TIMESTAMP = "_read_ts";
 
-    public static String KEY_READ_TIMESTAMP = "READ_TIMESTAMP";
-
-    public static String KEY_WRITE_TIMESTAMP = "WRITE_TIMESTAMP";
+    public static String KEY_WRITE_TIMESTAMP = "_write_ts";
     /**
      * @param handler
      */
@@ -56,6 +54,18 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
         handler.connected(channel);
     }
 
+    /**
+     * @param channel
+     */
+    private void setWriteTimestamp(Channel channel) {
+        channel.setAttribute(KEY_READ_TIMESTAMP, System.currentTimeMillis());
+    }
+    /**
+     * @param channel
+     */
+    private void setReadTimestamp(Channel channel) {
+        channel.setAttribute(KEY_WRITE_TIMESTAMP, System.currentTimeMillis());
+    }
     @Override
     public void disconnected(Channel channel) throws TransportException {
         clearReadTimestamp(channel);
@@ -63,12 +73,30 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
         handler.disconnected(channel);
     }
 
+    /**
+     * @param channel
+     */
+    private void clearWriteTimestamp(Channel channel) {
+        channel.removeAttribute(KEY_WRITE_TIMESTAMP);
+    }
+    /**
+     * @param channel
+     */
+    private void clearReadTimestamp(Channel channel) {
+        channel.removeAttribute(KEY_READ_TIMESTAMP);
+    }
     @Override
     public void sent(Channel channel, Object message) throws TransportException {
         setWriteTimestamp(channel);
         handler.sent(channel, message);
     }
+    private boolean isHeartbeatRequest(Object message) {
+        return message instanceof Request && ((Request) message).isHeartbeat();
+    }
 
+    private boolean isHeartbeatResponse(Object message) {
+        return message instanceof Response && ((Response)message).isHeartbeat();
+    }
     @Override
     public void received(Channel channel, Object message) throws TransportException {
         setReadTimestamp(channel);
@@ -78,10 +106,10 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
                 Response res = new Response(req.getId(), req.getVersion());
                 res.setEvent(Response.HEARTBEAT_EVENT);
                 channel.send(res);
-                if (logger.isInfoEnabled()) {
+                if (LOG.isInfoEnabled()) {
                     int heartbeat = channel.getInfo().getHeartbeat(0);
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("Received heartbeat from remote channel " + channel.getRemoteAddress()
+                    if(LOG.isTraceEnabled()) {
+                        LOG.trace("Received heartbeat from remote channel " + channel.getRemoteAddress()
                                         + ", cause: The channel has no data-transmission exceeds a heartbeat period"
                                         + (heartbeat > 0 ? ": " + heartbeat + "ms" : ""));
                     }
@@ -90,8 +118,8 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
             return;
         }
         if (isHeartbeatResponse(message)) {
-            if (logger.isDebugEnabled()) {
-                  logger.debug(
+            if (LOG.isTraceEnabled()) {
+                  LOG.trace(
                     new StringBuilder(32)
                         .append("Receive heartbeat response in thread ")
                         .append(Thread.currentThread().getName())
@@ -100,29 +128,5 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
             return;
         }
         handler.received(channel, message);
-    }
-
-    private void setReadTimestamp(Channel channel) {
-        channel.setAttribute(KEY_READ_TIMESTAMP, System.currentTimeMillis());
-    }
-
-    private void setWriteTimestamp(Channel channel) {
-        channel.setAttribute(KEY_WRITE_TIMESTAMP, System.currentTimeMillis());
-    }
-
-    private void clearReadTimestamp(Channel channel) {
-        channel.removeAttribute(KEY_READ_TIMESTAMP);
-    }
-
-    private void clearWriteTimestamp(Channel channel) {
-        channel.removeAttribute(KEY_WRITE_TIMESTAMP);
-    }
-
-    private boolean isHeartbeatRequest(Object message) {
-        return message instanceof Request && ((Request) message).isHeartbeat();
-    }
-
-    private boolean isHeartbeatResponse(Object message) {
-        return message instanceof Response && ((Response)message).isHeartbeat();
     }
 }

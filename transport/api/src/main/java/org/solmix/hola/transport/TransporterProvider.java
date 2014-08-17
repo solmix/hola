@@ -34,10 +34,10 @@ import org.solmix.runtime.Extension;
 public interface TransporterProvider
 {
 
-    Server newServer(ChannelHandler handler, ChannelInfo parameter)
+    Server bind(ChannelInfo info,ChannelHandler... handlers)
         throws TransportException;
 
-    Client newClient(ChannelHandler handler, ChannelInfo parameter)
+    Client connect(ChannelInfo info,ChannelHandler... handlers)
         throws TransportException;
 
 }

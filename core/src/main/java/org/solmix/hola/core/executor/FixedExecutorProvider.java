@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.ExecutorInfo;
+import org.solmix.runtime.Extension;
 
 
 /**
@@ -36,7 +37,7 @@ import org.solmix.hola.core.model.ExecutorInfo;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年8月16日
  */
-
+@Extension(name = "fixed")
 public class FixedExecutorProvider implements ExecutorProvider
 {
 

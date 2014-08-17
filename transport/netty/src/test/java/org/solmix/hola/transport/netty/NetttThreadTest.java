@@ -64,8 +64,8 @@ public class NetttThreadTest
         serverhandler= new TestHandler("1314", false);
         clienthandler= new TestHandler("1314", true);
         TransporterProvider t= Containers.get().getExtensionLoader(TransporterProvider.class).getExtension(NettyTransporter.NAME);
-        server=t.newServer(serverhandler, info);
-        client= t.newClient(clienthandler,info);
+        server=t.bind(info,serverhandler);
+        client= t.connect(info,clienthandler);
        
        
     }

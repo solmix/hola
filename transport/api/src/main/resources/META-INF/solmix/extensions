@@ -4,3 +4,4 @@ org.solmix.hola.transport.dispatch.AllDispatcher:org.solmix.hola.transport.dispa
 org.solmix.hola.transport.dispatch.DirectDispatcher:org.solmix.hola.transport.dispatch.Dispatcher:true
 org.solmix.hola.transport.dispatch.ExecutionDispatcher:org.solmix.hola.transport.dispatch.Dispatcher:true
 org.solmix.hola.transport.dispatch.ReadonlyDispatcher:org.solmix.hola.transport.dispatch.Dispatcher:true
+org.solmix.hola.transport.protocol.ProtocolExchanger:org.solmix.hola.transport.exchange.ExchangerProvider:true

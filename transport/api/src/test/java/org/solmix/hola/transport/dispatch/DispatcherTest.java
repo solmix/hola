@@ -46,6 +46,8 @@ public class DispatcherTest extends Assert
         assertTrue(loader.getExtension(ReadonlyDispatcher.NAME)instanceof ReadonlyDispatcher);
         AllDispatcher all=(AllDispatcher)  loader.getExtension(AllDispatcher.NAME);
         assertNotNull(all.getContainer());
+        Dispatcher d=   c.getExtension(Dispatcher.class);
+        assertTrue(d instanceof AllDispatcher);
 
     }
 }

@@ -36,21 +36,15 @@ public class AbstractDispatcherHandler implements ChannelHandlerDelegate {
         this.info = info;
         this.container=container;
         ExecutorInfo einfo=info.getExecutor();
+        if(einfo==null){
+            einfo=new ExecutorInfo();
+        }
         if(einfo.getThreadName()==null){
             einfo.setThreadName(info.getThreadName());
         }
         String eprovider=info.getThreadPool(HolaConstants.DEFAULT_THREADPOOL);
         executor= (ExecutorService) container.getExtensionLoader(ExecutorProvider.class).getExtension(eprovider).getExecutor(einfo);
-        //TODO used extensionpoint.
-//        executor = (ExecutorService) ExtensionLoader.getExtensionLoader(ThreadPool.class).getAdaptiveExtension().getExecutor(url);
-//
-//        String componentKey = Constants.EXECUTOR_SERVICE_COMPONENT_KEY;
-//        if (Constants.CONSUMER_SIDE.equalsIgnoreCase(url.getParameter(Constants.SIDE_KEY))) {
-//            componentKey = Constants.CONSUMER_SIDE;
-//        }
-//        DataStore dataStore = ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension();
-//        
-//        dataStore.put(componentKey, Integer.toString(url.getPort()), executor);
+        //XXX 使用object缓存技术
     }
     
     public void close() {

@@ -75,8 +75,8 @@ public class DecodeHandler extends AbstractChannelHandlerDelegate
                             .append(e.getMessage()).toString(),
                         e);
                 }
-            } // ~ end of catch
-        } // ~ end of if
-    } // ~ end of method decode
+            } 
+        } 
+    } 
 
 }

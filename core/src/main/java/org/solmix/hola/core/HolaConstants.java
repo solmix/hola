@@ -142,6 +142,8 @@ public class HolaConstants
 
     public static final int DEFAULT_ALIVE = 60000;
 
-    public static final int DEFAULT_QUEUES = 0;   
+    public static final int DEFAULT_QUEUES = 0;
+
+    public static final String DEFAULT_DISPATHER = "all";   
 
 }

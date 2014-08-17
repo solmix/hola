@@ -48,6 +48,11 @@ public class ChannelInfo
      * 交换层实现
      */
     private volatile String exchangeName;
+    
+    /**
+     * 传输层实现
+     */
+    private volatile String transport;
     /**
      * 线程名称
      */
@@ -191,6 +196,22 @@ public class ChannelInfo
 
     
     
+    
+    /**
+     * @return the transport
+     */
+    public String getTransport() {
+        return transport;
+    }
+
+    
+    /**
+     * @param transport the transport to set
+     */
+    public void setTransport(String transport) {
+        this.transport = transport;
+    }
+
     /**
      * @return the threadName
      */
@@ -344,7 +365,9 @@ public class ChannelInfo
     public String getDispather() {
         return dispather;
     }
-
+    public String getDispather(String df) {
+        return dispather==null?df:dispather;
+    }
     
     /**
      * @param dispather the dispather to set
@@ -679,6 +702,7 @@ public class ChannelInfo
         private  Integer heartbeatTimeout;
         private  String serialName;
         private  String exchangeName;
+        private  String transport;
         private  String threadName;
         private  Integer timeout;
         private  Long shutdownTimeout;
@@ -720,6 +744,7 @@ public class ChannelInfo
             this.connectTimeout=info.connectTimeout;
             this.dispather=info.dispather;
             this.exchangeName=info.exchangeName;
+            this.transport=info.transport;
             this.executor=info.executor;
             this.heartbeat=info.heartbeat;
             this.heartbeatTimeout=info.heartbeatTimeout;
@@ -746,6 +771,14 @@ public class ChannelInfo
         public Builder setHeartbeat(Integer heartbeat) {
             this.heartbeat = heartbeat;
             return this;
+        }
+        
+        
+        /**
+         * @param transport the transport to set
+         */
+        public void setTransport(String transport) {
+            this.transport = transport;
         }
         /**
          * @param heartbeatTimeout the heartbeatTimeout to set
@@ -951,6 +984,7 @@ public class ChannelInfo
             info.connectTimeout=this.connectTimeout;
             info.dispather=this.dispather;
             info.exchangeName=this.exchangeName;
+            info.transport=this.transport;
             info.executor=this.executor;
             info.heartbeat=this.heartbeat;
             info.heartbeatTimeout=this.heartbeatTimeout;

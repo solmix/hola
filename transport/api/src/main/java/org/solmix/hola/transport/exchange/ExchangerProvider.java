@@ -20,6 +20,8 @@ package org.solmix.hola.transport.exchange;
 
 import org.solmix.hola.core.model.ChannelInfo;
 import org.solmix.hola.transport.TransportException;
+import org.solmix.hola.transport.protocol.ProtocolExchanger;
+import org.solmix.runtime.Extension;
 
 
 /**
@@ -27,10 +29,10 @@ import org.solmix.hola.transport.TransportException;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年7月14日
  */
-
-public interface Exchanger
+@Extension(name=ProtocolExchanger.NAME)
+public interface ExchangerProvider
 {
-    ExchangeServer newServer(ExchangeHandler handler,ChannelInfo parameter)throws TransportException;
+    ExchangeServer bind(ChannelInfo info,ExchangeHandler handler)throws TransportException;
     
-    ExchangeClient newClient(ExchangeHandler handler,ChannelInfo parameter)throws TransportException;
+    ExchangeClient connect(ChannelInfo info,ExchangeHandler handler)throws TransportException;
 }
