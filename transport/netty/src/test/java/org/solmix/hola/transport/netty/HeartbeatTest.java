@@ -19,8 +19,10 @@
 package org.solmix.hola.transport.netty;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.exchange.ExchangeChannel;
@@ -40,21 +42,56 @@ public class HeartbeatTest
 
     private ExchangeServer server;
     private ExchangeClient client;
+    
     @Test
-    public void testHeartbeat() throws TransportException{
+    public void testHeartbeat() throws TransportException, InterruptedException{
         HeartbeatHandler handler = new HeartbeatHandler();
         ChannelInfo info =  ChannelInfo.newBuilder()
             .setHost("localhost")
             .setPort(1314)
-            .setHeartbeat(1000)
+            .setHeartbeat(null)
+            .setSerialName(JavaSerialization.NAME)
             .build();
         ExchangerProvider t= Containers.get().getExtensionLoader(ExchangerProvider.class).getDefault();
         server= t.bind(info,handler );
-        ChannelInfo cinfo =  ChannelInfo.newBuilder(info).setHeartbeat(null).build();
+        ChannelInfo cinfo =  ChannelInfo.newBuilder(info)
+            .setHeartbeat(100)
+            .setHeartbeatTimeout(300)
+            .setReconnect(true)
+            .build();
         
         client =t.connect(cinfo,handler);
+        Thread.sleep(1000);
+        //心跳一直正常,所有未有重连
+        Assert.assertTrue(handler.discount==0);
     }
-    
+    /**
+     * 这种模式为服务端不发送心跳也不知道接收心跳,客户端发送心跳,如果心跳超时,启动重连
+     */
+    @Test
+    public void testClientHeartbeat() throws TransportException, InterruptedException{
+        HeartbeatHandler handler = new HeartbeatHandler();
+        ChannelInfo info =  ChannelInfo.newBuilder()
+            .setHost("localhost")
+            .setPort(1314)
+            .setHeartbeat(null)
+            .setTransport("noheartbeat")
+            .setSerialName(JavaSerialization.NAME)
+            .build();
+        ExchangerProvider t= Containers.get().getExtensionLoader(ExchangerProvider.class).getDefault();
+        server= t.bind(info,handler );
+        ChannelInfo cinfo =  ChannelInfo.newBuilder(info)
+            .setHeartbeat(100)
+            .setHeartbeatTimeout(300)
+             .setTransport("noheartbeat")
+            .setReconnect(true)
+            .build();
+        
+        client =t.connect(cinfo,handler);
+        Thread.sleep(1000);
+        //由于服务端不支持心跳,所有客服端发送的心跳失败,到达一定周期后关闭链路重新连接
+        Assert.assertTrue(handler.discount>0);
+    }
     @After
     public void after() throws Exception {
         if (client != null) {
@@ -69,6 +106,8 @@ public class HeartbeatTest
     }
     class HeartbeatHandler implements ExchangeHandler{
 
+        public int count=0;
+        public int discount=0;
         /**
          * {@inheritDoc}
          * 
@@ -76,8 +115,7 @@ public class HeartbeatTest
          */
         @Override
         public void connected(Channel channel) throws TransportException {
-            // TODO Auto-generated method stub
-            
+            count++;
         }
 
         /**
@@ -87,8 +125,7 @@ public class HeartbeatTest
          */
         @Override
         public void disconnected(Channel channel) throws TransportException {
-            // TODO Auto-generated method stub
-            
+            discount++;
         }
 
         /**
@@ -99,7 +136,6 @@ public class HeartbeatTest
         @Override
         public void sent(Channel channel, Object message)
             throws TransportException {
-            // TODO Auto-generated method stub
             
         }
 
@@ -111,7 +147,6 @@ public class HeartbeatTest
         @Override
         public void received(Channel channel, Object message)
             throws TransportException {
-            // TODO Auto-generated method stub
             
         }
 
@@ -123,7 +158,6 @@ public class HeartbeatTest
         @Override
         public void caught(Channel channel, Throwable exception)
             throws TransportException {
-            // TODO Auto-generated method stub
             
         }
 
@@ -134,7 +168,6 @@ public class HeartbeatTest
          */
         @Override
         public Object reply(ExchangeChannel channel, Object msg) {
-            // TODO Auto-generated method stub
             return null;
         }
         

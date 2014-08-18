@@ -16,17 +16,44 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport.exchange;
+package org.solmix.hola.transport.netty;
 
-import org.solmix.hola.transport.channel.Client;
+import java.io.Serializable;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version $Id$  2014年8月18日
  */
 
-public interface ExchangeClient extends Client,ExchangeChannel
+public class RequestData implements Serializable
 {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3795711834344856719L;
+    private String message;
+
+    public RequestData(String msg){
+        message=msg;
+    }
+    
+    /**
+     * @return the message
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    
+    /**
+     * @param message the message to set
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    
+    
 }

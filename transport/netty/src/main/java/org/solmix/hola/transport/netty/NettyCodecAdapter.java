@@ -119,8 +119,10 @@ final class NettyCodecAdapter {
                 }
                 NettyChannel.removeChannelIfDisconnected(ctx.channel());
             }
-          
-            
+        }
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+           cause.printStackTrace();
         }
        
     }

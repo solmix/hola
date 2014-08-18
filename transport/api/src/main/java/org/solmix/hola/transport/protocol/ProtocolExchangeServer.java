@@ -50,38 +50,37 @@ import org.solmix.hola.transport.exchange.Request;
 
 public class ProtocolExchangeServer implements ExchangeServer
 {
-    protected final Logger        logger = LoggerFactory.getLogger(getClass());
 
-    private final ScheduledExecutorService scheduled                 = Executors.newScheduledThreadPool(1,
-                                                                                                        new NamedThreadFactory(
-                                                                                                                               "dubbo-remoting-server-heartbeat",
-                                                                                                                               true));
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    // 心跳定时器
+    private final ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(
+        1, new NamedThreadFactory("Hola-server-heartbeat", true));
+
     private ScheduledFuture<?> heatbeatTimer;
 
-    // 心跳超时，毫秒。缺省0，不会执行心跳。
-    private int                            heartbeat;
+    private int heartbeat;
 
-    private int                            heartbeatTimeout;
-    
+    private int heartbeatTimeout;
+
     private final Server server;
 
     private volatile boolean closed = false;
 
-    public ProtocolExchangeServer(Server server) {
+    public ProtocolExchangeServer(Server server)
+    {
         if (server == null) {
             throw new IllegalArgumentException("server == null");
         }
         this.server = server;
-        this.heartbeat = server.getInfo().getHeartbeat( 0);
+        this.heartbeat = server.getInfo().getHeartbeat(0);
         this.heartbeatTimeout = server.getInfo().getHeartbeatTimeout( heartbeat * 3);
         if (heartbeatTimeout < heartbeat * 2) {
-            throw new IllegalStateException("heartbeatTimeout < heartbeatInterval * 2");
+            throw new IllegalStateException(
+                "heartbeatTimeout < heartbeatInterval * 2");
         }
         startHeatbeatTimer();
     }
-    
+
     public Server getServer() {
         return server;
     }
@@ -112,11 +111,13 @@ public class ProtocolExchangeServer implements ExchangeServer
         if (timeout > 0) {
             final long max = timeout;
             final long start = System.currentTimeMillis();
-            /*if (getInfo().getBoolean(HolaConstants.KEY_CHANNEL_SEND_READONLYEVENT, false)){
-                sendChannelReadOnlyEvent();
-            }*/
-            while (ProtocolExchangeServer.this.isRunning() 
-                    && System.currentTimeMillis() - start < max) {
+            /*
+             * if
+             * (getInfo().getBoolean(HolaConstants.KEY_CHANNEL_SEND_READONLYEVENT
+             * , false)){ sendChannelReadOnlyEvent(); }
+             */
+            while (ProtocolExchangeServer.this.isRunning()
+                && System.currentTimeMillis() - start < max) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -127,24 +128,24 @@ public class ProtocolExchangeServer implements ExchangeServer
         doClose();
         server.close(timeout);
     }
-    
-    private void sendChannelReadOnlyEvent(){
+
+    private void sendChannelReadOnlyEvent() {
         Request request = new Request();
         request.setEvent(Request.READONLY_EVENT);
         request.setTwoWay(false);
         request.setVersion(HolaConstants.VERSION);
-        
+
         Collection<Channel> channels = getChannels();
         for (Channel channel : channels) {
             try {
                 if (channel.isConnected())
-                    channel.send(request,getInfo().getAwait( true));
+                    channel.send(request, getInfo().getAwait(true));
             } catch (TransportException e) {
                 logger.warn("send connot write messge error.", e);
             }
         }
     }
-    
+
     private void doClose() {
         if (closed) {
             return;
@@ -160,7 +161,7 @@ public class ProtocolExchangeServer implements ExchangeServer
 
     @Override
     public Collection<ExchangeChannel> getExchangeChannels() {
-        Collection<ExchangeChannel> exchangeChannels  = new ArrayList<ExchangeChannel>();
+        Collection<ExchangeChannel> exchangeChannels = new ArrayList<ExchangeChannel>();
         Collection<Channel> channels = server.getChannels();
         if (channels != null && channels.size() > 0) {
             for (Channel channel : channels) {
@@ -179,7 +180,7 @@ public class ProtocolExchangeServer implements ExchangeServer
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Collection<Channel> getChannels() {
-        return (Collection)getExchangeChannels();
+        return (Collection) getExchangeChannels();
     }
 
     @Override
@@ -211,12 +212,13 @@ public class ProtocolExchangeServer implements ExchangeServer
     public void refresh(ChannelInfo info) {
         server.refresh(info);
         try {
-            if (info.getHeartbeat()!=null
-                    || info.getHeartbeatTimeout()!=null) {
-                int h = info.getHeartbeat( heartbeat);
+            if (info.getHeartbeat() != null
+                || info.getHeartbeatTimeout() != null) {
+                int h = info.getHeartbeat(heartbeat);
                 int t = info.getHeartbeatTimeout(h * 3);
                 if (t < h * 2) {
-                    throw new IllegalStateException("heartbeatTimeout < heartbeatInterval * 2");
+                    throw new IllegalStateException(
+                        "heartbeatTimeout < heartbeatInterval * 2");
                 }
                 if (h != heartbeat || t != heartbeatTimeout) {
                     heartbeat = h;
@@ -232,7 +234,9 @@ public class ProtocolExchangeServer implements ExchangeServer
     @Override
     public void send(Object message) throws TransportException {
         if (closed) {
-            throw new TransportException(this.getLocalAddress(), null, "Failed to send message " + message + ", cause: The server " + getLocalAddress() + " is closed!");
+            throw new TransportException(this.getLocalAddress(), null,
+                "Failed to send message " + message + ", cause: The server "
+                    + getLocalAddress() + " is closed!");
         }
         server.send(message);
     }
@@ -240,7 +244,9 @@ public class ProtocolExchangeServer implements ExchangeServer
     @Override
     public void send(Object message, boolean sent) throws TransportException {
         if (closed) {
-            throw new TransportException(this.getLocalAddress(), null, "Failed to send message " + message + ", cause: The server " + getLocalAddress() + " is closed!");
+            throw new TransportException(this.getLocalAddress(), null,
+                "Failed to send message " + message + ", cause: The server "
+                    + getLocalAddress() + " is closed!");
         }
         server.send(message, sent);
     }
@@ -249,27 +255,28 @@ public class ProtocolExchangeServer implements ExchangeServer
         stopHeartbeatTimer();
         if (heartbeat > 0) {
             heatbeatTimer = scheduled.scheduleWithFixedDelay(
-                    new HeartBeatTask( new HeartBeatTask.ChannelProvider() {
-                        @Override
-                        public Collection<Channel> getChannels() {
-                            return Collections.unmodifiableCollection(
-                                    ProtocolExchangeServer.this.getChannels() );
-                        }
-                    }, heartbeat, heartbeatTimeout),
-                    heartbeat, heartbeat,TimeUnit.MILLISECONDS);
+                new HeartBeatTask(new HeartBeatTask.ChannelProvider() {
+
+                    @Override
+                    public Collection<Channel> getChannels() {
+                        return Collections.unmodifiableCollection(ProtocolExchangeServer.this.getChannels());
+                    }
+                }, 
+                heartbeat, heartbeatTimeout), 
+                heartbeat, heartbeat, TimeUnit.MILLISECONDS);
         }
     }
 
     private void stopHeartbeatTimer() {
         try {
             ScheduledFuture<?> timer = heatbeatTimer;
-            if (timer != null && ! timer.isCancelled()) {
+            if (timer != null && !timer.isCancelled()) {
                 timer.cancel(true);
             }
         } catch (Throwable t) {
             logger.warn(t.getMessage(), t);
         } finally {
-            heatbeatTimer =null;
+            heatbeatTimer = null;
         }
     }
 

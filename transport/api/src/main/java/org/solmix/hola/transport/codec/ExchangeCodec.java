@@ -49,23 +49,24 @@ public class ExchangeCodec extends SerializeCodec implements Codec
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExchangeCodec.class.getName());
-    public static final String NAME="exchange";
-    private static final int HEADER_LENGTH = 0x16;
-    
-    protected static final short    MAGIC              = (short) 0xdabb;
-    
-    protected static final byte     MAGIC_HIGH         = Bytes.short0(MAGIC);
-    
-    protected static final byte     MAGIC_LOW          = Bytes.short1(MAGIC);
 
-    // message flag.
-    protected static final byte     FLAG_REQUEST       = (byte) 0x80;
+    public static final String NAME = "exchange";
 
-    protected static final byte     FLAG_TWOWAY        = (byte) 0x40;
+    private static final int HEADER_LENGTH = 16;
 
-    protected static final byte     FLAG_EVENT     = (byte) 0x20;
+    protected static final short HEADER = 0x1314;
 
-    protected static final int      SERIALIZATION_MASK = 0x1f;
+    protected static final byte HEADER_H = Bytes.short1(HEADER);
+
+    protected static final byte HEADER_L = Bytes.short0(HEADER);
+
+    protected static final byte FLAG_REQUEST = (byte) 0x80;
+
+    protected static final byte FLAG_TWOWAY = (byte) 0x40;
+
+    protected static final byte FLAG_EVENT = (byte) 0x20;
+
+    protected static final int SERIALIZATION_MASK = 0x1f;
 
     /**
      * {@inheritDoc}
@@ -96,7 +97,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
             // header.
             byte[] header = new byte[HEADER_LENGTH];
             // set magic number.
-            Bytes.short2bytes(MAGIC, header);
+            Bytes.short2bytes(HEADER, header);
             // set request and serialization flag.
             header[2] = serialization.getSerializeId();
             if (res.isHeartbeat()) header[2] |= FLAG_EVENT;
@@ -181,21 +182,24 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      */
     protected void encodeRequest(Channel channel, ByteBuf buffer, Request req) throws IOException {
         Serialization serialization = getSerialization(channel.getInfo());
-        // header.
+        //设置header
         byte[] header = new byte[HEADER_LENGTH];
-        // set magic number.
-        Bytes.short2bytes(MAGIC, header);
-
-        // set request and serialization flag.
+        //前导符
+        Bytes.short2bytes(HEADER, header);
+        //序列化方法.
         header[2] = (byte) (FLAG_REQUEST | serialization.getSerializeId());
 
-        if (req.isTwoWay()) header[2] |= FLAG_TWOWAY;
-        if (req.isEvent()) header[2] |= FLAG_EVENT;
+        if (req.isTwoWay()) 
+            header[2] |= FLAG_TWOWAY;
+        if (req.isEvent()) 
+            header[2] |= FLAG_EVENT;
 
-        // set request id.
+        // 设置4个字节的request id.
         Bytes.long2bytes(req.getId(), header, 4);
         int savedWriteIndex = buffer.writerIndex();
+        //跳过头部开始写入数据
         buffer.writerIndex(savedWriteIndex + HEADER_LENGTH);
+        
         ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
         ObjectOutput out = serialization.serialize(channel.getInfo(), bos);
         if (req.isEvent()) {
@@ -208,9 +212,10 @@ public class ExchangeCodec extends SerializeCodec implements Codec
         bos.close();
         int len = bos.writtenBytes();
         checkLength(channel, len);
+        //4个字节数据长度
         Bytes.int2bytes(len, header, 12);
 
-        // write
+        //写入头信息
         buffer.writerIndex(savedWriteIndex);
         buffer.writeBytes(header); // write header.
         buffer.writerIndex(savedWriteIndex + HEADER_LENGTH + len);
@@ -265,8 +270,8 @@ public class ExchangeCodec extends SerializeCodec implements Codec
 
     protected Object decode(Channel channel, ByteBuf buffer, int readable,
         byte[] header) throws IOException {
-        if (readable > 0 && header[0] != MAGIC_HIGH 
-            || readable > 1 && header[1] != MAGIC_LOW) {
+        if (readable > 0 && header[0] != HEADER_H 
+            || readable > 1 && header[1] != HEADER_L) {
            return super.decode(channel, buffer.resetReaderIndex());
         }
         if(readable<HEADER_LENGTH)
@@ -398,7 +403,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
         int limit = HolaConstants.DEFAULT_PALYLOAD;
         if (channel != null && channel.getInfo() != null)
             limit = channel.getInfo().getPayload(HolaConstants.DEFAULT_PALYLOAD);
-        if (limit > 0 && len < limit) {
+        if (limit > 0 && len > limit) {
             IOException e = new IOException("Data length too large: " + len
                 + ", limit: " + limit + ", channel: " + channel);
             LOG.error("", e);

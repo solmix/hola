@@ -176,9 +176,8 @@ public abstract class AbstractClient extends AbstractPeer implements Client
                             lastConnectedTime = System.currentTimeMillis();
                         }
                     } catch (Throwable t) {
-                        String errorMsg = "client reconnect to "
-                            + getInfo().getAddress();
-                        // wait registry sync provider list
+                        String errorMsg = "client reconnect to " + getInfo().getAddress();
+                        // 
                         if (System.currentTimeMillis() - lastConnectedTime > shutdownTimeout) {
                             if (!reconnect_error_log_flag.get()) {
                                 reconnect_error_log_flag.set(true);
@@ -186,6 +185,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
                                 return;
                             }
                         }
+                        //周期重连失败,日志警告
                         if (reconnect_count.getAndIncrement()
                             % reconnectWarningPeriod == 0) {
                             logger.warn(errorMsg, t);
@@ -293,8 +293,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
     public InetSocketAddress getLocalAddress() {
         Channel channel = getChannel();
         if (channel == null)
-            return InetSocketAddress.createUnresolved(NetUtils.getLocalHost(),
-                0);
+            return InetSocketAddress.createUnresolved(NetUtils.getLocalHost(),  0);
         return channel.getLocalAddress();
     }
 
@@ -330,6 +329,8 @@ public abstract class AbstractClient extends AbstractPeer implements Client
      */
     @Override
     public void reconnect() throws TransportException {
+        if(logger.isTraceEnabled())
+            logger.trace("Reconnect channle " + AbstractClient.this);
         disconnect();
         connect();
     }
@@ -357,7 +358,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
     }
 
     /**
-     * 
+     * 关闭连接状态检查
      */
     private void destroyConnectStatusCheckCommand() {
         try {

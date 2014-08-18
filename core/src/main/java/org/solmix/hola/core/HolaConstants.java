@@ -67,7 +67,7 @@ public class HolaConstants
 
     public static final String KEY_TIMEOUT = "timeout";
 
-    public static final int DEFAULT_TIMEOUT = 0;
+    public static final int DEFAULT_TIMEOUT = 1000;
 
     public static final String KEY_SENT = "send";
 

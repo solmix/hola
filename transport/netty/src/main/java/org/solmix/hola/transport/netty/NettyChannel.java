@@ -70,7 +70,7 @@ final class NettyChannel extends AbstractChannel {
 
     @Override
     public boolean isConnected() {
-        return channel.isActive();
+        return channel.isActive()&&!isClosed();
     }
 
     @Override
@@ -123,7 +123,10 @@ final class NettyChannel extends AbstractChannel {
             if (logger.isInfoEnabled()) {
                 logger.info("Close netty channel " + channel);
             }
-            channel.close();
+            ChannelFuture f=  channel.close();
+            if(!f.isDone()){
+                f.await(getInfo().getTimeout(5000));
+            }
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
         }

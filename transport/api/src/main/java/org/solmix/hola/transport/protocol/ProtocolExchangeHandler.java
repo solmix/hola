@@ -187,12 +187,7 @@ public class ProtocolExchangeHandler implements ChannelHandlerDelegate
                 if (isClientSide(channel)) {
                     Exception e = new Exception("Dubbo client can not supported string message: " + message + " in channel: " + channel + ", url: " + channel.toString());
                     logger.error(e.getMessage(), e);
-                } else {
-//                    String echo = handler.telnet(channel, (String) message);
-//                    if (echo != null && echo.length() > 0) {
-//                        channel.send(echo);
-//                    }
-                }
+                } 
             } else {
                 handler.received(exchangeChannel, message);
             }

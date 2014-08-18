@@ -793,8 +793,9 @@ public class ChannelInfo
         /**
          * @param transport the transport to set
          */
-        public void setTransport(String transport) {
+        public Builder setTransport(String transport) {
             this.transport = transport;
+            return this;
         }
         /**
          * @param heartbeatTimeout the heartbeatTimeout to set

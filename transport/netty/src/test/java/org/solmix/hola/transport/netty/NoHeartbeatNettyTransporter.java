@@ -18,13 +18,12 @@
  */
 package org.solmix.hola.transport.netty;
 
+import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.ChannelInfo;
-import org.solmix.hola.transport.AbstractTransporter;
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.ChannelHandler;
-import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
+import org.solmix.hola.transport.dispatch.Dispatcher;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
@@ -32,35 +31,40 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月15日
+ * @version $Id$  2014年8月18日
  */
-@Extension(name=NettyTransporter.NAME)
-public class NettyTransporter extends AbstractTransporter implements TransporterProvider
+@Extension(name="noheartbeat")
+public class NoHeartbeatNettyTransporter extends NettyTransporter
 {
 
-    public static final String NAME="netty";
-    
-    private final Container container;
-    
-    public NettyTransporter(Container container){
-        this.container=container;
+    /**
+     * @param container
+     */
+    public NoHeartbeatNettyTransporter(Container container)
+    {
+        super(container);
     }
-  
     @Override
     protected Server newServer(ChannelInfo info,ChannelHandler handler)
         throws TransportException {
-        return new NettyServer(info, handler,container);
+        return new NoHeartbeatNettyServer(info, handler,getContainer());
     }
+    class  NoHeartbeatNettyServer extends NettyServer{
+     
+        public NoHeartbeatNettyServer(ChannelInfo info, ChannelHandler handler,
+            Container container) throws TransportException
+        {
+            super(info, handler, container);
+        }
+        @Override
+        protected   ChannelHandler wrapChannelHandler(ChannelInfo info,
+            ChannelHandler handler) {
+            String dispatch = info.getDispather(HolaConstants.DEFAULT_DISPATHER);
+            ChannelHandler dis = getContainer().getExtensionLoader(Dispatcher.class)
+                .getExtension(dispatch)
+                .dispatch(handler, info);
+            return dis;
 
-   
-    @Override
-    protected Client newClient(ChannelInfo info,ChannelHandler handler)
-        throws TransportException {
-        return new NettyClient(info, handler,container);
+        }
     }
-    
-    public Container getContainer(){
-        return container;
-    }
-
 }

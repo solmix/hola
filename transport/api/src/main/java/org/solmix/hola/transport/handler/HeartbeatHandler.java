@@ -58,13 +58,13 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate
      * @param channel
      */
     private void setWriteTimestamp(Channel channel) {
-        channel.setAttribute(KEY_READ_TIMESTAMP, System.currentTimeMillis());
+        channel.setAttribute(KEY_WRITE_TIMESTAMP, System.currentTimeMillis());
     }
     /**
      * @param channel
      */
     private void setReadTimestamp(Channel channel) {
-        channel.setAttribute(KEY_WRITE_TIMESTAMP, System.currentTimeMillis());
+        channel.setAttribute(KEY_READ_TIMESTAMP, System.currentTimeMillis());
     }
     @Override
     public void disconnected(Channel channel) throws TransportException {

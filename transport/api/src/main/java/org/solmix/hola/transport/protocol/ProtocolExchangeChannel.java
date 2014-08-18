@@ -70,7 +70,7 @@ final class ProtocolExchangeChannel implements ExchangeChannel {
             channel.send(message, sent);
         } else {
             Request request = new Request();
-            request.setVersion("2.0.0");
+            request.setVersion("0.6");
             request.setTwoWay(false);
             request.setData(message);
             channel.send(request, sent);
@@ -89,7 +89,7 @@ final class ProtocolExchangeChannel implements ExchangeChannel {
         }
         // create request.
         Request req = new Request();
-        req.setVersion("2.0.0");
+        req.setVersion("0.6");
         req.setTwoWay(true);
         req.setData(request);
         DefaultFuture future = new DefaultFuture(channel, req, timeout);

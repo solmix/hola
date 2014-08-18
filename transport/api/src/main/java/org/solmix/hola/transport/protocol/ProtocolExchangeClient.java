@@ -16,6 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.transport.protocol;
 
 import java.net.InetSocketAddress;
@@ -39,42 +40,42 @@ import org.solmix.hola.transport.exchange.ExchangeClient;
 import org.solmix.hola.transport.exchange.ExchangeHandler;
 import org.solmix.hola.transport.exchange.ResponseFuture;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version $Id$ 2014年7月14日
  */
 
 public class ProtocolExchangeClient implements ExchangeClient
 {
-    private static final Logger logger = LoggerFactory.getLogger( ProtocolExchangeClient.class );
 
-    private static final ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2, new NamedThreadFactory("dubbo-remoting-client-heartbeat", true));
+    private static final Logger logger = LoggerFactory.getLogger(ProtocolExchangeClient.class);
 
-    // 心跳定时器
+    private static final ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(
+        2, new NamedThreadFactory("Hola-client-heartbeat", true));
+
     private ScheduledFuture<?> heatbeatTimer;
 
-    // 心跳超时，毫秒。缺省0，不会执行心跳。
     private final int heartbeat;
 
     private final int heartbeatTimeout;
-    
+
     private final Client client;
 
     private final ExchangeChannel channel;
 
-    public ProtocolExchangeClient(Client client){
+    public ProtocolExchangeClient(Client client)
+    {
         if (client == null) {
-            throw new IllegalArgumentException("client == null");
+            throw new IllegalArgumentException("client is null");
         }
         this.client = client;
         this.channel = new ProtocolExchangeChannel(client);
-//        String dubbo = client.getInfo().getParameter(HolaConstants.VERSION_KEY).toString();
-        this.heartbeat = client.getInfo().getHeartbeat( HolaConstants.DEFAULT_HEARTBEAT  );
-        this.heartbeatTimeout = client.getInfo().getHeartbeatTimeout(heartbeat*3);
-        if ( heartbeatTimeout < heartbeat * 2 ) {
-            throw new IllegalStateException( "heartbeatTimeout < heartbeatInterval * 2" );
+        this.heartbeat = client.getInfo().getHeartbeat(HolaConstants.DEFAULT_HEARTBEAT);
+        this.heartbeatTimeout = client.getInfo().getHeartbeatTimeout(heartbeat * 3);
+        if (heartbeatTimeout < heartbeat * 2) {
+            throw new IllegalStateException(
+                "heartbeatTimeout < heartbeatInterval * 2");
         }
         startHeatbeatTimer();
     }
@@ -93,7 +94,8 @@ public class ProtocolExchangeClient implements ExchangeClient
         return channel.getRemoteAddress();
     }
 
-    public ResponseFuture request(Object request, int timeout) throws TransportException {
+    public ResponseFuture request(Object request, int timeout)
+        throws TransportException {
         return channel.request(request, timeout);
     }
 
@@ -115,12 +117,12 @@ public class ProtocolExchangeClient implements ExchangeClient
     public ExchangeHandler getExchangeHandler() {
         return channel.getExchangeHandler();
     }
-    
+
     @Override
     public void send(Object message) throws TransportException {
         channel.send(message);
     }
-    
+
     @Override
     public void send(Object message, boolean sent) throws TransportException {
         channel.send(message, sent);
@@ -147,8 +149,6 @@ public class ProtocolExchangeClient implements ExchangeClient
     public void refresh(ChannelInfo param) {
         client.refresh(param);
     }
-    
- 
 
     @Override
     public void reconnect() throws TransportException {
@@ -177,39 +177,40 @@ public class ProtocolExchangeClient implements ExchangeClient
 
     private void startHeatbeatTimer() {
         stopHeartbeatTimer();
-        if ( heartbeat > 0 ) {
+        if (heartbeat > 0) {
             heatbeatTimer = scheduled.scheduleWithFixedDelay(
-                    new HeartBeatTask( new HeartBeatTask.ChannelProvider() {
-                        @Override
-                        public Collection<Channel> getChannels() {
-                            return Collections.<Channel>singletonList( ProtocolExchangeClient.this );
-                        }
-                    }, heartbeat, heartbeatTimeout),
-                    heartbeat, heartbeat, TimeUnit.MILLISECONDS );
+                new HeartBeatTask(new HeartBeatTask.ChannelProvider() {
+
+                    @Override
+                    public Collection<Channel> getChannels() {
+                        return Collections.<Channel> singletonList(ProtocolExchangeClient.this);
+                    }
+                }, heartbeat, heartbeatTimeout),
+                heartbeat, heartbeat, TimeUnit.MILLISECONDS);
         }
     }
 
     private void stopHeartbeatTimer() {
-        if (heatbeatTimer != null && ! heatbeatTimer.isCancelled()) {
+        if (heatbeatTimer != null && !heatbeatTimer.isCancelled()) {
             try {
                 heatbeatTimer.cancel(true);
                 scheduled.purge();
-            } catch ( Throwable e ) {
+            } catch (Throwable e) {
                 if (logger.isWarnEnabled()) {
                     logger.warn(e.getMessage(), e);
                 }
             }
         }
-        heatbeatTimer =null;
+        heatbeatTimer = null;
     }
 
     private void doClose() {
         stopHeartbeatTimer();
     }
 
-      @Override
-      public String toString() {
-            return "HeaderExchangeClient [channel=" + channel + "]";
-      }
+    @Override
+    public String toString() {
+        return "HeaderExchangeClient [channel=" + channel + "]";
+    }
 
 }
