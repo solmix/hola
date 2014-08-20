@@ -20,6 +20,7 @@
 package org.solmix.hola.rs.generic;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import java.util.Vector;
 
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.RemoteServiceRegistration;
 import org.solmix.hola.rs.identity.RemoteServiceID;
@@ -41,7 +43,6 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
 public class HolaRemoteServiceRegistration<S> implements
     RemoteServiceRegistration<S>, java.io.Serializable
 {
-
     private static final long serialVersionUID = 319786149652327809L;
 
     protected RemoteServiceID id;
@@ -65,15 +66,6 @@ public class HolaRemoteServiceRegistration<S> implements
 
     private String[] clazzes;
 
-    @Override
-    public RemoteServiceID getRemoteServiceID() {
-        return id;
-    }
-
-    @Override
-    public ID getProviderID() {
-        return (id == null) ? null : id.getProviderID();
-    }
 
     @Override
     public Object getProperty(String key) {
@@ -91,7 +83,6 @@ public class HolaRemoteServiceRegistration<S> implements
             }
             this.properties = createProperties(properties);
         }
-        // XXX Need to notify that registration modified
     }
 
     /**
@@ -102,14 +93,13 @@ public class HolaRemoteServiceRegistration<S> implements
 
         resultProps.setProperty(HolaConstants.REMOTE_OBJECTCLASS, clazzes);
 
-        resultProps.setProperty(HolaConstants.REMOTE_SERVICE_ID, new Long(
-            getRemoteServiceID().getRelativeID()));
+        resultProps.setProperty(HolaConstants.REMOTE_SERVICE_ID, getID().toQueryString());
 
         final Object ranking = (props == null) ? null
             : props.get(HolaConstants.REMOTE_RANKING);
 
-        serviceRanking = (ranking instanceof Integer) ? ((Integer) ranking).intValue()
-            : 0;
+        serviceRanking = (ranking instanceof Integer) ? 
+            ((Integer) ranking).intValue() : 0;
 
         return resultProps;
     }
@@ -141,16 +131,20 @@ public class HolaRemoteServiceRegistration<S> implements
      */
     @Override
     public void unregister() {
-       if(provider!=null)
-           provider.unregisterRemoteService(this);
+       if(manager!=null)
+           manager.unregisterRemoteService(this);
 
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        // TODO
-        return sb.toString();
+       StringBuffer sb = new StringBuffer();
+       sb.append("HolaRemoteServiceRegistration[")
+       .append("RemoteServiceID=").append(remoteServiceID)
+       .append(";ServiceRanking=").append(serviceRanking)
+       .append(";classes=").append(Arrays.toString(clazzes))
+       .append("]");
+       return sb.toString();
 
     }
 
@@ -162,12 +156,12 @@ public class HolaRemoteServiceRegistration<S> implements
             return false;
         if (!(o.getClass().equals(this.getClass())))
             return false;
-        return getRemoteServiceID().equals(((HolaRemoteServiceRegistration<?>) o).getRemoteServiceID());
+        return getID().equals(((HolaRemoteServiceRegistration<?>) o).getID());
     }
 
     @Override
     public int hashCode() {
-        return getRemoteServiceID().hashCode();
+        return getID().hashCode();
     }
 
     /**
@@ -328,27 +322,39 @@ public class HolaRemoteServiceRegistration<S> implements
 
     private Object service;
 
-    private RemoteServiceID remoteServiceID;
+    private HolaServiceID remoteServiceID;
     
-    private HolaRemoteServiceProvider provider;
+    private HolaRemoteServiceManager manager;
 
-    public void publish(HolaRemoteServiceProvider provider,
+    public void publish(HolaRemoteServiceManager manager,
         RemoteServiceRegistry registry, String[] clazzes, Object service,
-        Map<String, ?> properties) {
-        this.provider=provider;
+        RemoteInfo info) {
+        this.manager=manager;
         this.service = service;
         this.reference = new HolaRemoteServiceReference<S>(this);
         this.clazzes = clazzes;
         synchronized (registry) {
-            ID id = registry.getProviderID();
-            if (id == null)
-                throw new NullPointerException(
-                    "Local ProviderID must be non-null to register remote services");
-            this.remoteServiceID = registry.createRemoteServiceID(registry.getNextServiceId());
-            this.properties = createProperties(properties);
+            this.remoteServiceID = registry.createRemoteServiceID(info);
+            this.properties = createProperties(info.getParameters());
             registry.publishService(this);
         }
 
+    }
+    
+    public Object getService(){
+        return service;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.rs.RemoteServiceRegistration#getID()
+     */
+    @Override
+    public ID getID() {
+        return remoteServiceID;
     }
 
 }

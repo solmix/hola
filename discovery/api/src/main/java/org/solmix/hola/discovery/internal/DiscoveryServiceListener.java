@@ -28,7 +28,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.IDCreateException;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryServiceProvider;
@@ -62,7 +62,7 @@ public class DiscoveryServiceListener implements ServiceListener
         context = Activator.getDefault().getBundleContext();
         // OSGI下查找org.solmix.hola.discovery.ServiceListener
         if (context != null) {
-            discoveryNamespace = DefaultIDFactory.getDefault().getNamespaceByName(
+            discoveryNamespace = IDFactory.getDefault().getNamespaceByName(
                 DiscoveryNamespace.NAME);
             try {
                 final ServiceReference<?>[] references = context.getServiceReferences(

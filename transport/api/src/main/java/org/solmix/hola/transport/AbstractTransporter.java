@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
@@ -37,13 +37,13 @@ public abstract class AbstractTransporter implements TransporterProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.TransporterProvider#bind(org.solmix.hola.core.model.ChannelInfo, org.solmix.hola.transport.channel.ChannelHandler[])
+     * @see org.solmix.hola.transport.TransporterProvider#bind(org.solmix.hola.core.model.RemoteInfo, org.solmix.hola.transport.channel.ChannelHandler[])
      */
     @Override
-    public Server bind(ChannelInfo info, ChannelHandler... handlers)
+    public Server bind(RemoteInfo info, ChannelHandler... handlers)
         throws TransportException {
         if (info == null) {
-            throw new IllegalArgumentException("ChannelInfo is null");
+            throw new IllegalArgumentException("RemoteInfo is null");
         }
         if (handlers == null || handlers.length == 0) {
             throw new IllegalArgumentException("handlers == null");
@@ -56,18 +56,18 @@ public abstract class AbstractTransporter implements TransporterProvider
         }
         return newServer(info, handler);
     }
-    protected abstract Server newServer(ChannelInfo info, ChannelHandler handler)throws TransportException ;
-    protected abstract Client newClient(ChannelInfo info, ChannelHandler handler) throws TransportException;
+    protected abstract Server newServer(RemoteInfo info, ChannelHandler handler)throws TransportException ;
+    protected abstract Client newClient(RemoteInfo info, ChannelHandler handler) throws TransportException;
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.TransporterProvider#connect(org.solmix.hola.core.model.ChannelInfo, org.solmix.hola.transport.channel.ChannelHandler[])
+     * @see org.solmix.hola.transport.TransporterProvider#connect(org.solmix.hola.core.model.RemoteInfo, org.solmix.hola.transport.channel.ChannelHandler[])
      */
     @Override
-    public Client connect(ChannelInfo info, ChannelHandler... handlers)
+    public Client connect(RemoteInfo info, ChannelHandler... handlers)
         throws TransportException {
         if (info == null) {
-            throw new IllegalArgumentException("ChannelInfo is null");
+            throw new IllegalArgumentException("RemoteInfo is null");
         }
         if (handlers == null || handlers.length == 0) {
             throw new IllegalArgumentException("handlers == null");

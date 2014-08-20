@@ -27,7 +27,7 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.apache.karaf.shell.util.ShellUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 
 
@@ -49,7 +49,7 @@ public class NamespaceCommand extends OsgiCommandSupport
      */
     @Override
     protected Object doExecute() throws Exception {
-        List<Namespace> ns=  DefaultIDFactory.getDefault().getNamespaces();
+        List<Namespace> ns=  IDFactory.getDefault().getNamespaces();
         for(Namespace n:ns){
             out.println(n.getClass().getName());
             out.println(ShellUtil.getUnderlineString(n.getClass().getName()));

@@ -22,7 +22,7 @@ package org.solmix.hola.transport.netty;
 import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.commons.util.NetUtils;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.exchange.ExchangeClient;
 import org.solmix.hola.transport.exchange.ExchangeServer;
@@ -43,7 +43,7 @@ public class NettyConnectionTest extends Assert
     public void testReconnection() throws TransportException,
         InterruptedException {
         int port = NetUtils.getAvailablePort();
-        ChannelInfo info = ChannelInfo.newBuilder().setHost("localhost").setPort(
+        RemoteInfo info = RemoteInfo.newBuilder().setHost("localhost").setPort(
             port).setReconnect(true).setReconnectPeriod(500).setCheck(false).build();
         ExchangerProvider ex = Containers.get().getExtensionLoader(
             ExchangerProvider.class).getDefault();
@@ -64,7 +64,7 @@ public class NettyConnectionTest extends Assert
     public void testReconnectionWarn() throws TransportException,
         InterruptedException {
         int port = NetUtils.getAvailablePort();
-        ChannelInfo info = ChannelInfo.newBuilder().setHost("localhost").setPort(
+        RemoteInfo info = RemoteInfo.newBuilder().setHost("localhost").setPort(
             port).setReconnect(true).setReconnectPeriod(10).setReconnectWarningPeriod(
             10).setCheck(false).build();
         ExchangerProvider ex = Containers.get().getExtensionLoader(
@@ -77,7 +77,7 @@ public class NettyConnectionTest extends Assert
     public void testmanualReconnect() throws TransportException,
         InterruptedException {
         int port = NetUtils.getAvailablePort();
-        ChannelInfo info = ChannelInfo.newBuilder().setHost("localhost").setPort(
+        RemoteInfo info = RemoteInfo.newBuilder().setHost("localhost").setPort(
             port).setReconnect(true).setReconnectPeriod(10).setCheck(false).build();
         ExchangerProvider ex = Containers.get().getExtensionLoader(
             ExchangerProvider.class).getDefault();

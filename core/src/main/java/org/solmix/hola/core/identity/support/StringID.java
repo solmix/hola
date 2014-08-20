@@ -20,7 +20,7 @@
 package org.solmix.hola.core.identity.support;
 
 import org.solmix.hola.core.identity.BaseID;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 
 /**
@@ -113,7 +113,7 @@ public class StringID extends BaseID
 
     protected synchronized void setEmptyNamespace() {
         if (namespace == null) {
-            namespace = DefaultIDFactory.getDefault().getNamespaceByName(
+            namespace = IDFactory.getDefault().getNamespaceByName(
                 StringID.class.getName());
         }
     }

@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.core.serialize;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 
 
 /**
@@ -30,6 +30,6 @@ import org.solmix.hola.core.model.ChannelInfo;
 public interface SerializationManager
 {
     Serialization getSerialization(byte id);
-    Serialization getSerialization(ChannelInfo info);
-    Serialization getSerialization(ChannelInfo info, byte id);
+    Serialization getSerialization(RemoteInfo info);
+    Serialization getSerialization(RemoteInfo info, byte id);
 }

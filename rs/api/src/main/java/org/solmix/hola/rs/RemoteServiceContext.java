@@ -30,6 +30,7 @@ import org.solmix.hola.core.identity.Identifiable;
 public interface RemoteServiceContext extends Identifiable,ConnectContext
 {
     RemoteServiceProvider getProvider();
+    
     void addRemoteServiceListener(RemoteServiceListener listener);
 
     void removeRemoteServiceListener(RemoteServiceListener listener);

@@ -19,7 +19,6 @@
 
 package org.solmix.hola.core.model;
 
-import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -127,17 +126,7 @@ public class EndpointInfo
         else
             return new Long(value.toString().trim());
     }
-    
-    public String getHost(){
-      return getString(HolaConstants.KEY_HOST,null);
-    }
 
-    /**
-     * 
-     */
-    public int getPort() {
-        return getInt(HolaConstants.KEY_PORT, 0);
-    }
 
     /**
      * @param keyHeartbeat
@@ -154,7 +143,7 @@ public class EndpointInfo
         return new EndpointInfo(map);
     }
 
-    public Map<String, Object> getParameters() {
+    public Map<String, ?> getParameters() {
         return parameters;
     }
     /**
@@ -182,14 +171,6 @@ public class EndpointInfo
     }
 
     /**
-     * @return
-     */
-    public String getIp() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
      * @param parameters
      * @return
      */
@@ -212,23 +193,5 @@ public class EndpointInfo
         Map<String, Object> map = new HashMap<String, Object>(getParameters());
         map.putAll(parameters);
         return  new EndpointInfo(map);
-    }
-
-    /**
-     * @return
-     */
-    public InetSocketAddress toInetSocketAddress() {
-        return  new InetSocketAddress(getHost(), getPort());
-    }
-
-    /**
-     * @return
-     */
-    public String getAddress() {
-        return getPort()<=1?getHost():getHost()+":"+getPort();
-    }
-    
-    public ChannelInfo getChannel(){
-        return new ChannelInfo();
     }
 }

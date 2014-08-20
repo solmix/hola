@@ -22,7 +22,7 @@ package org.solmix.hola.transport.channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.hola.transport.codec.ExchangeCodec;
@@ -46,7 +46,7 @@ public class AbstractPeer
 
     private Codec codec;
 
-    private volatile ChannelInfo info;
+    private volatile RemoteInfo info;
 
     private int timeout;
 
@@ -56,7 +56,7 @@ public class AbstractPeer
     
     private final Container container;
 
-    public AbstractPeer(ChannelInfo info, ChannelHandler handler,Container container)
+    public AbstractPeer(RemoteInfo info, ChannelHandler handler,Container container)
     {
         this.container=container;
         this.info = info;
@@ -75,7 +75,7 @@ public class AbstractPeer
      * @endpointInfo endpointInfo
      * @return
      */
-    protected  Codec getAdaptorCodec(ChannelInfo info) {
+    protected  Codec getAdaptorCodec(RemoteInfo info) {
        String codec=info.getCodec(ExchangeCodec.NAME);
        if(codec==null){
            return getContainer().getExtensionLoader(Codec.class).getDefault();
@@ -84,7 +84,7 @@ public class AbstractPeer
        }
     }
 
-    public ChannelInfo getInfo() {
+    public RemoteInfo getInfo() {
         return info;
     }
 
@@ -95,7 +95,7 @@ public class AbstractPeer
     /**
      * @endpointInfo endpointInfo the endpointInfo to set
      */
-    public void setInfo(ChannelInfo endpointInfo) {
+    public void setInfo(RemoteInfo endpointInfo) {
         this.info = info;
     }
 
@@ -103,7 +103,7 @@ public class AbstractPeer
         return closed;
     }
 
-    public void refresh(ChannelInfo info) {
+    public void refresh(RemoteInfo info) {
         if (isClosed()) {
             throw new IllegalStateException("Failed to reset endpointInfo "
                 + info + ", cause: Channel closed.");
@@ -183,7 +183,7 @@ public class AbstractPeer
      * @param handler
      * @return
      */
-    protected ChannelHandler wrapChannelHandler(ChannelInfo info,
+    protected ChannelHandler wrapChannelHandler(RemoteInfo info,
         ChannelHandler handler) {
         String dispatch = info.getDispather(HolaConstants.DEFAULT_DISPATHER);
         ChannelHandler dis = getContainer().getExtensionLoader(Dispatcher.class)
@@ -196,7 +196,7 @@ public class AbstractPeer
      * @param defaultName
      * @return
      */
-    protected  ChannelInfo setThreadName(ChannelInfo info ,String defaultName){
+    protected  RemoteInfo setThreadName(RemoteInfo info ,String defaultName){
            String name = info.getThreadName(defaultName);
            name=new StringBuilder(32).append(name).append("-").append(info.getAddress()).toString();
             info.setThreadName(name);

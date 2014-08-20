@@ -30,23 +30,27 @@ import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.RemoteConnectException;
 import org.solmix.hola.rs.RemoteFilter;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteServiceListener;
-import org.solmix.hola.rs.RemoteServiceProvider;
+import org.solmix.hola.rs.RemoteServiceManager;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.RemoteServiceRegistration;
+import org.solmix.hola.rs.RomteServiceException;
 import org.solmix.hola.rs.event.RemoteServiceEvent;
 import org.solmix.hola.rs.event.RemoteServiceRegisteredEvent;
 import org.solmix.hola.rs.event.RemoteServiceUnregisteredEvent;
 import org.solmix.hola.transport.TransportException;
-import org.solmix.hola.transport.channel.TCPServer;
+import org.solmix.hola.transport.exchange.ExchangeChannel;
 import org.solmix.hola.transport.exchange.ExchangeHandler;
+import org.solmix.hola.transport.exchange.ExchangeHandlerAdaptor;
 import org.solmix.hola.transport.exchange.ExchangeServer;
-import org.solmix.hola.transport.exchange.Exchangers;
+import org.solmix.hola.transport.exchange.ExchangerProvider;
+import org.solmix.runtime.Container;
 
 
 /**
@@ -55,24 +59,30 @@ import org.solmix.hola.transport.exchange.Exchangers;
  * @version $Id$  2014年5月17日
  */
 @ThreadSafe
-public class HolaRemoteServiceProvider implements RemoteServiceProvider
+public class HolaRemoteServiceManager implements RemoteServiceManager
 {
-    private RemoteServiceRegistry registry;
+    private final RemoteServiceRegistry registry;
     protected final List<RemoteServiceListener> listeners=new ArrayList<RemoteServiceListener>();
     private final Map<String, ExchangeServer> servers = new ConcurrentHashMap<String, ExchangeServer>(); // <host:port,Exchanger>
-    private ExchangeHandler handler;
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.identity.Identifiable#getID()
-     */
-    @Override
-    public ID getID() {
-        // TODO Auto-generated method stub
-        return null;
+    private final Container container;
+    private final ExchangeHandler handler=new ExchangeHandlerAdaptor(){
+        
+        @Override
+        public Object reply(ExchangeChannel channel, Object msg)
+            throws TransportException {
+            return null;
+        }
+    };
+    public HolaRemoteServiceManager(final Container container,RemoteServiceListener...listeners ){
+        this.container=container;
+        registry=new RemoteServiceRegistry();
+        if(listeners!=null){
+            for(RemoteServiceListener listener:listeners){
+                addRemoteServiceListener(listener);
+            }
+        }
+        
     }
-
     /**
      * {@inheritDoc}
      * 
@@ -81,12 +91,10 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
      */
     @Override
     public RemoteServiceRegistration<?> registerRemoteService(String[] clazzes,
-        Object service, Map<String, ?> properties) {
-        Assert.isNotNull(service, "register service must be not null");
-        final int size = clazzes.length;
-        if (size == 0) {
-            throw new IllegalArgumentException(
-                "Service classes list is empty");
+        Object service, RemoteInfo info) throws RomteServiceException{
+        Assert.isNotNull(service, "register service is null");
+        if (clazzes==null || clazzes.length == 0) {
+            throw new IllegalArgumentException( "Service classes list is empty");
         }
         final String[] copy = new String[clazzes.length];
         for (int i = 0; i < clazzes.length; i++) {
@@ -100,9 +108,9 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
         }
         final HolaRemoteServiceRegistration<Object> reg = new HolaRemoteServiceRegistration<Object>();
         synchronized (registry) {
-            reg.publish( this,registry, clazzes, service, properties);
+            reg.publish( this,registry, clazzes, service, info);
         }
-        adapteServer(properties);
+        adapteServer(info);
         fireRemoteServiceListeners(createRegisteredEvent(reg));
         return reg;
     }
@@ -110,16 +118,15 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
     /**
      * @param reg
      */
-    private void adapteServer(Map<String, ?> parameters) {
-        EndpointInfo param = new EndpointInfo(parameters);
-       boolean isServer= param.getBoolean(HolaConstants.IS_SERVER,true);
-       String key = getServerKey(param);
+    private void adapteServer(RemoteInfo info) {
+       boolean isServer= info.getServer(true);
+       String key = info.getAddress();
        if(isServer){
            ExchangeServer server=  servers.get(key);
            if(server==null){
-               servers.put(key, createServer(param));
+               servers.put(key, createServer(info));
            }else{
-               server.refresh(param);
+               server.refresh(info);
            }
        }
     }
@@ -128,29 +135,28 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
      * @param param
      * @return
      */
-    private ExchangeServer createServer(EndpointInfo param) {
-        param=  param.addParameterIfNotSet(HolaConstants.KEY_HEARTBEAT,HolaConstants.DEFAULT_HEARTBEAT);
-        param=param.addParameter(HolaConstants.KEY_CODEC,HolaCodec.CODEC_NAME);
-        //TODO
+    private ExchangeServer createServer(RemoteInfo info) {
+        info.setCodec(HolaCodec.CODEC_NAME);
+        info.setServer(true);
+        if(info.getHeartbeat()==null){
+            info.setHeartbeat(HolaConstants.DEFAULT_HEARTBEAT);
+        }
+        if(info.getTransport()==null){
+            info.setTransport(HolaConstants.DEFAULT_TRANSPORTER);
+        }
+        if(info.getExchanger()==null){
+            info.setExchanger(HolaConstants.DEFAULT_EXCHANGER);
+        }
         ExchangeServer server=null;
         try {
-            server=Exchangers.bind(handler, param);
+            ExchangerProvider provider=   container.getExtensionLoader(ExchangerProvider.class).getExtension(info.getExchanger());
+            server=provider.bind(info,handler);
         } catch (TransportException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+           throw new RomteServiceException("Failed to start server ",e);
         }
         return server;
     }
 
-    private String getServerKey(EndpointInfo param) {
-       int port= param.getPort();
-       String host=param.getHost()==null?TCPServer.DEFAULT_HOST:param.getHost().toString();
-       if(port<=0){
-           return host;
-       }else{
-           return host+":"+port;
-       }
-    }
 
     protected  void unregisterRemoteService(HolaRemoteServiceRegistration<?> reg){
         synchronized (registry) {
@@ -222,8 +228,7 @@ public class HolaRemoteServiceProvider implements RemoteServiceProvider
      */
     @Override
     public Namespace getRemoteServiceNamespace() {
-        // TODO Auto-generated method stub
-        return null;
+        return IDFactory.getDefault().getNamespaceByName(HolaNamespace.NAME);
     }
 
     /**

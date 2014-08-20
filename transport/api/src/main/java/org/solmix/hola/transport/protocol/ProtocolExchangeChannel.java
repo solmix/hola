@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -147,7 +147,7 @@ final class ProtocolExchangeChannel implements ExchangeChannel {
         return channel.getRemoteAddress();
     }
     @Override
-    public ChannelInfo getInfo() {
+    public RemoteInfo getInfo() {
         return channel.getInfo();
     }
 

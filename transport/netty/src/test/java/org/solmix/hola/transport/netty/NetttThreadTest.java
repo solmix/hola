@@ -24,7 +24,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.TransporterProvider;
@@ -55,7 +55,7 @@ public class NetttThreadTest
     @Before
     public void setUp() throws Exception {
       
-        ChannelInfo info = new ChannelInfo();
+        RemoteInfo info = new RemoteInfo();
         info.setHost("localhost");
         info.setPort(1314);
         info.setSerialName(JavaSerialization.NAME);

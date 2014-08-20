@@ -24,7 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.runtime.Extension;
 
 
@@ -44,7 +44,7 @@ public interface Serialization
      */
     String getContentType();
     
-    ObjectOutput serialize(ChannelInfo info, OutputStream output) throws IOException;
+    ObjectOutput serialize(RemoteInfo info, OutputStream output) throws IOException;
     
-    ObjectInput deserialize(ChannelInfo info, InputStream input) throws IOException;
+    ObjectInput deserialize(RemoteInfo info, InputStream input) throws IOException;
 }

@@ -19,7 +19,7 @@
 package org.solmix.hola.transport.channel;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.handler.ChannelHandlerDelegate;
 
@@ -32,13 +32,13 @@ import org.solmix.hola.transport.handler.ChannelHandlerDelegate;
 
 public abstract class AbstractChannel implements Channel
 {
-    private volatile ChannelInfo info;
+    private volatile RemoteInfo info;
     
     private volatile boolean     closed;
 
     private final ChannelHandler handler;
     
-    public AbstractChannel(ChannelInfo info,ChannelHandler handler){
+    public AbstractChannel(RemoteInfo info,ChannelHandler handler){
         Assert.isNotNull(info);
         Assert.isNotNull(handler);
         this.info=info;
@@ -91,7 +91,7 @@ public abstract class AbstractChannel implements Channel
      * @see org.solmix.hola.transport.channel.Channel#getInfo()
      */
     @Override
-    public ChannelInfo getInfo() {
+    public RemoteInfo getInfo() {
         return info;
     }
 

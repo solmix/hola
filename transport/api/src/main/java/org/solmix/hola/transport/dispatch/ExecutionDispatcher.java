@@ -19,7 +19,7 @@
 
 package org.solmix.hola.transport.dispatch;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -40,10 +40,10 @@ public class ExecutionDispatcher extends AbstractDispatcher
      * {@inheritDoc}
      * 
      * @see org.solmix.hola.transport.dispatch.Dispatcher#dispatch(org.solmix.hola.transport.channel.ChannelHandler,
-     *      org.solmix.hola.core.model.ChannelInfo)
+     *      org.solmix.hola.core.model.RemoteInfo)
      */
     @Override
-    public ChannelHandler dispatch(ChannelHandler handler, ChannelInfo info) {
+    public ChannelHandler dispatch(ChannelHandler handler, RemoteInfo info) {
         return new ExecutionDispatcherHandler(handler, info, getContainer());
     }
 
@@ -56,7 +56,7 @@ public class ExecutionDispatcher extends AbstractDispatcher
          * @param container
          */
         public ExecutionDispatcherHandler(ChannelHandler handler,
-            ChannelInfo info, Container container)
+            RemoteInfo info, Container container)
         {
             super(handler, info, container);
         }

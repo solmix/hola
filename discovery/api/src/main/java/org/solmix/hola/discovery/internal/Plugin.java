@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.discovery.internal;
 
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.discovery.identity.DiscoveryNamespace;
 import org.solmix.runtime.ContainerExtension;
 import org.solmix.runtime.SystemContext;
@@ -56,7 +56,7 @@ public class Plugin implements ContainerExtension
     @Override
     public void setSystemContext(SystemContext context) {
         this.systemContext = context;
-        DefaultIDFactory.getDefault().addNamespace(new DiscoveryNamespace(
+        IDFactory.getDefault().addNamespace(new DiscoveryNamespace(
            "Discovery Namespace"));
     }
 

@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.solmix.commons.util.NetUtils;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
 
@@ -43,11 +43,11 @@ public class NettyChannelHandler extends ChannelHandlerAdapter {
 
     private final Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>(); // <ip:port, channel>
     
-    private final ChannelInfo param;
+    private final RemoteInfo param;
     
     private final ChannelHandler handler;
     
-    public NettyChannelHandler(ChannelInfo param, org.solmix.hola.transport.channel.ChannelHandler handler){
+    public NettyChannelHandler(RemoteInfo param, org.solmix.hola.transport.channel.ChannelHandler handler){
         if (param == null) {
             throw new IllegalArgumentException("url == null");
         }

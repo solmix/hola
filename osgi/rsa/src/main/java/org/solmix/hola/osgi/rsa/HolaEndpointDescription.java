@@ -31,7 +31,7 @@ import org.osgi.framework.Version;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.rs.AsyncRemoteServiceProxy;
 
@@ -209,7 +209,7 @@ public class HolaEndpointDescription extends EndpointDescription
         List<ID> results = new ArrayList<ID>();
         String idNamespace = getIDNamespace();
         for (String idName : idNames) {
-            results.add(DefaultIDFactory.getDefault().createID(idNamespace,
+            results.add(IDFactory.getDefault().createID(idNamespace,
                 idName));
         }
         return results.toArray(new ID[results.size()]);
@@ -253,7 +253,7 @@ public class HolaEndpointDescription extends EndpointDescription
     private ID verifyIDProperty(String idNamespace, String idName) {
         if (idName == null)
             return null;
-        return DefaultIDFactory.getDefault().createID(idNamespace, idName);
+        return IDFactory.getDefault().createID(idNamespace, idName);
     }
 
     /**

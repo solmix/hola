@@ -23,7 +23,6 @@ import java.util.Dictionary;
 import java.util.Map;
 
 import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
  * 远程服务注册返回结果,在调用
@@ -38,17 +37,11 @@ public interface RemoteServiceRegistration<S>
 {
 
     /**
-     * 返回非空RemoteServiceID
+     * 返回非空服务ID
      * @return
      */
-    RemoteServiceID getRemoteServiceID();
+    ID getID();
 
-    /**
-     * 返回服务提供者ID
-     * 
-     * @return
-     */
-    ID getProviderID();
 
     Object getProperty(String key);
 

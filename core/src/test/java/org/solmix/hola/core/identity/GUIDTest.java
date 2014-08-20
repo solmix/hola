@@ -88,7 +88,7 @@ public class GUIDTest extends AbstractIDTestCase
     public void testCreateFromQueryString() throws Exception {
           final ID id1 = createID();
           final String externalForm = id1.toQueryString();
-          final ID id2 = DefaultIDFactory.getDefault().createID(id1.getNamespace(),
+          final ID id2 = IDFactory.getDefault().createID(id1.getNamespace(),
                       externalForm);
           assertTrue(id1.equals(id2));
     }
@@ -103,6 +103,6 @@ public class GUIDTest extends AbstractIDTestCase
     }
     protected ID createID(int length) throws IDCreateException {
         
-        return DefaultIDFactory.getDefault().createGUID(length);
+        return IDFactory.getDefault().createGUID(length);
     }
 }

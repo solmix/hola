@@ -25,7 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.solmix.commons.util.NetUtils;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.exchange.ExchangeChannel;
@@ -60,7 +60,7 @@ public class RequestTest extends TestCase
     protected void setUp() throws Exception {
         super.setUp();
         int port = NetUtils.getAvailablePort();
-        ChannelInfo info = ChannelInfo.newBuilder().setHost("localhost")
+        RemoteInfo info = RemoteInfo.newBuilder().setHost("localhost")
             .setPort(port)
             .setReconnect(true)
             .setReconnectPeriod(500)

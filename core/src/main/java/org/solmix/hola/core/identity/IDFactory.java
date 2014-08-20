@@ -16,206 +16,219 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.core.identity;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.solmix.hola.core.identity.support.GUID;
+import org.solmix.hola.core.identity.support.GUIDNamespace;
+import org.solmix.hola.core.identity.support.LongNamespace;
+import org.solmix.hola.core.identity.support.StringNamespace;
+import org.solmix.hola.core.identity.support.URINamespace;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月4日
+ * @version $Id$ 2014年4月4日
  */
 
-public interface IDFactory
+public class IDFactory implements IIDFactory
 {
-    /**
-     * Add the given Namespace to our table of available Namespaces
-     * 
-     * @param n
-     *            the Namespace to add
-     * @return Namespace the namespace already in table (null if Namespace not
-     *         previously in table)
-     * @exception SecurityException
-     *                thrown if caller does not have appropriate
-     *                NamespacePermission for given namespace
-     */
-    public Namespace addNamespace(Namespace namespace) throws SecurityException;
+
+    protected static IIDFactory instance = null;
+
+    private static Hashtable<String, Namespace> namespaces = new Hashtable<String, Namespace>();
+    static {
+        instance = new IDFactory();
+        addNamespace0(new StringNamespace());
+        addNamespace0(new GUIDNamespace());
+        addNamespace0(new LongNamespace());
+        addNamespace0(new URINamespace());
+    }
+
+    public synchronized static IIDFactory getDefault() {
+        return instance;
+    }
+
+    public IDFactory()
+    {
+       instance=this;
+    }
 
     /**
-     * Check whether table contains given Namespace instance
+     * {@inheritDoc}
      * 
-     * @param n
-     *            the Namespace to look for
-     * @return true if table does contain given Namespace, false otherwise
-     * @exception SecurityException
-     *                thrown if caller does not have appropriate
-     *                NamespacePermission for given namespace
+     * @see org.solmix.hola.core.identity.IIDFactory#addNamespace(org.solmix.hola.core.identity.Namespace)
      */
-    public boolean containsNamespace(Namespace namespace) throws SecurityException;
+    @Override
+    public Namespace addNamespace(Namespace namespace) throws SecurityException {
+        if (namespace == null)
+            return null;
+        return addNamespace0(namespace);
+    }
+
+    public final static Namespace addNamespace0(Namespace namespace) {
+        if (namespace == null)
+            return null;
+        return namespaces.put(namespace.getName(), namespace);
+    }
 
     /**
-     * Get a list of the current Namespace instances exposed by this factory.
+     * {@inheritDoc}
      * 
-     * @return List<Namespace> of Namespace instances
-     * @exception SecurityException
-     *                thrown if caller does not have appropriate
-     *                NamespacePermission for given namespace
+     * @see org.solmix.hola.core.identity.IIDFactory#containsNamespace(org.solmix.hola.core.identity.Namespace)
      */
-    public List<Namespace> getNamespaces() throws SecurityException;
+    @Override
+    public boolean containsNamespace(Namespace namespace)
+        throws SecurityException {
+        if (namespace == null)
+            return false;
+        return namespaces.containsKey(namespace.getName());
+    }
 
     /**
-     * Get the given Namespace instance from table
+     * {@inheritDoc}
      * 
-     * @param n
-     *            the Namespace to look for
-     * @return Namespace
-     * @exception SecurityException
-     *                thrown if caller does not have appropriate
-     *                NamespacePermission for given namespace
+     * @see org.solmix.hola.core.identity.IIDFactory#getNamespaces()
      */
-    public Namespace getNamespace(Namespace namespace) throws SecurityException;
+    @Override
+    public List<Namespace> getNamespaces() throws SecurityException {
+        return new ArrayList<Namespace>(namespaces.values());
+    }
 
     /**
-     * Get a Namespace instance by its string name.
+     * {@inheritDoc}
      * 
-     * @param name
-     *            the name to use for lookup
-     * @return Namespace instance. Null if not found.
-     * @exception SecurityException
-     *                thrown if caller does not have appropriate
-     *                NamespacePermission for given namespace
+     * @see org.solmix.hola.core.identity.IIDFactory#getNamespace(org.solmix.hola.core.identity.Namespace)
      */
-    public Namespace getNamespaceByName(String name) throws SecurityException;
+    @Override
+    public Namespace getNamespace(Namespace namespace) throws SecurityException {
+        if (namespace == null)
+            return null;
+        return namespaces.get(namespace.getName());
+    }
 
     /**
-     * Make a GUID using SHA-1 hash algorithm and a default of 16bits of data
-     * length. The value is Base64 encoded to allow for easy display.
+     * {@inheritDoc}
      * 
-     * @return new ID instance
-     * @throws IDCreateException
-     *             if ID cannot be constructed
+     * @see org.solmix.hola.core.identity.IIDFactory#getNamespaceByName(java.lang.String)
      */
-    public ID createGUID() throws IDCreateException;
+    @Override
+    public Namespace getNamespaceByName(String name) throws SecurityException {
+        return namespaces.get(name);
+    }
 
     /**
-     * Make a GUID using SHA-1 hash algorithm and a default of 16bits of data
-     * length. The value is Base64 encoded to allow for easy display.
+     * {@inheritDoc}
      * 
-     * @param length
-     *            the byte-length of data used to create a GUID
-     * @return new ID instance
-     * @throws IDCreateException
-     *             if ID cannot be constructed
+     * @see org.solmix.hola.core.identity.IIDFactory#createGUID()
      */
-    public ID createGUID(int length) throws IDCreateException;
+    @Override
+    public ID createGUID() throws IDCreateException {
+        return createGUID(GUID.DEFAULT_BYTE_LENGTH);
+    }
 
     /**
-     * Make a new identity. Given a Namespace, and an array of instance
-     * constructor parameters, return a new instance of an ID belonging to the
-     * given Namespace
+     * {@inheritDoc}
      * 
-     * @param n
-     *            the Namespace to which the ID will belong
-     * @param args
-     *            an Object [] of the parameters for the ID instance constructor
-     * @exception IDCreateException
-     *                thrown if class for instantiator or instance can't be
-     *                loaded, if something goes wrong during instance
-     *                construction
+     * @see org.solmix.hola.core.identity.IIDFactory#createGUID(int)
      */
-    public ID createID(Namespace n, Object[] args) throws IDCreateException;
+    @Override
+    public ID createGUID(int length) throws IDCreateException {
+        return createID(new GUIDNamespace(),
+            new Integer[] { new Integer(length) });
+    }
 
     /**
-     * Make a new identity. Given a Namespace name, and an array of instance
-     * constructor parameters, return a new instance of an ID belonging to the
-     * given Namespace
+     * {@inheritDoc}
      * 
-     * @param namespaceName
-     *            the name of the Namespace to which the ID will belong
-     * @param args
-     *            an Object [] of the parameters for the ID instance constructor
-     * @exception IDCreateException
-     *                thrown if class for instantiator or ID instance can't be
-     *                loaded, if something goes wrong during instance
-     *                construction
+     * @see org.solmix.hola.core.identity.IIDFactory#createID(org.solmix.hola.core.identity.Namespace,
+     *      java.lang.Object[])
      */
-    public ID createID(String namespaceName, Object[] args) throws IDCreateException;
+    @Override
+    public ID createID(Namespace n, Object[] args) throws IDCreateException {
+        Namespace ns = getNamespace(n);
+        if (ns == null)
+            throw new IDCreateException("Namespace " + n.getName()
+                + " not found", null);
+        return ns.createID(args);
+    }
 
     /**
-     * Make a new identity instance from a namespace and String.
+     * {@inheritDoc}
      * 
-     * @param namespace
-     *            the namespace to use to create the ID
-     * @param uri
-     *            the String uri to use to create the ID
-     * @exception IDCreateException
-     *                thrown if class for instantiator or ID instance can't be
-     *                loaded, if something goes wrong during instance
-     *                construction
+     * @see org.solmix.hola.core.identity.IIDFactory#createID(java.lang.String,
+     *      java.lang.Object[])
      */
-    public ID createID(Namespace namespace, String uri) throws IDCreateException;
+    @Override
+    public ID createID(String namespaceName, Object[] args)
+        throws IDCreateException {
+        Namespace n = getNamespaceByName(namespaceName);
+        if (n == null)
+            throw new IDCreateException(
+                "Namespace " + namespaceName + " not found");
+        return createID(n, args);
+    }
 
     /**
-     * Make a new identity instance from a namespaceName and idValue. The
-     * namespaceName is first used to lookup the namespace with
-     * {@link #getNamespaceByName(String)}, and then the result is passed into
-     * {@link #createID(Namespace,String)}.
+     * {@inheritDoc}
      * 
-     * @param namespaceName
-     *            the name of the namespace that should be used to create the ID
-     * @param idValue
-     *            the String value to use to create the ID
-     * @exception IDCreateException
-     *                thrown if class for instantiator or ID instance can't be
-     *                loaded, if something goes wrong during instance
-     *                construction
+     * @see org.solmix.hola.core.identity.IIDFactory#createID(org.solmix.hola.core.identity.Namespace,
+     *      java.lang.String)
      */
-    public ID createID(String namespaceName, String idValue) throws IDCreateException;
+    @Override
+    public ID createID(Namespace namespace, String uri)
+        throws IDCreateException {
+        return createID(namespace, new Object[] { uri });
+    }
 
     /**
-     * Make a an ID from a String
+     * {@inheritDoc}
      * 
-     * @param idString
-     *            the String to use as this ID's unique value. Note: It is
-     *            incumbent upon the caller of this method to be sure that the
-     *            given string allows the resulting ID to satisfy the ID
-     *            contract for global uniqueness within the associated
-     *            Namespace.
-     * 
-     * @return valid ID instance
-     * @throws IDCreateException
-     *             thrown if class for instantiator or ID instance can't be
-     *             loaded, if something goes wrong during instance construction
+     * @see org.solmix.hola.core.identity.IIDFactory#createID(java.lang.String,
+     *      java.lang.String)
      */
-    public ID createStringID(String idString) throws IDCreateException;
+    @Override
+    public ID createID(String namespace, String uri) throws IDCreateException {
+        return createID(namespace, new Object[] { uri });
+    }
 
     /**
-     * Make a an ID from a long
+     * {@inheritDoc}
      * 
-     * @param l
-     *            the long to use as this ID's unique value. Note: It is
-     *            incumbent upon the caller of this method to be sure that the
-     *            given long allows the resulting ID to satisfy the ID contract
-     *            for global uniqueness within the associated Namespace.
-     * 
-     * @return valid ID instance
-     * @throws IDCreateException
-     *             thrown if class for instantiator or ID instance can't be
-     *             loaded, if something goes wrong during instance construction
+     * @see org.solmix.hola.core.identity.IIDFactory#createStringID(java.lang.String)
      */
-    public ID createLongID(long l) throws IDCreateException;
+    @Override
+    public ID createStringID(String idString) throws IDCreateException {
+        if (idString == null)
+            throw new IDCreateException("StringID cannot be null");
+        return createID(new StringNamespace(), new String[] { idString });
+    }
 
     /**
-     * Remove the given Namespace from our table of available Namespaces
+     * {@inheritDoc}
      * 
-     * @param n
-     *            the Namespace to remove
-     * @return Namespace the namespace already in table (null if Namespace not
-     *         previously in table)
-     * @exception SecurityException
-     *                thrown if caller does not have appropriate
-     *                NamespacePermission for given namespace
+     * @see org.solmix.hola.core.identity.IIDFactory#createLongID(long)
      */
-    public Namespace removeNamespace(Namespace n) throws SecurityException;
+    @Override
+    public ID createLongID(long l) throws IDCreateException {
+        return createID(new LongNamespace(), new Long[] { new Long(l) });
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.identity.IIDFactory#removeNamespace(org.solmix.hola.core.identity.Namespace)
+     */
+    @Override
+    public Namespace removeNamespace(Namespace namespace)
+        throws SecurityException {
+        if (namespace == null)
+            return null;
+        return namespaces.remove(namespace.getName());
+    }
+
 }

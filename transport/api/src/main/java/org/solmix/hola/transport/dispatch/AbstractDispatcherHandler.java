@@ -9,7 +9,7 @@ import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.executor.ExecutorProvider;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.model.ExecutorInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
@@ -27,11 +27,11 @@ public class AbstractDispatcherHandler implements ChannelHandlerDelegate {
     
     protected  ChannelHandler handler;
 
-    protected final ChannelInfo info;
+    protected final RemoteInfo info;
     
     private final Container container;
     
-    public AbstractDispatcherHandler(ChannelHandler handler, ChannelInfo info,Container container) {
+    public AbstractDispatcherHandler(ChannelHandler handler, RemoteInfo info,Container container) {
         this.handler = handler;
         this.info = info;
         this.container=container;

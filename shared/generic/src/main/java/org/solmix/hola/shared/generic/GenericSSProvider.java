@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.AbstractConnectContext;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.identity.support.StringID;
@@ -93,7 +93,7 @@ public abstract class GenericSSProvider extends AbstractConnectContext
      */
     @Override
     public Namespace getRemoteNamespace() {
-        return DefaultIDFactory.getDefault().getNamespaceByName(
+        return IDFactory.getDefault().getNamespaceByName(
             StringID.class.getName());
     }
     /**

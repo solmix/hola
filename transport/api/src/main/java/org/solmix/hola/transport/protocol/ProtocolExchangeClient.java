@@ -28,9 +28,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -45,7 +46,7 @@ import org.solmix.hola.transport.exchange.ResponseFuture;
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年7月14日
  */
-
+@ThreadSafe
 public class ProtocolExchangeClient implements ExchangeClient
 {
 
@@ -80,12 +81,13 @@ public class ProtocolExchangeClient implements ExchangeClient
         startHeatbeatTimer();
     }
 
+    @Override
     public ResponseFuture request(Object request) throws TransportException {
         return channel.request(request);
     }
 
     @Override
-    public ChannelInfo getInfo() {
+    public RemoteInfo getInfo() {
         return channel.getInfo();
     }
 
@@ -94,6 +96,7 @@ public class ProtocolExchangeClient implements ExchangeClient
         return channel.getRemoteAddress();
     }
 
+    @Override
     public ResponseFuture request(Object request, int timeout)
         throws TransportException {
         return channel.request(request, timeout);
@@ -114,6 +117,7 @@ public class ProtocolExchangeClient implements ExchangeClient
         return channel.getLocalAddress();
     }
 
+    @Override
     public ExchangeHandler getExchangeHandler() {
         return channel.getExchangeHandler();
     }
@@ -146,7 +150,7 @@ public class ProtocolExchangeClient implements ExchangeClient
     }
 
     @Override
-    public void refresh(ChannelInfo param) {
+    public void refresh(RemoteInfo param) {
         client.refresh(param);
     }
 

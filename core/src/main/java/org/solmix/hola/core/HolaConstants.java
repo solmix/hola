@@ -144,6 +144,10 @@ public class HolaConstants
 
     public static final int DEFAULT_QUEUES = 0;
 
-    public static final String DEFAULT_DISPATHER = "all";   
+    public static final String DEFAULT_DISPATHER = "all";
+
+    public static final String DEFAULT_TRANSPORTER = "netty";
+
+    public static final String DEFAULT_EXCHANGER = "protocol";   
 
 }

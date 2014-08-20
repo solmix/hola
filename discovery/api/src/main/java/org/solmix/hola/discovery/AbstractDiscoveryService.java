@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.AbstractConnectContext;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.event.ServiceEvent;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
@@ -91,7 +91,7 @@ public abstract class AbstractDiscoveryService extends AbstractConnectContext
 
     @Override
     public Namespace getDiscoveryNamespace() {
-        return DefaultIDFactory.getDefault().getNamespaceByName(
+        return IDFactory.getDefault().getNamespaceByName(
             discoveryNamespace);
     }
 
@@ -246,7 +246,7 @@ public abstract class AbstractDiscoveryService extends AbstractConnectContext
 
     @Override
     public Namespace getServicesNamespace() {
-        return DefaultIDFactory.getDefault().getNamespaceByName(
+        return IDFactory.getDefault().getNamespaceByName(
             discoveryNamespace);
     }
 

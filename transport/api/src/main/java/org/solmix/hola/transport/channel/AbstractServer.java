@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ExecutorUtils;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.model.ExecutorInfo;
 import org.solmix.hola.core.model.InfoUtils;
 import org.solmix.hola.transport.TransportException;
@@ -54,7 +54,7 @@ public abstract class AbstractServer extends AbstractPeer implements Server
     private int idleTimeout         = 600;
     protected static final String SERVER_THREAD_POOL_NAME  ="HolaServerHandler";
     ExecutorService executor;
-    public AbstractServer(ChannelInfo info,ChannelHandler handler,Container container) throws TransportException{
+    public AbstractServer(RemoteInfo info,ChannelHandler handler,Container container) throws TransportException{
         super(info,handler,container);
         localAddress=info.toInetSocketAddress();
         String host = NetUtils.isInvalidLocalHost(info.getHost()) 
@@ -78,7 +78,7 @@ public abstract class AbstractServer extends AbstractPeer implements Server
   
     
     @Override
-    public void refresh(ChannelInfo info) {
+    public void refresh(RemoteInfo info) {
         if(info==null)
             return ;
         try {

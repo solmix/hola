@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.dispatch;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.runtime.Extension;
 
@@ -31,5 +31,5 @@ import org.solmix.runtime.Extension;
 @Extension(name="all")
 public interface Dispatcher
 {
-    ChannelHandler dispatch(ChannelHandler handler, ChannelInfo param);
+    ChannelHandler dispatch(ChannelHandler handler, RemoteInfo param);
 }

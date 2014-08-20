@@ -40,7 +40,7 @@ public class ChannelInfoTest extends Assert
 
     @Test
     public void mergeTest() throws Exception{
-        ChannelInfo c1= new ChannelInfo();
+        RemoteInfo c1= new RemoteInfo();
         c1.setHost("127.0.0.1");
         c1.setPort(8080);
         c1.setAccepts(100);
@@ -51,7 +51,7 @@ public class ChannelInfoTest extends Assert
         ExecutorInfo e= new ExecutorInfo();
         e.setThreadName("Thread1");
         c1.setExecutor(e);
-        ChannelInfo c2= new ChannelInfo();
+        RemoteInfo c2= new RemoteInfo();
         c2.setHost("127.0.0.1");
         c2.setPort(8081);
         c2.setAccepts(100);
@@ -62,7 +62,7 @@ public class ChannelInfoTest extends Assert
         ExecutorInfo e2= new ExecutorInfo();
         e2.setThreadName("Thread1");
         c2.setExecutor(e2);
-        ChannelInfo c3= InfoUtils.merge(c2, c1);
+        RemoteInfo c3= InfoUtils.merge(c2, c1);
         assertEquals(c2.getPort(), c3.getPort());
         assertEquals(c2.getCodec(), c3.getCodec());
         assertEquals(c2.getAwait(), c3.getAwait());
@@ -73,11 +73,11 @@ public class ChannelInfoTest extends Assert
         Container c = Containers.get();
         MonitorService ms=  c.getExtension(MonitorService.class);
         MonitorInfo info = ms.getMonitorInfo();
-        List<ChannelInfo> lists= new ArrayList<ChannelInfo>();
+        List<RemoteInfo> lists= new ArrayList<RemoteInfo>();
        long b=System.currentTimeMillis();
         for(int i=0;i<1000;i++){
-            ChannelInfo cc=ChannelInfo.newBuilder().setAccepts(10).setBuffer(1024).setCharset("UTF-9").setAwait(true)
-                .setCodec("hola").setConnections(100).setConnectTimeout(10000).setDispather("default").setExchangeName("exchange")
+            RemoteInfo cc=RemoteInfo.newBuilder().setAccepts(10).setBuffer(1024).setCharset("UTF-9").setAwait(true)
+                .setCodec("hola").setConnections(100).setConnectTimeout(10000).setDispather("default").setExchanger("exchange")
                 .setExecutor(null).setHeartbeat(10000).setHost("127.0.0.1").build();
             lists.add(cc);
         }
@@ -87,10 +87,10 @@ public class ChannelInfoTest extends Assert
     }
     @Test
     public void testcopy(){
-        ChannelInfo cc=ChannelInfo.newBuilder().setAccepts(10).setBuffer(1024).setCharset("UTF-9").setAwait(true)
-            .setCodec("hola").setConnections(100).setConnectTimeout(10000).setDispather("default").setExchangeName("exchange")
+        RemoteInfo cc=RemoteInfo.newBuilder().setAccepts(10).setBuffer(1024).setCharset("UTF-9").setAwait(true)
+            .setCodec("hola").setConnections(100).setConnectTimeout(10000).setDispather("default").setExchanger("exchange")
             .setExecutor(null).setHeartbeat(10000).setHost("127.0.0.1").build();
-        ChannelInfo dd=ChannelInfo.newBuilder(cc).build();
+        RemoteInfo dd=RemoteInfo.newBuilder(cc).build();
         dd.setCodec("nohola");
         dd.setHeartbeat(null);
         Assert.assertTrue(!dd.getCodec().equals(cc.getCodec()));

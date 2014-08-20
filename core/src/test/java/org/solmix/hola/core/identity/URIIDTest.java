@@ -114,7 +114,7 @@ public class URIIDTest extends AbstractIDTestCase
     public void testCreateFromQueryString() throws Exception {
           final ID id1 = createID();
           final String externalForm = id1.toQueryString();
-          final ID id2 = DefaultIDFactory.getDefault().createID(id1.getNamespace(),
+          final ID id2 = IDFactory.getDefault().createID(id1.getNamespace(),
                       externalForm);
           assertTrue(id1.equals(id2));
     }
@@ -129,7 +129,7 @@ public class URIIDTest extends AbstractIDTestCase
     }
     protected ID createID(String url) throws IDCreateException {
         
-        URINamespace ns= DefaultIDFactory.getDefault().getNamespaceByName(URIID.class.getName()).adaptTo(URINamespace.class);
+        URINamespace ns= IDFactory.getDefault().getNamespaceByName(URIID.class.getName()).adaptTo(URINamespace.class);
        return ns.createID(new String[]{url});
     }
 

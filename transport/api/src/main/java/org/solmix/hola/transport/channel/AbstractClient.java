@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.runtime.Container;
 
@@ -75,7 +75,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
      * @param handler
      * @throws TransportException
      */
-    public AbstractClient(ChannelInfo info, ChannelHandler handler,Container container)
+    public AbstractClient(RemoteInfo info, ChannelHandler handler,Container container)
         throws TransportException
     {
         super(info, handler,container);
@@ -203,7 +203,7 @@ public abstract class AbstractClient extends AbstractPeer implements Client
      * @param parameters
      * @return
      */
-    private int getReconnectParam(ChannelInfo info) {
+    private int getReconnectParam(RemoteInfo info) {
         int reconnect;
         Boolean re=info.getReconnect();
         if (re!=null&&re.booleanValue()) {

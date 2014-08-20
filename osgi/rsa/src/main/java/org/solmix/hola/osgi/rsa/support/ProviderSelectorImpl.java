@@ -32,7 +32,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.ConnectException;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.security.ConnectSecurityContext;
@@ -83,10 +83,10 @@ public class ProviderSelectorImpl extends AbstractSelector implements
             for (RemoteServiceProvider provider : rsProvider) {
                 ID targetID = null;
                 if (target instanceof String)
-                    targetID = DefaultIDFactory.getDefault().createID(
+                    targetID = IDFactory.getDefault().createID(
                         provider.getRemoteServiceNamespace(), (String) target);
                 else
-                    targetID = DefaultIDFactory.getDefault().createID(
+                    targetID = IDFactory.getDefault().createID(
                         provider.getRemoteServiceNamespace(),
                         new Object[] { target });
                 Object security = overridingProperties.get("hola.endpoint.securitycontext");
@@ -305,13 +305,13 @@ public class ProviderSelectorImpl extends AbstractSelector implements
      * @return
      */
     private ID createTargetID(Namespace remoteNamespace, String target) {
-        return DefaultIDFactory.getDefault().createID(remoteNamespace, target);
+        return IDFactory.getDefault().createID(remoteNamespace, target);
     }
 
     private void connectProvider(ServiceReference<?> serviceReference,
         Map<String, ?> properties, RemoteServiceProvider provider, String target)
         throws ConnectException {
-        ID targetID = DefaultIDFactory.getDefault().createID(
+        ID targetID = IDFactory.getDefault().createID(
             provider.getRemoteNamespace(), target);
         Object context = properties.get(HolaRemoteConstants.SERVICE_EXPORTED_SECURITY_CONTEXT);
         ConnectSecurityContext connectContext = null;

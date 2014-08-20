@@ -21,7 +21,7 @@ package org.solmix.hola.transport.netty;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
@@ -46,7 +46,7 @@ public class HeartbeatTest
     @Test
     public void testHeartbeat() throws TransportException, InterruptedException{
         HeartbeatHandler handler = new HeartbeatHandler();
-        ChannelInfo info =  ChannelInfo.newBuilder()
+        RemoteInfo info =  RemoteInfo.newBuilder()
             .setHost("localhost")
             .setPort(1314)
             .setHeartbeat(null)
@@ -54,7 +54,7 @@ public class HeartbeatTest
             .build();
         ExchangerProvider t= Containers.get().getExtensionLoader(ExchangerProvider.class).getDefault();
         server= t.bind(info,handler );
-        ChannelInfo cinfo =  ChannelInfo.newBuilder(info)
+        RemoteInfo cinfo =  RemoteInfo.newBuilder(info)
             .setHeartbeat(100)
             .setHeartbeatTimeout(300)
             .setReconnect(true)
@@ -71,7 +71,7 @@ public class HeartbeatTest
     @Test
     public void testClientHeartbeat() throws TransportException, InterruptedException{
         HeartbeatHandler handler = new HeartbeatHandler();
-        ChannelInfo info =  ChannelInfo.newBuilder()
+        RemoteInfo info =  RemoteInfo.newBuilder()
             .setHost("localhost")
             .setPort(1314)
             .setHeartbeat(null)
@@ -80,7 +80,7 @@ public class HeartbeatTest
             .build();
         ExchangerProvider t= Containers.get().getExtensionLoader(ExchangerProvider.class).getDefault();
         server= t.bind(info,handler );
-        ChannelInfo cinfo =  ChannelInfo.newBuilder(info)
+        RemoteInfo cinfo =  RemoteInfo.newBuilder(info)
             .setHeartbeat(100)
             .setHeartbeatTimeout(300)
              .setTransport("noheartbeat")

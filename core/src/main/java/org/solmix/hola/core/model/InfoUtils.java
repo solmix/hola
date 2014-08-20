@@ -38,7 +38,7 @@ public class InfoUtils
 {
     private static final Logger LOG= LoggerFactory.getLogger(InfoUtils.class);
     private static String[] CHANNEL_EXCLUDE={"executor"};
-    public static ChannelInfo merge(ChannelInfo target,ChannelInfo src){
+    public static RemoteInfo merge(RemoteInfo target,RemoteInfo src){
         try {
             if(src==null)
                 throw new IllegalArgumentException("src is null");

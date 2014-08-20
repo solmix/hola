@@ -30,9 +30,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -47,7 +48,7 @@ import org.solmix.hola.transport.exchange.Request;
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年7月14日
  */
-
+@ThreadSafe
 public class ProtocolExchangeServer implements ExchangeServer
 {
 
@@ -199,7 +200,7 @@ public class ProtocolExchangeServer implements ExchangeServer
     }
 
     @Override
-    public ChannelInfo getInfo() {
+    public RemoteInfo getInfo() {
         return server.getInfo();
     }
 
@@ -209,7 +210,7 @@ public class ProtocolExchangeServer implements ExchangeServer
     }
 
     @Override
-    public void refresh(ChannelInfo info) {
+    public void refresh(RemoteInfo info) {
         server.refresh(info);
         try {
             if (info.getHeartbeat() != null

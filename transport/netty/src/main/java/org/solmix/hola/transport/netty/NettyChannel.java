@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractChannel;
 import org.solmix.hola.transport.channel.ChannelHandler;
@@ -27,7 +27,7 @@ final class NettyChannel extends AbstractChannel {
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    private NettyChannel(io.netty.channel.Channel channel, ChannelInfo info, ChannelHandler handler){
+    private NettyChannel(io.netty.channel.Channel channel, RemoteInfo info, ChannelHandler handler){
         super(info, handler);
         if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
@@ -35,7 +35,7 @@ final class NettyChannel extends AbstractChannel {
         this.channel = channel;
     }
 
-    static NettyChannel getOrAddChannel(io.netty.channel.Channel ch, ChannelInfo info, ChannelHandler handler) {
+    static NettyChannel getOrAddChannel(io.netty.channel.Channel ch, RemoteInfo info, ChannelHandler handler) {
         if (ch == null) {
             return null;
         }

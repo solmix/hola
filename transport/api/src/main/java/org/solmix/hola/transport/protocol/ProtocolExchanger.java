@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.protocol;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.Client;
@@ -55,7 +55,7 @@ public class ProtocolExchanger extends AbstractExchanger implements ExchangerPro
      * @see org.solmix.hola.transport.exchange.Exchanger#bind(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public ExchangeServer bind(ChannelInfo info,ExchangeHandler handler) throws TransportException {
+    public ExchangeServer bind(RemoteInfo info,ExchangeHandler handler) throws TransportException {
         Server server=  getTransporterProvider(info).bind(info, new DecodeHandler(new ProtocolExchangeHandler(handler)));
         return new ProtocolExchangeServer(server);
     }
@@ -66,12 +66,12 @@ public class ProtocolExchanger extends AbstractExchanger implements ExchangerPro
      * @see org.solmix.hola.transport.exchange.Exchanger#connect(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
      */
     @Override
-    public ExchangeClient connect(ChannelInfo info,ExchangeHandler handler) throws TransportException {
+    public ExchangeClient connect(RemoteInfo info,ExchangeHandler handler) throws TransportException {
         Client client=  getTransporterProvider(info).connect( info,new DecodeHandler(new ProtocolExchangeHandler(handler)));
         return new ProtocolExchangeClient(client);
     }
     
-    private TransporterProvider getTransporterProvider(ChannelInfo info){
+    private TransporterProvider getTransporterProvider(RemoteInfo info){
         if(container==null)
             throw new IllegalArgumentException("container is null");
         String t=info.getTransport();

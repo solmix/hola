@@ -19,7 +19,7 @@
 
 package org.solmix.hola.transport;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
@@ -34,10 +34,10 @@ import org.solmix.runtime.Extension;
 public interface TransporterProvider
 {
 
-    Server bind(ChannelInfo info,ChannelHandler... handlers)
+    Server bind(RemoteInfo info,ChannelHandler... handlers)
         throws TransportException;
 
-    Client connect(ChannelInfo info,ChannelHandler... handlers)
+    Client connect(RemoteInfo info,ChannelHandler... handlers)
         throws TransportException;
 
 }

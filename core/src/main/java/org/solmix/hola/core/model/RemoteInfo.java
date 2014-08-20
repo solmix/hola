@@ -29,7 +29,7 @@ import org.solmix.commons.util.NetUtils;
  * @version $Id$  2014年8月13日
  */
 
-public class ChannelInfo
+public class RemoteInfo extends EndpointInfo
 {
     /**
      * 心跳周期
@@ -47,7 +47,7 @@ public class ChannelInfo
     /**
      * 交换层实现
      */
-    private volatile String exchangeName;
+    private volatile String exchanger;
     
     /**
      * 传输层实现
@@ -304,18 +304,18 @@ public class ChannelInfo
 
     
     /**
-     * @return the exchangeName
+     * @return the exchanger
      */
-    public String getExchangeName() {
-        return exchangeName;
+    public String getExchanger() {
+        return exchanger;
     }
 
     
     /**
-     * @param exchangeName the exchangeName to set
+     * @param exchanger the exchanger to set
      */
-    public void setExchangeName(String exchangeName) {
-        this.exchangeName = exchangeName;
+    public void setExchanger(String exchangeName) {
+        this.exchanger = exchangeName;
     }
 
     
@@ -431,7 +431,9 @@ public class ChannelInfo
     public Boolean getServer() {
         return server;
     }
-
+    public Boolean getServer(boolean df) {
+        return server==null?df:server;
+    }
     
     /**
      * @param server the server to set
@@ -708,14 +710,14 @@ public class ChannelInfo
     public static Builder newBuilder(){
         return new Builder();
     }
-    public static Builder newBuilder(ChannelInfo info){
+    public static Builder newBuilder(RemoteInfo info){
         return new Builder(info);
     }
     public static class Builder{
         private  Integer heartbeat;
         private  Integer heartbeatTimeout;
         private  String serialName;
-        private  String exchangeName;
+        private  String exchanger;
         private  String transport;
         private  String threadName;
         private  Integer timeout;
@@ -748,7 +750,7 @@ public class ChannelInfo
         /**
          * @param info
          */
-        public Builder(ChannelInfo info)
+        public Builder(RemoteInfo info)
         {
             this.accepts=info.accepts;
             this.await=info.await;
@@ -758,7 +760,7 @@ public class ChannelInfo
             this.connections=info.connections;
             this.connectTimeout=info.connectTimeout;
             this.dispather=info.dispather;
-            this.exchangeName=info.exchangeName;
+            this.exchanger=info.exchanger;
             this.transport=info.transport;
             this.executor=info.executor;
             this.heartbeat=info.heartbeat;
@@ -812,10 +814,10 @@ public class ChannelInfo
             return this;
         }
         /**
-         * @param exchangeName the exchangeName to set
+         * @param exchanger the exchanger to set
          */
-        public Builder setExchangeName(String exchangeName) {
-            this.exchangeName = exchangeName;
+        public Builder setExchanger(String exchangeName) {
+            this.exchanger = exchangeName;
             return this;
         }
         /**
@@ -994,8 +996,8 @@ public class ChannelInfo
             this.check = check;
             return this;
         }
-        public ChannelInfo build(){
-            ChannelInfo info=   new ChannelInfo();
+        public RemoteInfo build(){
+            RemoteInfo info=   new RemoteInfo();
             info.accepts=this.accepts;
             info.await=this.await;
             info.buffer=this.buffer;
@@ -1004,7 +1006,7 @@ public class ChannelInfo
             info.connections=this.connections;
             info.connectTimeout=this.connectTimeout;
             info.dispather=this.dispather;
-            info.exchangeName=this.exchangeName;
+            info.exchanger=this.exchanger;
             info.transport=this.transport;
             info.executor=this.executor;
             info.heartbeat=this.heartbeat;

@@ -19,7 +19,6 @@
 package org.solmix.hola.rs.generic;
 
 import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.rs.identity.RemoteServiceID;
 
 
 /**
@@ -43,23 +42,14 @@ public class HolaRemoteServiceReference<S> implements org.solmix.hola.rs.RemoteS
     }
 
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.RemoteServiceReference#getID()
-     */
+   
     @Override
-    public RemoteServiceID getID() {
-        return registration.getRemoteServiceID();
+    public ID getID() {
+        return registration.getID();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.RemoteServiceReference#getServiceInterfaces()
-     */
     @Override
-    public String[] getServiceInterfaces() {
+    public String[] getInterfaces() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -92,17 +82,6 @@ public class HolaRemoteServiceReference<S> implements org.solmix.hola.rs.RemoteS
     @Override
     public boolean isActive() {
         return registration!=null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.RemoteServiceReference#getProviderID()
-     */
-    @Override
-    public ID getProviderID() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

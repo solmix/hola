@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.serialize.hola.HolaSerialization;
 import org.solmix.hola.core.serialize.java.JavaSerialization;
 import org.solmix.runtime.Container;
@@ -56,13 +56,13 @@ public class SerializationManagerImpl implements SerializationManager
     }
 
     @Override
-    public  Serialization getSerialization(ChannelInfo info) {
+    public  Serialization getSerialization(RemoteInfo info) {
         return container.getExtensionLoader(Serialization.class).getExtension(
             info.getSerialName(HolaConstants.DEFAULT_SERIALIZATION));
     }
 
     @Override
-    public  Serialization getSerialization(ChannelInfo info, byte id) {
+    public  Serialization getSerialization(RemoteInfo info, byte id) {
         Serialization s = getSerialization(id);
         if (s == null) {
             s = getSerialization(info);

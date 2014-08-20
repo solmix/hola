@@ -1,4 +1,4 @@
-org.solmix.hola.core.identity.DefaultIDFactory:org.solmix.hola.core.identity.IDFactory
+org.solmix.hola.core.identity.IDFactory:org.solmix.hola.core.identity.IIDFactory
 org.solmix.hola.core.serialize.java.JavaSerialization:org.solmix.hola.core.serialize.Serialization
 org.solmix.hola.core.serialize.SerializationManagerImpl:org.solmix.hola.core.serialize.SerializationManager:true
 org.solmix.hola.core.executor.PooledExecutorProvider:org.solmix.hola.core.executor.ExecutorProvider:true

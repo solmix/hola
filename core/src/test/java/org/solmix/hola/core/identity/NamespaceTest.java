@@ -48,10 +48,10 @@ public class NamespaceTest
 
     @Test
     public void testNs() {
-        Namespace ns = DefaultIDFactory.getDefault().getNamespaceByName(
+        Namespace ns = IDFactory.getDefault().getNamespaceByName(
             StringID.class.getName());
         Assert.assertNotNull(ns);
-        Namespace ns2 = DefaultIDFactory.getDefault().getNamespaceByName(
+        Namespace ns2 = IDFactory.getDefault().getNamespaceByName(
             GUID.class.getName());
         Assert.assertNotNull(ns2);
     }
@@ -61,7 +61,7 @@ public class NamespaceTest
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(buf);
         try {
-            Namespace ns = DefaultIDFactory.getDefault().getNamespaceByName(
+            Namespace ns = IDFactory.getDefault().getNamespaceByName(
                 StringID.class.getName());
             out.writeObject(ns);
         } catch (NotSerializableException ex) {

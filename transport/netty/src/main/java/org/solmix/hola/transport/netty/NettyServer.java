@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.AbstractServer;
 import org.solmix.hola.transport.channel.Channel;
@@ -72,13 +72,13 @@ public class NettyServer extends AbstractServer implements Server,
      * @param handler
      * @throws TransportException
      */
-    public NettyServer(ChannelInfo info, ChannelHandler handler,final Container container)
+    public NettyServer(RemoteInfo info, ChannelHandler handler,final Container container)
         throws TransportException
     {
         super(info,handler,container);
     }
     @Override
-    protected   ChannelHandler wrapChannelHandler(ChannelInfo info,
+    protected   ChannelHandler wrapChannelHandler(RemoteInfo info,
         ChannelHandler handler) {
         return super.wrapChannelHandler(setThreadName(info, SERVER_THREAD_POOL_NAME), handler);
     }

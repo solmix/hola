@@ -31,7 +31,7 @@ import org.solmix.hola.core.event.ConnectedEvent;
 import org.solmix.hola.core.event.ConnectingEvent;
 import org.solmix.hola.core.event.DisconnectedEvent;
 import org.solmix.hola.core.event.DisconnectingEvent;
-import org.solmix.hola.core.identity.DefaultIDFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.security.ConnectSecurityContext;
@@ -283,7 +283,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
      * @return
      */
     protected ID getDefaultID() {
-        return DefaultIDFactory.getDefault().createStringID(
+        return IDFactory.getDefault().createStringID(
             CompositeDiscoveryProvider.class.getName());
     }
 

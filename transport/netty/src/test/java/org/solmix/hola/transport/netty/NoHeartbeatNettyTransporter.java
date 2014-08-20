@@ -19,7 +19,7 @@
 package org.solmix.hola.transport.netty;
 
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Server;
@@ -45,19 +45,19 @@ public class NoHeartbeatNettyTransporter extends NettyTransporter
         super(container);
     }
     @Override
-    protected Server newServer(ChannelInfo info,ChannelHandler handler)
+    protected Server newServer(RemoteInfo info,ChannelHandler handler)
         throws TransportException {
         return new NoHeartbeatNettyServer(info, handler,getContainer());
     }
     class  NoHeartbeatNettyServer extends NettyServer{
      
-        public NoHeartbeatNettyServer(ChannelInfo info, ChannelHandler handler,
+        public NoHeartbeatNettyServer(RemoteInfo info, ChannelHandler handler,
             Container container) throws TransportException
         {
             super(info, handler, container);
         }
         @Override
-        protected   ChannelHandler wrapChannelHandler(ChannelInfo info,
+        protected   ChannelHandler wrapChannelHandler(RemoteInfo info,
             ChannelHandler handler) {
             String dispatch = info.getDispather(HolaConstants.DEFAULT_DISPATHER);
             ChannelHandler dis = getContainer().getExtensionLoader(Dispatcher.class)

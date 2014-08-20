@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.codec.Codec;
 
 final class NettyCodecAdapter {
@@ -23,13 +23,13 @@ final class NettyCodecAdapter {
 
     private final Codec         codec;
     
-    private final ChannelInfo            endpointInfo;
+    private final RemoteInfo            endpointInfo;
     
     private final int            bufferSize;
     
     private final org.solmix.hola.transport.channel.ChannelHandler handler;
 
-    public NettyCodecAdapter(Codec codec, ChannelInfo endpointInfo, org.solmix.hola.transport.channel.ChannelHandler handler) {
+    public NettyCodecAdapter(Codec codec, RemoteInfo endpointInfo, org.solmix.hola.transport.channel.ChannelHandler handler) {
         this.codec = codec;
         this.endpointInfo = endpointInfo;
         this.handler = handler;

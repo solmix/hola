@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.netty;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.AbstractTransporter;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.TransporterProvider;
@@ -47,14 +47,14 @@ public class NettyTransporter extends AbstractTransporter implements Transporter
     }
   
     @Override
-    protected Server newServer(ChannelInfo info,ChannelHandler handler)
+    protected Server newServer(RemoteInfo info,ChannelHandler handler)
         throws TransportException {
         return new NettyServer(info, handler,container);
     }
 
    
     @Override
-    protected Client newClient(ChannelInfo info,ChannelHandler handler)
+    protected Client newClient(RemoteInfo info,ChannelHandler handler)
         throws TransportException {
         return new NettyClient(info, handler,container);
     }

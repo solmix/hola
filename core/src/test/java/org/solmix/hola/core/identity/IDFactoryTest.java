@@ -34,10 +34,10 @@ public class IDFactoryTest
 
     @Test
     public void testGetIdFactory() {
-        IDFactory idf =Containers.get().getExtension(IDFactory.class);
+        IIDFactory idf =Containers.get().getExtension(IIDFactory.class);
         Assert.assertNotNull(idf);
         //已经通过Container重新实例化了对象,他们应该是同一个对象
-        IDFactory idff =DefaultIDFactory.getDefault();
+        IIDFactory idff =IDFactory.getDefault();
        Assert.assertSame(idf, idff);
     }
 

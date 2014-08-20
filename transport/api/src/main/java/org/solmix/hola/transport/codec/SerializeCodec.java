@@ -28,7 +28,7 @@ import java.io.ObjectOutput;
 
 import javax.annotation.Resource;
 
-import org.solmix.hola.core.model.ChannelInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.serialize.Serialization;
 import org.solmix.hola.core.serialize.SerializationManager;
 import org.solmix.hola.transport.channel.Channel;
@@ -94,7 +94,7 @@ public class SerializeCodec implements Codec
             throw new IOException("ClassNotFoundException: " + e.getMessage());
         }
     }
-     Serialization getSerialization(ChannelInfo info){
+     Serialization getSerialization(RemoteInfo info){
         return serializationManager.getSerialization(info);
     }
 }
