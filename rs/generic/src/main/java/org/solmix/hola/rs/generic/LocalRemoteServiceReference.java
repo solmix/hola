@@ -18,53 +18,39 @@
  */
 package org.solmix.hola.rs.generic;
 
-import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月21日
+ * @version $Id$  2014年5月1日
  */
 
-public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
+public class LocalRemoteServiceReference<S> implements org.solmix.hola.rs.RemoteServiceReference<S>
+
 {
 
-    private final String clazz;
-    private final RemoteInfo info;
-    private final HolaRemoteServiceManager manager;
-    private RemoteServiceID id;
-    private boolean active;
-    public HolaRemoteServiceReference(String clazz, RemoteInfo info,
-        HolaRemoteServiceManager manager)
-    {
-        this.clazz=clazz;
-        this.manager=manager;
-        this.info=info;
-    }
+    private final HolaRemoteServiceRegistration<S> registration;
     /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getID()
+     * @param holaRemoteServiceRegistration
      */
-    @Override
-    public synchronized RemoteServiceID getID() {
-        if(id==null){
-            id=manager.createRemoteServiceID(info);
-        }
-        return id;
+    public LocalRemoteServiceReference(
+        HolaRemoteServiceRegistration<S> holaRemoteServiceRegistration)
+    {
+        this.registration=holaRemoteServiceRegistration;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getInterfaces()
-     */
+
+   
+    @Override
+    public RemoteServiceID getID() {
+        return registration.getID();
+    }
+
     @Override
     public String[] getInterfaces() {
-        return new String[]{clazz};
+        return registration.getClasses();
     }
 
     /**
@@ -74,7 +60,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
      */
     @Override
     public Object getProperty(String key) {
-        return info.getProperty(key);
+        return registration.getProperty(key);
     }
 
     /**
@@ -84,7 +70,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
      */
     @Override
     public String[] getPropertyKeys() {
-        return  info.getProperties().keySet().toArray(new String[]{});
+        return registration.getPropertyKeys();
     }
 
     /**
@@ -94,11 +80,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
      */
     @Override
     public boolean isActive() {
-        return active;
-    }
-    
-    public void setActive(boolean active){
-        this.active=active;
+        return registration!=null;
     }
 
 }

@@ -199,7 +199,7 @@ public class AbstractPeer
     protected  RemoteInfo setThreadName(RemoteInfo info ,String defaultName){
            String name = info.getThreadName(defaultName);
            name=new StringBuilder(32).append(name).append("-").append(info.getAddress()).toString();
-            info.setThreadName(name);
+           info=  info.addProperty(RemoteInfo.THREAD_NAME, name);
            return info;
        }
 

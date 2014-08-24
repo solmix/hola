@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rs;
 
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.rs.identity.RemoteServiceID;
 
 
 /**
@@ -31,7 +31,7 @@ import org.solmix.hola.core.identity.ID;
 public interface RemoteServiceReference<S>
 {
 
-    ID getID();
+    RemoteServiceID getID();
     
 
     String[] getInterfaces();

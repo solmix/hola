@@ -34,7 +34,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年8月11日
  */
-@Extension(name="hola")
+@Extension(name=HolaSerialization.CODEC)
 public class HolaSerialization implements Serialization
 {
 
@@ -81,7 +81,7 @@ public class HolaSerialization implements Serialization
      */
     @Override
     public byte getSerializeId() {
-        return 0;
+        return 1;
     }
 
 }

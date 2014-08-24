@@ -55,17 +55,18 @@ public class NetttThreadTest
     @Before
     public void setUp() throws Exception {
       
-        RemoteInfo info = new RemoteInfo();
+        RemoteInfo.Builder info =  RemoteInfo.newBuilder();
         info.setHost("localhost");
         info.setPort(1314);
         info.setSerialName(JavaSerialization.NAME);
         info.setAwait(true);
         info.setTimeout(6000);
+        RemoteInfo i=info.build();
         serverhandler= new TestHandler("1314", false);
         clienthandler= new TestHandler("1314", true);
         TransporterProvider t= Containers.get().getExtensionLoader(TransporterProvider.class).getExtension(NettyTransporter.NAME);
-        server=t.bind(info,serverhandler);
-        client= t.connect(info,clienthandler);
+        server=t.bind(i,serverhandler);
+        client= t.connect(i,clienthandler);
        
        
     }
@@ -176,7 +177,7 @@ public class NetttThreadTest
     @Test
     public void test() throws Exception {
          allMessages = new CountDownLatch(10000);
-         for(int i=0;i<10000;i++)
+         for(int i=0;i<10;i++)
         client.send("hello");
         if (!serverhandler.isSuccess() || !clienthandler.isSuccess()) {
             Assert.fail();

@@ -34,11 +34,10 @@ import java.util.concurrent.Future;
 import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.HolaException;
 import org.solmix.hola.rs.event.RemoteCallCompleteEvent;
 import org.solmix.hola.rs.event.RemoteCallEvent;
 import org.solmix.hola.rs.identity.RemoteServiceID;
-import org.solmix.hola.rs.internal.Plugin;
+import org.solmix.hola.rs.support.RemoteCallImpl;
 
 /**
  * 
@@ -85,7 +84,7 @@ public abstract class AbstractRemoteService implements RemoteService,
                     method, args);
                 final Object[] callParameters = getCallParametersForProxyInvoke(
                     callMethod, method, args);
-                final long callTimeout = getCallTimeoutForProxyInvoke(
+                final int callTimeout = getCallTimeoutForProxyInvoke(
                     callMethod, method, args);
                 final RemoteCall remoteCall = createRemoteCall(callMethod,
                     callParameters, callTimeout);
@@ -105,7 +104,7 @@ public abstract class AbstractRemoteService implements RemoteService,
         return args == null ? EMPTY_ARGS : args;
     }
 
-    protected long getCallTimeoutForProxyInvoke(String callMethod,
+    protected int getCallTimeoutForProxyInvoke(String callMethod,
         Method proxyMethod, Object[] args) {
         return RemoteCall.DEFAULT_TIMEOUT;
     }
@@ -129,7 +128,7 @@ public abstract class AbstractRemoteService implements RemoteService,
             final String[] clazzes = getInterfaceClassNames();
             String proxyClass = (clazzes.length == 1) ? clazzes[0]
                 : Arrays.asList(clazzes).toString();
-            return proxyClass + ".proxy@" + getRemoteServiceID();
+            return proxyClass + ".proxy@" + getRemoteServiceID().getUrl();
         } else if (methodName.equals("hashCode")) {
             return new Integer(hashCode());
         } else if (methodName.equals("equals")) {
@@ -202,25 +201,8 @@ public abstract class AbstractRemoteService implements RemoteService,
     }
 
     protected RemoteCall createRemoteCall(final String method,
-        final Object[] parameters, final long timeOut) {
-        return new RemoteCall() {
-
-            @Override
-            public String getMethod() {
-                return method;
-            }
-
-            @Override
-            public Object[] getParameters() {
-                return parameters;
-            }
-
-            @Override
-            public long getTimeout() {
-                return timeOut;
-            }
-
-        };
+        final Object[] parameters, final int timeOut) {
+        return new RemoteCallImpl(method,parameters,timeOut) ;
     }
 
     /**
@@ -303,7 +285,7 @@ public abstract class AbstractRemoteService implements RemoteService,
      * @see org.solmix.hola.rs.RemoteService#getProxy()
      */
     @Override
-    public Object getProxy() throws HolaException {
+    public Object getProxy() throws RemoteServiceException {
         List<Class<?>> classes = new ArrayList<Class<?>>();
         ClassLoader cl = this.getClass().getClassLoader();
         try {
@@ -312,11 +294,11 @@ public abstract class AbstractRemoteService implements RemoteService,
               for (int i = 0; i < clazzes.length; i++)
                     classes.add(loadInterfaceClass(cl, clazzes[i]));
         } catch (final Exception e) {
-            HolaException except = new HolaException("Failed to create proxy", e); 
+            RemoteServiceException except = new RemoteServiceException("Failed to create proxy", e); 
               LOG.warn("Exception in remote service getProxy", except); 
               throw except;
         } catch (final NoClassDefFoundError e) {
-            HolaException except = new HolaException("Failed to load proxy interface class", e);
+            RemoteServiceException except = new RemoteServiceException("Failed to load proxy interface class", e);
             LOG.warn("Could not load class for getProxy", except);
               throw except;
         }
@@ -341,18 +323,17 @@ public abstract class AbstractRemoteService implements RemoteService,
      */
     @Override
     public Object getProxy(ClassLoader classLoader, Class<?>[] interfaces)
-        throws HolaException {
+        throws RemoteServiceException {
         List<Class<?>> classes = addAsyncProxyClasses(classLoader, interfaces);
-        
         addRemoteServiceProxyToProxy(classes);
         try {
             return createProxy(classLoader, classes.toArray(new Class[classes.size()]));
       } catch (final Exception e) {
-          HolaException except = new HolaException("Failed to create proxy", e);
+          RemoteServiceException except = new RemoteServiceException("Failed to create proxy", e);
             LOG.warn("Exception in remote service getProxy", except);
             throw except;
       } catch (final NoClassDefFoundError e) {
-          HolaException except = new HolaException("Failed to load proxy interface class", e);
+          RemoteServiceException except = new RemoteServiceException("Failed to load proxy interface class", e);
           LOG.warn("Could not load class for getProxy", except);
             throw except;
       }
@@ -363,7 +344,7 @@ public abstract class AbstractRemoteService implements RemoteService,
      * @return
      */
     protected Object createProxy(ClassLoader classLoader, Class<?>[] interfaces) {
-        RemoteServiceProxyFactory factory= Plugin.getDefault().getRemoteServiceProxyFactory();
+        RemoteServiceProxyFactory factory=null; /*Plugin.getDefault().getRemoteServiceProxyFactory();*/
         if(factory!=null)
             return factory.createProxy(new ProxyClassLoader(classLoader), interfaces, this);
         
@@ -454,7 +435,7 @@ public abstract class AbstractRemoteService implements RemoteService,
               try {
                     return cl.loadClass(name);
               } catch (ClassNotFoundException e) {
-                  ClassLoader loader= Plugin.getDefault().getPluginClassLoader();
+                  ClassLoader loader=null;/* Plugin.getDefault().getPluginClassLoader();*/
                   if(loader!=null)
                       return loader.loadClass(name);
                   else

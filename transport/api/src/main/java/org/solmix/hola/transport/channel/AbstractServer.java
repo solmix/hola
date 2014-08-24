@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ExecutorUtils;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.model.ExecutorInfo;
 import org.solmix.hola.core.model.InfoUtils;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.dispatch.AbstractDispatcherHandler;
 import org.solmix.runtime.Container;
@@ -102,8 +102,8 @@ public abstract class AbstractServer extends AbstractPeer implements Server
             logger.error(t.getMessage(), t);
         }
         try {
-            if(info.getExecutor()!=null){
-                ExecutorInfo ex =info.getExecutor();
+            if(info.hasProperty(ExecutorInfo.EXECUTOR_THREADS)){
+                ExecutorInfo ex =info.adaptTo(ExecutorInfo.class);
                 if(ex.getThreads()!=null&& executor instanceof ThreadPoolExecutor && !executor.isShutdown()){
                     ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
                     int threads=ex.getThreads();

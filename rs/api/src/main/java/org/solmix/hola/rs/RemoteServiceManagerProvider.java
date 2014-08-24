@@ -16,25 +16,29 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.identity;
 
-import org.solmix.hola.core.identity.ID;
+package org.solmix.hola.rs;
 
+import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.runtime.Extension;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月29日
+ * @version $Id$ 2014年8月19日
  */
-
-public interface RemoteServiceID extends ID
+@Extension(name = "hola")
+public interface RemoteServiceManagerProvider
 {
-//    RemoteServiceManager getManager();
-    
-    /**
-     * 在服务提供者中的相对ID
-     * 
-     * @return 相对于服务提供者中的ID
-     */
-    String getUrl();
+
+    RemoteServiceManager createManager(
+        RemoteServiceListener... listeners);
+
+    RemoteServiceManager createManager();
+
+    String[] getSupportedIntents(EndpointInfo info);
+
+    String[] getSupportedConfigs(EndpointInfo info);
+
+    String[] getImportedConfigs(EndpointInfo info, String[] remoteSupportedConfigs);
 }

@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.RemoteServiceRegistration;
@@ -60,11 +59,31 @@ public class HolaRemoteServiceRegistration<S> implements
 
     public static final int UNREGISTERED = 0x02;
 
-    protected transient HolaRemoteServiceReference<S> reference;
+    protected transient LocalRemoteServiceReference<S> reference;
 
     private int serviceRanking;
 
-    private String[] clazzes;
+    private final String[] clazzes;
+
+
+    /**
+     * @param holaRemoteServiceManager
+     * @param clazzes2
+     * @param service2
+     * @param info
+     */
+    public HolaRemoteServiceRegistration(
+        HolaRemoteServiceManager manager, String[] clazzes,
+        Object service, RemoteInfo info)
+    {
+        this.manager=manager;
+        this.service = service;
+        this.reference = new LocalRemoteServiceReference<S>(this);
+        this.clazzes = clazzes;
+            this.remoteServiceID = manager.createRemoteServiceID(info);
+            this.properties = createProperties(info.getProperties());
+    }
+
 
 
     @Override
@@ -112,13 +131,13 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteServiceRegistration#getReference()
+     * @see org.solmix.hola.rs.generic.RemoteServiceRegistration#getReference()
      */
     @Override
     public RemoteServiceReference<S> getReference() {
         if (reference == null) {
             synchronized (this) {
-                reference = new HolaRemoteServiceReference<S>(this);
+                reference = new LocalRemoteServiceReference<S>(this);
             }
         }
         return reference;
@@ -127,7 +146,7 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteServiceRegistration#unregister()
+     * @see org.solmix.hola.rs.generic.RemoteServiceRegistration#unregister()
      */
     @Override
     public void unregister() {
@@ -320,27 +339,13 @@ public class HolaRemoteServiceRegistration<S> implements
         return clazzes;
     }
 
-    private Object service;
+    private final Object service;
 
-    private HolaServiceID remoteServiceID;
+    private final HolaServiceID remoteServiceID;
     
-    private HolaRemoteServiceManager manager;
+    private final HolaRemoteServiceManager manager;
 
-    public void publish(HolaRemoteServiceManager manager,
-        RemoteServiceRegistry registry, String[] clazzes, Object service,
-        RemoteInfo info) {
-        this.manager=manager;
-        this.service = service;
-        this.reference = new HolaRemoteServiceReference<S>(this);
-        this.clazzes = clazzes;
-        synchronized (registry) {
-            this.remoteServiceID = registry.createRemoteServiceID(info);
-            this.properties = createProperties(info.getParameters());
-            registry.publishService(this);
-        }
-
-    }
-    
+  
     public Object getService(){
         return service;
     }
@@ -350,10 +355,10 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteServiceRegistration#getID()
+     * @see org.solmix.hola.rs.generic.RemoteServiceRegistration#getID()
      */
     @Override
-    public ID getID() {
+    public RemoteServiceID getID() {
         return remoteServiceID;
     }
 

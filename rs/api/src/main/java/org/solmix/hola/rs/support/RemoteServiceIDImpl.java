@@ -23,7 +23,6 @@ import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.identity.BaseID;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
  * 
@@ -31,7 +30,7 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
  * @version $Id$ 2014年5月1日
  */
 
-public class RemoteServiceIDImpl extends BaseID implements RemoteServiceID
+public class RemoteServiceIDImpl extends BaseID
 {
 
     private static final long serialVersionUID = -8764641734539906766L;
@@ -64,7 +63,6 @@ public class RemoteServiceIDImpl extends BaseID implements RemoteServiceID
      * 
      * @see org.solmix.hola.rs.identity.RemoteServiceID#getProviderID()
      */
-    @Override
     public ID getProviderID() {
         return contextID;
     }
@@ -130,7 +128,6 @@ public class RemoteServiceIDImpl extends BaseID implements RemoteServiceID
      * 
      * @see org.solmix.hola.rs.identity.RemoteServiceID#getRelativeID()
      */
-    @Override
     public long getRelativeID() {
         return relativeID;
     }

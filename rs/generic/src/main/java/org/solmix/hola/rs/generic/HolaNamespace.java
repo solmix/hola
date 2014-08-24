@@ -22,7 +22,6 @@ package org.solmix.hola.rs.generic;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.rs.support.RemoteServiceIDImpl;
 
 /**
  * 
@@ -61,10 +60,10 @@ public class HolaNamespace extends Namespace
      */
     @Override
     public ID createID(Object[] parameters) throws IDCreateException {
-        if (parameters == null || parameters.length != 2)
+        if (parameters == null || parameters.length != 1)
             throw new IDCreateException("EndpointInfo incorrect for remote ID creation");
       try {
-            return new RemoteServiceIDImpl(this, (ID) parameters[0], ((Long) parameters[1]).longValue());
+            return new HolaServiceID(this,  parameters[0].toString());
       } catch (Exception e) {
             throw new IDCreateException("Exception creating remoteID", e); 
       }

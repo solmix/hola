@@ -58,7 +58,7 @@ public class SerializationManagerImpl implements SerializationManager
     @Override
     public  Serialization getSerialization(RemoteInfo info) {
         return container.getExtensionLoader(Serialization.class).getExtension(
-            info.getSerialName(HolaConstants.DEFAULT_SERIALIZATION));
+            info.getSerial(HolaConstants.DEFAULT_SERIALIZATION));
     }
 
     @Override

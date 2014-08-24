@@ -21,8 +21,6 @@ package org.solmix.hola.rs;
 
 import java.util.concurrent.Future;
 
-import org.solmix.hola.core.HolaException;
-
 /**
  * 
  * @author solmix.f@gmail.com
@@ -38,7 +36,7 @@ public interface RemoteService
      * @param call
      * @return
      */
-    Object sync(RemoteCall call);
+    Object sync(RemoteCall call) throws RemoteServiceException;
 
     /**
      * 异步调用远程方法
@@ -60,15 +58,15 @@ public interface RemoteService
      * 
      * @param call
      */
-    void fireAsync(RemoteCall call) throws HolaException;
+    void fireAsync(RemoteCall call) throws RemoteServiceException;
 
     /**
      * 返回远程服务接口的本地代理对象
      * 
      * @return
-     * @throws HolaException
+     * @throws RemoteServiceException
      */
-    Object getProxy() throws HolaException;
+    Object getProxy() throws RemoteServiceException;
 
     /**
      * 返回远程服务接口的本地代理对象
@@ -76,8 +74,8 @@ public interface RemoteService
      * @param classLoader
      * @param interfaceClasses
      * @return
-     * @throws HolaException
+     * @throws RemoteServiceException
      */
     Object getProxy(ClassLoader classLoader, Class<?>[] interfaceClasses)
-        throws HolaException;
+        throws RemoteServiceException;
 }

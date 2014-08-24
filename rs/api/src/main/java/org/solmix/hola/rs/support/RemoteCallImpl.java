@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rs.support;
 
+import java.io.Serializable;
+
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.rs.RemoteCall;
 
@@ -28,13 +30,15 @@ import org.solmix.hola.rs.RemoteCall;
  * @version $Id$  2014年5月17日
  */
 
-public class RemoteCallImpl implements RemoteCall
+public class RemoteCallImpl implements RemoteCall,Serializable
 {
+    
+    private static final long serialVersionUID = -5293962379025983974L;
     protected String method;
     protected Object[] parameters;
-    protected long timeout;
+    protected int timeout;
     
-    public RemoteCallImpl(String method,Object[] parameters,long timeout){
+    public RemoteCallImpl(String method,Object[] parameters,int timeout){
         this.method=method;
         this.parameters=parameters;
         this.timeout=timeout;
@@ -73,7 +77,7 @@ public class RemoteCallImpl implements RemoteCall
      * @see org.solmix.hola.rs.RemoteCall#getTimeout()
      */
     @Override
-    public long getTimeout() {
+    public int getTimeout() {
         return timeout;
     }
 

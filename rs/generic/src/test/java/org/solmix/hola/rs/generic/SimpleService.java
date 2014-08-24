@@ -16,25 +16,18 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.identity;
-
-import org.solmix.hola.core.identity.ID;
+package org.solmix.hola.rs.generic;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月29日
+ * @version $Id$  2014年8月23日
  */
 
-public interface RemoteServiceID extends ID
+public interface SimpleService
 {
-//    RemoteServiceManager getManager();
     
-    /**
-     * 在服务提供者中的相对ID
-     * 
-     * @return 相对于服务提供者中的ID
-     */
-    String getUrl();
+    String syaHello();
+
 }

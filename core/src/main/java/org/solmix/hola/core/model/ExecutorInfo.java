@@ -18,6 +18,10 @@
  */
 package org.solmix.hola.core.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 
 /**
  * 
@@ -25,93 +29,217 @@ package org.solmix.hola.core.model;
  * @version $Id$  2014年8月13日
  */
 
-public class ExecutorInfo
+public class ExecutorInfo extends EndpointInfo
 {
-    
-    private String threadName;
-    private Integer coreThreads;
-    private Integer threads;
-    private Integer queues;
-    private Integer alive;
-    
+
+    public ExecutorInfo(Map<String, Object> properties)
+    {
+        super(properties);
+    }
+    /**
+     * 线程名称
+     */
+    public static  final  String EXECUTOR_THREAD_NAME="executor.threadName";
+    /**
+     * 核心线程
+     */
+    public static  final  String EXECUTOR_CORE_THREADS="executor.coreThreads";
+    /**
+     * 线程
+     */
+    public static  final  String EXECUTOR_THREADS="executor.threads";
+    /**
+     * 队列
+     */
+    public static  final  String EXECUTOR_QUEUES="executor.queues";
+    /**
+     * 活动时间
+     */
+    public static  final  String EXECUTOR_ALIVE="executor.alive";
+    @Override
+    public ExecutorInfo addProperty(String key, Object value) {
+        if (key == null || key.length() == 0 || value == null)
+            return this;
+        if (value.equals(getProperty(key)))
+            return this;
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        map.put(key, value);
+        return new ExecutorInfo(map);
+    }
+    @Override
+    public ExecutorInfo addProperties(Map<String, Object> properties) {
+        if (properties == null || properties.size() == 0) {
+            return this;
+        }
+        boolean hasAndEqual = true;
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            Object value = getProperty(entry.getKey());
+            if (value == null && entry.getValue() != null
+                || !value.equals(entry.getValue())) {
+                hasAndEqual = false;
+                break;
+            }
+        }
+        // 如果没有修改，直接返回。
+        if (hasAndEqual)
+            return this;
+
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        map.putAll(properties);
+        return new ExecutorInfo(map);
+    }
+
+    @Override
+    public ExecutorInfo addProperties(Properties properties) {
+        if (properties == null || properties.size() == 0) {
+            return this;
+        }
+        boolean hasAndEqual = true;
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            Object value = getProperty(entry.getKey().toString());
+            if (value == null && entry.getValue() != null
+                || !value.equals(entry.getValue())) {
+                hasAndEqual = false;
+                break;
+            }
+        }
+        // 如果没有修改，直接返回。
+        if (hasAndEqual)
+            return this;
+
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            map.put(entry.getKey().toString(), entry.getValue());
+        }
+        return new ExecutorInfo(map);
+    }
+
+    @Override
+    public ExecutorInfo addPropertyIfAbsent(String key, Object value) {
+        if (key == null || key.length() == 0 || value == null)
+            return this;
+        if (hasProperty(key))
+            return this;
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        map.put(key, value);
+        return new ExecutorInfo(map);
+    }
+
     /**
      * @return the threadName
      */
     public String getThreadName() {
-        return threadName;
+        return getString(EXECUTOR_THREAD_NAME);
     }
     public String getThreadName(String df) {
-        return threadName==null?df:threadName;
-    }
-    /**
-     * @param threadName the threadName to set
-     */
-    public void setThreadName(String threadName) {
-        this.threadName = threadName;
+        return getString(EXECUTOR_THREAD_NAME,df);
     }
     
     /**
      * @return the coreThreads
      */
     public Integer getCoreThreads() {
-        return coreThreads;
+        return getInt(EXECUTOR_CORE_THREADS);
     }
     public Integer getCoreThreads(int defaultValue) {
-        return coreThreads==null?defaultValue:coreThreads;
+        return getInt(EXECUTOR_CORE_THREADS,defaultValue);
     }
-    /**
-     * @param coreThreads the coreThreads to set
-     */
-    public void setCoreThreads(Integer coreThreads) {
-        this.coreThreads = coreThreads;
-    }
-    
+  
     /**
      * @return the threads
      */
     public Integer getThreads() {
-        return threads;
+        return getInt(EXECUTOR_THREADS);
     }
     public Integer getThreads(int defaultValue) {
-        return threads==null?defaultValue:threads;
+        return getInt(EXECUTOR_THREADS,defaultValue);
     }
-    /**
-     * @param threads the threads to set
-     */
-    public void setThreads(Integer threads) {
-        this.threads = threads;
-    }
-    
+ 
     /**
      * @return the queues
      */
     public Integer getQueues() {
-        return queues;
+        return getInt(EXECUTOR_QUEUES);
     }
     public Integer getQueues(int defaultValue) {
-        return queues==null?defaultValue:queues;
-    }
-    /**
-     * @param queues the queues to set
-     */
-    public void setQueues(Integer queues) {
-        this.queues = queues;
+        return getInt(EXECUTOR_QUEUES,defaultValue);
     }
     
     /**
      * @return the alive
      */
     public Integer getAlive() {
-        return alive;
+        return getInt(EXECUTOR_ALIVE);
     }
     public Integer getAlive(int defaultValue) {
-        return alive==null?defaultValue:alive;
+        return getInt(EXECUTOR_ALIVE,defaultValue);
     }
-    /**
-     * @param alive the alive to set
-     */
-    public void setAlive(Integer alive) {
-        this.alive = alive;
-    }
+  
     
+    public static Builder newBuilder(){
+        return new Builder();
+    }
+    public static Builder newBuilder(EndpointInfo info){
+        return new Builder(info);
+    }
+    public static class Builder{
+        private final  Map<String,Object> properties = new HashMap<String,Object>();
+        private Builder()
+        {
+        }
+
+        
+        /**
+         * @param info
+         */
+        public Builder(EndpointInfo info)
+        {
+            properties.putAll(info.getProperties());
+        }
+
+
+        /**
+         * @param threadName the threadName to set
+         */
+        public Builder setThreadName(String threadName) {
+            properties.put(EXECUTOR_THREAD_NAME, threadName);
+            return this;
+        }
+        
+        /**
+         * @param coreThreads the coreThreads to set
+         */
+        public Builder setCoreThreads(Integer coreThreads) {
+            properties.put(EXECUTOR_CORE_THREADS, coreThreads);
+            return this;
+        }
+        
+        /**
+         * @param threads the threads to set
+         */
+        public Builder setThreads(Integer threads) {
+            properties.put(EXECUTOR_THREADS, threads);
+            return this;
+        }
+        
+        /**
+         * @param queues the queues to set
+         */
+        public Builder setQueues(Integer queues) {
+            properties.put(EXECUTOR_QUEUES, queues);
+            return this;
+        }
+        /**
+         * @param alive the alive to set
+         */
+        public Builder setAlive(Integer alive) {
+            properties.put(EXECUTOR_ALIVE, alive);
+            return this;
+        }
+        public ExecutorInfo build(){
+            ExecutorInfo info = new ExecutorInfo(properties);
+            //TODO validate properties.
+            return info;
+        }
+    }
 }

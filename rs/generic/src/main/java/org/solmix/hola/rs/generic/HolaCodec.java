@@ -16,25 +16,21 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.identity;
+package org.solmix.hola.rs.generic;
 
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.transport.codec.Codec;
+import org.solmix.hola.transport.codec.ExchangeCodec;
+import org.solmix.runtime.Extension;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月29日
+ * @version $Id$  2014年7月14日
  */
-
-public interface RemoteServiceID extends ID
+@Extension(name=HolaCodec.CODEC_NAME)
+public class HolaCodec extends ExchangeCodec implements   Codec
 {
-//    RemoteServiceManager getManager();
-    
-    /**
-     * 在服务提供者中的相对ID
-     * 
-     * @return 相对于服务提供者中的ID
-     */
-    String getUrl();
+    public static final String CODEC_NAME="hola";
+
 }

@@ -16,1019 +16,869 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.core.model;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.solmix.commons.util.NetUtils;
 
-
 /**
+ * 简化EndpointInfo中参数调用.
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月13日
+ * @version $Id$ 2014年8月13日
  */
 
 public class RemoteInfo extends EndpointInfo
 {
+
+    /**
+     * 版本信息
+     */
+    public static final String VERSION = "version";
+
+    /**
+     * 群组名称
+     */
+    public static final String GROUP = "group";
+
     /**
      * 心跳周期
      */
-    private volatile Integer heartbeat;
+    public static final String HEARTBEAT = "heartbeat";
+
     /**
      * 心跳超时时间
      */
-    private volatile Integer heartbeatTimeout;
+    public static final String HEARTBEAT_TIMEOUT = "heartbeatTimeout";
+
     /**
      * 序列化实现名称:java/json/avro
      */
-    private volatile String serialName;
-    
+    public static final String SERIAL = "serial";
+
     /**
      * 交换层实现
      */
-    private volatile String exchanger;
-    
+    public static final String EXCHANGER = "exchanger";
+
     /**
      * 传输层实现
      */
-    private volatile String transport;
+    public static final String TRANSPORT = "transport";
+
     /**
      * 线程名称
      */
-    private volatile String threadName;
+    public static final String THREAD_NAME = "threadName";
+
     /**
      * 超时时间(ms)
      */
-    private volatile Integer timeout;
+    public static final String TIMEOUT = "timeout";
+
     /**
      * 关闭等待时间
      */
-    private volatile Long shutdownTimeout;
-    
+    public static final String SHUTDOWN_TIMEOUT = "shutdownTimeout";
+
     /**
      * 连接超时时间(ms)
      */
-    private volatile Integer connectTimeout;
-    
+    public static final String CONNECT_TIMEOUT = "connectTimeout";
+
     /**
      * 通道空闲超时(ms)
      */
-    private volatile Integer idleTimeout;
+    public static final String IDLE_TIMEOUT = "idleTimeout";
+
     /**
      * 线程池实现
      */
-    private volatile String threadPool;
-    
+    public static final String THREAD_POOL = "threadPool";
+
     /**
      * 编码/解码实现
      */
-    private volatile String codec;
-    
+    public static final String CODEC = "codec";
+
     /**
      * 分发实现
      */
-    private volatile String dispather;
+    public static final String DISPATHER = "dispather";
 
     /**
      * 连接数
      */
-    private volatile Integer connections;
-    
+    public static final String CONNECTIONS = "connections";
+
     /**
      * 最大允许建立信道数
      */
-    private volatile Integer accepts;
-    
+    public static final String ACCEPTS = "accepts";
+
     /**
      * 信道buffer大小
      */
-    private volatile Integer buffer;
-    
+    public static final String BUFFER = "buffer";
+
     /**
      * 信道字符集
      */
-    private volatile String charset;
-    
+    public static final String CHARSET = "charset";
+
     /**
      * IO线程数
      */
-    private volatile Integer ioThreads;
-    
+    public static final String IO_THREADS = "ioThreads";
+
     /**
      * 每次通信负载
      */
-    private volatile Integer payload;
-    
+    public static final String PAYLOAD = "payload";
+
     /**
      * 是否为服务端
      */
-    private volatile Boolean server;
-    
+    public static final String SERVER = "server";
+
     /**
      * 是否启用等待超时策略
      */
-    private volatile Boolean await;
-    
+    public static final String AWAIT = "await";
+
     /**
      * 是否启用只读模式
      */
-    private volatile Boolean readOnly;
-    
+    public static final String READ_ONLY = "readOnly";
+
     /**
      * 是否启用重连
      */
-    private volatile Boolean reconnect;
-    
-    
+    public static final String RECONNECT = "reconnect";
+
     /**
      * 重连周期
      */
-    private volatile Integer reconnectPeriod;
-    /**
-     *发送事项是否启用重连
-     */
-    private volatile Boolean sendReconnect;
-    
-    private  volatile String host;
+    public static final String RECONNECT_PERIOD = "reconnectPeriod";
 
-    private  volatile Integer port;
-    
     /**
-     * 线程池配置信息
+     * 发送事项是否启用重连
      */
-    private volatile ExecutorInfo executor;
-    
-    
+    public static final String SEND_RECONNECT = "sendReconnect";
+
     /**
      * 重连警告周期,多次重连失败后发出警告信息
      */
-    private volatile Integer reconnectWarningPeriod;
-    
+    public static final String RECONNECT_WARNING_PERIOD = "reconnectWarningPeriod";
+
     /**
      * 是否检查启动错误,如果为true,当出现错误时抛错.
      */
-    private volatile Boolean check;
-    
+    public static final String CHECK = "check";
+
+    /**
+     * @param properties
+     */
+    public RemoteInfo(Map<String, Object> properties)
+    {
+        super(properties);
+    }
+
+    public RemoteInfo()
+    {
+        this(null);
+    }
+    @Override
+    public RemoteInfo addProperty(String key, Object value) {
+        if (key == null || key.length() == 0 || value == null)
+            return this;
+        if (value.equals(getProperty(key)))
+            return this;
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        map.put(key, value);
+        return new RemoteInfo(map);
+    }
+    @Override
+    public RemoteInfo addProperties(Map<String, Object> properties) {
+        if (properties == null || properties.size() == 0) {
+            return this;
+        }
+        boolean hasAndEqual = true;
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            Object value = getProperty(entry.getKey());
+            if (value == null && entry.getValue() != null
+                || !value.equals(entry.getValue())) {
+                hasAndEqual = false;
+                break;
+            }
+        }
+        // 如果没有修改，直接返回。
+        if (hasAndEqual)
+            return this;
+
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        map.putAll(properties);
+        return new RemoteInfo(map);
+    }
+
+    @Override
+    public RemoteInfo addProperties(Properties properties) {
+        if (properties == null || properties.size() == 0) {
+            return this;
+        }
+        boolean hasAndEqual = true;
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            Object value = getProperty(entry.getKey().toString());
+            if (value == null && entry.getValue() != null
+                || !value.equals(entry.getValue())) {
+                hasAndEqual = false;
+                break;
+            }
+        }
+        // 如果没有修改，直接返回。
+        if (hasAndEqual)
+            return this;
+
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            map.put(entry.getKey().toString(), entry.getValue());
+        }
+        return new RemoteInfo(map);
+    }
+
+    @Override
+    public RemoteInfo addPropertyIfAbsent(String key, Object value) {
+        if (key == null || key.length() == 0 || value == null)
+            return this;
+        if (hasProperty(key))
+            return this;
+        Map<String, Object> map = new HashMap<String, Object>(getProperties());
+        map.put(key, value);
+        return new RemoteInfo(map);
+    }
+
     /**
      * @return the reconnectPeriod
      */
     public Integer getReconnectPeriod() {
-        return reconnectPeriod;
+        return getInt(RECONNECT_PERIOD);
     }
 
     public Integer getReconnectPeriod(Integer defaultValue) {
-        return reconnectPeriod==null?defaultValue:reconnectPeriod;
+        return getInt(RECONNECT_PERIOD, defaultValue);
     }
 
-
-    
-    /**
-     * @param reconnectPeriod the reconnectPeriod to set
-     */
-    public void setReconnectPeriod(Integer reconnectPeriod) {
-        this.reconnectPeriod = reconnectPeriod;
-    }
-    
     /**
      * @return the check
      */
     public Boolean getCheck() {
-        return check;
+        return getBoolean(CHECK);
     }
+
     public Boolean getCheck(boolean df) {
-        return check==null?df:check;
+        return getBoolean(CHECK, df);
     }
-    /**
-     * @param check the check to set
-     */
-    public void setCheck(Boolean check) {
-        this.check = check;
-    }
+
     /**
      * @return the host
      */
     public String getHost() {
-        return host;
+        return getString(HOST);
     }
+
     /**
      * @return the transport
      */
     public String getTransport() {
-        return transport;
+        return getString(TRANSPORT);
     }
 
-    
-    /**
-     * @param transport the transport to set
-     */
-    public void setTransport(String transport) {
-        this.transport = transport;
+    public String getTransport(String df) {
+        return getString(TRANSPORT, df);
     }
 
     /**
      * @return the threadName
      */
     public String getThreadName() {
-        return threadName;
+        return getString(THREAD_NAME);
     }
+
     public String getThreadName(String defaultValue) {
-        return threadName==null?defaultValue:threadName;
+        return getString(THREAD_NAME, defaultValue);
     }
 
-    
-    /**
-     * @param threadName the threadName to set
-     */
-    public void setThreadName(String threadName) {
-        this.threadName = threadName;
-    }
-
-
-    /**
-     * @param host the host to set
-     */
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    
     /**
      * @return the port
      */
     public Integer getPort() {
-        return port;
-    }
-
-    
-    /**
-     * @param port the port to set
-     */
-    public void setPort(Integer port) {
-        this.port = port;
+        return getInt(PORT);
     }
 
     /**
      * @return the heartbeat
      */
     public Integer getHeartbeat() {
-        return heartbeat;
-    }
-    public Integer getHeartbeat(int defaultValue) {
-        return heartbeat==null?defaultValue:heartbeat;
-    }
-    /**
-     * @param heartbeat the heartbeat to set
-     */
-    public void setHeartbeat(Integer heartbeat) {
-        this.heartbeat = heartbeat;
+        return getInt(HEARTBEAT);
     }
 
-    
+    public Integer getHeartbeat(int defaultValue) {
+        return getInt(HEARTBEAT, defaultValue);
+    }
+
     /**
      * @return the serialName
      */
-    public String getSerialName() {
-        return serialName;
-    }
-    public String getSerialName(String name) {
-        return serialName==null?name:serialName;
-    }
-    
-    /**
-     * @param serialName the serialName to set
-     */
-    public void setSerialName(String serialName) {
-        this.serialName = serialName;
+    public String getSerial() {
+        return getString(SERIAL);
     }
 
-    
+    public String getSerial(String name) {
+        return getString(SERIAL, name);
+    }
+
     /**
      * @return the exchanger
      */
     public String getExchanger() {
-        return exchanger;
+        return getString(EXCHANGER);
     }
 
-    
-    /**
-     * @param exchanger the exchanger to set
-     */
-    public void setExchanger(String exchangeName) {
-        this.exchanger = exchangeName;
+    public String getExchanger(String df) {
+        return getString(EXCHANGER, df);
     }
 
-    
     /**
      * @return the timeout
      */
     public Integer getTimeout() {
-        return timeout;
+        return getInt(TIMEOUT);
     }
 
     public Integer getTimeout(Integer defaultValue) {
-        return timeout==null?defaultValue:timeout;
-    }
-    /**
-     * @param timeout the timeout to set
-     */
-    public void setTimeout(Integer timeout) {
-        this.timeout = timeout;
+        return getInt(TIMEOUT, defaultValue);
     }
 
-    
     /**
      * @return the threadPool
      */
     public String getThreadPool() {
-        return threadPool;
-    }
-    public String getThreadPool(String df) {
-        return threadPool==null?df:threadPool;
-    }
-    
-    /**
-     * @param threadPool the threadPool to set
-     */
-    public void setThreadPool(String threadPool) {
-        this.threadPool = threadPool;
+        return getString(THREAD_POOL);
     }
 
-    
+    public String getThreadPool(String df) {
+        return getString(THREAD_POOL, df);
+    }
+
     /**
      * @return the codec
      */
     public String getCodec() {
-        return codec;
-    }
-    public String getCodec(String defaultName) {
-        return codec==null?defaultName:codec;
-    }
-    
-    /**
-     * @param codec the codec to set
-     */
-    public void setCodec(String codec) {
-        this.codec = codec;
+        return getString(CODEC);
     }
 
-    
+    public String getCodec(String defaultName) {
+        return getString(CODEC, defaultName);
+    }
+
     /**
      * @return the dispather
      */
     public String getDispather() {
-        return dispather;
-    }
-    public String getDispather(String df) {
-        return dispather==null?df:dispather;
-    }
-    
-    /**
-     * @param dispather the dispather to set
-     */
-    public void setDispather(String dispather) {
-        this.dispather = dispather;
+        return getString(DISPATHER);
     }
 
-    
+    public String getDispather(String df) {
+        return getString(DISPATHER, df);
+    }
+
     /**
      * @return the connections
      */
     public Integer getConnections() {
-        return connections;
+        return getInt(CONNECTIONS);
     }
 
-    
-    /**
-     * @param connections the connections to set
-     */
-    public void setConnections(Integer connections) {
-        this.connections = connections;
+    public Integer getConnections(int df) {
+        return getInt(CONNECTIONS, df);
     }
 
-    
     /**
      * @return the ioThreads
      */
     public Integer getIoThreads() {
-        return ioThreads;
-    }
-    public Integer getIoThreads(int defaultValue) {
-        return ioThreads==null?defaultValue:ioThreads;
-    }
-    
-    /**
-     * @param ioThreads the ioThreads to set
-     */
-    public void setIoThreads(Integer ioThreads) {
-        this.ioThreads = ioThreads;
+        return getInt(IO_THREADS);
     }
 
-    
+    public Integer getIoThreads(int defaultValue) {
+        return getInt(IO_THREADS, defaultValue);
+    }
+
     /**
      * @return the server
      */
     public Boolean getServer() {
-        return server;
+        return getBoolean(SERVER);
     }
+
     public Boolean getServer(boolean df) {
-        return server==null?df:server;
-    }
-    
-    /**
-     * @param server the server to set
-     */
-    public void setServer(Boolean server) {
-        this.server = server;
+        return getBoolean(SERVER, df);
     }
 
-    
-    /**
-     * @return the executor
-     */
-    public ExecutorInfo getExecutor() {
-        return executor;
-    }
-
-    
-    /**
-     * @param executor the executor to set
-     */
-    public void setExecutor(ExecutorInfo executor) {
-        this.executor = executor;
-    }
-
-    
     /**
      * @return the heartbeatTimeout
      */
     public Integer getHeartbeatTimeout() {
-        return heartbeatTimeout;
-    }
-    public Integer getHeartbeatTimeout(int defaultValue) {
-        return heartbeatTimeout==null?defaultValue:heartbeatTimeout;
-    }
-    
-    /**
-     * @param heartbeatTimeout the heartbeatTimeout to set
-     */
-    public void setHeartbeatTimeout(Integer heartbeatTimeout) {
-        this.heartbeatTimeout = heartbeatTimeout;
+        return getInt(HEARTBEAT_TIMEOUT);
     }
 
-    
+    public Integer getHeartbeatTimeout(int defaultValue) {
+        return getInt(HEARTBEAT_TIMEOUT, defaultValue);
+    }
+
     /**
      * @return the shutdownTimeout
      */
     public Long getShutdownTimeout() {
-        return shutdownTimeout;
-    }
-    
-    public long getShutdownTimeout(Long defaultValue) {
-        return shutdownTimeout==null?defaultValue:shutdownTimeout;
-    }
-    
-    /**
-     * @param shutdownTimeout the shutdownTimeout to set
-     */
-    public void setShutdownTimeout(Long shutdownTimeout) {
-        this.shutdownTimeout = shutdownTimeout;
+        return getLong(SHUTDOWN_TIMEOUT);
     }
 
-    
+    public long getShutdownTimeout(Long defaultValue) {
+        return getLong(SHUTDOWN_TIMEOUT, defaultValue);
+    }
+
     /**
      * @return the connectTimeout
      */
     public Integer getConnectTimeout() {
-        return connectTimeout;
+        return getInt(CONNECT_TIMEOUT);
     }
 
     public Integer getConnectTimeout(Integer deafultValue) {
-        return connectTimeout==null?deafultValue:connectTimeout;
-    }
-    /**
-     * @param connectTimeout the connectTimeout to set
-     */
-    public void setConnectTimeout(Integer connectTimeout) {
-        this.connectTimeout = connectTimeout;
+        return getInt(CONNECT_TIMEOUT, deafultValue);
     }
 
-    
     /**
      * @return the idleTimeout
      */
     public Integer getIdleTimeout() {
-        return idleTimeout;
+        return getInt(IDLE_TIMEOUT);
     }
+
     public Integer getIdleTimeout(Integer defaultValue) {
-        return idleTimeout==null?defaultValue:idleTimeout;
+        return getInt(IDLE_TIMEOUT, defaultValue);
     }
 
-    
-    /**
-     * @param idleTimeout the idleTimeout to set
-     */
-    public void setIdleTimeout(Integer idleTimeout) {
-        this.idleTimeout = idleTimeout;
-    }
-
-    
     /**
      * @return the accepts
      */
     public Integer getAccepts() {
-        return accepts;
-    }
-    
-    public Integer getAccepts(Integer defaultValue) {
-        return accepts==null?defaultValue:accepts;
-    }
-    
-    /**
-     * @param accepts the accepts to set
-     */
-    public void setAccepts(Integer accepts) {
-        this.accepts = accepts;
+        return getInt(ACCEPTS);
     }
 
-    
+    public Integer getAccepts(Integer defaultValue) {
+        return getInt(ACCEPTS, defaultValue);
+    }
+
     /**
      * @return the buffer
      */
     public Integer getBuffer() {
-        return buffer;
+        return getInt(BUFFER);
     }
 
     public Integer getBuffer(int defaultValue) {
-        return buffer==null?defaultValue:buffer;
-    }
-    /**
-     * @param buffer the buffer to set
-     */
-    public void setBuffer(Integer buffer) {
-        this.buffer = buffer;
+        return getInt(BUFFER, defaultValue);
     }
 
-    
     /**
      * @return the charset
      */
     public String getCharset() {
-        return charset;
+        return getString(CHARSET);
     }
 
-    
-    /**
-     * @param charset the charset to set
-     */
-    public void setCharset(String charset) {
-        this.charset = charset;
-    }
-
-    
     /**
      * @return the payload
      */
     public Integer getPayload() {
-        return payload;
-    }
-    public Integer getPayload(int deafultValue) {
-        return payload==null?deafultValue:payload;
-    }
-    
-    /**
-     * @param payload the payload to set
-     */
-    public void setPayload(Integer payload) {
-        this.payload = payload;
+        return getInt(PAYLOAD);
     }
 
-    
+    public Integer getPayload(int deafultValue) {
+        return getInt(PAYLOAD, deafultValue);
+    }
+
     /**
      * @return the await
      */
     public Boolean getAwait() {
-        return await;
+        return getBoolean(AWAIT);
     }
-    
+
     public Boolean getAwait(Boolean defaultValue) {
-        return await==null?defaultValue:await;
+        return getBoolean(AWAIT, defaultValue);
     }
 
-    
-    /**
-     * @param await the await to set
-     */
-    public void setAwait(Boolean await) {
-        this.await = await;
-    }
-
-    
     /**
      * @return the readOnly
      */
     public Boolean getReadOnly() {
-        return readOnly;
+        return getBoolean(READ_ONLY);
     }
 
-    
-    /**
-     * @param readOnly the readOnly to set
-     */
-    public void setReadOnly(Boolean readOnly) {
-        this.readOnly = readOnly;
-    }
-
-    
     /**
      * @return the reconnect
      */
     public Boolean getReconnect() {
-        return reconnect;
-    }
-    public Boolean getReconnect(boolean defaultValue) {
-        return reconnect==null?defaultValue:reconnect;
-    }
-    
-    /**
-     * @param reconnect the reconnect to set
-     */
-    public void setReconnect(Boolean reconnect) {
-        this.reconnect = reconnect;
+        return getBoolean(RECONNECT);
     }
 
-    
+    public Boolean getReconnect(boolean defaultValue) {
+        return getBoolean(RECONNECT, defaultValue);
+    }
+
     /**
      * @return the sendReconnect
      */
     public Boolean getSendReconnect() {
-        return sendReconnect;
+        return getBoolean(SEND_RECONNECT);
     }
-    
+
     /**
      * @return the reconnectWarningPeriod
      */
     public Integer getReconnectWarningPeriod() {
-        return reconnectWarningPeriod;
+        return getInt(RECONNECT_WARNING_PERIOD);
     }
-    
+
     /**
      * @param defaultValue
      * @return
      */
     public Integer getReconnectWarningPeriod(Integer defaultValue) {
-        return reconnectWarningPeriod==null?defaultValue:reconnectWarningPeriod;
+        return getInt(RECONNECT_WARNING_PERIOD, defaultValue);
     }
 
-    
     /**
-     * @param reconnectWarningPeriod the reconnectWarningPeriod to set
+     * @return
      */
-    public void setReconnectWarningPeriod(Integer reconnectWarningPeriod) {
-        this.reconnectWarningPeriod = reconnectWarningPeriod;
+    public String getVersion() {
+        return getString(VERSION);
     }
 
+    public String getVersion(String df) {
+        return getString(VERSION, df);
+    }
 
     /**
-     * @param sendReconnect the sendReconnect to set
+     * @return
      */
-    public void setSendReconnect(Boolean sendReconnect) {
-        this.sendReconnect = sendReconnect;
+    public String getPath() {
+        return getString(PATH);
+    }
+
+    /**
+     * @return
+     */
+    public String getGroup() {
+        return getString(GROUP);
     }
 
     public String getAddress() {
-        return port <= 0 ? host : host + ":" + port;
+        return getPort() <= 0 ? getHost() : getHost() + ":" + getPort();
     }
-    
+
     public InetSocketAddress toInetSocketAddress() {
-        return new InetSocketAddress(host, port);
+        return new InetSocketAddress(getHost(), getPort());
     }
+
     public String getIp() {
-        return NetUtils.getIpByHost(host);
+        return NetUtils.getIpByHost(getHost());
     }
-    
-    public static Builder newBuilder(){
+
+    public static Builder newBuilder() {
         return new Builder();
     }
-    public static Builder newBuilder(RemoteInfo info){
+
+    public static Builder newBuilder(EndpointInfo info) {
         return new Builder(info);
     }
-    public static class Builder{
-        private  Integer heartbeat;
-        private  Integer heartbeatTimeout;
-        private  String serialName;
-        private  String exchanger;
-        private  String transport;
-        private  String threadName;
-        private  Integer timeout;
-        private  Long shutdownTimeout;
-        private  Integer connectTimeout;
-        private  Integer idleTimeout;
-        private  String threadPool;
-        private  String codec;
-        private  String dispather;
-        private  Integer connections;
-        private  Integer accepts;
-        private  Integer buffer;
-        private  String charset;
-        private  Integer ioThreads;
-        private  Integer payload;
-        private  Boolean server;
-        private  Boolean await;
-        private  Boolean readOnly;
-        private  Boolean reconnect;
-        private  Integer reconnectPeriod;
-        private  Boolean sendReconnect;
-        private   String host;
-        private   Integer port;
-        private  ExecutorInfo executor;
-        private  Integer reconnectWarningPeriod;
-        private Boolean check;
+
+    public static class Builder
+    {
+
+        private final Map<String, Object> properties = new HashMap<String, Object>();
+
         private Builder()
         {
         }
+
         /**
          * @param info
          */
-        public Builder(RemoteInfo info)
+        public Builder(EndpointInfo info)
         {
-            this.accepts=info.accepts;
-            this.await=info.await;
-            this.buffer=info.buffer;
-            this.charset=info.charset;
-            this.codec=info.codec;
-            this.connections=info.connections;
-            this.connectTimeout=info.connectTimeout;
-            this.dispather=info.dispather;
-            this.exchanger=info.exchanger;
-            this.transport=info.transport;
-            this.executor=info.executor;
-            this.heartbeat=info.heartbeat;
-            this.heartbeatTimeout=info.heartbeatTimeout;
-            this.host=info.host;
-            this.idleTimeout=info.idleTimeout;
-            this.ioThreads=info.ioThreads;
-            this.payload=info.payload;
-            this.port=info.port;
-            this.readOnly=info.readOnly;
-            this.reconnect=info.reconnect;
-            this.reconnectPeriod=info.reconnectPeriod;
-            this.reconnectWarningPeriod=info.reconnectWarningPeriod;
-            this.sendReconnect=info.sendReconnect;
-            this.serialName=info.serialName;
-            this.server=info.server;
-            this.shutdownTimeout=info.shutdownTimeout;
-            this.threadName=info.threadName;
-            this.threadPool=info.threadPool;
-            this.timeout=info.timeout;
-            this.check=info.check;
+            properties.putAll(info.getProperties());
+        }
+        
+        public Builder setPropertyIfAbsent(String key, Object value){
+            if (key == null || key.length() == 0 || value == null)
+                return this;
+            if (hasProperty(key))
+                return this;
+            properties.put(key, value);
+            return this;
+        }
+
+        public boolean hasProperty(String key){
+            Object value = properties.get(key);
+            return value != null;
         }
         /**
          * @param heartbeat the heartbeat to set
          */
         public Builder setHeartbeat(Integer heartbeat) {
-            this.heartbeat = heartbeat;
+            properties.put(HEARTBEAT, heartbeat);
             return this;
         }
-        
-        
+
         /**
          * @param transport the transport to set
          */
         public Builder setTransport(String transport) {
-            this.transport = transport;
+            properties.put(TRANSPORT, transport);
             return this;
         }
-        /**
-         * @param heartbeatTimeout the heartbeatTimeout to set
-         */
-        public Builder setHeartbeatTimeout(Integer heartbeatTimeout) {
-            this.heartbeatTimeout = heartbeatTimeout;
-            return this;
-        }
+
         /**
          * @param serialName the serialName to set
          */
         public Builder setSerialName(String serialName) {
-            this.serialName = serialName;
+            properties.put(SERIAL, serialName);
             return this;
         }
+
         /**
          * @param exchanger the exchanger to set
          */
         public Builder setExchanger(String exchangeName) {
-            this.exchanger = exchangeName;
+            properties.put(EXCHANGER, exchangeName);
             return this;
         }
+
         /**
          * @param threadName the threadName to set
          */
         public Builder setThreadName(String threadName) {
-            this.threadName = threadName;
+            properties.put(THREAD_NAME, threadName);
             return this;
         }
+
         /**
          * @param timeout the timeout to set
          */
         public Builder setTimeout(Integer timeout) {
-            this.timeout = timeout;
+            properties.put(TIMEOUT, timeout);
             return this;
         }
+
         /**
          * @param shutdownTimeout the shutdownTimeout to set
          */
         public Builder setShutdownTimeout(Long shutdownTimeout) {
-            this.shutdownTimeout = shutdownTimeout;
+            properties.put(SHUTDOWN_TIMEOUT, shutdownTimeout);
             return this;
         }
+
         /**
          * @param connectTimeout the connectTimeout to set
          */
         public Builder setConnectTimeout(Integer connectTimeout) {
-            this.connectTimeout = connectTimeout;
+            properties.put(CONNECT_TIMEOUT, connectTimeout);
             return this;
         }
+
         /**
          * @param idleTimeout the idleTimeout to set
          */
         public Builder setIdleTimeout(Integer idleTimeout) {
-            this.idleTimeout = idleTimeout;
+            properties.put(IDLE_TIMEOUT, idleTimeout);
             return this;
         }
+
         /**
          * @param threadPool the threadPool to set
          */
         public Builder setThreadPool(String threadPool) {
-            this.threadPool = threadPool;
+            properties.put(THREAD_POOL, threadPool);
             return this;
         }
+
         /**
          * @param codec the codec to set
          */
         public Builder setCodec(String codec) {
-            this.codec = codec;
+            properties.put(CODEC, codec);
             return this;
         }
-        
+
         /**
          * @param dispather the dispather to set
          */
         public Builder setDispather(String dispather) {
-            this.dispather = dispather;
+            properties.put(DISPATHER, dispather);
             return this;
         }
+
         /**
          * @param connections the connections to set
          */
         public Builder setConnections(Integer connections) {
-            this.connections = connections;
+            properties.put(CONNECTIONS, connections);
             return this;
         }
+
         /**
          * @param accepts the accepts to set
          */
         public Builder setAccepts(Integer accepts) {
-            this.accepts = accepts;
+            properties.put(ACCEPTS, accepts);
             return this;
         }
+
         /**
          * @param buffer the buffer to set
          */
         public Builder setBuffer(Integer buffer) {
-            this.buffer = buffer;
+            properties.put(BUFFER, buffer);
             return this;
         }
+
         /**
          * @param charset the charset to set
          */
         public Builder setCharset(String charset) {
-            this.charset = charset;
+            properties.put(CHARSET, charset);
             return this;
         }
+
         /**
          * @param ioThreads the ioThreads to set
          */
         public Builder setIoThreads(Integer ioThreads) {
-            this.ioThreads = ioThreads;
+            properties.put(IO_THREADS, ioThreads);
             return this;
         }
+
         /**
          * @param payload the payload to set
          */
         public Builder setPayload(Integer payload) {
-            this.payload = payload;
+            properties.put(PAYLOAD, payload);
             return this;
         }
+
         /**
          * @param server the server to set
          */
         public Builder setServer(Boolean server) {
-            this.server = server;
+            properties.put(SERVER, server);
             return this;
         }
+
         /**
          * @param await the await to set
          */
         public Builder setAwait(Boolean await) {
-            this.await = await;
+            properties.put(AWAIT, await);
             return this;
         }
+
         /**
          * @param readOnly the readOnly to set
          */
         public Builder setReadOnly(Boolean readOnly) {
-            this.readOnly = readOnly;
+            properties.put(READ_ONLY, readOnly);
             return this;
         }
+
         /**
          * @param reconnect the reconnect to set
          */
         public Builder setReconnect(Boolean reconnect) {
-            this.reconnect = reconnect;
+            properties.put(RECONNECT, reconnect);
             return this;
         }
+
         /**
          * @param reconnectPeriod the reconnectPeriod to set
          */
         public Builder setReconnectPeriod(Integer reconnectPeriod) {
-            this.reconnectPeriod = reconnectPeriod;
+            properties.put(RECONNECT_PERIOD, reconnectPeriod);
             return this;
         }
+
         /**
          * @param sendReconnect the sendReconnect to set
          */
         public Builder setSendReconnect(Boolean sendReconnect) {
-            this.sendReconnect = sendReconnect;
+            properties.put(SEND_RECONNECT, sendReconnect);
             return this;
         }
+
         /**
          * @param host the host to set
          */
         public Builder setHost(String host) {
-            this.host = host;
+            properties.put(HOST, host);
             return this;
         }
+
         /**
          * @param port the port to set
          */
         public Builder setPort(Integer port) {
-            this.port = port;
+            properties.put(PORT, port);
             return this;
         }
-        /**
-         * @param executor the executor to set
-         */
-        public Builder setExecutor(ExecutorInfo executor) {
-            this.executor = executor;
-            return this;
-        }
+
         /**
          * 多少次连接失败后输出一次警告信息.
          */
         public Builder setReconnectWarningPeriod(Integer reconnectWarningPeriod) {
-            this.reconnectWarningPeriod = reconnectWarningPeriod;
+            properties.put(RECONNECT_WARNING_PERIOD, reconnectWarningPeriod);
             return this;
         }
+
         /**
-         *启动错误检查
+         * 启动错误检查
          */
         public Builder setCheck(Boolean check) {
-            this.check = check;
+            properties.put(CHECK, check);
             return this;
         }
-        public RemoteInfo build(){
-            RemoteInfo info=   new RemoteInfo();
-            info.accepts=this.accepts;
-            info.await=this.await;
-            info.buffer=this.buffer;
-            info.charset=this.charset;
-            info.codec=this.codec;
-            info.connections=this.connections;
-            info.connectTimeout=this.connectTimeout;
-            info.dispather=this.dispather;
-            info.exchanger=this.exchanger;
-            info.transport=this.transport;
-            info.executor=this.executor;
-            info.heartbeat=this.heartbeat;
-            info.heartbeatTimeout=this.heartbeatTimeout;
-            info.host=this.host;
-            info.idleTimeout=this.idleTimeout;
-            info.ioThreads=this.ioThreads;
-            info.payload=this.payload;
-            info.port=this.port;
-            info.readOnly=this.readOnly;
-            info.reconnect=this.reconnect;
-            info.reconnectPeriod=this.reconnectPeriod;
-            info.reconnectWarningPeriod=this.reconnectWarningPeriod;
-            info.sendReconnect=this.sendReconnect;
-            info.serialName=this.serialName;
-            info.server=this.server;
-            info.shutdownTimeout=this.shutdownTimeout;
-            info.threadName=this.threadName;
-            info.threadPool=this.threadPool;
-            info.timeout=this.timeout;
-            info.check=this.check;
+
+        public RemoteInfo build() {
+
+            RemoteInfo info = new RemoteInfo(properties);
+            // TODO 验证
             return info;
         }
+
+        /**
+         * @param i
+         * @return
+         */
+        public Builder setHeartbeatTimeout(Integer i) {
+            properties.put(HEARTBEAT_TIMEOUT, i);
+            return this;
+        }
     }
+
 }

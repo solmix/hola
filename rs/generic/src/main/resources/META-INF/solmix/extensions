@@ -1,0 +1,2 @@
+org.solmix.hola.rs.generic.HolaRemoteManagerProvider:org.solmix.hola.rs.RemoteServiceManagerProvider:true
+org.solmix.hola.rs.generic.HolaCodec:org.solmix.hola.transport.codec.Codec:true

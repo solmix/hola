@@ -18,10 +18,6 @@
  */
 package org.solmix.hola.core.model;
 
-import static org.solmix.commons.util.DataUtils.getProperties;
-import static org.solmix.commons.util.DataUtils.setProperties;
-
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,42 +33,20 @@ import org.slf4j.LoggerFactory;
 public class InfoUtils
 {
     private static final Logger LOG= LoggerFactory.getLogger(InfoUtils.class);
-    private static String[] CHANNEL_EXCLUDE={"executor"};
     public static RemoteInfo merge(RemoteInfo target,RemoteInfo src){
         try {
             if(src==null)
                 throw new IllegalArgumentException("src is null");
             if(target==null)
                 throw new IllegalArgumentException("target is null");
-            Field[] _sf = src.getClass().getDeclaredFields();
-            Field[] _tf = target.getClass().getDeclaredFields();
-            Map<String, Object> _samefield = new HashMap<String, Object>();
-            for (Field sf : _sf)
-                for (Field tf : _tf){
-                    if (sf.getName() == tf.getName() 
-                        && sf.getType().equals(tf.getType())
-                        /*&&!channelInfoIgnore(sf.getName())*/)
-                        _samefield.put(tf.getName(), tf.getType());
-                }
-            synchronized (src) {
-                Map<String,Object> values= getProperties(src, _samefield.keySet(), true);
-                synchronized (target) {
-                    setProperties(values,target);
-                }
-            }
-          return target;
+            Map<String,Object> properties= new HashMap<String,Object>();
+            properties.putAll(src.getProperties());
+            properties.putAll(target.getProperties());
+          return new RemoteInfo(properties);
         } catch (Exception e) {
            LOG.error("Merge configuration info failed:",e);
            throw new IllegalStateException(e);
         }
-    }
-    
-    private static boolean channelInfoIgnore(String name){
-       for( String str:CHANNEL_EXCLUDE){
-           if(str.equals(name))
-               return true;
-       }
-       return false;
     }
 
 }
