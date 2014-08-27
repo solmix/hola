@@ -34,14 +34,15 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.rs.RSRequest;
 import org.solmix.hola.rs.RemoteConnectException;
 import org.solmix.hola.rs.RemoteFilter;
 import org.solmix.hola.rs.RemoteService;
+import org.solmix.hola.rs.RemoteServiceException;
 import org.solmix.hola.rs.RemoteServiceListener;
 import org.solmix.hola.rs.RemoteServiceManager;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.RemoteServiceRegistration;
-import org.solmix.hola.rs.RemoteServiceException;
 import org.solmix.hola.rs.event.RemoteServiceEvent;
 import org.solmix.hola.rs.event.RemoteServiceRegisteredEvent;
 import org.solmix.hola.rs.event.RemoteServiceUnregisteredEvent;
@@ -75,7 +76,18 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
         @Override
         public Object reply(ExchangeChannel channel, Object msg)
             throws TransportException {
-            return null;
+            if(msg instanceof RSRequest){
+                RSRequest request=(RSRequest)msg;
+                HolaRemoteServiceRegistration<?> registration =  lookupRegistration(channel,request);
+                return null;
+            }else{
+                throw new TransportException(channel,new StringBuilder()
+                .append("Unsupported request ")
+                .append(msg == null? "null" : msg.getClass().getName())
+                .append(",consumer:" ).append(channel.getRemoteAddress())
+                .append(" -->provider:").append(channel.getLocalAddress())
+                .toString());
+            }
         }
     };
     public HolaRemoteServiceManager(final Container container,RemoteServiceListener...listeners ){
@@ -86,6 +98,17 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
             }
         }
         
+    }
+    /**
+     * @param request
+     */
+    protected HolaRemoteServiceRegistration<?> lookupRegistration(ExchangeChannel channel,RSRequest request) {
+        int port =channel.getLocalAddress().getPort();
+        String path=request.getProperty(RemoteInfo.PATH);
+        HolaServiceID requestId= createRemoteServiceID(path, request.getProperty(RemoteInfo.VERSION), 
+            request.getProperty(RemoteInfo.GROUP), port);
+        HolaRemoteServiceRegistration<?> reg = publishedServices.get(requestId);
+        return reg;
     }
     /**
      * {@inheritDoc}

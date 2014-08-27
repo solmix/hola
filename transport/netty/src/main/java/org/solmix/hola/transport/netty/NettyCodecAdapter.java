@@ -2,6 +2,7 @@ package org.solmix.hola.transport.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -62,6 +63,7 @@ final class NettyCodecAdapter {
             try {
                codec .encode(channel, buffer, msg);
                out.add(buffer);
+               System.out.println(out.size()+"@@@>发送"+ByteBufUtil.hexDump(buffer));
             } finally {
                 NettyChannel.removeChannelIfDisconnected(ctx.channel());
             }
@@ -93,6 +95,7 @@ final class NettyCodecAdapter {
                 do {
                     saveReaderIndex = buffer.readerIndex();
                     try {
+                        System.out.println("@@@>接受"+ByteBufUtil.hexDump(buffer));
                         msg = codec.decode(channel, buffer);
                     } catch (IOException e) {
                         buffer =buffer.clear();

@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rs;
 
-import org.solmix.hola.rs.event.RemoteCallEvent;
+import org.solmix.hola.rs.event.RemoteRequestEvent;
 
 
 /**
@@ -27,8 +27,8 @@ import org.solmix.hola.rs.event.RemoteCallEvent;
  * @version $Id$  2014年4月29日
  */
 
-public interface RemoteCallListener
+public interface RSRequestListener
 {
     
-    void onHandle(RemoteCallEvent event);
+    void onHandle(RemoteRequestEvent event);
 }

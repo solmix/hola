@@ -16,42 +16,54 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.rs.event;
 
-package org.solmix.hola.rs;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月29日
+ * @version $Id$  2014年5月1日
+ * @param <T>
  */
 
-public interface RemoteCall
+public class RemoteRequestCompleteEvent<T> extends RemoteRequestEvent
 {
 
+    private final T response;
+    private final Throwable exception;
     /**
-     * 远程调用超时时间默认值,可通过hola.remotecall.timeout在System中配置,单位为毫秒.
+     * @param source
+     * @param type
+     * @param requestId
      */
-    public static final int DEFAULT_TIMEOUT = new Integer(System.getProperty(
-        "hola.remotecall.timeout", "30000")).intValue();
+    public RemoteRequestCompleteEvent(Object source,  long requestId,T response,Throwable exception)
+    {
+        super(source,RemoteRequestEvent.COMPLETE, requestId);
+        this.response=response;
+        this.exception=exception;
+    }
 
     /**
-     * 远程方法名,非空.
      * 
-     * @return
      */
-    public String getMethod();
-
+    private static final long serialVersionUID = -3729061673293976413L;
+    
     /**
-     * 方法调用所需要的参数,数组中的参数可序列化并参数到远程服务调用端
-     * 
-     * @return 返回非空对象数组
+     * @return the response
      */
-    public Object[] getParameters();
+    public T getResponse() {
+        return response;
+    }
 
+    
     /**
-     * 调用超时时间，单位：毫秒．
-     * 
-     * @return
+     * @return the exception
      */
-    public int getTimeout();
+    public Throwable getException() {
+        return exception;
+    }
+    public boolean hadException(){
+        return exception!=null;
+    }
+
 }

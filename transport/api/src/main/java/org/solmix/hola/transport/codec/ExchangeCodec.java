@@ -227,7 +227,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      * @param data
      * @throws IOException 
      */
-    private void encodeRequestData(Channel channel, ObjectOutput out,
+    protected void encodeRequestData(Channel channel, ObjectOutput out,
         Object data) throws IOException {
        encodeData(out, data);
     }
@@ -286,14 +286,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
         return decodeBody(channel,input,header);
     }
 
-    /**
-     * @param channel
-     * @param input
-     * @param header
-     * @return
-     * @throws IOException 
-     */
-    private Object decodeBody(Channel channel, ByteBufInputStream input,
+    protected Object decodeBody(Channel channel, ByteBufInputStream input,
         byte[] header) throws IOException {
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
         Serialization ser= serializationManager.getSerialization(channel.getInfo(), proto);
@@ -328,7 +321,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
             return res;
         }else{
             Request req = new Request(id);
-            req.setVersion("2.0.0");
+            req.setVersion("0.1.1");
             req.setTwoWay((flag & FLAG_TWOWAY) != 0);
             if ((flag & FLAG_EVENT) != 0) {
                 req.setEvent(Request.HEARTBEAT_EVENT);
@@ -378,7 +371,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
         }
     }
     
-    private Object decodeEventData(Channel channel, ObjectInput in) throws IOException {
+    protected Object decodeEventData(Channel channel, ObjectInput in) throws IOException {
         try {
             return in.readObject();
         } catch (ClassNotFoundException e) {
@@ -386,7 +379,7 @@ public class ExchangeCodec extends SerializeCodec implements Codec
         }
     }
 
-    private Object decodeHeartbeatData(Channel channel, ObjectInput in) throws IOException {
+    protected Object decodeHeartbeatData(Channel channel, ObjectInput in) throws IOException {
         try {
             return in.readObject();
         } catch (ClassNotFoundException e) {

@@ -36,7 +36,7 @@ public interface RemoteService
      * @param call
      * @return
      */
-    Object sync(RemoteCall call) throws RemoteServiceException;
+    Object sync(RSRequest call) throws RemoteServiceException;
 
     /**
      * 异步调用远程方法
@@ -44,21 +44,21 @@ public interface RemoteService
      * @param call
      * @return
      */
-    void async(RemoteCall call,RemoteCallListener listener);
+    void async(RSRequest call,RSRequestListener listener);
     
     /**
      * 立即返回调用结果
      * @param call
      * @return
      */
-    Future<Object> async(RemoteCall call);
+    Future<Object> async(RSRequest call);
 
     /**
-     * 异步调用远程方法，区别于｛@link {@link #async(RemoteCall)} 的是，该方法无须返回值，也不返回异常．
+     * 异步调用远程方法，区别于｛@link {@link #async(RSRequest)} 的是，该方法无须返回值，也不返回异常．
      * 
      * @param call
      */
-    void fireAsync(RemoteCall call) throws RemoteServiceException;
+    void fireAsync(RSRequest call) throws RemoteServiceException;
 
     /**
      * 返回远程服务接口的本地代理对象

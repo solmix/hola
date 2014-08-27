@@ -25,7 +25,7 @@ import java.util.EventObject;
  * 
  */
 
-public abstract class RemoteCallEvent  extends EventObject
+public abstract class RemoteRequestEvent  extends EventObject
 {
     /**
      * 
@@ -39,7 +39,7 @@ public abstract class RemoteCallEvent  extends EventObject
     /**
      * @param source
      */
-    public RemoteCallEvent(Object source,int type,long requestId)
+    public RemoteRequestEvent(Object source,int type,long requestId)
     {
         super(source);
         this.type=type;

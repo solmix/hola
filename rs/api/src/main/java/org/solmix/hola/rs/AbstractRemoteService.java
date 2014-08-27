@@ -34,10 +34,10 @@ import java.util.concurrent.Future;
 import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.rs.event.RemoteCallCompleteEvent;
-import org.solmix.hola.rs.event.RemoteCallEvent;
+import org.solmix.hola.rs.event.RemoteRequestCompleteEvent;
+import org.solmix.hola.rs.event.RemoteRequestEvent;
 import org.solmix.hola.rs.identity.RemoteServiceID;
-import org.solmix.hola.rs.support.RemoteCallImpl;
+import org.solmix.hola.rs.support.RSRequestImpl;
 
 /**
  * 
@@ -86,16 +86,16 @@ public abstract class AbstractRemoteService implements RemoteService,
                     callMethod, method, args);
                 final int callTimeout = getCallTimeoutForProxyInvoke(
                     callMethod, method, args);
-                final RemoteCall remoteCall = createRemoteCall(callMethod,
-                    callParameters, callTimeout);
-                return invokeSync(remoteCall);
+                final RSRequest rSRequest = createRemoteCall(callMethod,
+                    callParameters,method.getParameterTypes(), callTimeout);
+                return invokeSync(rSRequest);
             }
         } catch (Throwable t) {
             if (t instanceof ServiceException)
                 throw t;
             // rethrow as service exception
-            throw new ServiceException(
-                "Service exception on remote service proxy rsid=" + getRemoteServiceID(), ServiceException.REMOTE, t); //$NON-NLS-1$
+            throw new RemoteServiceException(
+                "Service exception on remote service proxy rsid=" + getRemoteServiceID(), t); 
         }
     }
 
@@ -106,7 +106,7 @@ public abstract class AbstractRemoteService implements RemoteService,
 
     protected int getCallTimeoutForProxyInvoke(String callMethod,
         Method proxyMethod, Object[] args) {
-        return RemoteCall.DEFAULT_TIMEOUT;
+        return RSRequest.DEFAULT_TIMEOUT;
     }
 
     protected String getCallMethodNameForProxyInvoke(Method method,
@@ -115,11 +115,11 @@ public abstract class AbstractRemoteService implements RemoteService,
     }
 
     /**
-     * @param remoteCall
+     * @param rSRequest
      * @return
      */
-    protected Object invokeSync(RemoteCall remoteCall) {
-        return sync(remoteCall);
+    protected Object invokeSync(RSRequest rSRequest) {
+        return sync(rSRequest);
     }
 
     protected Object invokeObject(Object proxy, Method method, Object[] args) {
@@ -157,15 +157,15 @@ public abstract class AbstractRemoteService implements RemoteService,
     protected Object invokeAsync(Method method, Object[] args) {
         final String invokeMethodName = getAsyncInvokeMethodName(method);
         Class<?> returnType = method.getReturnType();
-        RemoteCallListener listener = null;
+        RSRequestListener listener = null;
         Object[] parameters;
         if (!Future.class.isAssignableFrom(returnType)) {
             if (args == null || args.length == 0)
                 throw new IllegalArgumentException(
                     "Async calls must include a IRemoteCallListener instance as the last argument");
             Object lastArg = args[args.length - 1];
-            if (lastArg instanceof RemoteCallListener) {
-                listener = (RemoteCallListener) lastArg;
+            if (lastArg instanceof RSRequestListener) {
+                listener = (RSRequestListener) lastArg;
                 int argsLength = args.length - 1;
                 parameters = new Object[argsLength];
                 System.arraycopy(args, 0, args, 0, argsLength);
@@ -183,8 +183,8 @@ public abstract class AbstractRemoteService implements RemoteService,
             parameters = args;
         }
         return async(
-            createRemoteCall(invokeMethodName, parameters,
-                RemoteCall.DEFAULT_TIMEOUT), listener, returnType);
+            createRemoteCall(invokeMethodName, parameters,method.getExceptionTypes(),
+                RSRequest.DEFAULT_TIMEOUT), listener, returnType);
     }
 
     /**
@@ -200,9 +200,9 @@ public abstract class AbstractRemoteService implements RemoteService,
 
     }
 
-    protected RemoteCall createRemoteCall(final String method,
-        final Object[] parameters, final int timeOut) {
-        return new RemoteCallImpl(method,parameters,timeOut) ;
+    protected RSRequest createRemoteCall(final String method,
+        final Object[] parameters,Class<?>[] types, final int timeOut) {
+        return new RSRequestImpl(method,parameters,types,timeOut) ;
     }
 
     /**
@@ -221,7 +221,7 @@ public abstract class AbstractRemoteService implements RemoteService,
         return this;
     }
 
-    public Object async(RemoteCall call, RemoteCallListener listener,
+    public Object async(RSRequest call, RSRequestListener listener,
         Class<?> returnType) {
         return (listener != null) ? asyncWithResult(call, listener)
             : callFuture(call, returnType);
@@ -233,14 +233,14 @@ public abstract class AbstractRemoteService implements RemoteService,
      * @param returnType
      * @return
      */
-    protected Object callFuture(RemoteCall call, Class<?> returnType) {
+    protected Object callFuture(RSRequest call, Class<?> returnType) {
         if (Future.class.isAssignableFrom(returnType)) {
             return async(call);
         }
         return async(call);
     }
 
-    protected ExecutorService getFutureExecutorService(RemoteCall call) {
+    protected ExecutorService getFutureExecutorService(RSRequest call) {
         synchronized (this) {
             if (futureExecutorService == null)
                 futureExecutorService = Executors.newFixedThreadPool(futureExecutorServiceMaxThreads);
@@ -253,8 +253,8 @@ public abstract class AbstractRemoteService implements RemoteService,
      * @param listener
      * @return
      */
-    protected Object asyncWithResult(RemoteCall call,
-        RemoteCallListener listener) {
+    protected Object asyncWithResult(RSRequest call,
+        RSRequestListener listener) {
         async(call, listener);
         return null;
     }
@@ -262,10 +262,10 @@ public abstract class AbstractRemoteService implements RemoteService,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RemoteCall)
+     * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RSRequest)
      */
     @Override
-    public Future<Object> async(final RemoteCall call) {
+    public Future<Object> async(final RSRequest call) {
         ExecutorService executorService = getFutureExecutorService(call);
         if (executorService == null)
             throw new ServiceException(
@@ -443,7 +443,7 @@ public abstract class AbstractRemoteService implements RemoteService,
               }
         }
   }
-    public class CallbackRemoteCallListener implements RemoteCallListener
+    public class CallbackRemoteCallListener implements RSRequestListener
     {
 
         private final AsyncCallback callback;
@@ -454,9 +454,9 @@ public abstract class AbstractRemoteService implements RemoteService,
         }
 
         @Override
-        public void onHandle(RemoteCallEvent event) {
-            if (event.getType() == RemoteCallEvent.COMPLETE) {
-                RemoteCallCompleteEvent e = (RemoteCallCompleteEvent) event;
+        public void onHandle(RemoteRequestEvent event) {
+            if (event.getType() == RemoteRequestEvent.COMPLETE) {
+                RemoteRequestCompleteEvent e = (RemoteRequestCompleteEvent) event;
                 if (e.hadException())
                     callback.onFailure(e.getException());
                 else

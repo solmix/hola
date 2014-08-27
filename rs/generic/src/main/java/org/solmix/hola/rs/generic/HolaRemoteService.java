@@ -22,11 +22,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.AbstractRemoteService;
-import org.solmix.hola.rs.RemoteCall;
-import org.solmix.hola.rs.RemoteCallListener;
+import org.solmix.hola.rs.RSRequest;
+import org.solmix.hola.rs.RSRequestListener;
 import org.solmix.hola.rs.RemoteServiceException;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.identity.RemoteServiceID;
+import org.solmix.hola.rs.support.RSRequestImpl;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.exchange.ExchangeClient;
 
@@ -63,10 +64,10 @@ public class HolaRemoteService extends AbstractRemoteService
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteService#sync(org.solmix.hola.rs.RemoteCall)
+     * @see org.solmix.hola.rs.RemoteService#sync(org.solmix.hola.rs.RSRequest)
      */
     @Override
-    public Object sync(RemoteCall call) throws RemoteServiceException{
+    public Object sync(RSRequest call) throws RemoteServiceException{
         ExchangeClient client= getCurrentClient();
         try {
             return client.request(call, call.getTimeout()).get();
@@ -74,7 +75,14 @@ public class HolaRemoteService extends AbstractRemoteService
            throw new  RemoteServiceException("Failed to call sync",e);
         }
     }
-    
+    @Override
+    protected RSRequest createRemoteCall(final String method,
+        final Object[] parameters,Class<?>[] types, final int timeOut) {
+        RSRequestImpl _return= new RSRequestImpl(method,parameters,types,timeOut) ;
+        _return.setProperty(RemoteInfo.PATH, info.getPath());
+        _return.setProperty(RemoteInfo.VERSION, info.getVersion("0.0.0"));
+        return _return;
+    }
     private ExchangeClient getCurrentClient(){
         ExchangeClient currentClient;
         if (clients.length == 1) {
@@ -89,10 +97,10 @@ public class HolaRemoteService extends AbstractRemoteService
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RemoteCall, org.solmix.hola.rs.RemoteCallListener)
+     * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RSRequest, org.solmix.hola.rs.RSRequestListener)
      */
     @Override
-    public void async(RemoteCall call, RemoteCallListener listener) {
+    public void async(RSRequest call, RSRequestListener listener) {
         // TODO Auto-generated method stub
 
     }
@@ -100,10 +108,10 @@ public class HolaRemoteService extends AbstractRemoteService
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteService#fireAsync(org.solmix.hola.rs.RemoteCall)
+     * @see org.solmix.hola.rs.RemoteService#fireAsync(org.solmix.hola.rs.RSRequest)
      */
     @Override
-    public void fireAsync(RemoteCall call) throws RemoteServiceException {
+    public void fireAsync(RSRequest call) throws RemoteServiceException {
         // TODO Auto-generated method stub
 
     }

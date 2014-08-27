@@ -99,5 +99,10 @@ public class HolaServiceID extends BaseID implements RemoteServiceID
     public String getUrl(){
         return url;
     }
+    
+    @Override
+    public String toString(){
+        return new StringBuilder().append("[HolaRemoteServiceId]:").append(url).toString();
+    }
 
 }
