@@ -20,6 +20,9 @@
 package org.solmix.hola.rs.generic;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -27,11 +30,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import org.solmix.commons.util.Reflection;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.rs.RSRequest;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.RemoteServiceRegistration;
 import org.solmix.hola.rs.identity.RemoteServiceID;
+import org.solmix.hola.rs.support.RSRequestImpl;
+import org.solmix.hola.rs.support.RSResponseImpl;
 
 /**
  * 
@@ -360,6 +367,34 @@ public class HolaRemoteServiceRegistration<S> implements
     @Override
     public RemoteServiceID getID() {
         return remoteServiceID;
+    }
+
+
+
+    /**
+     * @param request
+     */
+    public RSResponseImpl callService(RSRequest request)  {
+        RSRequestImpl req = (RSRequestImpl) request;
+        Object[] args = (request.getParameters() == null) ? new Object[0]
+            : request.getParameters();
+        final Method method = Reflection.findMethod(service.getClass(),
+            req.getMethod(), req.getParameterTypes());
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+
+                @Override
+                public Object run() throws Exception {
+                    if (!method.isAccessible())
+                        method.setAccessible(true);
+                    return null;
+                }
+            });
+            return  new RSResponseImpl(method.invoke(service, args));
+        } catch (Throwable e) {
+            return  new RSResponseImpl(e);
+        }
+        
     }
 
 }

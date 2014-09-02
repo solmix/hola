@@ -24,6 +24,7 @@ import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.AbstractRemoteService;
 import org.solmix.hola.rs.RSRequest;
 import org.solmix.hola.rs.RSRequestListener;
+import org.solmix.hola.rs.RSResponse;
 import org.solmix.hola.rs.RemoteServiceException;
 import org.solmix.hola.rs.RemoteServiceReference;
 import org.solmix.hola.rs.identity.RemoteServiceID;
@@ -70,7 +71,8 @@ public class HolaRemoteService extends AbstractRemoteService
     public Object sync(RSRequest call) throws RemoteServiceException{
         ExchangeClient client= getCurrentClient();
         try {
-            return client.request(call, call.getTimeout()).get();
+            RSResponse res=(RSResponse) client.request(call, call.getTimeout()).get();
+            return res;
         } catch (TransportException e) {
            throw new  RemoteServiceException("Failed to call sync",e);
         }

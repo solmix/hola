@@ -88,7 +88,17 @@ public abstract class AbstractRemoteService implements RemoteService,
                     callMethod, method, args);
                 final RSRequest rSRequest = createRemoteCall(callMethod,
                     callParameters,method.getParameterTypes(), callTimeout);
-                return invokeSync(rSRequest);
+                Object res= invokeSync(rSRequest);
+                if(res instanceof RSResponse){
+                    RSResponse response=(RSResponse)res;
+                    if(response.getException()==null){
+                        return response.getValue();
+                    }else{
+                        throw response.getException();
+                    }
+                }else{
+                    return res;
+                }
             }
         } catch (Throwable t) {
             if (t instanceof ServiceException)

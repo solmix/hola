@@ -15,16 +15,6 @@
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-shared-api</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-shared-generic</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-transport-api</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>

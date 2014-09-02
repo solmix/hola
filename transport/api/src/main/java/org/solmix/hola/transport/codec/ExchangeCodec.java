@@ -16,6 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.transport.codec;
 
 import io.netty.buffer.ByteBuf;
@@ -38,13 +39,12 @@ import org.solmix.hola.transport.exchange.Request;
 import org.solmix.hola.transport.exchange.Response;
 import org.solmix.runtime.Extension;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月11日
+ * @version $Id$ 2014年8月11日
  */
-@Extension(name=ExchangeCodec.NAME)
+@Extension(name = ExchangeCodec.NAME)
 public class ExchangeCodec extends SerializeCodec implements Codec
 {
 
@@ -71,27 +71,29 @@ public class ExchangeCodec extends SerializeCodec implements Codec
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.codec.Codec#encode(org.solmix.hola.transport.channel.Channel, io.netty.buffer.ByteBuf, java.lang.Object)
+     * @see org.solmix.hola.transport.codec.Codec#encode(org.solmix.hola.transport.channel.Channel,
+     *      io.netty.buffer.ByteBuf, java.lang.Object)
      */
     @Override
     public void encode(Channel channel, ByteBuf buffer, Object msg)
         throws IOException {
-       if(msg instanceof Request){
-           encodeRequest(channel, buffer, (Request) msg);
-       }else if(msg instanceof Response){
-           encodeResponse(channel, buffer, (Response) msg);
-       }else {
-           super.encode(channel, buffer, msg);
-       }
+        if (msg instanceof Request) {
+            encodeRequest(channel, buffer, (Request) msg);
+        } else if (msg instanceof Response) {
+            encodeResponse(channel, buffer, (Response) msg);
+        } else {
+            super.encode(channel, buffer, msg);
+        }
     }
 
     /**
      * @param channel
      * @param buffer
      * @param msg
-     * @throws IOException 
+     * @throws IOException
      */
-    protected void encodeResponse(Channel channel, ByteBuf buffer, Response res) throws IOException {
+    protected void encodeResponse(Channel channel, ByteBuf buffer, Response res)
+        throws IOException {
         try {
             Serialization serialization = getSerialization(channel.getInfo());
             // header.
@@ -100,7 +102,8 @@ public class ExchangeCodec extends SerializeCodec implements Codec
             Bytes.short2bytes(HEADER, header);
             // set request and serialization flag.
             header[2] = serialization.getSerializeId();
-            if (res.isHeartbeat()) header[2] |= FLAG_EVENT;
+            if (res.isHeartbeat())
+                header[2] |= FLAG_EVENT;
             // set response status.
             byte status = res.getStatus();
             header[3] = status;
@@ -118,8 +121,8 @@ public class ExchangeCodec extends SerializeCodec implements Codec
                 } else {
                     encodeResponseData(channel, out, res.getResult());
                 }
-            }
-            else out.writeUTF(res.getErrorMessage());
+            } else
+                out.writeUTF(res.getErrorMessage());
             out.flush();
             bos.flush();
             bos.close();
@@ -133,22 +136,27 @@ public class ExchangeCodec extends SerializeCodec implements Codec
             buffer.writerIndex(savedWriteIndex + HEADER_LENGTH + len);
         } catch (Throwable t) {
             // 发送失败信息给Consumer，否则Consumer只能等超时了
-            if (! res.isEvent() && res.getStatus() != Response.BAD_RESPONSE) {
+            if (!res.isEvent() && res.getStatus() != Response.BAD_RESPONSE) {
                 try {
                     // FIXME 在Codec中打印出错日志？在IoHanndler的caught中统一处理？
-                    LOG.warn("Fail to encode response: " + res + ", send bad_response info instead, cause: " + t.getMessage(), t);
-                    
+                    LOG.warn(
+                        "Fail to encode response: " + res
+                            + ", send bad_response info instead, cause: "
+                            + t.getMessage(), t);
+
                     Response r = new Response(res.getId(), res.getVersion());
                     r.setStatus(Response.BAD_RESPONSE);
-                    r.setErrorMessage("Failed to send response: " + res + ", cause: " + StringUtils.toString(t));
+                    r.setErrorMessage("Failed to send response: " + res
+                        + ", cause: " + StringUtils.toString(t));
                     channel.send(r);
-                    
+
                     return;
                 } catch (Exception e) {
-                    LOG.warn("Failed to send bad_response info back: " + res + ", cause: " + e.getMessage(), e);
+                    LOG.warn("Failed to send bad_response info back: " + res
+                        + ", cause: " + e.getMessage(), e);
                 }
             }
-            
+
             // 重新抛出收到的异常
             if (t instanceof IOException) {
                 throw (IOException) t;
@@ -156,50 +164,60 @@ public class ExchangeCodec extends SerializeCodec implements Codec
                 throw (RuntimeException) t;
             } else if (t instanceof Error) {
                 throw (Error) t;
-            } else  {
+            } else {
                 throw new RuntimeException(t.getMessage(), t);
             }
         }
-        
+
     }
-    protected void encodeResponseData(Channel channel, ObjectOutput out, Object data) throws IOException {
+
+    protected void encodeResponseData(Channel channel, ObjectOutput out,
+        Object data) throws IOException {
         encodeResponseData(out, data);
     }
-    protected void encodeResponseData(ObjectOutput out, Object data) throws IOException {
+
+    protected void encodeResponseData(ObjectOutput out, Object data)
+        throws IOException {
         out.writeObject(data);
     }
-    protected void encodeHeartbeatData(Channel channel, ObjectOutput out, Object data) throws IOException {
+
+    protected void encodeHeartbeatData(Channel channel, ObjectOutput out,
+        Object data) throws IOException {
         encodeHeartbeatData(out, data);
     }
-    protected void encodeHeartbeatData(ObjectOutput out, Object data) throws IOException {
+
+    protected void encodeHeartbeatData(ObjectOutput out, Object data)
+        throws IOException {
         encodeEventData(out, data);
     }
+
     /**
      * @param channel
      * @param buffer
      * @param msg
-     * @throws IOException 
+     * @throws IOException
      */
-    protected void encodeRequest(Channel channel, ByteBuf buffer, Request req) throws IOException {
+    protected void encodeRequest(Channel channel, ByteBuf buffer, Request req)
+        throws IOException {
         Serialization serialization = getSerialization(channel.getInfo());
-        //设置header
+        // 设置header
         byte[] header = new byte[HEADER_LENGTH];
-        //前导符
+        // 前导符
         Bytes.short2bytes(HEADER, header);
-        //序列化方法.
+        // 序列化方法.
         header[2] = (byte) (FLAG_REQUEST | serialization.getSerializeId());
 
-        if (req.isTwoWay()) 
+        if (req.isTwoWay())
             header[2] |= FLAG_TWOWAY;
-        if (req.isEvent()) 
+        if (req.isEvent())
             header[2] |= FLAG_EVENT;
 
         // 设置4个字节的request id.
         Bytes.long2bytes(req.getId(), header, 4);
         int savedWriteIndex = buffer.writerIndex();
-        //跳过头部开始写入数据
+        // 跳过头部开始写入数据
         buffer.writerIndex(savedWriteIndex + HEADER_LENGTH);
-        
+
         ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
         ObjectOutput out = serialization.serialize(channel.getInfo(), bos);
         if (req.isEvent()) {
@@ -212,10 +230,10 @@ public class ExchangeCodec extends SerializeCodec implements Codec
         bos.close();
         int len = bos.writtenBytes();
         checkLength(channel, len);
-        //4个字节数据长度
+        // 4个字节数据长度
         Bytes.int2bytes(len, header, 12);
 
-        //写入头信息
+        // 写入头信息
         buffer.writerIndex(savedWriteIndex);
         buffer.writeBytes(header); // write header.
         buffer.writerIndex(savedWriteIndex + HEADER_LENGTH + len);
@@ -225,40 +243,45 @@ public class ExchangeCodec extends SerializeCodec implements Codec
      * @param channel
      * @param out
      * @param data
-     * @throws IOException 
+     * @throws IOException
      */
     protected void encodeRequestData(Channel channel, ObjectOutput out,
         Object data) throws IOException {
-       encodeData(out, data);
+        encodeData(out, data);
     }
-    
-    protected void encodeRequestData(ObjectOutput out, Object data) throws IOException {
+
+    protected void encodeRequestData(ObjectOutput out, Object data)
+        throws IOException {
         out.writeObject(data);
     }
+
     /**
      * @param channel
      * @param out
      * @param data
-     * @throws IOException 
+     * @throws IOException
      */
-    private void encodeEventData(Channel channel, ObjectOutput out, Object data) throws IOException {
+    private void encodeEventData(Channel channel, ObjectOutput out, Object data)
+        throws IOException {
         encodeEventData(out, data);
-        
+
     }
 
     /**
      * @param out
      * @param data
-     * @throws IOException 
+     * @throws IOException
      */
-    private void encodeEventData(ObjectOutput out, Object data) throws IOException {
+    private void encodeEventData(ObjectOutput out, Object data)
+        throws IOException {
         out.writeObject(data);
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.codec.Codec#decode(org.solmix.hola.transport.channel.Channel, io.netty.buffer.ByteBuf)
+     * @see org.solmix.hola.transport.codec.Codec#decode(org.solmix.hola.transport.channel.Channel,
+     *      io.netty.buffer.ByteBuf)
      */
     @Override
     public Object decode(Channel channel, ByteBuf buffer) throws IOException {
@@ -270,27 +293,28 @@ public class ExchangeCodec extends SerializeCodec implements Codec
 
     protected Object decode(Channel channel, ByteBuf buffer, int readable,
         byte[] header) throws IOException {
-        if (readable > 0 && header[0] != HEADER_H 
-            || readable > 1 && header[1] != HEADER_L) {
-           return super.decode(channel, buffer.resetReaderIndex());
+        if (readable > 0 && header[0] != HEADER_H || readable > 1
+            && header[1] != HEADER_L) {
+            return super.decode(channel, buffer.resetReaderIndex());
         }
-        if(readable<HEADER_LENGTH)
+        if (readable < HEADER_LENGTH)
             return DecodeResult.NEED_MORE_INPUT;
         int len = Bytes.bytes2int(header, 12);
-        checkLength(channel,len);
+        checkLength(channel, len);
         int tt = len + HEADER_LENGTH;
-        if( readable < tt ) {
+        if (readable < tt) {
             return DecodeResult.NEED_MORE_INPUT;
         }
         ByteBufInputStream input = new ByteBufInputStream(buffer);
-        return decodeBody(channel,input,header);
+        return decodeBody(channel, input, header);
     }
 
     protected Object decodeBody(Channel channel, ByteBufInputStream input,
         byte[] header) throws IOException {
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
-        Serialization ser= serializationManager.getSerialization(channel.getInfo(), proto);
-        
+        Serialization ser = serializationManager.getSerialization(
+            channel.getInfo(), proto);
+
         ObjectInput in = ser.deserialize(channel.getInfo(), input);
         long id = Bytes.bytes2long(header, 4);
         if ((flag & FLAG_REQUEST) == 0) {
@@ -308,18 +332,19 @@ public class ExchangeCodec extends SerializeCodec implements Codec
                     } else if (res.isEvent()) {
                         data = decodeEventData(channel, in);
                     } else {
-                        data = decodeResponseData(channel, in, getRequestData(id));
+                        data = decodeResponseData(channel, in,
+                            getRequestData(id));
                     }
                     res.setResult(data);
                 } catch (Throwable t) {
                     res.setStatus(Response.CLIENT_ERROR);
                     res.setErrorMessage(StringUtils.toString(t));
                 }
-            }else {
+            } else {
                 res.setErrorMessage(in.readUTF());
             }
             return res;
-        }else{
+        } else {
             Request req = new Request(id);
             req.setVersion("0.1.1");
             req.setTwoWay((flag & FLAG_TWOWAY) != 0);
@@ -344,16 +369,21 @@ public class ExchangeCodec extends SerializeCodec implements Codec
             return req;
         }
     }
-    protected Object decodeResponseData(Channel channel, ObjectInput in, Object requestData) throws IOException {
+
+    protected Object decodeResponseData(Channel channel, ObjectInput in,
+        Object requestData) throws IOException {
         return decodeResponseData(channel, in);
     }
-    protected Object decodeRequestData(Channel channel ,ObjectInput in) throws IOException {
+
+    protected Object decodeRequestData(Channel channel, ObjectInput in)
+        throws IOException {
         try {
             return in.readObject();
         } catch (ClassNotFoundException e) {
-            throw new IOException(StringUtils.toString( e));
+            throw new IOException(StringUtils.toString(e));
         }
     }
+
     protected Object getRequestData(long id) {
         DefaultFuture future = DefaultFuture.getFuture(id);
         if (future == null)
@@ -363,34 +393,38 @@ public class ExchangeCodec extends SerializeCodec implements Codec
             return null;
         return req.getData();
     }
-    protected Object decodeResponseData(Channel channel ,ObjectInput in) throws IOException {
+
+    protected Object decodeResponseData(Channel channel, ObjectInput in)
+        throws IOException {
         try {
             return in.readObject();
         } catch (ClassNotFoundException e) {
-            throw new IOException(StringUtils.toString( e));
-        }
-    }
-    
-    protected Object decodeEventData(Channel channel, ObjectInput in) throws IOException {
-        try {
-            return in.readObject();
-        } catch (ClassNotFoundException e) {
-            throw new IOException(StringUtils.toString( e));
+            throw new IOException(StringUtils.toString(e));
         }
     }
 
-    protected Object decodeHeartbeatData(Channel channel, ObjectInput in) throws IOException {
+    protected Object decodeEventData(Channel channel, ObjectInput in)
+        throws IOException {
         try {
             return in.readObject();
         } catch (ClassNotFoundException e) {
-            throw new IOException(StringUtils.toString( e));
+            throw new IOException(StringUtils.toString(e));
+        }
+    }
+
+    protected Object decodeHeartbeatData(Channel channel, ObjectInput in)
+        throws IOException {
+        try {
+            return in.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new IOException(StringUtils.toString(e));
         }
     }
 
     /**
      * @param channel
      * @param len
-     * @throws IOException 
+     * @throws IOException
      */
     protected void checkLength(Channel channel, int len) throws IOException {
         int limit = HolaConstants.DEFAULT_PALYLOAD;

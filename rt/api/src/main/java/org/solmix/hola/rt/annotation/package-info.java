@@ -16,26 +16,10 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.generic;
-
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月23日
+ * @version $Id$  2014年9月2日
  */
 
-public class SimpleServiceImpl implements SimpleService
-{
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.generic.SimpleService#syaHello()
-     */
-    @Override
-    public String syaHello() {
-        return "Hello+!$@#()!&*^中文?有乱码?";
-    }
-
-}
+package org.solmix.hola.rt.annotation;

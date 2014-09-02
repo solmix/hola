@@ -79,7 +79,11 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
             if(msg instanceof RSRequest){
                 RSRequest request=(RSRequest)msg;
                 HolaRemoteServiceRegistration<?> registration =  lookupRegistration(channel,request);
-                return null;
+                try {
+                 return   registration.callService(request);
+                } catch (Exception e) {
+                    throw new TransportException(channel, e);
+                }
             }else{
                 throw new TransportException(channel,new StringBuilder()
                 .append("Unsupported request ")
@@ -478,7 +482,7 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
        }
        sb.append(path).append(":");
        sb.append(port);
-       if(version!=null&&"0.0.0".equals(version.trim())){
+       if(version!=null && !"0.0.0".equals(version.trim())){
            sb.append(":");
            sb.append(version);
        }
