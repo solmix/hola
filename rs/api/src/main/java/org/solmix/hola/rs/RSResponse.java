@@ -16,24 +16,44 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.discovery.identity;
+package org.solmix.hola.rs;
 
-import java.net.URI;
-
-import org.solmix.hola.core.identity.ID;
+import java.util.Map;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月5日
+ * @version $Id$  2014年8月25日
  */
 
-public interface ServiceID extends ID
+public interface RSResponse
 {
-    public ServiceType getServiceType();
-    
-    public String getServiceName();
-   
-    public URI getLocation();
+    /**
+     * Get invoke result.
+     * 
+     * @return result. if no result return null.
+     */
+    Object getValue();
+
+    /**
+     * Get exception.
+     * 
+     * @return exception. if no exception return null.
+     */
+    Throwable getException();
+
+  /**
+   * Has exception.
+   * 
+   * @return has exception.
+   */
+  boolean hasException();
+  
+
+  Map<String, String> getProperties();
+ 
+  String getProperty(String key);
+  
+  String getProperty(String key, String defaultValue);
 }

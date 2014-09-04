@@ -16,24 +16,18 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.discovery.identity;
-
-import java.net.URI;
-
-import org.solmix.hola.core.identity.ID;
+package org.solmix.hola.core.serialize.hola;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月5日
+ * @version $Id$  2014年8月24日
  */
 
-public interface ServiceID extends ID
+public interface ClassDescriptorMapper
 {
-    public ServiceType getServiceType();
-    
-    public String getServiceName();
-   
-    public URI getLocation();
+    String getDescriptor(int index);
+
+    int getDescriptorIndex(String desc);
 }

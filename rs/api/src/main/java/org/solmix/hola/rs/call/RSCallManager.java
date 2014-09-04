@@ -16,24 +16,16 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.discovery.identity;
-
-import java.net.URI;
-
-import org.solmix.hola.core.identity.ID;
+package org.solmix.hola.rs.call;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月5日
+ * @version $Id$  2014年9月4日
  */
 
-public interface ServiceID extends ID
+public interface RSCallManager
 {
-    public ServiceType getServiceType();
-    
-    public String getServiceName();
-   
-    public URI getLocation();
+
 }
