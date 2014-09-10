@@ -31,7 +31,7 @@ import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.IDCreateException;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.DiscoveryNamespace;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -45,7 +45,7 @@ import org.solmix.hola.discovery.identity.ServiceTypeFactory;
 public class DiscoveryServiceListener implements ServiceListener
 {
 
-    private final DiscoveryServiceProvider protocol;
+    private final Discovery protocol;
 
     private final ServiceTypeFactory typeFactory;
 
@@ -55,7 +55,7 @@ public class DiscoveryServiceListener implements ServiceListener
 
     private static final Logger LOG = LoggerFactory.getLogger(DiscoveryServiceListener.class);
 
-    public DiscoveryServiceListener(DiscoveryServiceProvider protocol)
+    public DiscoveryServiceListener(Discovery protocol)
     {
         this.protocol = protocol;
         typeFactory = DefaultServiceTypeFactory.getDefault();

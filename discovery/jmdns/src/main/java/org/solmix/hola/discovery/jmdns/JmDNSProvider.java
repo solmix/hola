@@ -57,7 +57,7 @@ import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.discovery.AbstractDiscoveryService;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
@@ -75,7 +75,7 @@ import org.solmix.hola.discovery.support.ServicePropertiesImpl;
  */
 @ThreadSafe
 public class JmDNSProvider extends AbstractDiscoveryService implements
-    javax.jmdns.ServiceListener, javax.jmdns.ServiceTypeListener,DiscoveryServiceProvider
+    javax.jmdns.ServiceListener, javax.jmdns.ServiceTypeListener,Discovery
 {
 
     public static final int DEFAULT_REQUEST_TIMEOUT = 3000;

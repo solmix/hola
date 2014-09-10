@@ -32,7 +32,7 @@ import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.ConnectException;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
@@ -57,7 +57,7 @@ public class DiscoveryServiceTest
     @Before
     public void setup() {
         SystemContext sc = SystemContextFactory.getThreadDefaultSystemContext();
-        service = sc.getExtension(DiscoveryServiceProvider.class).adaptTo(JmDNSProvider.class);
+        service = sc.getExtension(Discovery.class).adaptTo(JmDNSProvider.class);
         try {
             service.connect(null, null);
         } catch (ConnectException e) {

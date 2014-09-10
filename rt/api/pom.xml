@@ -7,4 +7,12 @@
   </parent>
   <artifactId>hola-rt-api</artifactId>
   <name>Hola :: Runtime :: API</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-rs-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  		<type>bundle</type>
+  	</dependency>
+  </dependencies>
 </project>

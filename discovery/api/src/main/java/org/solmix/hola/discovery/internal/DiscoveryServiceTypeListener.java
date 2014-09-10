@@ -27,7 +27,7 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 
 /**
  * 监听OSGI环境中注册的{@link org.solmix.hola.discovery.ServiceListener},并自动添加listener.
@@ -37,7 +37,7 @@ import org.solmix.hola.discovery.DiscoveryServiceProvider;
 public class DiscoveryServiceTypeListener  implements ServiceListener
 {
 
-    private final DiscoveryServiceProvider service;
+    private final Discovery service;
 
 
     private final BundleContext context;
@@ -45,7 +45,7 @@ public class DiscoveryServiceTypeListener  implements ServiceListener
 
     private static final Logger LOG = LoggerFactory.getLogger(DiscoveryServiceTypeListener.class);
 
-    public DiscoveryServiceTypeListener(DiscoveryServiceProvider protocol)
+    public DiscoveryServiceTypeListener(Discovery protocol)
     {
         this.service = protocol;
         context = Activator.getDefault().getBundleContext();

@@ -21,7 +21,7 @@ package org.solmix.hola.discovery.jmdns.internal;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.jmdns.JmDNSProvider;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
 import org.solmix.runtime.ContainerExtension;
@@ -62,7 +62,7 @@ public class Plugin implements ContainerExtension
         this.systemContext = context;
         IDFactory.getDefault().addNamespace(new JmDNSNamespace("Discovery Namespace"));
         JmDNSProvider service=new JmDNSProvider();
-        systemContext.setExtension(service, DiscoveryServiceProvider.class);
+        systemContext.setExtension(service, Discovery.class);
         systemContext.setExtension(service, DiscoveryAdvertiser.class);
         systemContext.setExtension(service, DiscoveryLocator.class);
     }

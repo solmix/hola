@@ -34,7 +34,7 @@ import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.jmdns.JmDNSProvider;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
 
@@ -92,7 +92,7 @@ public class Activator implements BundleActivator
         namespaceRegistration = this.context.registerService(
             Namespace.class.getName(),
             new JmDNSNamespace("Discovery Namespace"), null);
-        String[] clazzes = new String[] { DiscoveryServiceProvider.class.getName(),
+        String[] clazzes = new String[] { Discovery.class.getName(),
             DiscoveryAdvertiser.class.getName(),
             DiscoveryLocator.class.getName() };
         final Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -125,7 +125,7 @@ public class Activator implements BundleActivator
             namespaceRegistration.unregister();
         if (jmdnsRegistration != null&&factory.isActive()){
             ServiceReference<?> reference=   jmdnsRegistration.getReference();
-            DiscoveryServiceProvider service=  (DiscoveryServiceProvider)context.getService(reference);
+            Discovery service=  (Discovery)context.getService(reference);
             jmdnsRegistration.unregister();
             ConnectContext cc=service.adaptTo(ConnectContext.class);
             cc.disconnect();

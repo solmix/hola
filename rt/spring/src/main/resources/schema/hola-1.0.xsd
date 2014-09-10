@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+			targetNamespace="http://www.solmix.org/schema/hola" 
+			xmlns="http://www.solmix.org/schema/hola" 
+			elementFormDefault="qualified">
+
+    <xsd:element name="application" >
+    <xsd:complexType>
+    	<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    	<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="owner" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="organization" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="architecture" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="environment" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="monitor" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="discovery" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="module" >
+    <xsd:complexType>
+    <xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    	<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="owner" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="organization" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="monitor" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="discovery" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="discovery" >
+    <xsd:complexType>
+    	<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    	<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="address" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="port" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="cluster" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="group" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="subscribe" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="service" type="serviceType">
+    </xsd:element>
+
+    <xsd:complexType name="abstractInterfaceType">
+    	<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    	<xsd:attribute name="cluster" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="application" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="module" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="discovery" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="monitor" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="scope" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="abstractServiceType">
+    	<xsd:complexContent>
+    		<xsd:extension base="abstractInterfaceType">
+    			<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="group" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="delay" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="export" type="xsd:boolean"></xsd:attribute>
+    			<xsd:attribute name="weight" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="document" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="executes" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="protocol" type="xsd:string"></xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="serviceType">
+    	<xsd:complexContent>
+    		<xsd:extension base="abstractServiceType">
+    			<xsd:attribute name="interface" type="xsd:token"
+    				use="required">
+    			</xsd:attribute>
+    			<xsd:attribute name="ref" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="class" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="path" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="server" type="xsd:string"></xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>

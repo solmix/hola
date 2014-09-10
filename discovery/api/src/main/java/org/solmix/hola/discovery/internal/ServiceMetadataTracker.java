@@ -25,7 +25,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -42,7 +42,7 @@ public class ServiceMetadataTracker
 
     private ServiceTracker<ServiceMetadata,ServiceMetadata> serviceTracker;
 
-    public ServiceMetadataTracker(final DiscoveryServiceProvider provider)
+    public ServiceMetadataTracker(final Discovery provider)
     {
         final BundleContext bundleContext = Activator.getDefault().getBundleContext();
         if (bundleContext != null) {

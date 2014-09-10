@@ -16,10 +16,12 @@
   	<dependency>
   		<groupId>org.solmix.common</groupId>
   		<artifactId>solmix-common-runtime</artifactId>
+  		<scope>provided</scope>
   	</dependency>
   	<dependency>
   		<groupId>org.osgi</groupId>
   		<artifactId>org.osgi.compendium</artifactId>
+  		<scope>provided</scope>
   	</dependency>
   	<dependency>
 			<groupId>ch.qos.logback</groupId>

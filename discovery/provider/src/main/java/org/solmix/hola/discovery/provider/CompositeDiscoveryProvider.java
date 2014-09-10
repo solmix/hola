@@ -36,7 +36,7 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.discovery.AbstractDiscoveryService;
-import org.solmix.hola.discovery.DiscoveryServiceProvider;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceListener;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceTypeListener;
@@ -54,14 +54,14 @@ import org.solmix.hola.discovery.support.ServiceMetadataImpl;
  */
 
 public class CompositeDiscoveryProvider extends AbstractDiscoveryService
-    implements DiscoveryServiceProvider
+    implements Discovery
 {
 
     
 
     protected Set<ServiceMetadata> registeredServices = new HashSet<ServiceMetadata>();
 
-    protected final Collection<DiscoveryServiceProvider> providers = new ArrayList<DiscoveryServiceProvider>();
+    protected final Collection<Discovery> providers = new ArrayList<Discovery>();
 
     /**
      * @param discoveryNamespace
@@ -83,7 +83,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
             registeredServices.add(serviceMetadata);
         }
         synchronized (providers) {
-            for (DiscoveryServiceProvider provider : providers) {
+            for (Discovery provider : providers) {
                 final ServiceMetadata meta = getServiceMetadataForProvider(
                     serviceMetadata, provider);
                 provider.registerService(meta);
@@ -97,7 +97,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
      * @return
      */
     private ServiceMetadata getServiceMetadataForProvider(
-        ServiceMetadata smeta, DiscoveryServiceProvider provider) {
+        ServiceMetadata smeta, Discovery provider) {
         ServiceID sid = smeta.getServiceID();
         ServiceID nsid = getServiceIDforProvider(sid, provider);
         ServiceType type = nsid.getServiceType();
@@ -111,7 +111,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
      * @return
      */
     private ServiceID getServiceIDforProvider(ServiceID sid,
-        DiscoveryServiceProvider provider) {
+        Discovery provider) {
         Namespace ns = provider.getDiscoveryNamespace();
         if (!ns.equals(sid.getNamespace())) {
             return (ServiceID) ns.createID(new Object[] { sid.getName(),
@@ -132,7 +132,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
             registeredServices.remove(serviceMetadata);
         }
         synchronized (providers) {
-            for (DiscoveryServiceProvider provider : providers) {
+            for (Discovery provider : providers) {
                 final ServiceMetadata meta = getServiceMetadataForProvider(
                     serviceMetadata, provider);
                 provider.unregisterService(meta);
@@ -150,7 +150,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
     public ServiceMetadata getService(ServiceID aServiceID) {
         Assert.isNotNull(aServiceID);
         synchronized (providers) {
-            for (DiscoveryServiceProvider provider : providers) {
+            for (Discovery provider : providers) {
                 final ServiceID nid = getServiceIDforProvider(aServiceID,
                     provider);
                 ServiceMetadata result = provider.getService(nid);
@@ -170,7 +170,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
     public ServiceMetadata[] getServices() {
         Set<ServiceMetadata> all = new HashSet<ServiceMetadata>();
         synchronized (providers) {
-            for (DiscoveryServiceProvider provider : providers) {
+            for (Discovery provider : providers) {
                 ServiceMetadata[] services = provider.getServices();
                 all.addAll(Arrays.asList(services));
             }
@@ -187,7 +187,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
     public ServiceMetadata[] getServices(ServiceType type) {
         Set<ServiceMetadata> all = new HashSet<ServiceMetadata>();
         synchronized (providers) {
-            for (DiscoveryServiceProvider provider : providers) {
+            for (Discovery provider : providers) {
                 ServiceType ntype = getServiceTypeForProvider(type, provider);
                 ServiceMetadata[] services = provider.getServices(ntype);
                 all.addAll(Arrays.asList(services));
@@ -202,7 +202,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
      * @return
      */
     private ServiceType getServiceTypeForProvider(ServiceType type,
-        DiscoveryServiceProvider provider) {
+        Discovery provider) {
         Namespace ns = provider.getDiscoveryNamespace();
         if (!ns.equals(type.getNamespace())) {
             return DefaultServiceTypeFactory.getDefault().create(ns, type);
@@ -219,7 +219,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
     public ServiceType[] getServiceTypes() {
         Set<ServiceType> all = new HashSet<ServiceType>();
         synchronized (providers) {
-            for (DiscoveryServiceProvider provider : providers) {
+            for (Discovery provider : providers) {
                 ServiceType[] services = provider.getServiceTypes();
                 all.addAll(Arrays.asList(services));
             }
@@ -236,7 +236,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
     public ServiceMetadata[] purgeCache() {
         Set<ServiceMetadata> all = new HashSet<ServiceMetadata>();
         synchronized (providers) {
-            for (DiscoveryServiceProvider provider : providers) {
+            for (Discovery provider : providers) {
                 ServiceMetadata[] services = provider.purgeCache();
                 all.addAll(Arrays.asList(services));
             }
@@ -259,8 +259,8 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
         fireConnectEvent(new ConnectingEvent(this, this.getID(), targetID,
             securityContext));
         synchronized (providers) {
-            final Collection<DiscoveryServiceProvider> failedToConnect = new HashSet<DiscoveryServiceProvider>();
-            for (DiscoveryServiceProvider provider : providers) {
+            final Collection<Discovery> failedToConnect = new HashSet<Discovery>();
+            for (Discovery provider : providers) {
                 if (provider.getTargetID() == null) {
                     try {
                         provider.connect(targetID, securityContext);
@@ -310,7 +310,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
        
         targetID=null;
         synchronized (providers) {
-            for(DiscoveryServiceProvider provider:providers){
+            for(Discovery provider:providers){
                 provider.disconnect();
             }
             providers.clear();
@@ -342,7 +342,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
      * @param obj
      */
     public boolean addProvider(Object obj) {
-        DiscoveryServiceProvider p=(DiscoveryServiceProvider)obj;
+        Discovery p=(Discovery)obj;
         if(p.getTargetID()==null){
             try {
                 p.connect(targetID, null);
@@ -366,7 +366,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
      * @param anIDS
      */
     public boolean removeProvider(Object obj) {
-        DiscoveryServiceProvider p=(DiscoveryServiceProvider)obj;
+        Discovery p=(Discovery)obj;
         p.removeServiceListener(serviceListener);
         p.removeServiceTypeListener(serviceTypeListener);
         synchronized (providers) {
@@ -443,7 +443,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscoveryService
             }
             final ServiceType type = event.getServiceType();
             synchronized (providers) {
-                for (DiscoveryServiceProvider provider : providers) {
+                for (Discovery provider : providers) {
 
                     provider.addServiceListener(type, serviceListener);
                 }
