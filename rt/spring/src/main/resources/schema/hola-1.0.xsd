@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+			xmlns:beans="http://www.springframework.org/schema/beans"
 			targetNamespace="http://www.solmix.org/schema/hola" 
 			xmlns="http://www.solmix.org/schema/hola" 
 			elementFormDefault="qualified">
-
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	<xsd:import namespace="http://www.springframework.org/schema/beans"/>
+	<xsd:import namespace="http://www.springframework.org/schema/tool"/>
     <xsd:element name="application" >
     <xsd:complexType>
     	<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
@@ -74,6 +77,9 @@
     <xsd:complexType name="serviceType">
     	<xsd:complexContent>
     		<xsd:extension base="abstractServiceType">
+    			<xsd:sequence>
+    				<xsd:element ref="beans:property" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+    			</xsd:sequence>
     			<xsd:attribute name="interface" type="xsd:token"
     				use="required">
     			</xsd:attribute>
@@ -84,4 +90,64 @@
     		</xsd:extension>
     	</xsd:complexContent>
     </xsd:complexType>
+    
+
+    <xsd:complexType name="serverType">
+    	<xsd:complexContent>
+    		<xsd:extension base="abstractServiceType">
+    			<xsd:choice>
+    				<xsd:element name="service" type="serviceType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+    				<xsd:element ref="beans:property" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+    			</xsd:choice>
+    			<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="port" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="threadpool" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="threads" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="iothreads" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="queues" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="accepts" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="codec" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="serialization" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="charset" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="payload" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="buffer" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="transporter" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="exchanger" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="dispatcher" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="path" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="contextpath" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="wait" type="xsd:string"></xsd:attribute>
+    			<xsd:anyAttribute></xsd:anyAttribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="protocol" >
+    <xsd:complexType>
+		<xsd:choice>
+  				<xsd:element ref="beans:property" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+    	</xsd:choice>
+    	<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    	<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="port" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="threadpool" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="threads" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="iothreads" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="queues" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="accepts" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="codec" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="serialization" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="charset" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="payload" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="buffer" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="transporter" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="exchanger" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="dispatcher" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="path" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="contextpath" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="server" type="serverType"></xsd:element>
 </xsd:schema>

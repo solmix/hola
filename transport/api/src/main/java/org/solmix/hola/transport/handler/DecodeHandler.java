@@ -31,7 +31,7 @@ import org.solmix.hola.transport.exchange.Response;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version 0.0.1  2014年7月14日
  */
 
 public class DecodeHandler extends AbstractChannelHandlerDelegate

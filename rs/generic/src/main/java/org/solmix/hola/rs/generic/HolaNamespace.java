@@ -19,17 +19,18 @@
 
 package org.solmix.hola.rs.generic;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.runtime.Extension;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月13日
+ * @version 0.0.1 2014年5月13日
  */
-
-public class HolaNamespace extends Namespace
+@Extension(name=HolaNamespace.REMOTESERVICE_SCHEME)
+public class HolaNamespace extends AbstractNamespace
 {
 
     private static final long serialVersionUID = -3966244288414425751L;
@@ -38,9 +39,9 @@ public class HolaNamespace extends Namespace
 
     public static final String REMOTESERVICE_SCHEME = "hola";
 
-    public HolaNamespace(String desc)
+    public HolaNamespace()
     {
-        super(NAME, desc);
+        super(NAME, "hola Namespace");
     }
 
     /**

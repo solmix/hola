@@ -30,8 +30,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.ConnectException;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceProperties;
@@ -46,7 +46,7 @@ import org.solmix.runtime.SystemContextFactory;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月10日
+ * @version 0.0.1 2014年5月10日
  */
 
 public class DiscoveryServiceTest
@@ -105,9 +105,9 @@ public class DiscoveryServiceTest
             int priority = 100;
             int weight = 80;
             int timeToLive = 5000;
-            IDFactory.getDefault().addNamespace(
+            DefaultIDFactory.getDefault().addNamespace(
                 new JmDNSNamespace("jmdns"));
-            Namespace ns = IDFactory.getDefault().getNamespaceByName(
+            Namespace ns = DefaultIDFactory.getDefault().getNamespaceByName(
                 JmDNSNamespace.NAME);
             ServiceType type = DefaultServiceTypeFactory.getDefault().create(
                 ns, services, protocols);

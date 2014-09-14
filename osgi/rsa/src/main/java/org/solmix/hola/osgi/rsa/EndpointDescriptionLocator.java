@@ -64,7 +64,7 @@ import org.solmix.hola.osgi.rsa.support.ServiceMetadataFactoryImpl;
  * 通过服务发现/服务注册机制,查找已配置的Endpintdescription
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月2日
+ * @version 0.0.1 2014年4月2日
  */
 
 public class EndpointDescriptionLocator

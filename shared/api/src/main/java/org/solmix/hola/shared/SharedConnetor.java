@@ -22,7 +22,7 @@ package org.solmix.hola.shared;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月16日
+ * @version 0.0.1  2014年5月16日
  */
 
 public interface SharedConnetor

@@ -20,19 +20,19 @@ package org.solmix.hola.discovery.identity;
 
 import java.net.URI;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.support.ServiceIDImpl;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月4日
+ * @version 0.0.1  2014年5月4日
  */
 
-public class DiscoveryNamespace extends Namespace
+public class DiscoveryNamespace extends AbstractNamespace
 {
     private static final long serialVersionUID = 6685461771166498986L;
     
@@ -81,7 +81,7 @@ public class DiscoveryNamespace extends Namespace
         private static final long serialVersionUID = -9017925060137305026L;
 
         // Need public constructor
-        public DiscoveryServiceID(Namespace namespace, ServiceType type,
+        public DiscoveryServiceID(AbstractNamespace namespace, ServiceType type,
                     URI uri) {
               super(namespace, type, uri);
         }

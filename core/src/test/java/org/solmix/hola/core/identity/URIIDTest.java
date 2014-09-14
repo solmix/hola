@@ -30,12 +30,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.hola.core.identity.support.URIID;
 import org.solmix.hola.core.identity.support.URINamespace;
+import org.solmix.hola.core.internal.DefaultIDFactory;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月9日
+ * @version 0.0.1  2014年5月9日
  */
 
 public class URIIDTest extends AbstractIDTestCase
@@ -114,7 +115,7 @@ public class URIIDTest extends AbstractIDTestCase
     public void testCreateFromQueryString() throws Exception {
           final ID id1 = createID();
           final String externalForm = id1.toQueryString();
-          final ID id2 = IDFactory.getDefault().createID(id1.getNamespace(),
+          final ID id2 = DefaultIDFactory.getDefault().createID(id1.getNamespace(),
                       externalForm);
           assertTrue(id1.equals(id2));
     }
@@ -129,7 +130,7 @@ public class URIIDTest extends AbstractIDTestCase
     }
     protected ID createID(String url) throws IDCreateException {
         
-        URINamespace ns= IDFactory.getDefault().getNamespaceByName(URIID.class.getName()).adaptTo(URINamespace.class);
+        URINamespace ns= DefaultIDFactory.getDefault().getNamespaceByName(URIID.class.getName()).adaptTo(URINamespace.class);
        return ns.createID(new String[]{url});
     }
 

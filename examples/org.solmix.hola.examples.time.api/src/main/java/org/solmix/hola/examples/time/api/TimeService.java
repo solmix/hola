@@ -22,7 +22,7 @@ package org.solmix.hola.examples.time.api;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年6月9日
+ * @version 0.0.1  2014年6月9日
  */
 
 public interface TimeService

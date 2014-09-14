@@ -21,31 +21,31 @@ package org.solmix.hola.rt.spring;
 import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.hola.rt.ServiceExportor;
-import org.solmix.hola.rt.config.ApplicationType;
-import org.solmix.hola.rt.config.ModuleType;
+import org.solmix.hola.rt.config.ApplicationConfig;
+import org.solmix.hola.rt.config.ModuleConfig;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月6日
  */
 
 public class NamespaceHandlerTest
 {
 
     @Test
-    public void test() {
+    public void test() throws InterruptedException {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("/test/test-application.xml");
         ctx.start();
         try {
-            ApplicationType app= ctx.getBean("test", ApplicationType.class);
+            ApplicationConfig app= ctx.getBean("test", ApplicationConfig.class);
           Assert.assertNotNull(app);
-          ApplicationType app2= ctx.getBean("test2", ApplicationType.class);
+          ApplicationConfig app2= ctx.getBean("test2", ApplicationConfig.class);
           Assert.assertNotNull(app2);
           Assert.assertEquals("1.0.2", app2.getVersion());
-          ModuleType module = ctx.getBean("module", ModuleType.class);
+          ModuleConfig module = ctx.getBean("module", ModuleConfig.class);
           Assert.assertEquals(module.getVersion(), "1.0.2");
           ServiceExportor exportor= ctx.getBean("service", ServiceExportor.class);
           Assert.assertNotNull(exportor);

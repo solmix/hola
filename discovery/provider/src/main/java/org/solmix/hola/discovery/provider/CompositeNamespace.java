@@ -21,19 +21,19 @@ package org.solmix.hola.discovery.provider;
 
 import java.net.URI;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.support.ServiceTypeImpl;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月8日
+ * @version 0.0.1 2014年6月8日
  */
 
-public class CompositeNamespace extends Namespace
+public class CompositeNamespace extends AbstractNamespace
 {
 
     public static final String NAME = "discovery.composite";

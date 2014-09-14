@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.rt.GenericExportor;
-import org.solmix.hola.rt.config.ServiceType;
+import org.solmix.hola.rt.config.ServiceConfig;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -38,7 +38,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月10日
+ * @version 0.0.1  2014年9月10日
  */
 
 public class SpringExportor extends GenericExportor implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware
@@ -81,7 +81,7 @@ public class SpringExportor extends GenericExportor implements InitializingBean,
     }
 
     private boolean isDelay() {
-        ServiceType<?> config = getConfig();
+        ServiceConfig<?> config = getConfig();
         Integer delay = config.getDelay();
         if (delay == null&&config.getServer()!=null) {
             delay = config.getServer().getDelay();
@@ -137,7 +137,7 @@ public class SpringExportor extends GenericExportor implements InitializingBean,
     @Override
     public void afterPropertiesSet() throws Exception {
         // TODO 设置默认的server,module,monitor,applicaiton,ptotocol,module.
-        ServiceType<?> cf = getConfig();
+        ServiceConfig<?> cf = getConfig();
         if (cf.getPath() == null || cf.getPath().length() == 0) {
             if (beanName != null && beanName.length() > 0
                 && cf.getInterface() != null && cf.getInterface().length() > 0

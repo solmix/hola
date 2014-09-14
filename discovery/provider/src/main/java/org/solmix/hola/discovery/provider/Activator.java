@@ -40,7 +40,7 @@ import org.solmix.hola.discovery.DiscoveryLocator;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月7日
+ * @version 0.0.1 2014年6月7日
  */
 
 public class Activator implements BundleActivator

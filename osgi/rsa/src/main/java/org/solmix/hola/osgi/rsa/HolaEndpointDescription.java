@@ -31,15 +31,15 @@ import org.osgi.framework.Version;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.rs.AsyncRemoteServiceProxy;
 
 /**
  * 扩展OSGI RSA中的{@link EndpointDescription} ,添加元数据描述信息
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月2日
+ * @version 0.0.1 2014年4月2日
  */
 
 public class HolaEndpointDescription extends EndpointDescription
@@ -209,7 +209,7 @@ public class HolaEndpointDescription extends EndpointDescription
         List<ID> results = new ArrayList<ID>();
         String idNamespace = getIDNamespace();
         for (String idName : idNames) {
-            results.add(IDFactory.getDefault().createID(idNamespace,
+            results.add(DefaultIDFactory.getDefault().createID(idNamespace,
                 idName));
         }
         return results.toArray(new ID[results.size()]);
@@ -253,7 +253,7 @@ public class HolaEndpointDescription extends EndpointDescription
     private ID verifyIDProperty(String idNamespace, String idName) {
         if (idName == null)
             return null;
-        return IDFactory.getDefault().createID(idNamespace, idName);
+        return DefaultIDFactory.getDefault().createID(idNamespace, idName);
     }
 
     /**

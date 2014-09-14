@@ -41,7 +41,7 @@ import org.solmix.hola.transport.handler.HeartbeatHandler;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version 0.0.1  2014年7月14日
  */
 
 public class ProtocolExchangeHandler implements ChannelHandlerDelegate
@@ -91,6 +91,7 @@ public class ProtocolExchangeHandler implements ChannelHandlerDelegate
         } catch (Throwable e) {
             res.setStatus(Response.SERVICE_ERROR);
             res.setErrorMessage(e.getMessage());
+            logger.error("exchange reply error:",e);
         }
         return res;
     }

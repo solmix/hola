@@ -27,8 +27,8 @@ import java.util.Map;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceProperties;
@@ -44,7 +44,7 @@ import org.solmix.hola.osgi.rsa.ServiceMetadataFactory;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月12日
+ * @version 0.0.1 2014年4月12日
  */
 
 public class ServiceMetadataFactoryImpl extends AbstractMetadataFactory
@@ -156,7 +156,7 @@ public class ServiceMetadataFactoryImpl extends AbstractMetadataFactory
 
     private String createDefaultServiceName(EndpointDescription des,
         DiscoveryAdvertiser advertiser, ServiceType type) {
-        return HolaRemoteConstants.DISCOVERY_SERVICE_NAME_PREFIX+IDFactory.getDefault().createGUID();
+        return HolaRemoteConstants.DISCOVERY_SERVICE_NAME_PREFIX+DefaultIDFactory.getDefault().createGUID();
     }
 
     /**

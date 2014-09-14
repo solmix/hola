@@ -54,7 +54,7 @@ import org.solmix.runtime.event.Event;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月17日
+ * @version 0.0.1 2014年5月17日
  */
 
 public abstract class GenericSSProvider extends AbstractConnectContext

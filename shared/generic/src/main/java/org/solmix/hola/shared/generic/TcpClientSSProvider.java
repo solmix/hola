@@ -27,7 +27,7 @@ import org.solmix.hola.shared.transport.Channel;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月17日
+ * @version 0.0.1  2014年5月17日
  */
 
 public class TcpClientSSProvider extends ClientSSProvider

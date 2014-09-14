@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.ServiceType;
+import org.solmix.hola.rt.config.ServiceConfig;
 import org.solmix.hola.rt.spring.SpringExportor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月7日
+ * @version 0.0.1  2014年9月7日
  */
 
 public class ServiceDefinitionParser extends AbstractDefinitionParser implements
@@ -43,7 +43,7 @@ public class ServiceDefinitionParser extends AbstractDefinitionParser implements
      */
     public ServiceDefinitionParser()
     {
-        super(ServiceType.class);
+        super(ServiceConfig.class);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ServiceDefinitionParser extends AbstractDefinitionParser implements
      */
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
-        BeanDefinition bf= parse(element, parserContext, ServiceType.class);
+        BeanDefinition bf= parse(element, parserContext, ServiceConfig.class);
        
         RootBeanDefinition exporter = new RootBeanDefinition();
         exporter.setBeanClass(SpringExportor.class);

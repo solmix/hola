@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,16 +16,21 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.discovery;
+package org.solmix.hola.rt.config;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月9日
+ * @version 0.0.1  2014年9月6日
  */
 
-public interface DiscoveryManagerListener
+public class ProtocolConfig extends AbstractConfig
 {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8323006113376410078L;
 
 }

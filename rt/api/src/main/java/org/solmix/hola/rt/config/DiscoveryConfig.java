@@ -24,10 +24,10 @@ import java.util.Map;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年9月5日
+ * @version 0.0.1 2014年9月5日
  */
 
-public class DiscoveryType extends AbstractType
+public class DiscoveryConfig extends AbstractConfig
 {
 
     /**

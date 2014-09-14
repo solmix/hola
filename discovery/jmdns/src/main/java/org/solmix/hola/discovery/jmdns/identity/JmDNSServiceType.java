@@ -19,13 +19,13 @@
 
 package org.solmix.hola.discovery.jmdns.identity;
 
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.discovery.support.ServiceTypeImpl;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月7日
+ * @version 0.0.1 2014年5月7日
  */
 
 public class JmDNSServiceType extends ServiceTypeImpl
@@ -40,7 +40,7 @@ public class JmDNSServiceType extends ServiceTypeImpl
      * @param ns
      * @param type
      */
-    public JmDNSServiceType(Namespace ns, String type)
+    public JmDNSServiceType(AbstractNamespace ns, String type)
     {
         super(ns, type);
     }

@@ -22,7 +22,7 @@ package org.solmix.hola.core.serialize.hola;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月24日
+ * @version 0.0.1  2014年8月24日
  */
 
 public interface ClassDescriptorMapper

@@ -22,7 +22,7 @@ package org.solmix.hola.rt;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月10日
+ * @version 0.0.1  2014年9月10日
  */
 
 public class GenericImportor

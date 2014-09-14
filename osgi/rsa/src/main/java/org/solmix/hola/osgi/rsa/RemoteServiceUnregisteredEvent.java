@@ -25,7 +25,7 @@ import org.solmix.hola.rs.event.RemoteServiceEvent;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年6月5日
+ * @version 0.0.1  2014年6月5日
  */
 
 public class RemoteServiceUnregisteredEvent extends RemoteServiceEvent

@@ -27,7 +27,7 @@ import java.io.OutputStream;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月12日
+ * @version 0.0.1  2014年8月12日
  */
 
 public class JavaObjectOutput implements ObjectOutput

@@ -28,7 +28,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月5日
+ * @version 0.0.1 2014年5月5日
  */
 
 public class ServiceTypeComparator implements Comparator<ServiceType>
@@ -55,21 +55,21 @@ public class ServiceTypeComparator implements Comparator<ServiceType>
 
             final String name1 = type1.getNamingAuthority();
             final String name2 = type2.getNamingAuthority();
-            if (!name1.equals("*") && !name2.equals("*") //$NON-NLS-1$ //$NON-NLS-2$
+            if (!name1.equals("*") && !name2.equals("*") 
                 && !name1.equals(name2)) {
                 return -1;
             }
 
             final String[] services1 = type1.getServices();
             final String[] services2 = type2.getServices();
-            if (!services1[0].equals("*") && !services2[0].equals("*") //$NON-NLS-1$ //$NON-NLS-2$
+            if (!services1[0].equals("*") && !services2[0].equals("*") 
                 && !Arrays.equals(services1, services2)) {
                 return -1;
             }
 
             final String[] protocols1 = type1.getProtocols();
             final String[] protocols2 = type2.getProtocols();
-            if (!protocols1[0].equals("*") && !protocols2[0].equals("*") //$NON-NLS-1$ //$NON-NLS-2$
+            if (!protocols1[0].equals("*") && !protocols2[0].equals("*") 
                 && !Arrays.equals(protocols1, protocols2)) {
                 return -1;
             }

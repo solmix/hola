@@ -28,7 +28,7 @@ import org.solmix.hola.core.identity.ID;
  * 传输层链接语义.
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月24日
+ * @version 0.0.1 2014年6月24日
  */
 
 public interface Channel

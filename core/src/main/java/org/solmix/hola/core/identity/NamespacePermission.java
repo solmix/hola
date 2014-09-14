@@ -25,7 +25,7 @@ import java.security.Permission;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月4日
+ * @version 0.0.1  2014年4月4日
  */
 
 public class NamespacePermission extends BasicPermission

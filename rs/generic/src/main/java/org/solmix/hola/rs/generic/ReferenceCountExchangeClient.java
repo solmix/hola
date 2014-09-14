@@ -33,7 +33,7 @@ import org.solmix.hola.transport.exchange.ResponseFuture;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年8月21日
+ * @version 0.0.1 2014年8月21日
  */
 
 public class ReferenceCountExchangeClient implements ExchangeClient

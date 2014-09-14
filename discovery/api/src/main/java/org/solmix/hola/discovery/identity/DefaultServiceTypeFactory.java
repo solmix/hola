@@ -19,14 +19,15 @@
 
 package org.solmix.hola.discovery.identity;
 
-import org.solmix.hola.core.identity.IDFactory;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.internal.DefaultIDFactory;
 import org.solmix.hola.discovery.support.ServiceTypeImpl;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月12日
+ * @version 0.0.1 2014年4月12日
  */
 
 public class DefaultServiceTypeFactory implements ServiceTypeFactory
@@ -70,9 +71,9 @@ public class DefaultServiceTypeFactory implements ServiceTypeFactory
     @Override
     public ServiceType create(Namespace ns, String[] services, String[] scopes,
         String[] protocols, String namingAuthority) {
-        ServiceTypeImpl type = new ServiceTypeImpl(ns, services, scopes,
+        ServiceTypeImpl type = new ServiceTypeImpl(ns.adaptTo(AbstractNamespace.class), services, scopes,
             protocols, namingAuthority);
-        return (ServiceType) IDFactory.getDefault().createID(ns,
+        return (ServiceType) DefaultIDFactory.getDefault().createID(ns,
             new Object[] { type });
     }
 
@@ -91,7 +92,7 @@ public class DefaultServiceTypeFactory implements ServiceTypeFactory
      */
     @Override
     public ServiceType create(Namespace ns, ServiceType type) {
-        return (ServiceType) IDFactory.getDefault().createID(ns,
+        return (ServiceType) DefaultIDFactory.getDefault().createID(ns,
             new Object[] { type });
     }
 

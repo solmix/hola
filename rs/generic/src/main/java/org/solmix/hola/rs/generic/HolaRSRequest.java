@@ -36,7 +36,7 @@ import org.solmix.hola.transport.exchange.Request;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年8月25日
+ * @version 0.0.1 2014年8月25日
  */
 
 public class HolaRSRequest extends RSRequestImpl implements RSRequest,

@@ -20,7 +20,7 @@ package org.solmix.hola.discovery.jmdns.identity;
 
 import java.net.URI;
 
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.support.ServiceIDImpl;
 
@@ -28,7 +28,7 @@ import org.solmix.hola.discovery.support.ServiceIDImpl;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月7日
+ * @version 0.0.1  2014年5月7日
  */
 
 public class JmDNSServiceID extends ServiceIDImpl
@@ -39,7 +39,7 @@ public class JmDNSServiceID extends ServiceIDImpl
      * @param type
      * @param location
      */
-    public JmDNSServiceID(Namespace namespace, ServiceType type, URI location)
+    public JmDNSServiceID(AbstractNamespace namespace, ServiceType type, URI location)
     {
         super(namespace, type, location);
     }

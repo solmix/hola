@@ -24,15 +24,15 @@ import java.util.List;
 
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
 import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.identity.ServiceType;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月12日
+ * @version 0.0.1 2014年4月12日
  */
 
 public class ServiceTypeImpl extends BaseID implements ServiceType
@@ -52,7 +52,7 @@ public class ServiceTypeImpl extends BaseID implements ServiceType
 
     protected static final String DELIM = "._";
 
-    public ServiceTypeImpl(Namespace ns, String[] services, String[] scopes,
+    public ServiceTypeImpl(AbstractNamespace ns, String[] services, String[] scopes,
         String[] protocols, String namingAuthority)
     {
         super(ns);
@@ -68,13 +68,13 @@ public class ServiceTypeImpl extends BaseID implements ServiceType
         Assert.isNotNull(typeName);
     }
 
-    public ServiceTypeImpl(Namespace ns, ServiceType type)
+    public ServiceTypeImpl(AbstractNamespace ns, ServiceType type)
     {
         this(ns, type.getServices(), type.getScopes(), type.getProtocols(),
             type.getNamingAuthority());
     }
 
-    public ServiceTypeImpl(Namespace ns, String typeName)
+    public ServiceTypeImpl(AbstractNamespace ns, String typeName)
     {
         super(ns);
         if (typeName == null)

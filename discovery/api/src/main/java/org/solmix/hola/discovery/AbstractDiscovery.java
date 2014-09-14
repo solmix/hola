@@ -35,9 +35,8 @@ import java.util.concurrent.Future;
 
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.AbstractConnectContext;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.internal.DefaultIDFactory;
 import org.solmix.hola.discovery.event.ServiceEvent;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
 import org.solmix.hola.discovery.identity.ServiceID;
@@ -50,20 +49,17 @@ import org.solmix.runtime.adapter.AdapterManager;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月4日
+ * @version 0.0.1 2014年5月4日
  */
 @ThreadSafe
-public abstract class AbstractDiscoveryService extends AbstractConnectContext
-    implements Discovery
+public abstract class AbstractDiscovery  implements Discovery
 {
 
     protected final Map<ServiceType, Collection<ServiceListener>> serviceListeners;
 
     private final String discoveryNamespace;
 
-    /**
-     * 
-     */
+   
     protected final Set<ServiceListener> allServiceListeners;
 
     protected final Collection<ServiceTypeListener> serviceTypeListeners;
@@ -76,7 +72,7 @@ public abstract class AbstractDiscoveryService extends AbstractConnectContext
 
     private final ServiceTypeComparator comparator;
 
-    public AbstractDiscoveryService(String discoveryNamespace)
+    public AbstractDiscovery(String discoveryNamespace)
     {
         this.discoveryNamespace = discoveryNamespace;
         Assert.isNotNull(discoveryNamespace);
@@ -91,7 +87,7 @@ public abstract class AbstractDiscoveryService extends AbstractConnectContext
 
     @Override
     public Namespace getDiscoveryNamespace() {
-        return IDFactory.getDefault().getNamespaceByName(
+        return DefaultIDFactory.getDefault().getNamespaceByName(
             discoveryNamespace);
     }
 
@@ -246,18 +242,18 @@ public abstract class AbstractDiscoveryService extends AbstractConnectContext
 
     @Override
     public Namespace getServicesNamespace() {
-        return IDFactory.getDefault().getNamespaceByName(
+        return DefaultIDFactory.getDefault().getNamespaceByName(
             discoveryNamespace);
     }
 
-    @Override
+//    @Override
     public Namespace getRemoteNamespace() {
         return getServicesNamespace();
     }
 
-    @Override
+//    @Override
     public void destroy() {
-        disconnect();
+//        disconnect();
         clearListeners();
         discoveryServiceListener.destroy();
         discoveryServiceTypeListener.destroy();

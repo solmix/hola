@@ -25,7 +25,7 @@ import org.junit.Before;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月8日
+ * @version 0.0.1  2014年5月8日
  */
 
 public abstract class AbstractIDTestCase

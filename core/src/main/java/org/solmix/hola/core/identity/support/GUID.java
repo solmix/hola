@@ -21,14 +21,14 @@ package org.solmix.hola.core.identity.support;
 import java.security.SecureRandom;
 
 import org.solmix.commons.util.Base64;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月4日
+ * @version 0.0.1  2014年4月4日
  */
 
 public class GUID extends StringID
@@ -55,7 +55,7 @@ public class GUID extends StringID
      * @param byteLength
      *            the length of the target number (in bytes)
      */
-    protected GUID(Namespace n, String algo, String provider, int byteLength)
+    protected GUID(AbstractNamespace n, String algo, String provider, int byteLength)
                 throws IDCreateException {
           super(n, "");
           // Get SecureRandom instance for class
@@ -75,15 +75,15 @@ public class GUID extends StringID
           value = Base64.encode(newBytes);
     }
 
-    protected GUID(Namespace n, String value) {
+    protected GUID(AbstractNamespace n, String value) {
           super(n, value);
     }
 
-    protected GUID(Namespace n, int byteLength) throws IDCreateException {
+    protected GUID(AbstractNamespace n, int byteLength) throws IDCreateException {
           this(n, SR_DEFAULT_ALGO, SR_DEFAULT_PROVIDER, byteLength);
     }
 
-    protected GUID(Namespace n) throws IDCreateException {
+    protected GUID(AbstractNamespace n) throws IDCreateException {
           this(n, DEFAULT_BYTE_LENGTH);
     }
 

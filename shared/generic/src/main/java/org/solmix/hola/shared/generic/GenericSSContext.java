@@ -34,7 +34,7 @@ import org.solmix.runtime.event.Event;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月18日
+ * @version 0.0.1  2014年5月18日
  */
 
 public class GenericSSContext implements SharedServiceContext

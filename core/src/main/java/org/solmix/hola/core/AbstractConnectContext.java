@@ -28,7 +28,7 @@ import org.solmix.hola.core.event.ConnectEvent;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月4日
+ * @version 0.0.1  2014年5月4日
  */
 
 public abstract class AbstractConnectContext implements ConnectContext

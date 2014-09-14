@@ -24,7 +24,7 @@ import org.solmix.commons.util.Assert;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
 public abstract class BaseID implements ID
@@ -32,14 +32,14 @@ public abstract class BaseID implements ID
 
     private static final long serialVersionUID = -6025003816232785375L;
 
-    protected Namespace namespace;
+    protected AbstractNamespace namespace;
 
     protected BaseID()
     {
         //
     }
 
-    protected BaseID(Namespace namespace)
+    protected BaseID(AbstractNamespace namespace)
     {
         Assert.isNotNull(namespace, "namespace cannot be null");
         this.namespace = namespace;
@@ -141,7 +141,7 @@ public abstract class BaseID implements ID
      * </pre>
      */
     protected String namespaceToQueryString() {
-        return namespace.getScheme() + Namespace.SCHEME_SEPARATOR
+        return namespace.getScheme() + AbstractNamespace.SCHEME_SEPARATOR
             + namespaceGetName();
     }
 }

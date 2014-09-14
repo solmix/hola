@@ -27,22 +27,21 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.identity.IDFactory;
-import org.solmix.hola.core.identity.IIDFactory;
 import org.solmix.hola.core.identity.Namespace;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月2日
+ * @version 0.0.1  2014年5月2日
  */
 
 public class Activator implements BundleActivator
 {
     private BundleContext bundleContext;
-    private ServiceRegistration<IIDFactory> idFactoryRegistration;
+    private ServiceRegistration<IDFactory> idFactoryRegistration;
     private ServiceTracker<Namespace,Namespace> namespacesTracker;
-    private IIDFactory factory;
+    private IDFactory factory;
     private static final Logger LOG=  LoggerFactory.getLogger(Activator.class);
     /**
      * {@inheritDoc}
@@ -52,8 +51,8 @@ public class Activator implements BundleActivator
     @Override
     public void start(BundleContext context) throws Exception {
         this.bundleContext=context;
-        factory= IDFactory.getDefault();
-        idFactoryRegistration=  context.registerService(IIDFactory.class, factory, null);
+        factory= DefaultIDFactory.getDefault();
+        idFactoryRegistration=  context.registerService(IDFactory.class, factory, null);
         namespacesTracker = new ServiceTracker<Namespace,Namespace>(context,
             Namespace.class.getName(), new ServiceTrackerCustomizer<Namespace,Namespace>() {
 

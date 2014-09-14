@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.DiscoveryType;
+import org.solmix.hola.rt.config.DiscoveryConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -29,7 +29,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月6日
  */
 
 public class DiscoveryDefinitionParser extends AbstractDefinitionParser
@@ -41,7 +41,7 @@ public class DiscoveryDefinitionParser extends AbstractDefinitionParser
      */
     public DiscoveryDefinitionParser()
     {
-        super(DiscoveryType.class);
+        super(DiscoveryConfig.class);
     }
     @Override
     protected void parserValue(RootBeanDefinition beanDefinition,

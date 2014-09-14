@@ -16,10 +16,16 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.rt.config;
+
+
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月6日
  */
 
-package org.solmix.hola.rt.spring.parser;
+public class ArgumentConfig
+{
+
+}

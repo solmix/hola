@@ -16,32 +16,19 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rt.config;
+package org.solmix.hola.discovery;
+
+import org.solmix.hola.core.model.DiscoveryInfo;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version $Id$  2014年9月14日
  */
 
-public class ServerType extends AbstractServiceType
+public interface DiscoveryProvider
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -4040109969678654602L;
 
-    private String              host;
-
-    // 服务端口
-    private Integer             port;
-    private String              codec;
-    private Integer             queues;
-    private Integer             accepts;
-    private String              contextpath;
-    private String              serialization;
-    private String              charset;
-    private Integer             payload;
-    private Integer             buffer;
+    Discovery createDiscovery(DiscoveryInfo info);
 }

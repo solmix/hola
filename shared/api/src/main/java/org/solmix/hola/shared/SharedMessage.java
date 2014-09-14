@@ -24,7 +24,7 @@ import java.io.Serializable;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月19日
+ * @version 0.0.1 2014年5月19日
  */
 
 public class SharedMessage implements Serializable

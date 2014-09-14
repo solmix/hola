@@ -28,7 +28,7 @@ import org.solmix.hola.discovery.ServiceMetadata;
  * 服务监听事项,在{@link ServiceListener}中使用
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月5日
+ * @version 0.0.1 2014年4月5日
  */
 
 public class ServiceEvent extends EventObject

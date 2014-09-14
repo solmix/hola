@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月24日
+ * @version 0.0.1  2014年8月24日
  */
 
 public class DescriptorBuilder

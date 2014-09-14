@@ -19,13 +19,13 @@
 
 package org.solmix.hola.core.identity.support;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
-import org.solmix.hola.core.identity.Namespace;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
 public class LongID extends BaseID
@@ -33,7 +33,7 @@ public class LongID extends BaseID
     private static final long serialVersionUID = -5989122263674756204L;
     private Long value = null;
 
-    protected LongID(Namespace n, long v)
+    protected LongID(AbstractNamespace n, long v)
     {
         super(n);
         value = new Long(v);

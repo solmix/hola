@@ -27,7 +27,7 @@ import org.solmix.hola.core.identity.ID;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月3日
+ * @version 0.0.1 2014年4月3日
  */
 
 public class RemoteReferenceNotFoundException extends Exception

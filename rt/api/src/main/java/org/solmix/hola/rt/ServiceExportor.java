@@ -19,20 +19,20 @@
 
 package org.solmix.hola.rt;
 
-import org.solmix.hola.rt.config.ServiceType;
+import org.solmix.hola.rt.config.ServiceConfig;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年9月10日
+ * @version 0.0.1 2014年9月10日
  */
 
 public interface ServiceExportor
 {
 
-    void setConfig(ServiceType<?> config);
+    void setConfig(ServiceConfig<?> config);
 
-    ServiceType<?> getConfig();
+    ServiceConfig<?> getConfig();
 
     void export();
 

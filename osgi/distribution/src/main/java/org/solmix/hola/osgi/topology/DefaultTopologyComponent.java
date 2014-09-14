@@ -34,7 +34,7 @@ import org.osgi.service.remoteserviceadmin.RemoteServiceAdminListener;
  * EventListenerHook监控注册的服务.
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月29日
+ * @version 0.0.1 2014年5月29日
  */
 
 public class DefaultTopologyComponent implements EventListenerHook,

@@ -24,7 +24,7 @@ import org.osgi.framework.Filter;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月30日
+ * @version 0.0.1 2014年4月30日
  */
 
 public interface RemoteFilter extends Filter

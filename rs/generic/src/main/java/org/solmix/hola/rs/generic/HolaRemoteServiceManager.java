@@ -59,7 +59,7 @@ import org.solmix.runtime.Container;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月17日
+ * @version 0.0.1  2014年5月17日
  */
 @ThreadSafe
 public class HolaRemoteServiceManager implements RemoteServiceManager
@@ -248,7 +248,7 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
      */
     @Override
     public Namespace getRemoteServiceNamespace() {
-        return IDFactory.getDefault().getNamespaceByName(HolaNamespace.NAME);
+        return  container.getExtension(IDFactory.class).getNamespaceByName(HolaNamespace.NAME);
     }
 
     private final Map<RemoteServiceReference<?>,RemoteService> remoteServices=
@@ -463,14 +463,15 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
         return true;
     }
     protected HolaServiceID createRemoteServiceID(String serviceName,String version,String group,int port) {
-        Namespace ns = IDFactory.getDefault().getNamespaceByName( HolaNamespace.NAME);
-        return (HolaServiceID) IDFactory.getDefault().createID(ns,
+        Namespace ns =  container.getExtension(IDFactory.class).getNamespaceByName( HolaNamespace.NAME);
+        return (HolaServiceID) container.getExtension(IDFactory.class).createID(ns,
             new Object[] { getStringUrl(serviceName,version,group,new Integer(port)) });
     }
     protected HolaServiceID createRemoteServiceID(RemoteInfo info) {
-        Namespace ns = IDFactory.getDefault().getNamespaceByName( HolaNamespace.NAME);
+        Namespace ns =  container.getExtension(IDFactory.class).getNamespaceByName( HolaNamespace.NAME);
        String strUrl=getStringUrl(info.getPath(),info.getVersion(),info.getGroup(),info.getPort());
-        return (HolaServiceID) IDFactory.getDefault().createID(ns,
+      
+       return (HolaServiceID)  container.getExtension(IDFactory.class) .createID(ns,
             new Object[] { strUrl });
     }
    

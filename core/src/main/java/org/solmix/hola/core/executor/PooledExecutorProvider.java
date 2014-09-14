@@ -35,7 +35,7 @@ import org.solmix.runtime.Extension;
  * 可收缩线程池
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年8月16日
+ * @version 0.0.1 2014年8月16日
  */
 @Extension(name = "pooled")
 public class PooledExecutorProvider implements ExecutorProvider

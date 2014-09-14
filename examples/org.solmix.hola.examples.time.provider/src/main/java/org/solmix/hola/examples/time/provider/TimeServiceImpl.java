@@ -24,7 +24,7 @@ import org.solmix.hola.examples.time.api.TimeService;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年6月11日
+ * @version 0.0.1  2014年6月11日
  */
 
 public class TimeServiceImpl implements TimeService

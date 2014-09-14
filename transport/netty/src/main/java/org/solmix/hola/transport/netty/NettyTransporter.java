@@ -32,7 +32,7 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月15日
+ * @version 0.0.1  2014年7月15日
  */
 @Extension(name=NettyTransporter.NAME)
 public class NettyTransporter extends AbstractTransporter implements TransporterProvider

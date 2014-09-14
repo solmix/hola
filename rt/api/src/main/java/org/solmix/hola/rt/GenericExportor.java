@@ -18,22 +18,22 @@
  */
 package org.solmix.hola.rt;
 
-import org.solmix.hola.rt.config.ApplicationType;
-import org.solmix.hola.rt.config.ModuleType;
-import org.solmix.hola.rt.config.ServerType;
-import org.solmix.hola.rt.config.ServiceType;
+import org.solmix.hola.rt.config.ApplicationConfig;
+import org.solmix.hola.rt.config.ModuleConfig;
+import org.solmix.hola.rt.config.ServerConfig;
+import org.solmix.hola.rt.config.ServiceConfig;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月10日
+ * @version 0.0.1  2014年9月10日
  */
 
 public class GenericExportor implements ServiceExportor
 {
 
-    protected   ServiceType<?> config;
+    protected   ServiceConfig<?> config;
     private  volatile boolean unexported;
 
     private  volatile boolean exported;
@@ -41,17 +41,17 @@ public class GenericExportor implements ServiceExportor
     public GenericExportor(){
         
     }
-    public GenericExportor(ServiceType<?> type){
+    public GenericExportor(ServiceConfig<?> type){
         this.config=type;
     }
   
     @Override
-    public void setConfig(ServiceType<?> config) {
+    public void setConfig(ServiceConfig<?> config) {
         this.config=config;
     }
    
     @Override
-    public ServiceType<?> getConfig() {
+    public ServiceConfig<?> getConfig() {
         return config;
     }
    
@@ -93,7 +93,7 @@ public class GenericExportor implements ServiceExportor
      * 
      */
     protected void doExport() {
-        // TODO Auto-generated method stub
+      
         
     }
     private void prepareLoad() {
@@ -112,7 +112,7 @@ public class GenericExportor implements ServiceExportor
                     + interfaceClass + "!");
         }
         //path
-        if(config.getPath()==null&&config.getPath().length()==0){
+        if(config.getPath()==null || config.getPath().length()==0){
             config.setPath(config.getInterface());
         }
         
@@ -138,15 +138,15 @@ public class GenericExportor implements ServiceExportor
         return unexported;
     }
     
-    protected  ServiceType<?> prepareConfig(ServiceType<?> s){
+    protected  ServiceConfig<?> prepareConfig(ServiceConfig<?> s){
         if(s==null){
-            throw new IllegalArgumentException("ServiceType is null");
+            throw new IllegalArgumentException("ServiceConfig is null");
         }
         if (s.getInterface() == null || s.getInterface().length() == 0) {
             throw new IllegalStateException("<hola:service interface=\"\" /> interface not allow null!");
         }
         if (s.getServer() != null) {
-           ServerType server= s.getServer();
+           ServerConfig server= s.getServer();
            if(s.getExport()==null){
                s.setExport(server.getExport());
            }
@@ -170,7 +170,7 @@ public class GenericExportor implements ServiceExportor
            }
         }
         if(s.getModule()!=null){
-            ModuleType module= s.getModule();
+            ModuleConfig module= s.getModule();
             if(s.getDiscoveries()==null){
                 s.setDiscoveries(module.getDiscoveries());
             }
@@ -179,7 +179,7 @@ public class GenericExportor implements ServiceExportor
             }
         }
         if(s.getApplication()!=null){
-            ApplicationType app= s.getApplication();
+            ApplicationConfig app= s.getApplication();
             if(s.getDiscoveries()==null){
                 s.setDiscoveries(app.getDiscoveries());
             }

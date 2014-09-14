@@ -23,8 +23,8 @@ import java.net.URI;
 
 import org.solmix.commons.annotation.Immutable;
 import org.solmix.commons.util.Assert;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
-import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -32,7 +32,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月13日
+ * @version 0.0.1 2014年4月13日
  */
 @Immutable
 public class ServiceIDImpl extends BaseID implements ServiceID
@@ -46,7 +46,7 @@ public class ServiceIDImpl extends BaseID implements ServiceID
 
     private final URI location;
 
-    public ServiceIDImpl(Namespace namespace, ServiceType type, URI location)
+    public ServiceIDImpl(AbstractNamespace namespace, ServiceType type, URI location)
     {
         super(namespace);
         Assert.isNotNull(type);

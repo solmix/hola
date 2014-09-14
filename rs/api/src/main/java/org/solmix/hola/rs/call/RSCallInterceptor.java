@@ -23,7 +23,7 @@ package org.solmix.hola.rs.call;
  * 远程服务调用拦截器
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月4日
+ * @version 0.0.1  2014年9月4日
  */
 
 public interface RSCallInterceptor

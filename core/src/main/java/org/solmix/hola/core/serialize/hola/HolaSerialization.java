@@ -32,7 +32,7 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月11日
+ * @version 0.0.1  2014年8月11日
  */
 @Extension(name=HolaSerialization.CODEC)
 public class HolaSerialization implements Serialization

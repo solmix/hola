@@ -32,9 +32,9 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.ConnectException;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.osgi.rsa.AbstractSelector;
 import org.solmix.hola.osgi.rsa.HolaRemoteConstants;
@@ -47,7 +47,7 @@ import org.solmix.hola.rs.RemoteServiceProviderManager;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月21日
+ * @version 0.0.1 2014年5月21日
  */
 
 public class ProviderSelectorImpl extends AbstractSelector implements
@@ -83,10 +83,10 @@ public class ProviderSelectorImpl extends AbstractSelector implements
             for (RemoteServiceProvider provider : rsProvider) {
                 ID targetID = null;
                 if (target instanceof String)
-                    targetID = IDFactory.getDefault().createID(
+                    targetID = DefaultIDFactory.getDefault().createID(
                         provider.getRemoteServiceNamespace(), (String) target);
                 else
-                    targetID = IDFactory.getDefault().createID(
+                    targetID = DefaultIDFactory.getDefault().createID(
                         provider.getRemoteServiceNamespace(),
                         new Object[] { target });
                 Object security = overridingProperties.get("hola.endpoint.securitycontext");
@@ -305,13 +305,13 @@ public class ProviderSelectorImpl extends AbstractSelector implements
      * @return
      */
     private ID createTargetID(Namespace remoteNamespace, String target) {
-        return IDFactory.getDefault().createID(remoteNamespace, target);
+        return DefaultIDFactory.getDefault().createID(remoteNamespace, target);
     }
 
     private void connectProvider(ServiceReference<?> serviceReference,
         Map<String, ?> properties, RemoteServiceProvider provider, String target)
         throws ConnectException {
-        ID targetID = IDFactory.getDefault().createID(
+        ID targetID = DefaultIDFactory.getDefault().createID(
             provider.getRemoteNamespace(), target);
         Object context = properties.get(HolaRemoteConstants.SERVICE_EXPORTED_SECURITY_CONTEXT);
         ConnectSecurityContext connectContext = null;

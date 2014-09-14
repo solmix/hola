@@ -29,7 +29,7 @@ import org.solmix.hola.core.identity.ID;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月4日
+ * @version 0.0.1 2014年6月4日
  */
 
 public class HolaRemoteServiceAdminEvent extends RemoteServiceAdminEvent

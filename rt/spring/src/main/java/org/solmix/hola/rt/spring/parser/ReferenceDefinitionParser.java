@@ -26,7 +26,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月7日
+ * @version 0.0.1  2014年9月7日
  */
 
 public class ReferenceDefinitionParser extends AbstractDefinitionParser

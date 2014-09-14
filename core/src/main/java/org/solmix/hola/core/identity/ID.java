@@ -27,7 +27,7 @@ import java.security.Principal;
  * ID创建后就不可更改,并且在同一个命名空间必须是唯一的．
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
 public interface ID extends Serializable, Comparable<Object>, Principal

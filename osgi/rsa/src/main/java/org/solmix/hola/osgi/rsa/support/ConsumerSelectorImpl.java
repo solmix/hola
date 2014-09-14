@@ -40,7 +40,7 @@ import org.solmix.hola.rs.RemoteServiceProviderManager;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月21日
+ * @version 0.0.1 2014年5月21日
  */
 
 public class ConsumerSelectorImpl extends AbstractSelector implements

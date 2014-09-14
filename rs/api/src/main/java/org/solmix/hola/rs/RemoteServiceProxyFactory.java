@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationHandler;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月29日
+ * @version 0.0.1  2014年4月29日
  */
 
 public interface RemoteServiceProxyFactory

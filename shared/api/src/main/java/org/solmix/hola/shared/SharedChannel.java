@@ -24,7 +24,7 @@ import org.solmix.hola.core.identity.Identifiable;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月13日
+ * @version 0.0.1 2014年5月13日
  */
 
 public interface SharedChannel extends Identifiable

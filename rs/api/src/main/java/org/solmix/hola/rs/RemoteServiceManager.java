@@ -26,7 +26,7 @@ import org.solmix.hola.core.model.RemoteInfo;
 /**
  * 远程服务管理者
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月19日
+ * @version 0.0.1  2014年8月19日
  */
 public interface RemoteServiceManager 
 {

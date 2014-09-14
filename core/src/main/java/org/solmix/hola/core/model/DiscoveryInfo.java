@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,22 +16,30 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rt.config;
+package org.solmix.hola.core.model;
+
+import java.util.Map;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月5日
+ * @version $Id$  2014年9月14日
  */
 
-public class ReferenceType<T>
+public class DiscoveryInfo extends EndpointInfo
 {
 
     /**
-     * 
+     * @param properties
      */
-    public synchronized void reference(){
-        
+    public DiscoveryInfo(Map<String, Object> properties)
+    {
+        super(properties);
+    }
+    
+    public DiscoveryInfo()
+    {
+        this(null);
     }
 }

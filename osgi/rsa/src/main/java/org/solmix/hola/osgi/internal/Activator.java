@@ -43,7 +43,7 @@ import org.solmix.hola.rs.RemoteServiceProviderDescription;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月2日
+ * @version 0.0.1 2014年4月2日
  */
 
 public class Activator implements BundleActivator

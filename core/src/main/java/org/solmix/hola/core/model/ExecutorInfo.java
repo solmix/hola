@@ -26,7 +26,7 @@ import java.util.Properties;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月13日
+ * @version 0.0.1  2014年8月13日
  */
 
 public class ExecutorInfo extends EndpointInfo

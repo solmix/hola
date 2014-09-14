@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.ModuleType;
+import org.solmix.hola.rt.config.ModuleConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -28,7 +28,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年9月6日
+ * @version 0.0.1 2014年9月6日
  */
 
 public class ModuleDefinitionParser extends AbstractDefinitionParser
@@ -39,7 +39,7 @@ public class ModuleDefinitionParser extends AbstractDefinitionParser
      */
     public ModuleDefinitionParser()
     {
-        super(ModuleType.class);
+        super(ModuleConfig.class);
     }
 
     @Override

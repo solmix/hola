@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 The Solmix Project
+ * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -22,10 +22,10 @@ package org.solmix.hola.rt.config;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月5日
  */
 
-public class ArgumentType
+public class MonitorConfig
 {
 
 }

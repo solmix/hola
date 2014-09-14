@@ -22,7 +22,7 @@ package org.solmix.hola.rs;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年6月7日
+ * @version 0.0.1  2014年6月7日
  */
 
 public class ProviderCreateException extends Exception

@@ -24,7 +24,7 @@ import org.solmix.hola.core.identity.ID;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月5日
+ * @version 0.0.1  2014年4月5日
  */
 
 public interface ServiceType extends ID
@@ -33,17 +33,17 @@ public interface ServiceType extends ID
      * Default ECF protocols (will be translated into provider specific representation)
      * @since 3.0
      */
-    public static final String[] DEFAULT_PROTO = new String[] {"tcp"}; //$NON-NLS-1$
+    public static final String[] DEFAULT_PROTO = new String[] {"tcp"}; 
     /**
      * Default ECF scopes (will be translated into provider specific representation)
      * @since 3.0
      */
-    public static final String[] DEFAULT_SCOPE = new String[] {"default"}; //$NON-NLS-1$
+    public static final String[] DEFAULT_SCOPE = new String[] {"default"}; 
     /**
      * Default ECF naming authority (will be translated into provider specific representation)
      * @since 3.0
      */
-    public static final String DEFAULT_NA = "iana"; //$NON-NLS-1$
+    public static final String DEFAULT_NA = "N/A"; 
 
     /*
      * jSLP => getServices()[0]:getServices()[1][.getNamingAuthoriy():getService()[n]
@@ -56,7 +56,7 @@ public interface ServiceType extends ID
     /**
      * @return String Naming Authority for this ServiceType.  Will not be <code>null</code>.
      * If this instance has been created with the provider specific default, this will return
-     * {@link IServiceTypeID#DEFAULT_NA} instead.
+     * {@link ServiceType#DEFAULT_NA} instead.
      */
     public String getNamingAuthority();
 

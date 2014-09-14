@@ -22,7 +22,7 @@ package org.solmix.hola.rs.event;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月1日
+ * @version 0.0.1  2014年5月1日
  * @param <T>
  */
 

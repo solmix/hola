@@ -28,7 +28,7 @@ import org.solmix.hola.discovery.support.ServiceIDImpl;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月8日
+ * @version 0.0.1 2014年6月8日
  */
 
 public class CompositeServiceID extends ServiceIDImpl implements ID

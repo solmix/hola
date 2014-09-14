@@ -35,7 +35,7 @@ import org.solmix.runtime.Extension;
  * 线程池一直增长,后不收缩
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月16日
+ * @version 0.0.1  2014年8月16日
  */
 @Extension(name="limited")
 public class LimitedExecutorProvider implements ExecutorProvider

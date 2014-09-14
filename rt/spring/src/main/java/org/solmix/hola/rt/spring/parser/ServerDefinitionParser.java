@@ -18,14 +18,14 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.ServerType;
+import org.solmix.hola.rt.config.ServerConfig;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月7日
+ * @version 0.0.1  2014年9月7日
  */
 
 public class ServerDefinitionParser extends AbstractDefinitionParser implements
@@ -37,7 +37,7 @@ public class ServerDefinitionParser extends AbstractDefinitionParser implements
      */
     public ServerDefinitionParser()
     {
-        super(ServerType.class);
+        super(ServerConfig.class);
     }
 
 }

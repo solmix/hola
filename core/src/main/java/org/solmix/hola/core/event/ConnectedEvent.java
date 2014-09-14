@@ -24,7 +24,7 @@ import org.solmix.hola.core.identity.ID;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月7日
+ * @version 0.0.1  2014年5月7日
  */
 
 public class ConnectedEvent extends ConnectEvent

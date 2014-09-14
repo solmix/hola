@@ -30,7 +30,7 @@ import org.solmix.hola.core.identity.ID;
  * 后返回,稍后可以通过该结果注销服务.
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月29日
+ * @version 0.0.1 2014年4月29日
  */
 
 public interface RemoteServiceRegistration<S>

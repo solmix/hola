@@ -16,23 +16,25 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rt.config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月5日
+ * @version 0.0.1 2014年9月5日
  */
 
-public class ModuleType extends AbstractType
+public class ApplicationConfig extends AbstractConfig
 {
 
-    private static final long serialVersionUID = -4697214685144844538L;
-    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8755445892163588835L;
 
     private String name;
 
@@ -46,9 +48,9 @@ public class ModuleType extends AbstractType
 
     private String environment;
 
-    private List<DiscoveryType> discoveries;
+    private List<DiscoveryConfig> discoveries;
 
-    private MonitorType monitor;
+    private MonitorConfig monitor;
 
     
     /**
@@ -163,7 +165,7 @@ public class ModuleType extends AbstractType
     /**
      * @return the discoveries
      */
-    public List<DiscoveryType> getDiscoveries() {
+    public List<DiscoveryConfig> getDiscoveries() {
         return discoveries;
     }
 
@@ -171,17 +173,17 @@ public class ModuleType extends AbstractType
     /**
      * @param discoveries the discoveries to set
      */
-    public void setDiscoveries(List<DiscoveryType> discoveries) {
+    public void setDiscoveries(List<DiscoveryConfig> discoveries) {
         this.discoveries = discoveries;
     }
     
-    public DiscoveryType getDiscovery(){
+    public DiscoveryConfig getDiscovery(){
         return discoveries == null || discoveries.size() == 0 ? null
             : discoveries.get(0);
     }
     
-    public void setDiscovery(DiscoveryType discovery){
-        List<DiscoveryType> discoveries= new ArrayList<DiscoveryType>(1);
+    public void setDiscovery(DiscoveryConfig discovery){
+        List<DiscoveryConfig> discoveries= new ArrayList<DiscoveryConfig>(1);
         discoveries.add(discovery);
         this.discoveries=discoveries;
     }
@@ -190,7 +192,7 @@ public class ModuleType extends AbstractType
     /**
      * @return the monitor
      */
-    public MonitorType getMonitor() {
+    public MonitorConfig getMonitor() {
         return monitor;
     }
 
@@ -198,7 +200,8 @@ public class ModuleType extends AbstractType
     /**
      * @param monitor the monitor to set
      */
-    public void setMonitor(MonitorType monitor) {
+    public void setMonitor(MonitorConfig monitor) {
         this.monitor = monitor;
     }
+    
 }

@@ -19,17 +19,17 @@
 
 package org.solmix.hola.core.identity.support;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
-public class LongNamespace extends Namespace
+public class LongNamespace extends AbstractNamespace
 {
 
     private static final long serialVersionUID = -1580533392719331665L;

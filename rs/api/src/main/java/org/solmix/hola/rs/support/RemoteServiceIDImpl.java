@@ -20,14 +20,14 @@
 package org.solmix.hola.rs.support;
 
 import org.solmix.commons.util.Assert;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
 import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.core.identity.Namespace;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月1日
+ * @version 0.0.1 2014年5月1日
  */
 
 public class RemoteServiceIDImpl extends BaseID
@@ -46,7 +46,7 @@ public class RemoteServiceIDImpl extends BaseID
      * @param id
      * @param longValue
      */
-    public RemoteServiceIDImpl(Namespace namespace, ID contextID,
+    public RemoteServiceIDImpl(AbstractNamespace namespace, ID contextID,
         long relativeID)
     {
         super(namespace);

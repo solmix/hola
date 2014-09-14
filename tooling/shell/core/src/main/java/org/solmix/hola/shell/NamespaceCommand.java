@@ -27,14 +27,14 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.apache.karaf.shell.util.ShellUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.internal.DefaultIDFactory;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年6月8日
+ * @version 0.0.1  2014年6月8日
  */
 @Command(scope = "namespace", name = "list", description = "List namespace in osig container")
 
@@ -42,14 +42,9 @@ public class NamespaceCommand extends OsgiCommandSupport
 {
     private static final Logger LOG = LoggerFactory.getLogger(NamespaceCommand.class);
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.apache.karaf.shell.console.AbstractAction#doExecute()
-     */
     @Override
     protected Object doExecute() throws Exception {
-        List<Namespace> ns=  IDFactory.getDefault().getNamespaces();
+        List<Namespace> ns=  DefaultIDFactory.getDefault().getNamespaces();
         for(Namespace n:ns){
             out.println(n.getClass().getName());
             out.println(ShellUtil.getUnderlineString(n.getClass().getName()));

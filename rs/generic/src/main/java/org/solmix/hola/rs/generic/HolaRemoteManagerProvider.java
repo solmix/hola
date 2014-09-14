@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.rs.generic;
 
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rs.RemoteServiceListener;
 import org.solmix.hola.rs.RemoteServiceManager;
@@ -30,7 +29,7 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月19日
+ * @version 0.0.1  2014年8月19日
  */
 @Extension(name=HolaRemoteManagerProvider.NAME)
 public class HolaRemoteManagerProvider implements RemoteServiceManagerProvider
@@ -42,7 +41,6 @@ public class HolaRemoteManagerProvider implements RemoteServiceManagerProvider
     
    public HolaRemoteManagerProvider(Container container){
        this.container=container;
-       IDFactory.getDefault().addNamespace(new HolaNamespace("Hola NameSpace"));
    }
  
     @Override

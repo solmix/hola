@@ -28,12 +28,13 @@ import java.io.ObjectOutputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.solmix.hola.core.internal.DefaultIDFactory;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月9日
+ * @version 0.0.1  2014年5月9日
  */
 
 public class StringIDTest extends AbstractIDTestCase
@@ -45,7 +46,7 @@ public class StringIDTest extends AbstractIDTestCase
   }
 
   protected ID createID(String val) throws IDCreateException {
-      return IDFactory.getDefault().createStringID(val);
+      return DefaultIDFactory.getDefault().createStringID(val);
   }
   
   @Test
@@ -124,7 +125,7 @@ public void testEqualNamespaces() throws Exception {
   public void testCreateFromQueryString() throws Exception {
         final ID id1 = createID();
         final String externalForm = id1.toQueryString();
-        final ID id2 = IDFactory.getDefault().createID(id1.getNamespace(),
+        final ID id2 = DefaultIDFactory.getDefault().createID(id1.getNamespace(),
                     externalForm);
         assertTrue(id1.equals(id2));
   }

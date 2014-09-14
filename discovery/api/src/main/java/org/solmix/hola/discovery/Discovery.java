@@ -18,17 +18,15 @@
  */
 package org.solmix.hola.discovery;
 
-import org.solmix.hola.core.ConnectContext;
 import org.solmix.runtime.adapter.Adaptable;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月4日
+ * @version 0.0.1  2014年5月4日
  */
 
-public interface Discovery extends DiscoveryAdvertiser,DiscoveryLocator,ConnectContext,Adaptable
+public interface Discovery extends DiscoveryAdvertiser,DiscoveryLocator,Adaptable,java.io.Closeable
 {
-
 }

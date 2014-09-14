@@ -22,7 +22,7 @@ package org.solmix.hola.shared.transport;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月25日
+ * @version 0.0.1 2014年6月25日
  */
 
 public class DisconnectEvent extends SharedConnectionEvent

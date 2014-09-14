@@ -26,7 +26,7 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月21日
+ * @version 0.0.1  2014年8月21日
  */
 
 public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>

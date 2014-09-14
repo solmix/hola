@@ -40,7 +40,7 @@ import org.solmix.runtime.event.EventProcessor;
  * 基础服务类,可通过继承该类来扩展.
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月17日
+ * @version 0.0.1 2014年5月17日
  */
 
 public class BaseSharedService implements SharedService, Identifiable

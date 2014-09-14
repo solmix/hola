@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月4日
+ * @version 0.0.1 2014年5月4日
  */
 
 public class NameCallback implements Callback, Serializable

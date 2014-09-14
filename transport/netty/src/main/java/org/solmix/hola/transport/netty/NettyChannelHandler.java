@@ -36,7 +36,7 @@ import org.solmix.hola.transport.channel.ChannelHandler;
  * 将Netty {@link io.netty.channel.ChannelHandler channelHandler} 转换为内部
  * {@link org.solmix.hola.transport.channel.ChannelHandler ChannelHandler}
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月10日
+ * @version 0.0.1  2014年8月10日
  */
 @Sharable
 public class NettyChannelHandler extends ChannelHandlerAdapter {

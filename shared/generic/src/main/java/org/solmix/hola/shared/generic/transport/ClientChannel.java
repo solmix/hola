@@ -34,7 +34,7 @@ import org.solmix.hola.shared.transport.ChannelHandler;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年6月25日
+ * @version 0.0.1  2014年6月25日
  */
 
 public class ClientChannel implements Channel

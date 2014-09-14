@@ -19,15 +19,15 @@
 package org.solmix.hola.rs.generic;
 
 import org.solmix.commons.util.Assert;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
-import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月20日
+ * @version 0.0.1  2014年8月20日
  */
 
 public class HolaServiceID extends BaseID implements RemoteServiceID
@@ -39,7 +39,7 @@ public class HolaServiceID extends BaseID implements RemoteServiceID
     private static final long serialVersionUID = 2138033174688783422L;
     private final String url;
 
-    public HolaServiceID(Namespace ns,String url){
+    public HolaServiceID(AbstractNamespace ns,String url){
         super(ns);
         Assert.isNotNull(url);
         this.url=url;

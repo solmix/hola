@@ -24,7 +24,7 @@ import org.solmix.runtime.event.Event;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年6月25日
+ * @version 0.0.1 2014年6月25日
  */
 
 public class SharedConnectionEvent implements Event

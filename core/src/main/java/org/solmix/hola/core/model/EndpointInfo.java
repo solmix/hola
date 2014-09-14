@@ -32,7 +32,7 @@ import org.solmix.runtime.adapter.Adaptable;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月22日
+ * @version 0.0.1  2014年8月22日
  */
 @ThreadSafe
 public class EndpointInfo implements Adaptable

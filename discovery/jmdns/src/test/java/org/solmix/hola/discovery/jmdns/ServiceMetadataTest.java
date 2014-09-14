@@ -24,8 +24,8 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -37,7 +37,7 @@ import org.solmix.hola.discovery.support.ServicePropertiesImpl;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月9日
+ * @version 0.0.1  2014年5月9日
  */
 
 public class ServiceMetadataTest 
@@ -65,8 +65,8 @@ public class ServiceMetadataTest
         uri=URI.create("test://hola:hola@192.168.1.1:9099/service?a=b&c=d#fragment");
         properties=new ServicePropertiesImpl();
         properties.setProperty("testKey", "value");
-        IDFactory.getDefault().addNamespace(new JmDNSNamespace("jmdns"));
-        Namespace ns= IDFactory.getDefault().getNamespaceByName(JmDNSNamespace.NAME);
+        DefaultIDFactory.getDefault().addNamespace(new JmDNSNamespace("jmdns"));
+        Namespace ns= DefaultIDFactory.getDefault().getNamespaceByName(JmDNSNamespace.NAME);
         type=DefaultServiceTypeFactory.getDefault().create(ns,services,protocols);
         meta=new ServiceMetadataImpl(uri,serviceName,type,priority,weight,properties,timeToLive);
         

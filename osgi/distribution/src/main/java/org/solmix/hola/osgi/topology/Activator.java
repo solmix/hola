@@ -32,7 +32,7 @@ import org.osgi.service.remoteserviceadmin.RemoteServiceAdminListener;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月29日
+ * @version 0.0.1 2014年5月29日
  */
 
 public class Activator implements BundleActivator

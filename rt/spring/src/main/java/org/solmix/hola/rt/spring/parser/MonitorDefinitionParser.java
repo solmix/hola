@@ -18,14 +18,14 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.MonitorType;
+import org.solmix.hola.rt.config.MonitorConfig;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月6日
  */
 
 public class MonitorDefinitionParser extends AbstractDefinitionParser implements
@@ -37,7 +37,7 @@ public class MonitorDefinitionParser extends AbstractDefinitionParser implements
      */
     public MonitorDefinitionParser()
     {
-        super(MonitorType.class);
+        super(MonitorConfig.class);
     }
 
 }

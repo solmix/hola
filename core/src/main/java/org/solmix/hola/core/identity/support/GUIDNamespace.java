@@ -18,22 +18,23 @@
  */
 package org.solmix.hola.core.identity.support;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月4日
+ * @version 0.0.1  2014年4月4日
  */
 
-public class GUIDNamespace extends Namespace
+public class GUIDNamespace extends AbstractNamespace
 {
     private static final long serialVersionUID = 1041703442049428943L;
+    public static  String ID=GUID.class.getName();
     public GUIDNamespace() {
-        super(GUID.class.getName(), "GUID Namespace"); //$NON-NLS-1$
+        super(ID, "GUID Namespace"); //$NON-NLS-1$
   }
 
   @Override

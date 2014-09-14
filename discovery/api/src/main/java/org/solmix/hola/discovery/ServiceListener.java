@@ -24,7 +24,7 @@ import org.solmix.hola.discovery.event.ServiceEvent;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月5日
+ * @version 0.0.1 2014年4月5日
  */
 
 public interface ServiceListener

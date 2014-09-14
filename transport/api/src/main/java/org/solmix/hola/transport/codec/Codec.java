@@ -29,7 +29,7 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月14日
+ * @version 0.0.1  2014年7月14日
  */
 @Extension(name="hola")
 public interface Codec

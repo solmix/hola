@@ -33,7 +33,7 @@ import org.solmix.runtime.monitor.MonitorService;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月14日
+ * @version 0.0.1  2014年8月14日
  */
 
 public class RemoteInfoTest extends Assert

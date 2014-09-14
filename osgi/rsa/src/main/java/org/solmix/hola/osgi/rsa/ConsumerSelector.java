@@ -24,7 +24,7 @@ import org.solmix.hola.rs.RemoteServiceProvider;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月21日
+ * @version 0.0.1  2014年5月21日
  */
 
 public interface ConsumerSelector 

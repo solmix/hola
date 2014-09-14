@@ -30,7 +30,7 @@ import org.solmix.commons.util.NetUtils;
  * 简化EndpointInfo中参数调用.
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年8月13日
+ * @version 0.0.1 2014年8月13日
  */
 
 public class RemoteInfo extends EndpointInfo

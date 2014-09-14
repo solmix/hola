@@ -44,7 +44,7 @@ import org.solmix.runtime.Container;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月19日
+ * @version 0.0.1  2014年7月19日
  */
 public class NettyClient extends AbstractClient implements ChannelHandler
 {

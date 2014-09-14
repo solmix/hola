@@ -22,7 +22,7 @@ package org.solmix.hola.cluster;
 /**
  * 服务集群
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月4日
+ * @version 0.0.1  2014年9月4日
  */
 
 public interface Cluster

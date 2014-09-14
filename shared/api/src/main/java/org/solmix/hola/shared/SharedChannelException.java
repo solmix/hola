@@ -24,7 +24,7 @@ import org.solmix.hola.core.HolaException;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月16日
+ * @version 0.0.1  2014年5月16日
  */
 
 public class SharedChannelException extends HolaException

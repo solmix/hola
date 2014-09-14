@@ -27,7 +27,7 @@ import org.solmix.hola.transport.handler.ChannelHandlerDispatcher;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月17日
+ * @version 0.0.1  2014年8月17日
  */
 
 public class ExchangeHandlerDispatcher implements ExchangeHandler

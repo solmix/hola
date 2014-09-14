@@ -25,7 +25,7 @@ import org.solmix.runtime.adapter.Adaptable;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月17日
+ * @version 0.0.1  2014年5月17日
  */
 
 public interface SharedServiceProviderConfig extends Adaptable,Identifiable

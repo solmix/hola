@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月14日
+ * @version 0.0.1  2014年8月14日
  */
 
 public class InfoUtils

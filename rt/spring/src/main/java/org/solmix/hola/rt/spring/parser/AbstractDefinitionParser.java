@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.rt.config.ArgumentType;
+import org.solmix.hola.rt.config.ArgumentConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -44,7 +44,7 @@ import org.w3c.dom.NodeList;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年9月6日
+ * @version 0.0.1 2014年9月6日
  */
 
 public class AbstractDefinitionParser implements BeanDefinitionParser
@@ -147,7 +147,7 @@ public class AbstractDefinitionParser implements BeanDefinitionParser
                             arguments = new ManagedList();
                         }
                         BeanDefinition argumentBeanDefinition = parse(((Element) node),
-                                parserContext, ArgumentType.class);
+                                parserContext, ArgumentConfig.class);
                         String name = id + "." + argumentIndex;
                         BeanDefinitionHolder argumentBeanDefinitionHolder = new BeanDefinitionHolder(
                                 argumentBeanDefinition, name);

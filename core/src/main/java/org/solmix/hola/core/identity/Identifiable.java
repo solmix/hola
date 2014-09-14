@@ -23,7 +23,7 @@ package org.solmix.hola.core.identity;
  * 实现该接口的类可以被{@link ID}标识
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
 public interface Identifiable

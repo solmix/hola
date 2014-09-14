@@ -19,14 +19,14 @@
 
 package org.solmix.hola.core.identity.support;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
-import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
 public class StringID extends BaseID
@@ -36,7 +36,7 @@ public class StringID extends BaseID
 
     protected String value;
 
-    protected StringID(Namespace n, String s)
+    protected StringID(AbstractNamespace n, String s)
     {
         super(n);
         value = s;
@@ -113,8 +113,7 @@ public class StringID extends BaseID
 
     protected synchronized void setEmptyNamespace() {
         if (namespace == null) {
-            namespace = IDFactory.getDefault().getNamespaceByName(
-                StringID.class.getName());
+            namespace =new StringNamespace();
         }
     }
 }

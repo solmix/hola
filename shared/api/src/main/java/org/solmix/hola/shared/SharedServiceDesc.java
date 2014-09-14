@@ -22,7 +22,7 @@ package org.solmix.hola.shared;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月18日
+ * @version 0.0.1  2014年5月18日
  */
 
 public class SharedServiceDesc implements java.io.Serializable

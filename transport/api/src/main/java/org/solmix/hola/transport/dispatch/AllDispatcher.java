@@ -33,7 +33,7 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月17日
+ * @version 0.0.1  2014年8月17日
  */
 @Extension(name=AllDispatcher.NAME)
 public class AllDispatcher extends AbstractDispatcher

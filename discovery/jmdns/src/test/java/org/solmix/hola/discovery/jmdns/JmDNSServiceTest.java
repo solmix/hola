@@ -28,7 +28,7 @@ import org.solmix.hola.core.ConnectException;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月10日
+ * @version 0.0.1 2014年5月10日
  */
 
 public class JmDNSServiceTest

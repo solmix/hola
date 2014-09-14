@@ -26,7 +26,7 @@ import org.solmix.runtime.Containers;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月9日
+ * @version 0.0.1 2014年5月9日
  */
 
 public class IDFactoryTest
@@ -34,11 +34,9 @@ public class IDFactoryTest
 
     @Test
     public void testGetIdFactory() {
-        IIDFactory idf =Containers.get().getExtension(IIDFactory.class);
+        IDFactory idf =Containers.get().getExtension(IDFactory.class);
         Assert.assertNotNull(idf);
         //已经通过Container重新实例化了对象,他们应该是同一个对象
-        IIDFactory idff =IDFactory.getDefault();
-       Assert.assertSame(idf, idff);
     }
 
 }

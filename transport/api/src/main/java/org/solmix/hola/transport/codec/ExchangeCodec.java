@@ -42,7 +42,7 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年8月11日
+ * @version 0.0.1 2014年8月11日
  */
 @Extension(name = ExchangeCodec.NAME)
 public class ExchangeCodec extends SerializeCodec implements Codec
@@ -121,8 +121,11 @@ public class ExchangeCodec extends SerializeCodec implements Codec
                 } else {
                     encodeResponseData(channel, out, res.getResult());
                 }
-            } else
-                out.writeUTF(res.getErrorMessage());
+            } else{
+                if(res.getErrorMessage()!=null)
+                    out.writeUTF(res.getErrorMessage());
+            }
+               
             out.flush();
             bos.flush();
             bos.close();

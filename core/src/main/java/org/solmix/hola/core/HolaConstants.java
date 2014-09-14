@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年7月8日
+ * @version 0.0.1 2014年7月8日
  */
 
 public class HolaConstants

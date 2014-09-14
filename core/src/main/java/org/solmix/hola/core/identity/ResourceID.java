@@ -25,7 +25,7 @@ import java.net.URI;
  * 资源标识(Resource ID),通常用于标识文件(files),目录(directories),URL等
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
 public interface ResourceID extends ID

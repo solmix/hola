@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,32 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.rt.config;
+
+
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月6日
  */
 
-package org.solmix.hola.rt.spring;
+public class ServerConfig extends AbstractServiceConfig
+{
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4040109969678654602L;
+
+    private String              host;
+
+    // 服务端口
+    private Integer             port;
+    private String              codec;
+    private Integer             queues;
+    private Integer             accepts;
+    private String              contextpath;
+    private String              serialization;
+    private String              charset;
+    private Integer             payload;
+    private Integer             buffer;
+}

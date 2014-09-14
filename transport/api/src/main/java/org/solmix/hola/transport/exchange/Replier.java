@@ -24,7 +24,7 @@ import org.solmix.hola.transport.TransportException;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月17日
+ * @version 0.0.1  2014年8月17日
  */
 
 public interface Replier<T>

@@ -22,9 +22,10 @@ import org.solmix.hola.core.identity.Namespace;
 
 
 /**
+ * 服务公告
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月5日
+ * @version 0.0.1  2014年4月5日
  */
 
 public interface DiscoveryAdvertiser

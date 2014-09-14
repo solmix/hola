@@ -29,7 +29,7 @@ import org.solmix.hola.rs.RemoteServiceReference;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月1日
+ * @version 0.0.1  2014年5月1日
  */
 
 public class RemoteFilterImpl implements RemoteFilter

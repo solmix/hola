@@ -32,16 +32,16 @@ import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.jmdns.JmDNSProvider;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月4日
+ * @version 0.0.1 2014年5月4日
  */
 
 public class Activator implements BundleActivator
@@ -148,7 +148,7 @@ public class Activator implements BundleActivator
             if (service == null) {
                 try {
                     service = new JmDNSProvider();
-                    service.connect(null, null);
+//                    service.connect(null, null);
                 } catch (Exception e) {
                     getLogService().log(LogService.LOG_ERROR, e.getMessage());
                 }

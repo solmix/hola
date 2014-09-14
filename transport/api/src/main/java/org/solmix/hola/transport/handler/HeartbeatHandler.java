@@ -30,7 +30,7 @@ import org.solmix.hola.transport.exchange.Response;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月17日
+ * @version 0.0.1  2014年8月17日
  */
 
 public class HeartbeatHandler extends AbstractChannelHandlerDelegate

@@ -23,10 +23,10 @@ package org.solmix.hola.rt.config;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年9月5日
+ * @version 0.0.1 2014年9月5日
  */
 
-public class ServiceType<T> extends AbstractServiceType
+public class ServiceConfig<T> extends AbstractServiceConfig
 {
 
     /**
@@ -59,7 +59,7 @@ public class ServiceType<T> extends AbstractServiceType
     // 服务名称
     private String path;
 
-    private ServerType server;
+    private ServerConfig server;
 
     // 接口实现类引用
     private T ref;
@@ -74,7 +74,7 @@ public class ServiceType<T> extends AbstractServiceType
     /**
      * default instance.
      */
-    public ServiceType(){
+    public ServiceConfig(){
     }
     /**
      * 注册服务
@@ -209,14 +209,14 @@ public class ServiceType<T> extends AbstractServiceType
     /**
      * @return the server
      */
-    public ServerType getServer() {
+    public ServerConfig getServer() {
         return server;
     }
     
     /**
      * @param server the server to set
      */
-    public void setServer(ServerType server) {
+    public void setServer(ServerConfig server) {
         this.server = server;
     }
     

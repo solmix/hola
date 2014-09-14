@@ -43,7 +43,7 @@ import org.solmix.hola.rs.support.RSResponseImpl;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月1日
+ * @version 0.0.1 2014年5月1日
  */
 
 public class HolaRemoteServiceRegistration<S> implements

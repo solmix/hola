@@ -24,7 +24,7 @@ import java.io.Serializable;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月18日
+ * @version 0.0.1  2014年8月18日
  */
 
 public class RequestData implements Serializable

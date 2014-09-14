@@ -37,7 +37,7 @@ import org.solmix.hola.discovery.ServiceProperties;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月12日
+ * @version 0.0.1 2014年4月12日
  */
 
 public abstract class AbstractMetadataFactory

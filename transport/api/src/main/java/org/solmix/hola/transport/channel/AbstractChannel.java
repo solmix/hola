@@ -27,7 +27,7 @@ import org.solmix.hola.transport.handler.ChannelHandlerDelegate;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年7月15日
+ * @version 0.0.1  2014年7月15日
  */
 
 public abstract class AbstractChannel implements Channel

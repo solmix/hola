@@ -22,7 +22,7 @@ package org.solmix.hola.rs.generic;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月23日
+ * @version 0.0.1  2014年8月23日
  */
 
 public interface SimpleService

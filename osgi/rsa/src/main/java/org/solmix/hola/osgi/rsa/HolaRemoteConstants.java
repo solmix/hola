@@ -28,7 +28,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
  * Service Admin specification (chap 122)</a>.
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月2日
+ * @version 0.0.1 2014年4月2日
  */
 
 public class HolaRemoteConstants

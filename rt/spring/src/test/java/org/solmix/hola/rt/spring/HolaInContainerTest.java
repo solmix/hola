@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,16 +16,25 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rt.config;
+package org.solmix.hola.rt.spring;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月5日
+ * @version 0.0.1  2014年9月10日
  */
 
-public class MonitorType
+public class HolaInContainerTest
 {
+
+    @Test
+    public void test() {
+        fail("Not yet implemented");
+    }
 
 }

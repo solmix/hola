@@ -21,15 +21,15 @@ package org.solmix.hola.core.identity.support;
 import java.net.URI;
 
 import org.solmix.commons.util.Assert;
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
-import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.identity.ResourceID;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月4日
+ * @version 0.0.1  2014年4月4日
  */
 
 public class URIID extends BaseID implements ResourceID
@@ -37,7 +37,7 @@ public class URIID extends BaseID implements ResourceID
     private static final long serialVersionUID = 7482429487272020648L;
     private final URI uri;
 
-    public URIID(Namespace namespace, URI uri) {
+    public URIID(AbstractNamespace namespace, URI uri) {
           super(namespace);
           Assert.isNotNull(uri,"namespace not be null");
           this.uri = uri;

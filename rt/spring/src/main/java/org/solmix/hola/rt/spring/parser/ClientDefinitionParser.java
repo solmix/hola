@@ -18,14 +18,14 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.ClientType;
+import org.solmix.hola.rt.config.ClientConfig;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月7日
+ * @version 0.0.1  2014年9月7日
  */
 
 public class ClientDefinitionParser extends AbstractDefinitionParser implements
@@ -37,7 +37,7 @@ public class ClientDefinitionParser extends AbstractDefinitionParser implements
      */
     public ClientDefinitionParser()
     {
-        super(ClientType.class);
+        super(ClientConfig.class);
     }
 
 }

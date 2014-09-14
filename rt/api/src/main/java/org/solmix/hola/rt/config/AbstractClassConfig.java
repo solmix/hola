@@ -24,10 +24,10 @@ import java.util.List;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月6日
  */
 
-public class AbstractInterfaceType extends AbstractType
+public class AbstractClassConfig extends AbstractConfig
 {
 
     private static final long serialVersionUID = -3515821709848299465L;
@@ -44,15 +44,15 @@ public class AbstractInterfaceType extends AbstractType
     
     protected String scope;
     
-    protected ApplicationType application;
+    protected ApplicationConfig application;
     
-    protected ModuleType module;
+    protected ModuleConfig module;
     /**
      * 监控中心
      */
-    protected MonitorType monitor;
+    protected MonitorConfig monitor;
     
-   protected List<DiscoveryType> discoveries;
+   protected List<DiscoveryConfig> discoveries;
 
 
 /**
@@ -138,7 +138,7 @@ public void setScope(String scope) {
 /**
  * @return the application
  */
-public ApplicationType getApplication() {
+public ApplicationConfig getApplication() {
     return application;
 }
 
@@ -146,7 +146,7 @@ public ApplicationType getApplication() {
 /**
  * @param application the application to set
  */
-public void setApplication(ApplicationType application) {
+public void setApplication(ApplicationConfig application) {
     this.application = application;
 }
 
@@ -154,7 +154,7 @@ public void setApplication(ApplicationType application) {
 /**
  * @return the module
  */
-public ModuleType getModule() {
+public ModuleConfig getModule() {
     return module;
 }
 
@@ -162,7 +162,7 @@ public ModuleType getModule() {
 /**
  * @param module the module to set
  */
-public void setModule(ModuleType module) {
+public void setModule(ModuleConfig module) {
     this.module = module;
 }
 
@@ -170,7 +170,7 @@ public void setModule(ModuleType module) {
 /**
  * @return the monitor
  */
-public MonitorType getMonitor() {
+public MonitorConfig getMonitor() {
     return monitor;
 }
 
@@ -178,7 +178,7 @@ public MonitorType getMonitor() {
 /**
  * @param monitor the monitor to set
  */
-public void setMonitor(MonitorType monitor) {
+public void setMonitor(MonitorConfig monitor) {
     this.monitor = monitor;
 }
 
@@ -186,7 +186,7 @@ public void setMonitor(MonitorType monitor) {
 /**
  * @return the discoveries
  */
-public List<DiscoveryType> getDiscoveries() {
+public List<DiscoveryConfig> getDiscoveries() {
     return discoveries;
 }
 
@@ -194,7 +194,7 @@ public List<DiscoveryType> getDiscoveries() {
 /**
  * @param discoveries the discoveries to set
  */
-public void setDiscoveries(List<DiscoveryType> discoveries) {
+public void setDiscoveries(List<DiscoveryConfig> discoveries) {
     this.discoveries = discoveries;
 }
    

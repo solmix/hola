@@ -22,7 +22,7 @@ package org.solmix.hola.osgi.rsa;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年4月13日
+ * @version 0.0.1  2014年4月13日
  */
 
 public class EndpointDescriptionReaderException extends Exception

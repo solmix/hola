@@ -27,7 +27,7 @@ import org.solmix.runtime.Extension;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年8月16日
+ * @version 0.0.1  2014年8月16日
  */
 @Extension(name="pooled")
 public interface ExecutorProvider

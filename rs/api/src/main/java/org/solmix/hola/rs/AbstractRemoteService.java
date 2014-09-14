@@ -42,7 +42,7 @@ import org.solmix.hola.rs.support.RSRequestImpl;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月30日
+ * @version 0.0.1 2014年4月30日
  */
 
 public abstract class AbstractRemoteService implements RemoteService,

@@ -29,13 +29,13 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月6日
+ * @version 0.0.1  2014年9月6日
  */
 
-public class AbstractType implements Serializable
+public class AbstractConfig implements Serializable
 {
     private static final long serialVersionUID = -3105914257348322382L;
-    protected static final Logger logger = LoggerFactory.getLogger(AbstractType.class);
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
 
     private static final int MAX_LENGTH = 100;
 

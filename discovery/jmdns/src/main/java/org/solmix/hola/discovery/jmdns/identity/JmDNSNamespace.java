@@ -22,6 +22,7 @@ package org.solmix.hola.discovery.jmdns.identity;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
 import org.solmix.hola.core.identity.Namespace;
@@ -30,10 +31,10 @@ import org.solmix.hola.discovery.identity.ServiceType;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月7日
+ * @version 0.0.1 2014年5月7日
  */
 
-public class JmDNSNamespace extends Namespace
+public class JmDNSNamespace extends AbstractNamespace
 {
 
     private static final long serialVersionUID = 4446156336083869995L;

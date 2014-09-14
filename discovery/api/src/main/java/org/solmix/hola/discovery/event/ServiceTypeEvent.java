@@ -26,7 +26,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年4月5日
+ * @version 0.0.1 2014年4月5日
  */
 
 public class ServiceTypeEvent extends EventObject

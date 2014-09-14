@@ -29,11 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.solmix.hola.core.identity.support.GUID;
 import org.solmix.hola.core.identity.support.StringID;
+import org.solmix.hola.core.internal.DefaultIDFactory;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月8日
+ * @version 0.0.1 2014年5月8日
  */
 
 public class NamespaceTest
@@ -48,10 +49,10 @@ public class NamespaceTest
 
     @Test
     public void testNs() {
-        Namespace ns = IDFactory.getDefault().getNamespaceByName(
+        Namespace ns = DefaultIDFactory.getDefault().getNamespaceByName(
             StringID.class.getName());
         Assert.assertNotNull(ns);
-        Namespace ns2 = IDFactory.getDefault().getNamespaceByName(
+        Namespace ns2 = DefaultIDFactory.getDefault().getNamespaceByName(
             GUID.class.getName());
         Assert.assertNotNull(ns2);
     }
@@ -61,7 +62,7 @@ public class NamespaceTest
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(buf);
         try {
-            Namespace ns = IDFactory.getDefault().getNamespaceByName(
+            Namespace ns = DefaultIDFactory.getDefault().getNamespaceByName(
                 StringID.class.getName());
             out.writeObject(ns);
         } catch (NotSerializableException ex) {

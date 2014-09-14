@@ -27,7 +27,7 @@ import org.solmix.hola.rs.RemoteServiceProxyFactory;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年5月1日
+ * @version 0.0.1  2014年5月1日
  */
 
 public class JDKRemoteServiceProxyFactory implements RemoteServiceProxyFactory

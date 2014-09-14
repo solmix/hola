@@ -25,10 +25,10 @@ import java.util.List;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月9日
+ * @version 0.0.1  2014年9月9日
  */
 
-public class AbstractServiceType extends AbstractInterfaceType
+public class AbstractServiceConfig extends AbstractClassConfig
 {
 
     /**
@@ -47,7 +47,7 @@ public class AbstractServiceType extends AbstractInterfaceType
     // 应用文档
     protected String               document;
 
-    protected List<ProtocolType> protocols;
+    protected List<ProtocolConfig> protocols;
     /**
      * @return the delay
      */
@@ -113,19 +113,19 @@ public class AbstractServiceType extends AbstractInterfaceType
     /**
      * @return the protocols
      */
-    public List<ProtocolType> getProtocols() {
+    public List<ProtocolConfig> getProtocols() {
         return protocols;
     }
-    public ProtocolType getProtocol() {
+    public ProtocolConfig getProtocol() {
         return protocols==null||protocols.size()==0?null:protocols.get(0);
     }
-    public void setProtocol(ProtocolType protocol) {
-        this.protocols =  Arrays.asList(new ProtocolType[] {protocol});
+    public void setProtocol(ProtocolConfig protocol) {
+        this.protocols =  Arrays.asList(new ProtocolConfig[] {protocol});
     }
     /**
      * @param protocols the protocols to set
      */
-    public void setProtocols(List<ProtocolType> protocols) {
+    public void setProtocols(List<ProtocolConfig> protocols) {
         this.protocols = protocols;
     }
     

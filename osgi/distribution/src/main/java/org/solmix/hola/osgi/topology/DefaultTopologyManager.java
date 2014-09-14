@@ -40,7 +40,7 @@ import org.solmix.hola.osgi.rsa.HolaRemoteServiceAdminEvent;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年5月29日
+ * @version 0.0.1 2014年5月29日
  */
 
 public class DefaultTopologyManager extends AbstractTopologyManager implements
