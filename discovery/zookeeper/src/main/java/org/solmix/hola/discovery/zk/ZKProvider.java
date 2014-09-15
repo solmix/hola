@@ -16,20 +16,37 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.discovery;
+package org.solmix.hola.discovery.zk;
 
+import javax.annotation.Resource;
+
+import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.discovery.Discovery;
+import org.solmix.hola.discovery.DiscoveryException;
+import org.solmix.hola.discovery.DiscoveryProvider;
+import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月14日
+ * @version $Id$  2014年9月15日
  */
-@Extension
-public interface DiscoveryProvider
+@Extension(name=ZKProvider.NAME)
+public class ZKProvider implements DiscoveryProvider
 {
+    public static final String NAME="zk";
+    
+    @Resource
+    private Container container;
+   
+    @Override
+    public Discovery createDiscovery(DiscoveryInfo info)
+        throws DiscoveryException {
+        Assert.isNotNull(container,"Container is null!");
+        return new ZKDiscovery(info,container);
+    }
 
-    Discovery createDiscovery(DiscoveryInfo info)throws DiscoveryException;
 }

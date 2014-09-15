@@ -89,7 +89,7 @@ public interface DiscoveryLocator
      * @return Namespace for creating service IDs. Will not be <code>null</code>
      *         .
      */
-    public Namespace getDiscoveryNamespace();
+    public Namespace getNamespace();
 
     /**
      * Purges the underlying IServiceInfo cache if available in the current

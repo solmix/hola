@@ -18,9 +18,14 @@
  */
 package org.solmix.hola.discovery.jmdns;
 
+import javax.annotation.Resource;
+
 import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.discovery.Discovery;
+import org.solmix.hola.discovery.DiscoveryException;
 import org.solmix.hola.discovery.DiscoveryProvider;
+import org.solmix.runtime.Container;
+import org.solmix.runtime.Extension;
 
 
 /**
@@ -28,14 +33,17 @@ import org.solmix.hola.discovery.DiscoveryProvider;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年9月14日
  */
-
+@Extension(name="jmdns")
 public class JmDNSProvider implements DiscoveryProvider
 {
 
+    public static final String NAME="jmdns";
+    
+    @Resource
+    private Container container;
     @Override
-    public Discovery createDiscovery(DiscoveryInfo info) {
-        // TODO Auto-generated method stub
-        return null;
+    public Discovery createDiscovery(DiscoveryInfo info)throws DiscoveryException {
+        return new JmDNSDiscovery(info,container);
     }
 
 }

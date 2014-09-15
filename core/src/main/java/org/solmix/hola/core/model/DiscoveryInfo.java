@@ -18,7 +18,13 @@
  */
 package org.solmix.hola.core.model;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.solmix.hola.core.HolaConstants;
 
 
 /**
@@ -29,7 +35,7 @@ import java.util.Map;
 
 public class DiscoveryInfo extends EndpointInfo
 {
-
+    private static final Logger LOG = LoggerFactory.getLogger(DiscoveryInfo.class);
     /**
      * @param properties
      */
@@ -41,5 +47,47 @@ public class DiscoveryInfo extends EndpointInfo
     public DiscoveryInfo()
     {
         this(null);
+    }
+    
+    public URI getURI(){
+        String address=getAddress();
+        try {
+            URI uri= new URI(address);
+            return uri;
+        } catch (URISyntaxException e) {
+           LOG.error("Can't parse uri string:"+address+"to URI",e);
+        }
+        return null;
+    }
+    public String getAddress(){
+        return getString("address");
+    }
+
+    /**
+     * @return
+     */
+    public String getBackupAddress() {
+       StringBuilder sb = new StringBuilder();
+       sb.append(getAddress());
+       String backup= getString("backup", null);
+       if(backup!=null&&backup.length()>0){
+         String[] backs=  HolaConstants.SPLIT_COMMA_PATTERN.split(backup);
+         for(String back:backs){
+             sb.append(",");
+             sb.append(back);
+         }
+       }
+        return sb.toString();
+    }
+    
+    public String getAuthority() {
+        String username=getString("username");
+        String password=getString("password");
+        if ((username == null || username.length() == 0)
+                && (password == null || password.length() == 0)) {
+            return null;
+        }
+        return (username == null ? "" : username) 
+                + ":" + (password == null ? "" : password);
     }
 }

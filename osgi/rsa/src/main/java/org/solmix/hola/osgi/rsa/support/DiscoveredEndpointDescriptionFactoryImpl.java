@@ -76,7 +76,7 @@ public class DiscoveredEndpointDescriptionFactoryImpl extends
         DiscoveryLocator locator, ServiceMetadata metadata,
         EndpointDescription ed) {
         return new DiscoveredEndpointDescription(
-            locator.getDiscoveryNamespace(), metadata.getServiceID(), ed);
+            locator.getNamespace(), metadata.getServiceID(), ed);
     }
 
     private DiscoveredEndpointDescription find(
@@ -94,7 +94,7 @@ public class DiscoveredEndpointDescriptionFactoryImpl extends
         for (DiscoveredEndpointDescription d : discoveredEndpointDescriptions) {
             Namespace dln = d.getDiscoveryLocatorNamespace();
             ServiceID svcId = d.getServiceID();
-            if (dln.getName().equals(locator.getDiscoveryNamespace().getName())
+            if (dln.getName().equals(locator.getNamespace().getName())
                 && svcId.equals(serviceID)) {
                 return d;
             }

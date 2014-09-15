@@ -27,13 +27,14 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.identity.ServiceType;
+import org.solmix.runtime.Extension;
 
 /**
  * 
  * @author solmix.f@gmail.com
  * @version 0.0.1 2014年5月7日
  */
-
+@Extension(name=JmDNSNamespace.SCHEME)
 public class JmDNSNamespace extends AbstractNamespace
 {
 

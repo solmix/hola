@@ -39,7 +39,7 @@ public interface DiscoveryAdvertiser
      *            IServiceInfo of the service to be published. Must not be
      *            <code>null</code>.
      */
-    public void registerService(ServiceMetadata serviceMetadata);
+    public void register(ServiceMetadata serviceMetadata);
 
     /**
      * Unregister a previously registered service defined by serviceInfo.
@@ -48,12 +48,12 @@ public interface DiscoveryAdvertiser
      *            IServiceInfo defining the service to unregister. Must not be
      *            <code>null</code>.
      */
-    public void unregisterService(ServiceMetadata serviceMetadata);
+    public void unregister(ServiceMetadata serviceMetadata);
 
     /**
      * Unregister all previously registered service.
      */
-    public void unregisterAllServices();
+    public void unregisterAll();
 
     /**
      * Get a Namespace for services associated with this discovery container
@@ -68,5 +68,5 @@ public interface DiscoveryAdvertiser
      * @return Namespace for creating service IDs. Will not be <code>null</code>
      *         .
      */
-    public Namespace getServicesNamespace();
+    public Namespace getNamespace();
 }

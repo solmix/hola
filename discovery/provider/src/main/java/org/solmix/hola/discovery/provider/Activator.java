@@ -136,7 +136,7 @@ public class Activator implements BundleActivator
                 @Override
                 public void ungetService(Bundle bundle,
                     ServiceRegistration<CompositeDiscoveryProvider> registration, CompositeDiscoveryProvider service) {
-                    service.destroy();
+                    service.close();
                 }
 
             }, props);

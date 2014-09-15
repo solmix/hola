@@ -24,8 +24,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.Discovery;
+import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -57,7 +57,7 @@ public class ServiceMetadataTracker
                         final ServiceMetadata serviceInfo = bundleContext.getService(reference);
                         final ServiceMetadata specific = convertToProviderSpecific(
                             provider, serviceInfo);
-                        provider.registerService(specific);
+                        provider.register(specific);
                         return serviceInfo;
                     }
 
@@ -66,14 +66,14 @@ public class ServiceMetadataTracker
                         ServiceMetadata service) {
                         // TODO discovery containers might require to
                         // unregisterService first
-                        provider.registerService(convertToProviderSpecific(
+                        provider.register(convertToProviderSpecific(
                             provider, service));
                     }
 
                     @Override
                     public void removedService(ServiceReference<ServiceMetadata> reference,
                         ServiceMetadata service) {
-                        provider.unregisterService(convertToProviderSpecific(
+                        provider.unregister(convertToProviderSpecific(
                             provider, service));
                     }
                 });
@@ -84,7 +84,7 @@ public class ServiceMetadataTracker
         final DiscoveryAdvertiser advertiser,
         final ServiceMetadata genericMeta) {
 
-  final Namespace servicesNamespace = advertiser.getServicesNamespace();
+  final Namespace servicesNamespace = advertiser.getNamespace();
 
   final ServiceID genericServiceID = genericMeta.getServiceID();
   final ServiceID specificServiceID = (ServiceID) servicesNamespace

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,30 +16,22 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.discovery.zk;
 
-package org.solmix.hola.osgi.rsa;
-
-import org.osgi.service.remoteserviceadmin.EndpointDescription;
-import org.solmix.hola.discovery.DiscoveryAdvertiser;
-import org.solmix.hola.discovery.ServiceMetadata;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年4月12日
+ * @version $Id$  2014年9月15日
  */
 
-public interface ServiceMetadataFactory
+public interface StateListener
 {
+    int DISCONNECTED = 0;
 
-    /**
-     * 创建{@link ServiceMetadata},创建的ServiceMetaData用于发布服务公告
-     * {@link DiscoveryAdvertiser#register(ServiceMetadata)}
-     * 
-     * @param advertiser
-     * @param des
-     * @return
-     */
-    ServiceMetadata create(DiscoveryAdvertiser advertiser,
-        EndpointDescription des);
+    int CONNECTED = 1;
+
+    int RECONNECTED = 2;
+
+    void stateChanged(int connected);
 }

@@ -35,7 +35,6 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.core.security.ConnectSecurityContext;
-import org.solmix.hola.discovery.AbstractDiscovery;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceListener;
 import org.solmix.hola.discovery.ServiceMetadata;
@@ -45,6 +44,7 @@ import org.solmix.hola.discovery.event.ServiceTypeEvent;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
+import org.solmix.hola.discovery.support.AbstractDiscovery;
 import org.solmix.hola.discovery.support.ServiceMetadataImpl;
 
 /**
@@ -74,10 +74,10 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#registerService(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#register(org.solmix.hola.discovery.ServiceMetadata)
      */
     @Override
-    public void registerService(ServiceMetadata serviceMetadata) {
+    public void register(ServiceMetadata serviceMetadata) {
         Assert.isNotNull(serviceMetadata);
         synchronized (registeredServices) {
             registeredServices.add(serviceMetadata);
@@ -86,7 +86,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
             for (Discovery provider : providers) {
                 final ServiceMetadata meta = getServiceMetadataForProvider(
                     serviceMetadata, provider);
-                provider.registerService(meta);
+                provider.register(meta);
             }
         }
     }
@@ -112,7 +112,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
      */
     private ServiceID getServiceIDforProvider(ServiceID sid,
         Discovery provider) {
-        Namespace ns = provider.getDiscoveryNamespace();
+        Namespace ns = provider.getNamespace();
         if (!ns.equals(sid.getNamespace())) {
             return (ServiceID) ns.createID(new Object[] { sid.getName(),
                 sid.getLocation() });
@@ -123,10 +123,10 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregisterService(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregister(org.solmix.hola.discovery.ServiceMetadata)
      */
     @Override
-    public void unregisterService(ServiceMetadata serviceMetadata) {
+    public void unregister(ServiceMetadata serviceMetadata) {
         Assert.isNotNull(serviceMetadata);
         synchronized (registeredServices) {
             registeredServices.remove(serviceMetadata);
@@ -135,7 +135,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
             for (Discovery provider : providers) {
                 final ServiceMetadata meta = getServiceMetadataForProvider(
                     serviceMetadata, provider);
-                provider.unregisterService(meta);
+                provider.unregister(meta);
             }
         }
 
@@ -203,7 +203,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
      */
     private ServiceType getServiceTypeForProvider(ServiceType type,
         Discovery provider) {
-        Namespace ns = provider.getDiscoveryNamespace();
+        Namespace ns = provider.getNamespace();
         if (!ns.equals(type.getNamespace())) {
             return DefaultServiceTypeFactory.getDefault().create(ns, type);
         }
@@ -354,7 +354,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
         p.addServiceTypeListener(serviceTypeListener);
         synchronized(registeredServices){
             for(ServiceMetadata meta:registeredServices){
-                p.registerService(meta);
+                p.register(meta);
             }
         }
         synchronized (providers) {

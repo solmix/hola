@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.discovery;
+package org.solmix.hola.discovery.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +35,14 @@ import java.util.concurrent.Future;
 
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
+import org.solmix.commons.util.NamedThreadFactory;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.core.internal.DefaultIDFactory;
+import org.solmix.hola.discovery.Discovery;
+import org.solmix.hola.discovery.ServiceListener;
+import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceTypeComparator;
+import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.ServiceEvent;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
 import org.solmix.hola.discovery.identity.ServiceID;
@@ -44,6 +50,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.internal.DiscoveryServiceListener;
 import org.solmix.hola.discovery.internal.DiscoveryServiceTypeListener;
 import org.solmix.hola.discovery.internal.ServiceMetadataTracker;
+import org.solmix.runtime.Container;
 import org.solmix.runtime.adapter.AdapterManager;
 
 /**
@@ -71,9 +78,16 @@ public abstract class AbstractDiscovery  implements Discovery
     private final ServiceMetadataTracker serviceMetadataTracker;
 
     private final ServiceTypeComparator comparator;
+    
+    private final ExecutorService executor = Executors.newFixedThreadPool(1, new NamedThreadFactory("DiscoveryExecutor", true));
 
-    public AbstractDiscovery(String discoveryNamespace)
+    private  final Container container;
+    private final IDFactory idFactory;
+
+    public AbstractDiscovery(String discoveryNamespace, Container container)
     {
+        Assert.isNotNull(container);
+        this.container=container;
         this.discoveryNamespace = discoveryNamespace;
         Assert.isNotNull(discoveryNamespace);
         allServiceListeners = Collections.synchronizedSet(new HashSet<ServiceListener>());
@@ -83,18 +97,18 @@ public abstract class AbstractDiscovery  implements Discovery
         discoveryServiceTypeListener = new DiscoveryServiceTypeListener(this);
         serviceMetadataTracker = new ServiceMetadataTracker(this);
         comparator = new ServiceTypeComparator();
+        idFactory=container.getExtension(IDFactory.class);
     }
 
     @Override
-    public Namespace getDiscoveryNamespace() {
-        return DefaultIDFactory.getDefault().getNamespaceByName(
+    public Namespace getNamespace() {
+        return idFactory.getNamespaceByName(
             discoveryNamespace);
     }
 
     @Override
     public void addServiceListener(final ServiceListener listener) {
         if (listener.triggerDiscovery()) {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(new Runnable() {
 
                 @Override
@@ -124,7 +138,6 @@ public abstract class AbstractDiscovery  implements Discovery
         Assert.isNotNull(type);
         Assert.isNotNull(listener);
         if (listener.triggerDiscovery()) {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(new Runnable() {
 
                 @Override
@@ -185,14 +198,13 @@ public abstract class AbstractDiscovery  implements Discovery
     }
 
     @Override
-    public void unregisterAllServices() {
+    public void unregisterAll() {
         throw new java.lang.UnsupportedOperationException();
 
     }
 
     @Override
     public Future<ServiceType[]> getAsyncServiceTypes() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         return executor.submit(new Callable<ServiceType[]>() {
 
             @Override
@@ -205,7 +217,6 @@ public abstract class AbstractDiscovery  implements Discovery
 
     @Override
     public Future<ServiceMetadata[]> getAsyncServices() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         return executor.submit(new Callable<ServiceMetadata[]>() {
 
             @Override
@@ -218,7 +229,6 @@ public abstract class AbstractDiscovery  implements Discovery
 
     @Override
     public Future<ServiceMetadata> getAsyncService(final ServiceID serviceID) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         return executor.submit(new Callable<ServiceMetadata>() {
 
             @Override
@@ -230,7 +240,6 @@ public abstract class AbstractDiscovery  implements Discovery
 
     @Override
     public Future<ServiceMetadata[]> getAsyncServices(final ServiceType type) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         return executor.submit(new Callable<ServiceMetadata[]>() {
 
             @Override
@@ -241,18 +250,7 @@ public abstract class AbstractDiscovery  implements Discovery
     }
 
     @Override
-    public Namespace getServicesNamespace() {
-        return DefaultIDFactory.getDefault().getNamespaceByName(
-            discoveryNamespace);
-    }
-
-//    @Override
-    public Namespace getRemoteNamespace() {
-        return getServicesNamespace();
-    }
-
-//    @Override
-    public void destroy() {
+    public void close() {
 //        disconnect();
         clearListeners();
         discoveryServiceListener.destroy();

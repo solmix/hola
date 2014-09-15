@@ -47,17 +47,12 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.core.ConnectException;
 import org.solmix.hola.core.HolaRuntimeException;
-import org.solmix.hola.core.event.ConnectedEvent;
-import org.solmix.hola.core.event.ConnectingEvent;
-import org.solmix.hola.core.event.DisconnectedEvent;
-import org.solmix.hola.core.event.DisconnectingEvent;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.internal.DefaultIDFactory;
-import org.solmix.hola.core.security.ConnectSecurityContext;
-import org.solmix.hola.discovery.AbstractDiscovery;
+import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.discovery.Discovery;
+import org.solmix.hola.discovery.DiscoveryException;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
@@ -65,8 +60,10 @@ import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
+import org.solmix.hola.discovery.support.AbstractDiscovery;
 import org.solmix.hola.discovery.support.ServiceMetadataImpl;
 import org.solmix.hola.discovery.support.ServicePropertiesImpl;
+import org.solmix.runtime.Container;
 
 /**
  * 
@@ -90,11 +87,9 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
 
     private static int instanceCount;
 
-    private ID targetID;
-
     final Object lock = new Object();
-
-    private boolean destroy;
+    
+    private boolean closed;
 
     private boolean connected;
 
@@ -109,23 +104,42 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
     private final Map<String, ServiceMetadata> services = Collections.synchronizedMap(new HashMap<String, ServiceMetadata>());;
 
     private JmDNS jmdns;
+    private final DiscoveryInfo info;
 
     /**
      * @param discoveryNamespace
+     * @throws DiscoveryException 
      */
-    public JmDNSDiscovery()
+    public JmDNSDiscovery(DiscoveryInfo info ,Container container) throws DiscoveryException
     {
-        super(JmDNSNamespace.NAME);
+        super(JmDNSNamespace.NAME,container);
+        this.info=info;
         serviceTypes = new ArrayList<ServiceType>();
+        synchronized (lock) {
+            startQueue();
+            try {
+                jmdns = JmDNS.create(info.getURI().getHost());
+                jmdns.addServiceTypeListener(this);
+            } catch (IOException e) {
+                if (jmdns != null) {
+                    try {
+                        jmdns.close();
+                    } catch (IOException e1) {
+                    }// ignore
+                    jmdns = null;
+                }
+                throw new DiscoveryException("JMDNS can't created,Check network connection", e);
+            }
+        }
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#registerService(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#register(org.solmix.hola.discovery.ServiceMetadata)
      */
     @Override
-    public void registerService(ServiceMetadata serviceMetadata) {
+    public void register(ServiceMetadata serviceMetadata) {
         Assert.isNotNull(serviceMetadata);
         final ServiceInfo info = createServiceInfo(serviceMetadata);
         try {
@@ -138,10 +152,10 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregisterService(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregister(org.solmix.hola.discovery.ServiceMetadata)
      */
     @Override
-    public void unregisterService(ServiceMetadata serviceMetadata) {
+    public void unregister(ServiceMetadata serviceMetadata) {
         Assert.isNotNull(serviceMetadata);
         final ServiceInfo info = createServiceInfo(serviceMetadata);
         jmdns.unregisterService(info);
@@ -149,7 +163,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
     }
 
     @Override
-    public void unregisterAllServices() {
+    public void unregisterAll() {
         jmdns.unregisterAllServices();
 
     }
@@ -261,42 +275,6 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
         return new ServiceMetadata[] {};
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.ConnectContext#connect(org.solmix.hola.core.identity.ID,
-     *      org.solmix.hola.core.security.ConnectSecurityContext)
-     */
-    @Override
-    public void connect(ID remoteID, ConnectSecurityContext securityContext)
-        throws ConnectException {
-        synchronized (lock) {
-            if (destroy)
-                throw new ConnectException(
-                    "The protocl instance has been destroied");
-            if (this.targetID != null)
-                throw new ConnectException("Already connected");
-            this.targetID = remoteID == null ? getDefaultTargetId() : remoteID;
-            fireConnectEvent(new ConnectingEvent(this, getID(), this.targetID,
-                securityContext));
-            startQueue();
-            try {
-                jmdns = JmDNS.create();
-                jmdns.addServiceTypeListener(this);
-            } catch (IOException e) {
-                if (jmdns != null) {
-                    try {
-                        jmdns.close();
-                    } catch (IOException e1) {
-                    }// ignore
-                    jmdns = null;
-                }
-                throw new ConnectException("JMDNS can't created,Check network connection", e);
-            }
-            fireConnectEvent(new ConnectedEvent(this, getID(), this.targetID));
-        }
-    }
-
     private ID getDefaultTargetId() {
         return DefaultIDFactory.getDefault().createStringID(
             JmDNSProvider.class.getName() + "@" + instanceCount++);
@@ -309,7 +287,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
 
             @Override
             public void run() {
-                while (!destroy && connected) {
+                while (!closed && connected) {
                     if (Thread.currentThread().isInterrupted())
                         break;
                     final Runnable run = queue.peek();
@@ -325,26 +303,23 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
         }, "JMDNS Discovery Thread");
         notificationThread.start();
     }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.ConnectContext#getTargetID()
-     */
     @Override
-    public ID getTargetID() {
-        return targetID;
+    public void close() {
+        super.close();
+        synchronized (lock) {
+            if(closed)
+                return;
+            notificationThread.interrupt();
+            notificationThread = null;
+            serviceTypes.clear();
+            closed = true;
+        }
     }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.ConnectContext#disconnect()
-     */
-    @Override
+   
+   /* @Override
     public void disconnect() {
         synchronized (lock) {
-            if (this.targetID == null || destroy)
+            if (this.targetID == null || closed)
                 return;
             final ID remoteID = getTargetID();
             fireConnectEvent(new DisconnectingEvent(this, getID(), remoteID));
@@ -356,27 +331,15 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
             fireConnectEvent(new DisconnectedEvent(this, getID(), remoteID));
         }
 
-    }
+    }*/
 
-    @Override
+  /*  @Override
     public void destroy() {
         synchronized (lock) {
             super.destroy();
-            destroy = true;
+            closed = true;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.identity.Identifiable#getID()
-     */
-    @Override
-    public ID getID() {
-        return DefaultIDFactory.getDefault().createStringID(
-            new StringBuilder().append(JmDNSProvider.class.getName()).append(";").append(
-                count++).toString());
-    }
+    }*/
 
     /**
      * {@inheritDoc}
@@ -387,7 +350,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
     public void serviceTypeAdded(ServiceEvent event) {
         if (LOG.isTraceEnabled())
             LOG.trace("serviceTypeAdded:" + event);
-        event.getDNS().addServiceListener(event.getType(), JmDNSProvider.this);
+        event.getDNS().addServiceListener(event.getType(), JmDNSDiscovery.this);
     }
 
     /**
@@ -419,7 +382,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
                     final String serviceName = event.getName();
                     ServiceMetadata meta = null;
                     synchronized (lock) {
-                        if (targetID == null || destroy) {
+                        if ( closed) {
                             return;
                         }
                         try {
@@ -545,7 +508,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
         final int end = st.indexOf(proto);
         String[] types = StringUtils.split(st.substring(1, end), "._");
         final ServiceType sID = DefaultServiceTypeFactory.getDefault().create(
-            getServicesNamespace(), types, scopes, new String[] { proto },
+            getNamespace(), types, scopes, new String[] { proto },
             namingAuthority);
 
         // service name

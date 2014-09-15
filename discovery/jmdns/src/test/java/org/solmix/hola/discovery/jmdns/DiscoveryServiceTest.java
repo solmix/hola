@@ -22,17 +22,20 @@ package org.solmix.hola.discovery.jmdns;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.solmix.hola.core.ConnectContext;
-import org.solmix.hola.core.ConnectException;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.core.identity.support.DefaultIDFactory;
+import org.solmix.hola.core.internal.DefaultIDFactory;
+import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.discovery.Discovery;
+import org.solmix.hola.discovery.DiscoveryException;
+import org.solmix.hola.discovery.DiscoveryProvider;
 import org.solmix.hola.discovery.ServiceMetadata;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
@@ -40,8 +43,8 @@ import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
 import org.solmix.hola.discovery.support.ServiceMetadataImpl;
 import org.solmix.hola.discovery.support.ServicePropertiesImpl;
-import org.solmix.runtime.SystemContext;
-import org.solmix.runtime.SystemContextFactory;
+import org.solmix.runtime.Container;
+import org.solmix.runtime.Containers;
 
 /**
  * 
@@ -52,35 +55,36 @@ import org.solmix.runtime.SystemContextFactory;
 public class DiscoveryServiceTest
 {
 
-    private JmDNSProvider service;
+    private Discovery  discovery;
 
     @Before
-    public void setup() {
-        SystemContext sc = SystemContextFactory.getThreadDefaultSystemContext();
-        service = sc.getExtension(Discovery.class).adaptTo(JmDNSProvider.class);
+    public void setup()   {
+        Container c = Containers.get();
+        DiscoveryProvider  provider = c.getExtensionLoader(DiscoveryProvider.class).getExtension(JmDNSProvider.NAME);
         try {
-            service.connect(null, null);
-        } catch (ConnectException e) {
+            Map<String,Object> prop= new HashMap<String,Object>();
+            prop.put("address", "multicast://239.255.255.255/");
+            discovery=  provider.createDiscovery(new DiscoveryInfo(prop));
+        } catch (DiscoveryException e) {
             e.printStackTrace();
         }
     }
 
     @After
     public void tearDown() throws Exception {
-        ConnectContext cc = service.adaptTo(ConnectContext.class);
-        cc.disconnect();
+        discovery.close();
     }
 
 //    @Test
     public void testRegisterService() {
         registerService();
-        ServiceMetadata[]  services=  service.getServices();
+        ServiceMetadata[]  services=  discovery.getServices();
         Assert.assertTrue(services.length>=1);
     }
 
     public void registerService() {
         try {
-            service.registerService(createServiceMetadata());
+            discovery.register(createServiceMetadata());
         } catch (Exception e) {
             fail(e.getMessage());
         }

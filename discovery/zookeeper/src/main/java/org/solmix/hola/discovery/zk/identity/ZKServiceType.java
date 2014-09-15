@@ -16,20 +16,42 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.discovery;
 
-import org.solmix.hola.core.model.DiscoveryInfo;
-import org.solmix.runtime.Extension;
+package org.solmix.hola.discovery.zk.identity;
 
+import java.util.UUID;
+
+import org.solmix.hola.discovery.identity.ServiceType;
+import org.solmix.hola.discovery.support.ServiceTypeImpl;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月14日
+ * @version $Id$ 2014年9月15日
  */
-@Extension
-public interface DiscoveryProvider
+
+public class ZKServiceType extends ServiceTypeImpl
 {
 
-    Discovery createDiscovery(DiscoveryInfo info)throws DiscoveryException;
+    /**
+     * @param ns
+     * @param type
+     */
+    public ZKServiceType(ZKNamespace ns, ServiceType type)
+    {
+        super(ns, type);
+        this.id = UUID.randomUUID().toString();
+    }
+    public ZKServiceType(ZKNamespace ns, ServiceType type,String internal)
+    {
+        super(ns, type);
+        this.id = internal;
+    }
+    private static final long serialVersionUID = -6410131727241892261L;
+
+    private final String id;
+    @Override
+    public String getInternal() {
+        return this.id;
+  }
 }

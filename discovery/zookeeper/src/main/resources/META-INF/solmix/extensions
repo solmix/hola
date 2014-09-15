@@ -1,0 +1,3 @@
+org.solmix.hola.discovery.zk.ZKProvider:org.solmix.hola.discovery.DiscoveryProvider:true
+org.solmix.hola.discovery.zk.identity.ZKNamespace:org.solmix.hola.core.identity.Namespace:true
+org.solmix.hola.discovery.zk.support.CuratorZKTransporter:org.solmix.hola.discovery.zk.ZKTransporter:true

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,30 +16,33 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.discovery.zk;
 
-package org.solmix.hola.osgi.rsa;
+import java.util.List;
 
-import org.osgi.service.remoteserviceadmin.EndpointDescription;
-import org.solmix.hola.discovery.DiscoveryAdvertiser;
-import org.solmix.hola.discovery.ServiceMetadata;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年4月12日
+ * @version $Id$  2014年9月15日
  */
 
-public interface ServiceMetadataFactory
+public interface ZKClient extends java.io.Closeable
 {
+    void create(String path, boolean ephemeral);
 
-    /**
-     * 创建{@link ServiceMetadata},创建的ServiceMetaData用于发布服务公告
-     * {@link DiscoveryAdvertiser#register(ServiceMetadata)}
-     * 
-     * @param advertiser
-     * @param des
-     * @return
-     */
-    ServiceMetadata create(DiscoveryAdvertiser advertiser,
-        EndpointDescription des);
+    void delete(String path);
+
+    List<String> getChildren(String path);
+
+    List<String> addChildListener(String path, ChildListener listener);
+
+    void removeChildListener(String path, ChildListener listener);
+
+    void addStateListener(StateListener listener);
+    
+    void removeStateListener(StateListener listener);
+
+    boolean isConnected();
+
 }

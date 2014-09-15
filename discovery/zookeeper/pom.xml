@@ -18,5 +18,10 @@
   		<artifactId>curator-framework</artifactId>
   		<version>2.6.0</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-discovery-api</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>
