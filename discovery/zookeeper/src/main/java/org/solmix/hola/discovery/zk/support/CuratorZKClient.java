@@ -128,6 +128,34 @@ public class CuratorZKClient implements ZKClient
               throw new IllegalStateException(e.getMessage(), e);
         }
   }
+    @Override
+    public void create(String path, byte[] data, boolean ephemeral) {
+        int i = path.lastIndexOf('/');
+        if (i > 0) {
+              create(path.substring(0, i), false);
+        }
+        if (ephemeral) {
+              createEphemeral(path,  data);
+        } else {
+              createPersistent(path,  data);
+        }
+    }
+    public void createPersistent(String path, byte[] data) {
+        try {
+              client.create().forPath(path,data);
+        } catch (NodeExistsException e) {
+        } catch (Exception e) {
+              throw new IllegalStateException(e.getMessage(), e);
+        }
+  }
+    public void createEphemeral(String path, byte[] data) {
+        try {
+              client.create().withMode(CreateMode.EPHEMERAL).forPath(path,data);
+        } catch (NodeExistsException e) {
+        } catch (Exception e) {
+              throw new IllegalStateException(e.getMessage(), e);
+        }
+  }
     /**
      * {@inheritDoc}
      * 
@@ -274,5 +302,21 @@ public class CuratorZKClient implements ZKClient
     public void close() {
         client.close();
     }
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.discovery.zk.ZKClient#getData(java.lang.String)
+     */
+    @Override
+    public byte[] getData(String path) {
+        try {
+            return client.getData().forPath(path);
+        } catch (NoNodeException e) {
+            return null;
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+   
 
 }

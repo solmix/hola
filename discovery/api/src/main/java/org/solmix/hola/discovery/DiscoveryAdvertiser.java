@@ -39,7 +39,7 @@ public interface DiscoveryAdvertiser
      *            IServiceInfo of the service to be published. Must not be
      *            <code>null</code>.
      */
-    public void register(ServiceMetadata serviceMetadata);
+    public void register(ServiceInfo serviceInfo);
 
     /**
      * Unregister a previously registered service defined by serviceInfo.
@@ -48,7 +48,7 @@ public interface DiscoveryAdvertiser
      *            IServiceInfo defining the service to unregister. Must not be
      *            <code>null</code>.
      */
-    public void unregister(ServiceMetadata serviceMetadata);
+    public void unregister(ServiceInfo serviceInfo);
 
     /**
      * Unregister all previously registered service.

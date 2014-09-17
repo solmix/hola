@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.discovery;
 
-import java.io.IOException;
 
 
 /**
@@ -27,14 +26,14 @@ import java.io.IOException;
  * @version $Id$  2014年9月15日
  */
 
-public class DiscoveryException extends Exception
+public class DiscoveryException extends RuntimeException
 {
 
     /**
      * @param string
      * @param e
      */
-    public DiscoveryException(String string, IOException e)
+    public DiscoveryException(String string, Throwable e)
     {
         super(string,e);
     }

@@ -23,7 +23,7 @@ import java.net.URI;
 
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -34,7 +34,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
  * @version 0.0.1 2014年4月13日
  */
 
-public class ServiceMetadataImpl implements ServiceMetadata
+public class ServiceMetadataImpl implements ServiceInfo
 {
 
     private static final long serialVersionUID = 3885770619029848938L;
@@ -151,7 +151,7 @@ public class ServiceMetadataImpl implements ServiceMetadata
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceMetadata#getLocation()
+     * @see org.solmix.hola.discovery.ServiceInfo#getLocation()
      */
     @Override
     public URI getLocation() {
@@ -161,7 +161,7 @@ public class ServiceMetadataImpl implements ServiceMetadata
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceMetadata#getServiceID()
+     * @see org.solmix.hola.discovery.ServiceInfo#getServiceID()
      */
     @Override
     public ServiceID getServiceID() {
@@ -171,7 +171,7 @@ public class ServiceMetadataImpl implements ServiceMetadata
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceMetadata#getPriority()
+     * @see org.solmix.hola.discovery.ServiceInfo#getPriority()
      */
     @Override
     public int getPriority() {
@@ -181,7 +181,7 @@ public class ServiceMetadataImpl implements ServiceMetadata
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceMetadata#getWeight()
+     * @see org.solmix.hola.discovery.ServiceInfo#getWeight()
      */
     @Override
     public int getWeight() {
@@ -191,7 +191,7 @@ public class ServiceMetadataImpl implements ServiceMetadata
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceMetadata#getTTL()
+     * @see org.solmix.hola.discovery.ServiceInfo#getTTL()
      */
     @Override
     public long getTTL() {
@@ -201,7 +201,7 @@ public class ServiceMetadataImpl implements ServiceMetadata
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceMetadata#getServiceProperties()
+     * @see org.solmix.hola.discovery.ServiceInfo#getServiceProperties()
      */
     @Override
     public ServiceProperties getServiceProperties() {
@@ -211,7 +211,7 @@ public class ServiceMetadataImpl implements ServiceMetadata
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceMetadata#getServiceName()
+     * @see org.solmix.hola.discovery.ServiceInfo#getServiceName()
      */
     @Override
     public String getServiceName() {

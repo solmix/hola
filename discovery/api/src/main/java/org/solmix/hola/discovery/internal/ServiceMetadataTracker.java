@@ -26,7 +26,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.support.ServiceMetadataImpl;
@@ -40,30 +40,30 @@ import org.solmix.hola.discovery.support.ServiceMetadataImpl;
 public class ServiceMetadataTracker
 {
 
-    private ServiceTracker<ServiceMetadata,ServiceMetadata> serviceTracker;
+    private ServiceTracker<ServiceInfo,ServiceInfo> serviceTracker;
 
     public ServiceMetadataTracker(final Discovery provider)
     {
         final BundleContext bundleContext = Activator.getDefault().getBundleContext();
         if (bundleContext != null) {
-            serviceTracker = new ServiceTracker<ServiceMetadata, ServiceMetadata>(
+            serviceTracker = new ServiceTracker<ServiceInfo, ServiceInfo>(
                 bundleContext,
-                ServiceMetadata.class,
-                new ServiceTrackerCustomizer<ServiceMetadata, ServiceMetadata>() {
+                ServiceInfo.class,
+                new ServiceTrackerCustomizer<ServiceInfo, ServiceInfo>() {
 
                     @Override
-                    public ServiceMetadata addingService(
-                        ServiceReference<ServiceMetadata> reference) {
-                        final ServiceMetadata serviceInfo = bundleContext.getService(reference);
-                        final ServiceMetadata specific = convertToProviderSpecific(
+                    public ServiceInfo addingService(
+                        ServiceReference<ServiceInfo> reference) {
+                        final ServiceInfo serviceInfo = bundleContext.getService(reference);
+                        final ServiceInfo specific = convertToProviderSpecific(
                             provider, serviceInfo);
                         provider.register(specific);
                         return serviceInfo;
                     }
 
                     @Override
-                    public void modifiedService(ServiceReference<ServiceMetadata> reference,
-                        ServiceMetadata service) {
+                    public void modifiedService(ServiceReference<ServiceInfo> reference,
+                        ServiceInfo service) {
                         // TODO discovery containers might require to
                         // unregisterService first
                         provider.register(convertToProviderSpecific(
@@ -71,8 +71,8 @@ public class ServiceMetadataTracker
                     }
 
                     @Override
-                    public void removedService(ServiceReference<ServiceMetadata> reference,
-                        ServiceMetadata service) {
+                    public void removedService(ServiceReference<ServiceInfo> reference,
+                        ServiceInfo service) {
                         provider.unregister(convertToProviderSpecific(
                             provider, service));
                     }
@@ -80,9 +80,9 @@ public class ServiceMetadataTracker
             serviceTracker.open();
         }
     }
-    private ServiceMetadata convertToProviderSpecific(
+    private ServiceInfo convertToProviderSpecific(
         final DiscoveryAdvertiser advertiser,
-        final ServiceMetadata genericMeta) {
+        final ServiceInfo genericMeta) {
 
   final Namespace servicesNamespace = advertiser.getNamespace();
 

@@ -90,4 +90,26 @@ public class DiscoveryInfo extends EndpointInfo
         return (username == null ? "" : username) 
                 + ":" + (password == null ? "" : password);
     }
+    
+    public String getGroup(String df){
+        return getString("group", df);
+    }
+
+    /**
+     * @param retryPeriod
+     * @return
+     */
+    public int getRetyPeriod(int retryPeriod) {
+        return getInt("retry.peroid", retryPeriod);
+    }
+
+    /**
+     * 启动时是否检查错误
+     * 
+     * @param b
+     */
+    public boolean getCheck(boolean b) {
+        return getBoolean("check", b);
+        
+    }
 }

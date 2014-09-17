@@ -41,12 +41,15 @@ public class ZKProvider implements DiscoveryProvider
     
     @Resource
     private Container container;
+    @Resource
+    private ZKTransporter zktansporter;
    
     @Override
     public Discovery createDiscovery(DiscoveryInfo info)
         throws DiscoveryException {
         Assert.isNotNull(container,"Container is null!");
-        return new ZKDiscovery(info,container);
+        Assert.isNotNull(zktansporter);
+        return new ZKDiscovery(info,container,zktansporter);
     }
 
 }

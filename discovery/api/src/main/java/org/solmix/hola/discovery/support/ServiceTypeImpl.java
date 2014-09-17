@@ -19,6 +19,7 @@
 
 package org.solmix.hola.discovery.support;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -241,6 +242,7 @@ public class ServiceTypeImpl extends BaseID implements ServiceType
      */
     @Override
     public String[] getServices() {
+        List<String> s= new ArrayList<String>();
         return services;
     }
 

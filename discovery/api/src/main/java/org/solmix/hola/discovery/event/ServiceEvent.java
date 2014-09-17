@@ -22,7 +22,7 @@ package org.solmix.hola.discovery.event;
 import java.util.EventObject;
 
 import org.solmix.hola.discovery.ServiceListener;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 
 /**
  * 服务监听事项,在{@link ServiceListener}中使用
@@ -38,9 +38,9 @@ public class ServiceEvent extends EventObject
      * 
      */
     private static final long serialVersionUID = 5274548617761559601L;
-    private final ServiceMetadata metadata;
+    private final ServiceInfo metadata;
 
-    public ServiceEvent(Object source,ServiceMetadata metadata)
+    public ServiceEvent(Object source,ServiceInfo metadata)
     {
         super(source);
         this.metadata = metadata;
@@ -51,7 +51,7 @@ public class ServiceEvent extends EventObject
      * 
      * @return
      */
-    public ServiceMetadata getServiceMetadata() {
+    public ServiceInfo getServiceMetadata() {
         return metadata;
     }
 }

@@ -18,6 +18,13 @@
  */
 package org.solmix.hola.discovery.zk;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.discovery.zk.support.CuratorZKClient;
+
 
 /**
  * 
@@ -30,9 +37,18 @@ public class ZK
 
     /**
      * @param args
+     * @throws IOException 
      */
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
+    public static void main(String[] args) throws IOException {
+        Map<String,Object> prop= new HashMap<String,Object>();
+        prop.put("address", "localhost:2181,localhost:2182,localhost:2183");
+       DiscoveryInfo info= new DiscoveryInfo(prop);
+       ZKClient client = new CuratorZKClient(info);
+       client.create("/test/1", false);
+       client.create("/test/2", false);
+       client.create("/test/3", false);
+      System.out.println( client.getChildren("/test"));
+       client.close();
 
     }
 

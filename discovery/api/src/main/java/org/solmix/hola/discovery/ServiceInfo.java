@@ -31,7 +31,7 @@ import org.solmix.hola.discovery.identity.ServiceID;
  * @version 0.0.1  2014年4月5日
  */
 
-public interface ServiceMetadata extends  Serializable
+public interface ServiceInfo extends  Serializable
 {
     /**
      * Get URI for service

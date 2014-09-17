@@ -21,7 +21,7 @@ package org.solmix.hola.osgi.rsa;
 
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;
 
 /**
@@ -35,7 +35,7 @@ public interface DiscoveredEndpointDescriptionFactory
 {
 
     public DiscoveredEndpointDescription create(DiscoveryLocator locator,
-        ServiceMetadata metadata);
+        ServiceInfo metadata);
 
     public DiscoveredEndpointDescription remove(DiscoveryLocator locator,
         ServiceID serviceID);

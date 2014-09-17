@@ -25,7 +25,7 @@ import org.solmix.commons.annotation.Immutable;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.BaseID;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
 
@@ -40,7 +40,7 @@ public class ServiceIDImpl extends BaseID implements ServiceID
 
     private static final long serialVersionUID = -3700231292762874357L;
 
-    private ServiceMetadata metadata;
+    private ServiceInfo metadata;
 
     private final ServiceType type;
 
@@ -89,7 +89,7 @@ public class ServiceIDImpl extends BaseID implements ServiceID
     /**
      * @param metadata the metadata to set
      */
-    public void setServiceMetadata(ServiceMetadata metadata) {
+    public void setServiceMetadata(ServiceInfo metadata) {
         this.metadata = metadata;
     }
 

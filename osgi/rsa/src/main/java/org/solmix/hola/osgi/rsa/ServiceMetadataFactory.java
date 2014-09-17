@@ -21,7 +21,7 @@ package org.solmix.hola.osgi.rsa;
 
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 
 /**
  * 
@@ -33,13 +33,13 @@ public interface ServiceMetadataFactory
 {
 
     /**
-     * 创建{@link ServiceMetadata},创建的ServiceMetaData用于发布服务公告
-     * {@link DiscoveryAdvertiser#register(ServiceMetadata)}
+     * 创建{@link ServiceInfo},创建的ServiceMetaData用于发布服务公告
+     * {@link DiscoveryAdvertiser#register(ServiceInfo)}
      * 
      * @param advertiser
      * @param des
      * @return
      */
-    ServiceMetadata create(DiscoveryAdvertiser advertiser,
+    ServiceInfo create(DiscoveryAdvertiser advertiser,
         EndpointDescription des);
 }

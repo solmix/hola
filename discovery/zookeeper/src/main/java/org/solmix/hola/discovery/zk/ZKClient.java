@@ -31,7 +31,10 @@ public interface ZKClient extends java.io.Closeable
 {
     void create(String path, boolean ephemeral);
 
+    void create(String path, byte[] data,boolean ephemeral);
     void delete(String path);
+    
+    byte[] getData(String path);
 
     List<String> getChildren(String path);
 

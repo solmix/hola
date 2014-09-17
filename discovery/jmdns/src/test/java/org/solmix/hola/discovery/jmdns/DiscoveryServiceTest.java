@@ -36,7 +36,7 @@ import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryException;
 import org.solmix.hola.discovery.DiscoveryProvider;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -78,7 +78,7 @@ public class DiscoveryServiceTest
 //    @Test
     public void testRegisterService() {
         registerService();
-        ServiceMetadata[]  services=  discovery.getServices();
+        ServiceInfo[]  services=  discovery.getServices();
         Assert.assertTrue(services.length>=1);
     }
 
@@ -96,7 +96,7 @@ public class DiscoveryServiceTest
         System.out.println("ssdfS");
     }
 
-    private ServiceMetadata createServiceMetadata() {
+    private ServiceInfo createServiceMetadata() {
         if (meta == null) {
             String[] services = new String[] { "hola", "junit", "test" };
             String[] protocols = new String[] { "someproto" };
@@ -122,5 +122,5 @@ public class DiscoveryServiceTest
 
     }
 
-    private ServiceMetadata meta;
+    private ServiceInfo meta;
 }

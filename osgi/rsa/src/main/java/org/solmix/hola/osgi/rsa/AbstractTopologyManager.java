@@ -39,7 +39,7 @@ import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.osgi.internal.Activator;
 import org.solmix.hola.osgi.rsa.HolaRemoteServiceAdmin.ImportRegistrationImpl;
 
@@ -64,7 +64,7 @@ public abstract class AbstractTopologyManager
 
     private final ReentrantLock registrationLock;
 
-    private final Map<EndpointDescription, ServiceRegistration<ServiceMetadata>> registrations = new HashMap<EndpointDescription, ServiceRegistration<ServiceMetadata>>();
+    private final Map<EndpointDescription, ServiceRegistration<ServiceInfo>> registrations = new HashMap<EndpointDescription, ServiceRegistration<ServiceInfo>>();
 
     public AbstractTopologyManager(BundleContext context)
     {
@@ -138,13 +138,13 @@ public abstract class AbstractTopologyManager
             }
             final ServiceMetadataFactory factory = serviceMetadataFactoryTracker.getService();
             if (factory != null) {
-                ServiceMetadata metadata = factory.create(null, description);
+                ServiceInfo metadata = factory.create(null, description);
                 if (metadata != null) {
                     if (LOG.isTraceEnabled())
                         LOG.debug("advertising EndpointDescription "
                             + description);
-                    final ServiceRegistration<ServiceMetadata> registerService = this.context.registerService(
-                        ServiceMetadata.class, metadata, null);
+                    final ServiceRegistration<ServiceInfo> registerService = this.context.registerService(
+                        ServiceInfo.class, metadata, null);
                     this.registrations.put(description, registerService);
                 } else {
                     LOG.error("ServiceMetadataFactory failed to convert EndpointDescription "
@@ -162,7 +162,7 @@ public abstract class AbstractTopologyManager
         EndpointDescription endpointDescription) {
         this.registrationLock.lock();
         try {
-            final ServiceRegistration<ServiceMetadata> serviceRegistration = this.registrations.remove(endpointDescription);
+            final ServiceRegistration<ServiceInfo> serviceRegistration = this.registrations.remove(endpointDescription);
             if (serviceRegistration != null) {
                 serviceRegistration.unregister();
                 return;

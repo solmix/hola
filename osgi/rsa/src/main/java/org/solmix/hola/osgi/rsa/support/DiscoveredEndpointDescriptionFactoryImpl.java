@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.osgi.rsa.AbstractMetadataFactory;
 import org.solmix.hola.osgi.rsa.DiscoveredEndpointDescription;
@@ -51,11 +51,11 @@ public class DiscoveredEndpointDescriptionFactoryImpl extends
      * {@inheritDoc}
      * 
      * @see org.solmix.hola.osgi.rsa.DiscoveredEndpointDescriptionFactory#create(org.solmix.hola.discovery.DiscoveryLocator,
-     *      org.solmix.hola.discovery.ServiceMetadata)
+     *      org.solmix.hola.discovery.ServiceInfo)
      */
     @Override
     public DiscoveredEndpointDescription create(DiscoveryLocator locator,
-        ServiceMetadata metadata) {
+        ServiceInfo metadata) {
         try {
             EndpointDescription ed = transform(metadata.getServiceProperties());
             DiscoveredEndpointDescription ded = find(ed);
@@ -73,7 +73,7 @@ public class DiscoveredEndpointDescriptionFactoryImpl extends
     }
 
     private DiscoveredEndpointDescription createDiscovered(
-        DiscoveryLocator locator, ServiceMetadata metadata,
+        DiscoveryLocator locator, ServiceInfo metadata,
         EndpointDescription ed) {
         return new DiscoveredEndpointDescription(
             locator.getNamespace(), metadata.getServiceID(), ed);

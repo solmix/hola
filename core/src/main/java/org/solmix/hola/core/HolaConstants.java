@@ -110,5 +110,7 @@ public class HolaConstants
     public static final String DEFAULT_THREADPOOL = "pooled";
 
     public static String KEY_CHANNEL_ATTRIBUTE_READONLY="channel.readonly";
+    
+    public static final String KEY_DYNAMIC = "hola.dynamic";
 
 }

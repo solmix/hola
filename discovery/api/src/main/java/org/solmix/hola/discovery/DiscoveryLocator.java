@@ -35,8 +35,6 @@ import org.solmix.hola.discovery.identity.ServiceType;
 public interface DiscoveryLocator
 {
 
-    public static String PROVIDER_NAME = "discovery.provider.name";
-
     /**
      * Synchronously retrieve metadata about the service
      * 
@@ -45,7 +43,7 @@ public interface DiscoveryLocator
      * @return IServiceInfo the service info retrieved. <code>null</code> if no
      *         information retrievable.
      */
-    public ServiceMetadata getService(ServiceID aServiceID);
+    public ServiceInfo getService(ServiceID aServiceID);
 
     /**
      * Synchronously get service info about all known services
@@ -53,7 +51,7 @@ public interface DiscoveryLocator
      * @return IServiceInfo[] the resulting array of service info instances.
      *         Will not be <code>null</code>. May be of length 0.
      */
-    public ServiceMetadata[] getServices();
+    public ServiceInfo[] getServices();
 
     /**
      * Synchronously get service info about all known services of given service
@@ -64,7 +62,7 @@ public interface DiscoveryLocator
      * @return IServiceInfo[] the resulting array of service info instances.
      *         Will not be <code>null</code>. May be of length 0.
      */
-    public ServiceMetadata[] getServices(ServiceType type);
+    public ServiceInfo[] getServices(ServiceType type);
 
     /**
      * Synchronously get service info about all known services of given service
@@ -97,7 +95,7 @@ public interface DiscoveryLocator
      * 
      * @return The previous cache content
      */
-    public ServiceMetadata[] purgeCache();
+    public ServiceInfo[] purgeCache();
 
     /* Listener related API */
 
@@ -169,7 +167,7 @@ public interface DiscoveryLocator
      * @return IFuture a future status wrapping an IServiceInfo or
      *         <code>null</code> if no information retrievable.
      */
-    public Future<ServiceMetadata> getAsyncService(ServiceID aServiceID);
+    public Future<ServiceInfo> getAsyncService(ServiceID aServiceID);
 
     /**
      * Asynchronously get service info about all known services
@@ -178,7 +176,7 @@ public interface DiscoveryLocator
      *         service type IDs will not be <code>null</code>. May be of length
      *         0.
      */
-    public Future<ServiceMetadata[]> getAsyncServices();
+    public Future<ServiceInfo[]> getAsyncServices();
 
     /**
      * Asynchronously get service info about all known services of given service
@@ -190,7 +188,7 @@ public interface DiscoveryLocator
      *         service type IDs will not be <code>null</code>. May be of length
      *         0.
      */
-    public Future<ServiceMetadata[]> getAsyncServices(ServiceType aServiceTypeID);
+    public Future<ServiceInfo[]> getAsyncServices(ServiceType aServiceTypeID);
 
     /**
      * Asynchronously get service info about all known services of given service

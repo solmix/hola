@@ -19,6 +19,7 @@
 
 package org.solmix.hola.discovery.support;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +41,7 @@ import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceListener;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceTypeComparator;
 import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.ServiceEvent;
@@ -113,8 +114,8 @@ public abstract class AbstractDiscovery  implements Discovery
 
                 @Override
                 public void run() {
-                    final ServiceMetadata[] metadatas = getServices();
-                    for (ServiceMetadata metadata : metadatas) {
+                    final ServiceInfo[] metadatas = getServices();
+                    for (ServiceInfo metadata : metadatas) {
                         listener.discovered(getDiscoveryServiceEvent(metadata));
                     }
                     allServiceListeners.add(listener);
@@ -128,7 +129,7 @@ public abstract class AbstractDiscovery  implements Discovery
     /**
      * @return
      */
-    protected ServiceEvent getDiscoveryServiceEvent(ServiceMetadata metadata) {
+    protected ServiceEvent getDiscoveryServiceEvent(ServiceInfo metadata) {
         return new ServiceEvent(this, metadata);
     }
 
@@ -142,8 +143,8 @@ public abstract class AbstractDiscovery  implements Discovery
 
                 @Override
                 public void run() {
-                    final ServiceMetadata[] metadatas = getServices(type);
-                    for (ServiceMetadata metadata : metadatas) {
+                    final ServiceInfo[] metadatas = getServices(type);
+                    for (ServiceInfo metadata : metadatas) {
                         listener.discovered(getDiscoveryServiceEvent(metadata));
                     }
                     addServiceListener0(type, listener);
@@ -216,11 +217,11 @@ public abstract class AbstractDiscovery  implements Discovery
     }
 
     @Override
-    public Future<ServiceMetadata[]> getAsyncServices() {
-        return executor.submit(new Callable<ServiceMetadata[]>() {
+    public Future<ServiceInfo[]> getAsyncServices() {
+        return executor.submit(new Callable<ServiceInfo[]>() {
 
             @Override
-            public ServiceMetadata[] call() throws Exception {
+            public ServiceInfo[] call() throws Exception {
                 return getServices();
             }
 
@@ -228,29 +229,29 @@ public abstract class AbstractDiscovery  implements Discovery
     }
 
     @Override
-    public Future<ServiceMetadata> getAsyncService(final ServiceID serviceID) {
-        return executor.submit(new Callable<ServiceMetadata>() {
+    public Future<ServiceInfo> getAsyncService(final ServiceID serviceID) {
+        return executor.submit(new Callable<ServiceInfo>() {
 
             @Override
-            public ServiceMetadata call() throws Exception {
+            public ServiceInfo call() throws Exception {
                 return getService(serviceID);
             }
         });
     }
 
     @Override
-    public Future<ServiceMetadata[]> getAsyncServices(final ServiceType type) {
-        return executor.submit(new Callable<ServiceMetadata[]>() {
+    public Future<ServiceInfo[]> getAsyncServices(final ServiceType type) {
+        return executor.submit(new Callable<ServiceInfo[]>() {
 
             @Override
-            public ServiceMetadata[] call() throws Exception {
+            public ServiceInfo[] call() throws Exception {
                 return getServices(type);
             }
         });
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException{
 //        disconnect();
         clearListeners();
         discoveryServiceListener.destroy();

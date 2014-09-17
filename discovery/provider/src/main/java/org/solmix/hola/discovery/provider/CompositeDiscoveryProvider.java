@@ -37,7 +37,7 @@ import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceListener;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.ServiceEvent;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
@@ -59,7 +59,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
 
     
 
-    protected Set<ServiceMetadata> registeredServices = new HashSet<ServiceMetadata>();
+    protected Set<ServiceInfo> registeredServices = new HashSet<ServiceInfo>();
 
     protected final Collection<Discovery> providers = new ArrayList<Discovery>();
 
@@ -74,18 +74,18 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#register(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#register(org.solmix.hola.discovery.ServiceInfo)
      */
     @Override
-    public void register(ServiceMetadata serviceMetadata) {
-        Assert.isNotNull(serviceMetadata);
+    public void register(ServiceInfo serviceInfo) {
+        Assert.isNotNull(serviceInfo);
         synchronized (registeredServices) {
-            registeredServices.add(serviceMetadata);
+            registeredServices.add(serviceInfo);
         }
         synchronized (providers) {
             for (Discovery provider : providers) {
-                final ServiceMetadata meta = getServiceMetadataForProvider(
-                    serviceMetadata, provider);
+                final ServiceInfo meta = getServiceMetadataForProvider(
+                    serviceInfo, provider);
                 provider.register(meta);
             }
         }
@@ -96,8 +96,8 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
      * @param provider
      * @return
      */
-    private ServiceMetadata getServiceMetadataForProvider(
-        ServiceMetadata smeta, Discovery provider) {
+    private ServiceInfo getServiceMetadataForProvider(
+        ServiceInfo smeta, Discovery provider) {
         ServiceID sid = smeta.getServiceID();
         ServiceID nsid = getServiceIDforProvider(sid, provider);
         ServiceType type = nsid.getServiceType();
@@ -123,18 +123,18 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregister(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregister(org.solmix.hola.discovery.ServiceInfo)
      */
     @Override
-    public void unregister(ServiceMetadata serviceMetadata) {
-        Assert.isNotNull(serviceMetadata);
+    public void unregister(ServiceInfo serviceInfo) {
+        Assert.isNotNull(serviceInfo);
         synchronized (registeredServices) {
-            registeredServices.remove(serviceMetadata);
+            registeredServices.remove(serviceInfo);
         }
         synchronized (providers) {
             for (Discovery provider : providers) {
-                final ServiceMetadata meta = getServiceMetadataForProvider(
-                    serviceMetadata, provider);
+                final ServiceInfo meta = getServiceMetadataForProvider(
+                    serviceInfo, provider);
                 provider.unregister(meta);
             }
         }
@@ -147,13 +147,13 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#getService(org.solmix.hola.discovery.identity.ServiceID)
      */
     @Override
-    public ServiceMetadata getService(ServiceID aServiceID) {
+    public ServiceInfo getService(ServiceID aServiceID) {
         Assert.isNotNull(aServiceID);
         synchronized (providers) {
             for (Discovery provider : providers) {
                 final ServiceID nid = getServiceIDforProvider(aServiceID,
                     provider);
-                ServiceMetadata result = provider.getService(nid);
+                ServiceInfo result = provider.getService(nid);
                 if (result != null)
                     return result;
             }
@@ -167,15 +167,15 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#getServices()
      */
     @Override
-    public ServiceMetadata[] getServices() {
-        Set<ServiceMetadata> all = new HashSet<ServiceMetadata>();
+    public ServiceInfo[] getServices() {
+        Set<ServiceInfo> all = new HashSet<ServiceInfo>();
         synchronized (providers) {
             for (Discovery provider : providers) {
-                ServiceMetadata[] services = provider.getServices();
+                ServiceInfo[] services = provider.getServices();
                 all.addAll(Arrays.asList(services));
             }
         }
-        return all.toArray(new ServiceMetadata[all.size()]);
+        return all.toArray(new ServiceInfo[all.size()]);
     }
 
     /**
@@ -184,16 +184,16 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#getServices(org.solmix.hola.discovery.identity.ServiceType)
      */
     @Override
-    public ServiceMetadata[] getServices(ServiceType type) {
-        Set<ServiceMetadata> all = new HashSet<ServiceMetadata>();
+    public ServiceInfo[] getServices(ServiceType type) {
+        Set<ServiceInfo> all = new HashSet<ServiceInfo>();
         synchronized (providers) {
             for (Discovery provider : providers) {
                 ServiceType ntype = getServiceTypeForProvider(type, provider);
-                ServiceMetadata[] services = provider.getServices(ntype);
+                ServiceInfo[] services = provider.getServices(ntype);
                 all.addAll(Arrays.asList(services));
             }
         }
-        return all.toArray(new ServiceMetadata[all.size()]);
+        return all.toArray(new ServiceInfo[all.size()]);
     }
 
     /**
@@ -233,15 +233,15 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#purgeCache()
      */
     @Override
-    public ServiceMetadata[] purgeCache() {
-        Set<ServiceMetadata> all = new HashSet<ServiceMetadata>();
+    public ServiceInfo[] purgeCache() {
+        Set<ServiceInfo> all = new HashSet<ServiceInfo>();
         synchronized (providers) {
             for (Discovery provider : providers) {
-                ServiceMetadata[] services = provider.purgeCache();
+                ServiceInfo[] services = provider.purgeCache();
                 all.addAll(Arrays.asList(services));
             }
         }
-        return all.toArray(new ServiceMetadata[all.size()]);
+        return all.toArray(new ServiceInfo[all.size()]);
     }
 
     /**
@@ -353,7 +353,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
         p.addServiceListener(serviceListener);
         p.addServiceTypeListener(serviceTypeListener);
         synchronized(registeredServices){
-            for(ServiceMetadata meta:registeredServices){
+            for(ServiceInfo meta:registeredServices){
                 p.register(meta);
             }
         }

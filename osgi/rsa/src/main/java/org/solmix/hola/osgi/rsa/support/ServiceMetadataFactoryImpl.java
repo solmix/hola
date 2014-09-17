@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.identity.support.DefaultIDFactory;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceType;
@@ -53,7 +53,7 @@ public class ServiceMetadataFactoryImpl extends AbstractMetadataFactory
 
     private static final Logger LOG= LoggerFactory.getLogger(ServiceMetadataFactoryImpl.class.getName());
     @Override
-    public ServiceMetadata create(DiscoveryAdvertiser advertiser,
+    public ServiceInfo create(DiscoveryAdvertiser advertiser,
         EndpointDescription des) {
         try {
             ServiceType type = createServiceType(des, advertiser);
@@ -61,7 +61,7 @@ public class ServiceMetadataFactoryImpl extends AbstractMetadataFactory
             URI uri = createURI(des, advertiser, type, serviceName);
             ServiceProperties serviceProperties = createServiceProperties(des,
                 advertiser, type, serviceName, uri);
-            ServiceMetadata newServiceInfo = createMetadata(uri, serviceName,
+            ServiceInfo newServiceInfo = createMetadata(uri, serviceName,
                 type, serviceProperties);
             return newServiceInfo;
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class ServiceMetadataFactoryImpl extends AbstractMetadataFactory
 
     }
 
-    private ServiceMetadata createMetadata(URI uri, String serviceName,
+    private ServiceInfo createMetadata(URI uri, String serviceName,
         ServiceType type, ServiceProperties serviceProperties) {
         return new ServiceMetadataImpl(uri, serviceName, type,
             serviceProperties);

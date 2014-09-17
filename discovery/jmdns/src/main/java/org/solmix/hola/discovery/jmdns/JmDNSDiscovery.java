@@ -53,7 +53,7 @@ import org.solmix.hola.core.internal.DefaultIDFactory;
 import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryException;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.event.ServiceTypeEvent;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
@@ -101,7 +101,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
 
     private final List<ServiceType> serviceTypes;
 
-    private final Map<String, ServiceMetadata> services = Collections.synchronizedMap(new HashMap<String, ServiceMetadata>());;
+    private final Map<String, ServiceInfo> services = Collections.synchronizedMap(new HashMap<String, ServiceInfo>());;
 
     private JmDNS jmdns;
     private final DiscoveryInfo info;
@@ -136,12 +136,12 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#register(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#register(org.solmix.hola.discovery.ServiceInfo)
      */
     @Override
-    public void register(ServiceMetadata serviceMetadata) {
-        Assert.isNotNull(serviceMetadata);
-        final ServiceInfo info = createServiceInfo(serviceMetadata);
+    public void register(ServiceInfo serviceInfo) {
+        Assert.isNotNull(serviceInfo);
+        final ServiceInfo info = createServiceInfo(serviceInfo);
         try {
             jmdns.registerService(info);
         } catch (IOException e) {
@@ -152,12 +152,12 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregister(org.solmix.hola.discovery.ServiceMetadata)
+     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregister(org.solmix.hola.discovery.ServiceInfo)
      */
     @Override
-    public void unregister(ServiceMetadata serviceMetadata) {
-        Assert.isNotNull(serviceMetadata);
-        final ServiceInfo info = createServiceInfo(serviceMetadata);
+    public void unregister(ServiceInfo serviceInfo) {
+        Assert.isNotNull(serviceInfo);
+        final ServiceInfo info = createServiceInfo(serviceInfo);
         jmdns.unregisterService(info);
 
     }
@@ -174,7 +174,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
      * @see org.solmix.hola.discovery.DiscoveryLocator#getService(org.solmix.hola.discovery.ServiceID)
      */
     @Override
-    public ServiceMetadata getService(ServiceID id) {
+    public ServiceInfo getService(ServiceID id) {
         Assert.isNotNull(id);
         synchronized (lock) {
             try {
@@ -182,7 +182,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
                 final ServiceInfo[] serviceInfos = jmdns.list(id.getServiceType().getInternal());
                 for (int i = 0; i < serviceInfos.length; i++) {
                     ServiceInfo serviceInfo = serviceInfos[i];
-                    ServiceMetadata iServiceInfo = createServiceMetadata(serviceInfo);
+                    ServiceInfo iServiceInfo = createServiceMetadata(serviceInfo);
                     Assert.isNotNull(iServiceInfo);
                     Assert.isNotNull(iServiceInfo.getServiceID());
                     if (iServiceInfo.getServiceID().equals(id)) {
@@ -203,16 +203,16 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
      * @see org.solmix.hola.discovery.DiscoveryLocator#getServices()
      */
     @Override
-    public ServiceMetadata[] getServices() {
+    public ServiceInfo[] getServices() {
         synchronized (lock) {
             final ServiceType[] serviceTypeArray = getServiceTypes();
-            final List<ServiceMetadata> results = new ArrayList<ServiceMetadata>();
+            final List<ServiceInfo> results = new ArrayList<ServiceInfo>();
             for (int i = 0; i < serviceTypeArray.length; i++) {
                 final ServiceType stid = serviceTypeArray[i];
                 if (stid != null)
                     results.addAll(Arrays.asList(getServices(stid)));
             }
-            return results.toArray(new ServiceMetadata[] {});
+            return results.toArray(new ServiceInfo[] {});
         }
     }
 
@@ -222,9 +222,9 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
      * @see org.solmix.hola.discovery.DiscoveryLocator#getServices(org.solmix.hola.discovery.ServiceType)
      */
     @Override
-    public ServiceMetadata[] getServices(ServiceType type) {
+    public ServiceInfo[] getServices(ServiceType type) {
         Assert.isNotNull(type);
-        final List<ServiceMetadata> metas = new ArrayList<ServiceMetadata>();
+        final List<ServiceInfo> metas = new ArrayList<ServiceInfo>();
         synchronized (lock) {
             for (final Iterator<ServiceType> it = serviceTypes.iterator(); it.hasNext();) {
                 final ServiceType serviceType = it.next();
@@ -236,7 +236,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
                     for (int i = 0; i < infos.length; i++) {
                         try {
                             if (infos[i] != null) {
-                                final ServiceMetadata si = createServiceMetadata(infos[i]);
+                                final ServiceInfo si = createServiceMetadata(infos[i]);
                                 if (si != null)
                                     metas.add(si);
                             }
@@ -247,7 +247,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
                 }
             }
         }
-        return metas.toArray(new ServiceMetadata[] {});
+        return metas.toArray(new ServiceInfo[] {});
     }
 
     /**
@@ -268,11 +268,11 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
      * @see org.solmix.hola.discovery.DiscoveryLocator#purgeCache()
      */
     @Override
-    public ServiceMetadata[] purgeCache() {
+    public ServiceInfo[] purgeCache() {
         synchronized (lock) {
             serviceTypes.clear();
         }
-        return new ServiceMetadata[] {};
+        return new ServiceInfo[] {};
     }
 
     private ID getDefaultTargetId() {
@@ -304,7 +304,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
         notificationThread.start();
     }
     @Override
-    public void close() {
+    public void close() throws IOException {
         super.close();
         synchronized (lock) {
             if(closed)
@@ -316,31 +316,6 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
         }
     }
    
-   /* @Override
-    public void disconnect() {
-        synchronized (lock) {
-            if (this.targetID == null || closed)
-                return;
-            final ID remoteID = getTargetID();
-            fireConnectEvent(new DisconnectingEvent(this, getID(), remoteID));
-            connected = false;
-            notificationThread.interrupt();
-            notificationThread = null;
-            this.targetID = null;
-            serviceTypes.clear();
-            fireConnectEvent(new DisconnectedEvent(this, getID(), remoteID));
-        }
-
-    }*/
-
-  /*  @Override
-    public void destroy() {
-        synchronized (lock) {
-            super.destroy();
-            closed = true;
-        }
-    }*/
-
     /**
      * {@inheritDoc}
      * 
@@ -380,7 +355,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
                 public void run() {
                     final String serviceType = event.getType();
                     final String serviceName = event.getName();
-                    ServiceMetadata meta = null;
+                    ServiceInfo meta = null;
                     synchronized (lock) {
                         if ( closed) {
                             return;
@@ -409,13 +384,13 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
     }
 
     /**
-     * @param serviceMetadata
+     * @param serviceInfo
      * @return
      */
-    private ServiceInfo createServiceInfo(ServiceMetadata serviceMetadata) {
-        if (serviceMetadata == null)
+    private ServiceInfo createServiceInfo(ServiceInfo serviceInfo) {
+        if (serviceInfo == null)
             return null;
-        ServiceProperties prop = serviceMetadata.getServiceProperties();
+        ServiceProperties prop = serviceInfo.getServiceProperties();
         final Hashtable<String, Object> props = new Hashtable<String, Object>();
         if (prop != null) {
             for (final Enumeration<String> e = prop.getPropertyNames(); e.hasMoreElements();) {
@@ -440,19 +415,19 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
                 }
             }
         }
-        final URI location = serviceMetadata.getServiceID().getLocation();
+        final URI location = serviceInfo.getServiceID().getLocation();
         if (location != null) {
             props.put(SCHEME_PROPERTY, location.getScheme());
             props.put(URI_PATH_PROPERTY, location.getPath());
         }
 
-        final ServiceID id = serviceMetadata.getServiceID();
+        final ServiceID id = serviceInfo.getServiceID();
         props.put(NAMING_AUTHORITY_PROPERTY,
             id.getServiceType().getNamingAuthority());
         final ServiceInfo si = ServiceInfo.create(
             id.getServiceType().getInternal(),
-            serviceMetadata.getServiceName(), location.getPort(),
-            serviceMetadata.getWeight(), serviceMetadata.getPriority(), props);
+            serviceInfo.getServiceName(), location.getPort(),
+            serviceInfo.getWeight(), serviceInfo.getPriority(), props);
         return si;
     }
 
@@ -460,7 +435,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
      * @param info
      * @return
      */
-    protected ServiceMetadata createServiceMetadata(ServiceInfo info)
+    protected ServiceInfo createServiceMetadata(ServiceInfo info)
         throws Exception {
         Assert.isNotNull(info);
         final int priority = info.getPriority();
@@ -535,7 +510,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
                 public void run() {
                     final String serviceType = event.getType();
                     final String serviceName = event.getName();
-                    ServiceMetadata metadata = services.remove(serviceType
+                    ServiceInfo metadata = services.remove(serviceType
                         + serviceName);
                     if (metadata == null) {
                         if (LOG.isTraceEnabled())

@@ -18,13 +18,20 @@
  */
 package org.solmix.hola.discovery.zk;
 
-import org.solmix.commons.util.Assert;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.discovery.DiscoveryException;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
-import org.solmix.hola.discovery.support.AbstractDiscovery;
+import org.solmix.hola.discovery.support.FailbackDiscovery;
 import org.solmix.hola.discovery.zk.identity.ZKNamespace;
 import org.solmix.runtime.Container;
 
@@ -35,48 +42,78 @@ import org.solmix.runtime.Container;
  * @version $Id$  2014年9月15日
  */
 
-public class ZKDiscovery extends AbstractDiscovery
+public class ZKDiscovery extends FailbackDiscovery
 {
-
-    private final DiscoveryInfo info;
+    private static final Logger LOG=LoggerFactory.getLogger(ZKDiscovery.class);
+    private final static String DEFAULT_ROOT = "hola_root";
+    private final static String DEFAULT_MUTI = "hola_muti";
     private boolean closed;
+    
+    private final ZKClient zkClient;
+    private final String root;
+    private final Set<ServiceInfo> knowMultiInterface = new CopyOnWriteArraySet<ServiceInfo>();
+
     /**
      * @param discoveryNamespace
      */
-    public ZKDiscovery(DiscoveryInfo info ,Container container) throws DiscoveryException
+    public ZKDiscovery(DiscoveryInfo info ,Container container, ZKTransporter zkTransporter) throws DiscoveryException
     {
-        super(ZKNamespace.NAME,container);
-        this.info=info;
-        
+        super(ZKNamespace.NAME, container, info);
+        if (info.getAddress() == null) {
+            throw new IllegalStateException("discovery address is null!");
+        }
+        String group = info.getGroup(DEFAULT_ROOT);
+        // zk路径必须以/开头
+        if (!group.startsWith("/")) {
+            group = "/" + group;
+        }
+        root = group;
+        zkClient = zkTransporter.connect(info);
+        zkClient.addStateListener(new StateListener() {
+
+            @Override
+            public void stateChanged(int state) {
+                if (state == RECONNECTED) {
+                    try {
+                        recover();
+                    } catch (Exception e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                }
+            }
+        });
+        mackupMultiService();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#register(org.solmix.hola.discovery.ServiceMetadata)
-     */
-    @Override
-    public void register(ServiceMetadata serviceMetadata) {
-       Assert.isNotNull(serviceMetadata);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.discovery.DiscoveryAdvertiser#unregister(org.solmix.hola.discovery.ServiceMetadata)
-     */
-    @Override
-    public void unregister(ServiceMetadata serviceMetadata) {
-        // TODO Auto-generated method stub
-
-    }
+  
     
+    /**
+     * 
+     */
+    private void mackupMultiService() {
+        zkClient.getChildren(DEFAULT_MUTI);
+          zkClient.addChildListener(DEFAULT_MUTI, new ChildListener() {
+            
+            @Override
+            public void childChanged(String path, List<String> children) {
+//                zkClient.
+                
+            }
+        });
+    }
+
+
+
     @Override
-    public void close(){
+    public void close()throws IOException{
         super.close();
         if(closed){
             return;
+        }
+        try {
+            zkClient.close();
+        } catch (Exception e) {
+            LOG.warn("Failed to close zookeeper client " + getInfo() + ", cause: " + e.getMessage(), e);
         }
     }
 
@@ -86,7 +123,7 @@ public class ZKDiscovery extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#getService(org.solmix.hola.discovery.identity.ServiceID)
      */
     @Override
-    public ServiceMetadata getService(ServiceID aServiceID) {
+    public ServiceInfo getService(ServiceID aServiceID) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -97,7 +134,7 @@ public class ZKDiscovery extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#getServices()
      */
     @Override
-    public ServiceMetadata[] getServices() {
+    public ServiceInfo[] getServices() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -108,7 +145,7 @@ public class ZKDiscovery extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#getServices(org.solmix.hola.discovery.identity.ServiceType)
      */
     @Override
-    public ServiceMetadata[] getServices(ServiceType type) {
+    public ServiceInfo[] getServices(ServiceType type) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -130,9 +167,60 @@ public class ZKDiscovery extends AbstractDiscovery
      * @see org.solmix.hola.discovery.DiscoveryLocator#purgeCache()
      */
     @Override
-    public ServiceMetadata[] purgeCache() {
+    public ServiceInfo[] purgeCache() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.discovery.support.FailbackDiscovery#doRegister(org.solmix.hola.discovery.ServiceInfo)
+     */
+    @Override
+    protected void doRegister(ServiceInfo meta) {
+        try {
+            boolean dynamic=true;
+            if(meta.getServiceProperties()!=null){
+              String d=  meta.getServiceProperties().getPropertyString(HolaConstants.KEY_DYNAMIC);
+               if(d!=null&&!Boolean.valueOf(d).booleanValue()){
+                   dynamic=false;
+               }
+            }
+            zkClient.create(toUrlPath(meta), dynamic);
+        } catch (Throwable e) {
+            throw new DiscoveryException("Failed to register " + meta + " to zookeeper " + getInfo() + ", cause: " + e.getMessage(), e);
+        }
+        
+    }
+
+
+
+    /**
+     * 根据服务元数据描述生成zk需要的路径
+     */
+    private String toUrlPath(ServiceInfo info) {
+      ServiceType type= info.getServiceID().getServiceType();
+     String[] services= type.getServices();
+        return null;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.discovery.support.FailbackDiscovery#doUnregister(org.solmix.hola.discovery.ServiceInfo)
+     */
+    @Override
+    protected void doUnregister(ServiceInfo meta) {
+        try {
+            zkClient.delete(toUrlPath(meta));
+        } catch (Throwable e) {
+            throw new DiscoveryException("Failed to unregister " + meta + " to zookeeper " + getInfo() + ", cause: " + e.getMessage(), e);
+        }
     }
 
 }

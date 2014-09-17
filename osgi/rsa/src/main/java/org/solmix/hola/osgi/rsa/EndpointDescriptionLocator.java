@@ -53,7 +53,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.discovery.DiscoveryLocator;
-import org.solmix.hola.discovery.ServiceMetadata;
+import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.event.ServiceEvent;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.osgi.rsa.support.DiscoveredEndpointDescriptionFactoryImpl;
@@ -382,14 +382,14 @@ public class EndpointDescriptionLocator
 
                 @Override
                 public void run() {
-                    ServiceMetadata[] metadatas = null;
+                    ServiceInfo[] metadatas = null;
                     try {
                         metadatas = locator.getServices();
                     } catch (Exception e) {// 防御性容错
                         LOG.error("Exception in locator.getServices()", e);
                     }
                     if (metadatas != null) {
-                        for (ServiceMetadata metadata : metadatas) {
+                        for (ServiceInfo metadata : metadatas) {
                             locatorListener.handleService(metadata, true);
                         }
                     }
@@ -535,13 +535,13 @@ public class EndpointDescriptionLocator
        //服务发现者(JMDNS/JSLP/ZOOKEEPER)发现服务后,发送ServiceEvent通知
         @Override
         public void discovered(ServiceEvent event) {
-            ServiceMetadata metadata = event.getServiceMetadata();
+            ServiceInfo metadata = event.getServiceMetadata();
             handleService(metadata,true);
         }
 
         @Override
         public void undiscovered(ServiceEvent event) {
-            ServiceMetadata metadata = event.getServiceMetadata();
+            ServiceInfo metadata = event.getServiceMetadata();
             handleService(metadata,false);
         }
         /**
@@ -549,7 +549,7 @@ public class EndpointDescriptionLocator
          * @param metadata
          * @param discovered 服务发现/服务消失
          */
-        void handleService(ServiceMetadata metadata, boolean discovered) {
+        void handleService(ServiceInfo metadata, boolean discovered) {
             LOG.info(new StringBuilder().append(metadata).append(
                 " discovered=").append(discovered).toString());
             ServiceID serviceID = metadata.getServiceID();
@@ -589,7 +589,7 @@ public class EndpointDescriptionLocator
          * 根据ID和metadata,找到DiscoveredEndpointDescription
          */
         private void handleEndpointDescription(ServiceID serviceID,
-            ServiceMetadata metadata, boolean discovered) {
+            ServiceInfo metadata, boolean discovered) {
             if (locator == null)
                 return;
             DiscoveredEndpointDescription discoveredEndpointDescription = getDiscoveredEndpointDescription(
@@ -608,7 +608,7 @@ public class EndpointDescriptionLocator
          * 创建EndpointDescription
          */
         private DiscoveredEndpointDescription getDiscoveredEndpointDescription(
-            ServiceID serviceID, ServiceMetadata metadata, boolean discovered) {
+            ServiceID serviceID, ServiceInfo metadata, boolean discovered) {
             DiscoveredEndpointDescriptionFactory factory = getDiscoveredEndpointDescriptionFactory();
             return discovered ? factory.create(locator, metadata)
                 : factory.remove(locator, serviceID);
