@@ -10,8 +10,26 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
+  <module>cluster</module>
+  	<module>core</module>
+  	<module>discovery/api</module>
+  	<module>discovery/jmdns</module>
+  	<module>discovery/provider</module>
+  	<module>discovery/zookeeper</module>
+  	<module>management/api</module>
+  	<module>osgi/distribution</module>
   	<module>osgi/rsa</module>
   	<module>osgi/rsa-proxy</module>
+  	<module>rs/api</module>
+  	<module>rs/avro</module>
+  	<module>rs/generic</module>
+  	<module>rs/rmi</module>
+  	<module>rt/blueprint</module>
+  	<module>rt/api</module>
+  	<module>rt/spring</module>
+  	<module>transport/api</module>
+  	<module>transport/netty</module>
+  	
   	<module>test</module>
   	<module>examples</module>
   </modules>
