@@ -20,7 +20,13 @@ package org.solmix.hola.discovery.zk;
 
 import static org.junit.Assert.fail;
 
+import org.apache.zookeeper.server.ZooKeeperServer;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.solmix.hola.discovery.zk.server.Configuration;
+import org.solmix.hola.discovery.zk.server.Configurator;
+import org.solmix.hola.discovery.zk.server.ZKServer;
 
 
 /**
@@ -32,11 +38,23 @@ import org.junit.Test;
 public class ZKDiscoveryTest
 {
 
+    private static ZooKeeperServer zkServer;
+    @BeforeClass
+    public static void setup(){
+       Configurator configurator= new Configurator();
+       Configuration conf= configurator.createConfig("zoodiscovery.flavor.standalone=true;tickTime=2000;initLimit=10;syncLimit=5;clientPort=2181");
+        try {
+            zkServer=    ZKServer.startStandalone(conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 测试注册
      */
     @Test
     public void testRegister() {
+        Assert.assertNotNull(zkServer);
         fail("Not yet implemented");
     }
     /**
