@@ -18,8 +18,12 @@
  */
 package org.solmix.hola.rs.call;
 
+import org.solmix.hola.rs.RSRequest;
+import org.solmix.hola.rs.RSResponse;
+
 
 /**
+ * 远程服务请求
  * 
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年9月4日
@@ -28,4 +32,6 @@ package org.solmix.hola.rs.call;
 public interface RSCall
 {
 
+	
+	RSResponse call(RSRequest request);
 }

@@ -18,24 +18,12 @@
  */
 package org.solmix.hola.cluster;
 
-import org.solmix.hola.rs.RemoteService;
-import org.solmix.hola.rs.call.RSCall;
-
-
 /**
- * 服务集群
+ * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月4日
+ * @version $Id$  2014年9月21日
  */
 
-public interface Cluster
-{
-	
-	/**
-	 * 根据服务和集群方式选择一个
-	 * @param dic
-	 * @return
-	 */
-	RSCall join(Directory dic);
+public interface Router {
 
 }

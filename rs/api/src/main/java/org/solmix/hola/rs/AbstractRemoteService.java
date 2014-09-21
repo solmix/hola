@@ -59,7 +59,6 @@ public abstract class AbstractRemoteService implements RemoteService,
 
     protected abstract RemoteServiceID getRemoteServiceID();
 
-    protected abstract String[] getInterfaceClassNames();
 
     protected abstract RemoteServiceReference<?> getRemoteServiceReference();
 
@@ -135,7 +134,7 @@ public abstract class AbstractRemoteService implements RemoteService,
     protected Object invokeObject(Object proxy, Method method, Object[] args) {
         String methodName = method.getName();
         if (methodName.equals("toString")) {
-            final String[] clazzes = getInterfaceClassNames();
+            final String[] clazzes = getInterfaces();
             String proxyClass = (clazzes.length == 1) ? clazzes[0]
                 : Arrays.asList(clazzes).toString();
             return proxyClass + ".proxy@" + getRemoteServiceID().getUrl();
@@ -300,7 +299,7 @@ public abstract class AbstractRemoteService implements RemoteService,
         ClassLoader cl = this.getClass().getClassLoader();
         try {
               // Get clazz from reference
-              final String[] clazzes = getInterfaceClassNames();
+              final String[] clazzes = getInterfaces();
               for (int i = 0; i < clazzes.length; i++)
                     classes.add(loadInterfaceClass(cl, clazzes[i]));
         } catch (final Exception e) {

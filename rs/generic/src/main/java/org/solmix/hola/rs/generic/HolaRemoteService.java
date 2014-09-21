@@ -128,13 +128,9 @@ public class HolaRemoteService extends AbstractRemoteService
         return getRemoteServiceReference().getID();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.AbstractRemoteService#getInterfaceClassNames()
-     */
+  
     @Override
-    protected String[] getInterfaceClassNames() {
+    public String[] getInterfaces() {
         return clazzs;
     }
 

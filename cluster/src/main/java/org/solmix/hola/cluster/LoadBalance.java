@@ -18,6 +18,11 @@
  */
 package org.solmix.hola.cluster;
 
+import java.util.List;
+
+import org.solmix.hola.rs.RSRequest;
+import org.solmix.hola.rs.RemoteService;
+
 
 /**
  * 服务选择(负载均衡)
@@ -25,7 +30,14 @@ package org.solmix.hola.cluster;
  * @version 0.0.1  2014年9月4日
  */
 
-public interface RemoteSelector
+public interface LoadBalance
 {
 
+	/**
+	 * 选择一个远程服务
+	 * @param services
+	 * @param request
+	 * @return
+	 */
+	RemoteService select(List<RemoteService> services,RSRequest request);
 }

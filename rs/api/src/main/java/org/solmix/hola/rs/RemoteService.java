@@ -30,6 +30,8 @@ import java.util.concurrent.Future;
 public interface RemoteService
 {
 
+	
+	String[] getInterfaces();
     /**
      * 同步调用远程方法，返回调用结果
      * 
@@ -76,6 +78,5 @@ public interface RemoteService
      * @return
      * @throws RemoteServiceException
      */
-    Object getProxy(ClassLoader classLoader, Class<?>[] interfaceClasses)
-        throws RemoteServiceException;
+    Object getProxy(ClassLoader classLoader, Class<?>[] interfaceClasses)  throws RemoteServiceException;
 }
