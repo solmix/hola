@@ -20,6 +20,8 @@ package org.solmix.hola.rt.config;
 
 import java.util.List;
 
+import org.solmix.hola.rs.RemoteServiceManagerProvider;
+
 
 /**
  * 
@@ -27,7 +29,7 @@ import java.util.List;
  * @version 0.0.1  2014年9月6日
  */
 
-public class AbstractClassConfig extends AbstractConfig
+public class AbstractClassConfig extends AbstractMethodConfig
 {
 
     private static final long serialVersionUID = -3515821709848299465L;
@@ -53,6 +55,11 @@ public class AbstractClassConfig extends AbstractConfig
     protected MonitorConfig monitor;
     
    protected List<DiscoveryConfig> discoveries;
+   
+	 /**
+	 * 远程服务实现
+	 */
+	protected String provider;
 
 
 /**
@@ -197,5 +204,25 @@ public List<DiscoveryConfig> getDiscoveries() {
 public void setDiscoveries(List<DiscoveryConfig> discoveries) {
     this.discoveries = discoveries;
 }
+
+
+/**
+ * @return the provider
+ */
+public String getProvider() {
+	return provider;
+}
+
+
+/**
+ * @param provider the provider to set
+ */
+public void setProvider(String provider) {
+	this.provider = provider;
+	checkExtension(RemoteServiceManagerProvider.class, "provider", provider);
+}
+
+
+
    
 }

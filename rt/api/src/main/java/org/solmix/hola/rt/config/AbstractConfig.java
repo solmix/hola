@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.runtime.Container;
 
 
 /**
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
 public class AbstractConfig implements Serializable
 {
     private static final long serialVersionUID = -3105914257348322382L;
+    
     protected static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
 
     private static final int MAX_LENGTH = 100;
@@ -53,6 +55,8 @@ public class AbstractConfig implements Serializable
 
     private static final Pattern PATTERN_KEY = Pattern.compile("[*,\\-._0-9a-zA-Z]+");
 
+    protected Container container;
+    
     protected String id;
     
     /**
@@ -68,6 +72,7 @@ public class AbstractConfig implements Serializable
     public void setId(String id) {
         this.id = id;
     }
+    
     protected static void checkProperty(String property, String value, int maxlength, Pattern pattern) {
         if (value == null || value.length() == 0) {
             return;
@@ -82,18 +87,48 @@ public class AbstractConfig implements Serializable
             }
         }
     }
+    
     protected static void checkName(String property, String value) {
         checkProperty(property, value, MAX_LENGTH, PATTERN_NAME);
     }
+    
     protected static void checkMultiName(String property, String value) {
         checkProperty(property, value, MAX_LENGTH, PATTERN_MULTI_NAME);
     }
+    
     protected static void checkPathName(String property, String value) {
         checkProperty(property, value, MAX_PATH_LENGTH, PATTERN_PATH);
     }
+    
+    protected  void checkExtension(Class<?> type,String property, String value) {
+    	if(container==null){
+    		throw new IllegalStateException("Container is null");
+    	}
+    	checkName(property, value);
+    	if(value != null&&value.length() > 0 
+    			&& ! container.getExtensionLoader(type).hasExtension(value)){
+    		throw new IllegalStateException("No such extension " + value + " for " + property + "/" + type.getName());
+    	}
+    }
+    
     protected static boolean booleanValue(Boolean b){
         if(b!=null&&b.booleanValue())
             return true;
         return false;
     }
+
+	/**
+	 * @return the container
+	 */
+	public Container getContainer() {
+		return container;
+	}
+
+	/**
+	 * @param container the container to set
+	 */
+	public void setContainer(Container container) {
+		this.container = container;
+	}
+    
 }

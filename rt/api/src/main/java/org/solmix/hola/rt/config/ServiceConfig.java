@@ -19,6 +19,9 @@
 
 package org.solmix.hola.rt.config;
 
+import org.solmix.runtime.Container;
+
+
 
 /**
  * 
@@ -74,7 +77,8 @@ public class ServiceConfig<T> extends AbstractServiceConfig
     /**
      * default instance.
      */
-    public ServiceConfig(){
+    public ServiceConfig(Container container){
+    	setContainer(container);
     }
     /**
      * 注册服务
@@ -161,7 +165,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
            if( module == null )     module =server.getModule() ;
            if( discoveries==null)   discoveries=server.getDiscoveries();
            if( monitor==null)       monitor=server.getMonitor();
-           if( protocols==null)     protocols=server.getProtocols();
+//           if( protocols==null)     protocols=server.getProtocols();
         }
         if(module!=null){
             if(discoveries==null) discoveries=module.getDiscoveries();

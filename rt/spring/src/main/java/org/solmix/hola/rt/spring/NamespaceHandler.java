@@ -23,7 +23,6 @@ import org.solmix.hola.rt.spring.parser.ClientDefinitionParser;
 import org.solmix.hola.rt.spring.parser.DiscoveryDefinitionParser;
 import org.solmix.hola.rt.spring.parser.ModuleDefinitionParser;
 import org.solmix.hola.rt.spring.parser.MonitorDefinitionParser;
-import org.solmix.hola.rt.spring.parser.ProtocolDefinitionParser;
 import org.solmix.hola.rt.spring.parser.ReferenceDefinitionParser;
 import org.solmix.hola.rt.spring.parser.ServerDefinitionParser;
 import org.solmix.hola.rt.spring.parser.ServiceDefinitionParser;
@@ -50,7 +49,6 @@ public class NamespaceHandler extends NamespaceHandlerSupport
        registerBeanDefinitionParser("module", new ModuleDefinitionParser());
        registerBeanDefinitionParser("discovery", new DiscoveryDefinitionParser());
        registerBeanDefinitionParser("monitor", new MonitorDefinitionParser());
-       registerBeanDefinitionParser("protocol", new ProtocolDefinitionParser());
        registerBeanDefinitionParser("server", new ServerDefinitionParser());
        registerBeanDefinitionParser("client", new ClientDefinitionParser());
        registerBeanDefinitionParser("service", new ServiceDefinitionParser());

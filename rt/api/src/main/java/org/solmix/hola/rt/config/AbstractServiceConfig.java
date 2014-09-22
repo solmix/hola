@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.rt.config;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -47,7 +46,7 @@ public class AbstractServiceConfig extends AbstractClassConfig
     // 应用文档
     protected String               document;
 
-    protected List<ProtocolConfig> protocols;
+    protected List<String> protocols;
     /**
      * @return the delay
      */
@@ -110,9 +109,9 @@ public class AbstractServiceConfig extends AbstractClassConfig
         this.document = document;
     }
 
-    /**
+   /* *//**
      * @return the protocols
-     */
+     *//*
     public List<ProtocolConfig> getProtocols() {
         return protocols;
     }
@@ -122,12 +121,12 @@ public class AbstractServiceConfig extends AbstractClassConfig
     public void setProtocol(ProtocolConfig protocol) {
         this.protocols =  Arrays.asList(new ProtocolConfig[] {protocol});
     }
-    /**
+    *//**
      * @param protocols the protocols to set
-     */
+     *//*
     public void setProtocols(List<ProtocolConfig> protocols) {
         this.protocols = protocols;
-    }
+    }*/
     
     
 }

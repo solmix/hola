@@ -12,7 +12,16 @@
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-rs-api</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
-  		<type>bundle</type>
   	</dependency>
+  	<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
 </project>

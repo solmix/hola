@@ -165,9 +165,9 @@ public class GenericExportor implements ServiceExportor
            if(s.getMonitor()==null){
                s.setMonitor(server.getMonitor());
            }
-           if(s.getProtocols()==null){
+           /*if(s.getProtocols()==null){
                s.setProtocols(server.getProtocols());
-           }
+           }*/
         }
         if(s.getModule()!=null){
             ModuleConfig module= s.getModule();
