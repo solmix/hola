@@ -18,211 +18,244 @@
  */
 package org.solmix.hola.rt.config;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.solmix.hola.rs.RemoteServiceManagerProvider;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月6日
+ * @version 0.0.1 2014年9月6日
  */
 
-public class AbstractClassConfig extends AbstractMethodConfig
-{
+public class AbstractClassConfig extends AbstractMethodConfig {
 
-    private static final long serialVersionUID = -3515821709848299465L;
-    /**
-     * 代理实现
-     */
-    protected String proxy;
+	private static final long serialVersionUID = -3515821709848299465L;
+	/**
+	 * 代理实现
+	 */
+	protected String proxy;
 
-    protected String cluster;
-    
-    protected Integer connections;
-    
-    protected String payload;
-    
-    protected String scope;
-    
-    protected ApplicationConfig application;
-    
-    protected ModuleConfig module;
-    /**
-     * 监控中心
-     */
-    protected MonitorConfig monitor;
-    
-   protected List<DiscoveryConfig> discoveries;
-   
-	 /**
+	protected String cluster;
+
+	protected Integer connections;
+
+	protected String payload;
+
+	protected String scope;
+
+	protected ApplicationConfig application;
+
+	protected ModuleConfig module;
+	/**
+	 * 监控中心
+	 */
+	protected MonitorConfig monitor;
+
+	protected List<DiscoveryConfig> discoveries;
+
+	/**
 	 * 远程服务实现
 	 */
 	protected String provider;
 
+	/**
+	 * @return the proxy
+	 */
+	public String getProxy() {
+		return proxy;
+	}
 
-/**
- * @return the proxy
- */
-public String getProxy() {
-    return proxy;
-}
+	/**
+	 * @param proxy
+	 *            the proxy to set
+	 */
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
+	}
 
+	/**
+	 * @return the cluster
+	 */
+	public String getCluster() {
+		return cluster;
+	}
 
-/**
- * @param proxy the proxy to set
- */
-public void setProxy(String proxy) {
-    this.proxy = proxy;
-}
+	/**
+	 * @param cluster
+	 *            the cluster to set
+	 */
+	public void setCluster(String cluster) {
+		this.cluster = cluster;
+	}
 
+	/**
+	 * @return the connections
+	 */
+	public Integer getConnections() {
+		return connections;
+	}
 
-/**
- * @return the cluster
- */
-public String getCluster() {
-    return cluster;
-}
+	/**
+	 * @param connections
+	 *            the connections to set
+	 */
+	public void setConnections(Integer connections) {
+		this.connections = connections;
+	}
 
+	/**
+	 * @return the payload
+	 */
+	public String getPayload() {
+		return payload;
+	}
 
-/**
- * @param cluster the cluster to set
- */
-public void setCluster(String cluster) {
-    this.cluster = cluster;
-}
+	/**
+	 * @param payload
+	 *            the payload to set
+	 */
+	public void setPayload(String payload) {
+		this.payload = payload;
+	}
 
+	/**
+	 * @return the scope
+	 */
+	public String getScope() {
+		return scope;
+	}
 
-/**
- * @return the connections
- */
-public Integer getConnections() {
-    return connections;
-}
+	/**
+	 * @param scope
+	 *            the scope to set
+	 */
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
 
+	/**
+	 * @return the application
+	 */
+	public ApplicationConfig getApplication() {
+		return application;
+	}
 
-/**
- * @param connections the connections to set
- */
-public void setConnections(Integer connections) {
-    this.connections = connections;
-}
+	/**
+	 * @param application
+	 *            the application to set
+	 */
+	public void setApplication(ApplicationConfig application) {
+		this.application = application;
+	}
 
+	/**
+	 * @return the module
+	 */
+	public ModuleConfig getModule() {
+		return module;
+	}
 
-/**
- * @return the payload
- */
-public String getPayload() {
-    return payload;
-}
+	/**
+	 * @param module
+	 *            the module to set
+	 */
+	public void setModule(ModuleConfig module) {
+		this.module = module;
+	}
 
+	/**
+	 * @return the monitor
+	 */
+	public MonitorConfig getMonitor() {
+		return monitor;
+	}
 
-/**
- * @param payload the payload to set
- */
-public void setPayload(String payload) {
-    this.payload = payload;
-}
+	/**
+	 * @param monitor
+	 *            the monitor to set
+	 */
+	public void setMonitor(MonitorConfig monitor) {
+		this.monitor = monitor;
+	}
 
+	/**
+	 * @return the discoveries
+	 */
+	public List<DiscoveryConfig> getDiscoveries() {
+		return discoveries;
+	}
 
-/**
- * @return the scope
- */
-public String getScope() {
-    return scope;
-}
+	/**
+	 * @param discoveries
+	 *            the discoveries to set
+	 */
+	public void setDiscoveries(List<DiscoveryConfig> discoveries) {
+		this.discoveries = discoveries;
+	}
 
+	public DiscoveryConfig getDiscovery() {
+		return discoveries == null || discoveries.size() == 0 ? null
+				: discoveries.get(0);
+	}
 
-/**
- * @param scope the scope to set
- */
-public void setScope(String scope) {
-    this.scope = scope;
-}
+	public void setDiscovery(DiscoveryConfig registry) {
+		List<DiscoveryConfig> registries = new ArrayList<DiscoveryConfig>(1);
+		registries.add(registry);
+		this.discoveries = registries;
+	}
 
+	/**
+	 * @return the provider
+	 */
+	public String getProvider() {
+		return provider;
+	}
 
-/**
- * @return the application
- */
-public ApplicationConfig getApplication() {
-    return application;
-}
-
-
-/**
- * @param application the application to set
- */
-public void setApplication(ApplicationConfig application) {
-    this.application = application;
-}
-
-
-/**
- * @return the module
- */
-public ModuleConfig getModule() {
-    return module;
-}
-
-
-/**
- * @param module the module to set
- */
-public void setModule(ModuleConfig module) {
-    this.module = module;
-}
-
-
-/**
- * @return the monitor
- */
-public MonitorConfig getMonitor() {
-    return monitor;
-}
-
-
-/**
- * @param monitor the monitor to set
- */
-public void setMonitor(MonitorConfig monitor) {
-    this.monitor = monitor;
-}
-
-
-/**
- * @return the discoveries
- */
-public List<DiscoveryConfig> getDiscoveries() {
-    return discoveries;
-}
-
-
-/**
- * @param discoveries the discoveries to set
- */
-public void setDiscoveries(List<DiscoveryConfig> discoveries) {
-    this.discoveries = discoveries;
-}
-
-
-/**
- * @return the provider
- */
-public String getProvider() {
-	return provider;
-}
-
-
-/**
- * @param provider the provider to set
- */
-public void setProvider(String provider) {
-	this.provider = provider;
-	checkExtension(RemoteServiceManagerProvider.class, "provider", provider);
-}
-
-
-
-   
+	/**
+	 * @param provider
+	 *            the provider to set
+	 */
+	public void setProvider(String provider) {
+		this.provider = provider;
+		checkExtension(RemoteServiceManagerProvider.class, "provider", provider);
+	}
+	
+	 protected void checkInterfaceAndMethods(Class<?> interfaceClass, List<MethodConfig> methods) {
+		 if (interfaceClass == null) {
+	            throw new IllegalStateException("interface not allow null!");
+	        }
+		 if(! interfaceClass.isInterface()) { 
+	            throw new IllegalStateException("The interface class " + interfaceClass + " is not a interface!");
+	        }
+		 if (methods != null && methods.size() > 0) {
+	            for (MethodConfig methodBean : methods) {
+	                String methodName = methodBean.getName();
+	                if (methodName == null || methodName.length() == 0) {
+	                    throw new IllegalStateException("method name attribute is required! ");
+	                }
+	                boolean hasMethod = false;
+	                for (java.lang.reflect.Method method : interfaceClass.getMethods()) {
+	                    if (method.getName().equals(methodName)) {
+	                        hasMethod = true;
+	                        break;
+	                    }
+	                }
+	                if (!hasMethod) {
+	                    throw new IllegalStateException("The interface " + interfaceClass.getName()
+	                            + " not found method " + methodName);
+	                }
+	            }
+	        }
+	 }
+	 protected void checkApplication(){
+		 if(application==null)
+			 application=new ApplicationConfig();
+	 }
+	 protected void checkDiscovery(){
+		 if(discoveries==null||discoveries.size()==0){
+			 setDiscovery(new DiscoveryConfig(DiscoveryConfig.NO_AVAILABLE));
+		 }
+	 }
 }

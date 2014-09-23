@@ -30,23 +30,28 @@ import java.util.Map;
 public class DiscoveryConfig extends AbstractConfig
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 7819222894033381016L;
 
     public static final String NO_AVAILABLE = "N/A";
 
-    // 注册中心地址
+    /**
+     * 公告服务地址
+     */
     private String address;
 
-    // 注册中心登录用户名
+    /**
+     * 登陆公告服务用户名
+     */
     private String username;
 
-    // 注册中心登录密码
+    /**
+     *  登陆公告服务密码
+     */
     private String password;
 
-    // 注册中心缺省端口
+    /**
+     * 公告服务端口
+     */
     private Integer port;
 
     private String cluster;
@@ -71,9 +76,38 @@ public class DiscoveryConfig extends AbstractConfig
     private Boolean           subscribe;
     
     private Map<String, Object> properties;
+    
+    public DiscoveryConfig(){
+    	
+    }
 
+    public DiscoveryConfig(String address){
+    	setAddress(address);
+    }
+    /**
+     * 公告服务实现
+     */
+    private String provider;
+    
     
     /**
+	 * @return the provider
+	 */
+	public String getProvider() {
+		return provider;
+	}
+
+
+	/**
+	 * @param provider the provider to set
+	 */
+	public void setProvider(String provider) {
+		checkName("provider", provider);
+		this.provider = provider;
+	}
+
+
+	/**
      * @return the address
      */
     public String getAddress() {
@@ -101,6 +135,7 @@ public class DiscoveryConfig extends AbstractConfig
      * @param username the username to set
      */
     public void setUsername(String username) {
+    	checkName("username", username);
         this.username = username;
     }
 
@@ -117,6 +152,7 @@ public class DiscoveryConfig extends AbstractConfig
      * @param password the password to set
      */
     public void setPassword(String password) {
+    	checkLength("password", password);
         this.password = password;
     }
 

@@ -18,30 +18,196 @@
  */
 package org.solmix.hola.rt.config;
 
+import org.solmix.hola.core.executor.ExecutorProvider;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月6日
+ * @version 0.0.1 2014年9月6日
  */
 
-public class ServerConfig extends AbstractServiceConfig
-{
-    /**
+public class ServerConfig extends AbstractServiceConfig {
+	/**
      * 
      */
-    private static final long serialVersionUID = -4040109969678654602L;
+	private static final long serialVersionUID = -4040109969678654602L;
 
-    private String              host;
+	/**
+	 * 主机
+	 */
+	private String host;
 
-    // 服务端口
-    private Integer             port;
-    private String              codec;
-    private Integer             queues;
-    private Integer             accepts;
-    private String              contextpath;
-    private String              serialization;
-    private String              charset;
-    private Integer             payload;
-    private Integer             buffer;
+	/**
+	 * 服务端口
+	 */
+	private Integer port;
+
+	/**
+     * 
+     */
+	private String codec;
+
+	private String  executor;
+	   
+	private Integer queues;
+	
+	private Integer accepts;
+	
+	private String contextpath;
+	
+	private String serialization;
+	
+	private String charset;
+	
+	private Integer buffer;
+
+	/**
+	 * @return the host
+	 */
+	public String getHost() {
+		return host;
+	}
+
+	/**
+	 * @param host
+	 *            the host to set
+	 */
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	/**
+	 * @return the port
+	 */
+	public Integer getPort() {
+		return port;
+	}
+
+	/**
+	 * @param port
+	 *            the port to set
+	 */
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	/**
+	 * @return the codec
+	 */
+	public String getCodec() {
+		return codec;
+	}
+
+	/**
+	 * @param codec
+	 *            the codec to set
+	 */
+	public void setCodec(String codec) {
+		this.codec = codec;
+	}
+
+	/**
+	 * @return the queues
+	 */
+	public Integer getQueues() {
+		return queues;
+	}
+
+	/**
+	 * @param queues
+	 *            the queues to set
+	 */
+	public void setQueues(Integer queues) {
+		this.queues = queues;
+	}
+
+	/**
+	 * @return the accepts
+	 */
+	public Integer getAccepts() {
+		return accepts;
+	}
+
+	/**
+	 * @param accepts
+	 *            the accepts to set
+	 */
+	public void setAccepts(Integer accepts) {
+		this.accepts = accepts;
+	}
+
+	/**
+	 * @return the contextpath
+	 */
+	public String getContextpath() {
+		return contextpath;
+	}
+
+	/**
+	 * @param contextpath
+	 *            the contextpath to set
+	 */
+	public void setContextpath(String contextpath) {
+		this.contextpath = contextpath;
+	}
+
+	/**
+	 * @return the serialization
+	 */
+	public String getSerialization() {
+		return serialization;
+	}
+
+	/**
+	 * @param serialization
+	 *            the serialization to set
+	 */
+	public void setSerialization(String serialization) {
+		this.serialization = serialization;
+	}
+
+	/**
+	 * @return the charset
+	 */
+	public String getCharset() {
+		return charset;
+	}
+
+	/**
+	 * @param charset
+	 *            the charset to set
+	 */
+	public void setCharset(String charset) {
+		this.charset = charset;
+	}
+
+	/**
+	 * @return the buffer
+	 */
+	public Integer getBuffer() {
+		return buffer;
+	}
+
+	/**
+	 * @param buffer
+	 *            the buffer to set
+	 */
+	public void setBuffer(Integer buffer) {
+		this.buffer = buffer;
+	}
+
+	/**
+	 * @return the executor
+	 */
+	public String getExecutor() {
+		return executor;
+	}
+
+	/**
+	 * @param executor the executor to set
+	 */
+	public void setExecutor(String executor) {
+		this.executor = executor;
+		checkExtension(ExecutorProvider.class, "executor", executor);
+	}
 }

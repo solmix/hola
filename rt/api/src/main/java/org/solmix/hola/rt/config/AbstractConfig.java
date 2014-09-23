@@ -88,8 +88,16 @@ public class AbstractConfig implements Serializable
         }
     }
     
+    protected static void checkMethodName(String property, String value) {
+        checkProperty(property, value, MAX_LENGTH, PATTERN_METHOD_NAME);
+    }
+    
     protected static void checkName(String property, String value) {
         checkProperty(property, value, MAX_LENGTH, PATTERN_NAME);
+    }
+    
+    protected static void checkLength(String property, String value) {
+        checkProperty(property, value, MAX_LENGTH, null);
     }
     
     protected static void checkMultiName(String property, String value) {

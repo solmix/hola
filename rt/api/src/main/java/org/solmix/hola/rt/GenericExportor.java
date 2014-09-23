@@ -68,7 +68,7 @@ public class GenericExportor implements ServiceExportor
             return;
         }
         final Integer delay=config.getDelay();
-        if(delay!=null&&delay>0){
+        if(delay != null && delay > 0){
             Thread thread = new Thread(new Runnable() {
 
                 @Override
@@ -93,8 +93,7 @@ public class GenericExportor implements ServiceExportor
      * 
      */
     protected void doExport() {
-      
-        
+    	config.register();
     }
     private void prepareLoad() {
         try {
