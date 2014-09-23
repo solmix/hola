@@ -65,6 +65,7 @@ public class ExportServiceTest extends TestCase {
 	
 	@Override
 	public void tearDown(){
-		container.close();
+	    //colse by jvm shutdown hook
+	    //container.close();
 	}
 }
