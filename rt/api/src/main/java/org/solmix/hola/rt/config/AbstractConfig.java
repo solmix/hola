@@ -19,11 +19,17 @@
 package org.solmix.hola.rt.config;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.net.URLEncoder;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.StringUtils;
 import org.solmix.runtime.Container;
 
 
@@ -124,7 +130,90 @@ public class AbstractConfig implements Serializable
             return true;
         return false;
     }
-
+    
+    protected static void appendProperties(Map<String, Object> props, Object config) {
+        appendProperties(props, config, null);
+    }
+    @SuppressWarnings("unchecked")
+    protected static void appendProperties(Map<String, Object> props, Object config, String prefix) {
+        if(config==null)
+            return;
+        Method[] methods = config.getClass().getMethods();
+        for (Method method : methods) {
+            try {
+                String name = method.getName();
+                if ((name.startsWith("get") || name.startsWith("is")) 
+                        && ! "getClass".equals(name)
+                        && Modifier.isPublic(method.getModifiers()) 
+                        && method.getParameterTypes().length == 0
+                        && isPrimitive(method.getReturnType())) {
+                    Property parameter = method.getAnnotation(Property.class);
+                    if (method.getReturnType() == Object.class || parameter != null && parameter.excluded()) {
+                        continue;
+                    }
+                    int i = name.startsWith("get") ? 3 : 2;
+                    String prop = StringUtils.camelToSplitName(name.substring(i, i + 1).toLowerCase() + name.substring(i + 1), ".");
+                    String key;
+                    if (parameter != null && parameter.key() != null && parameter.key().length() > 0) {
+                        key = parameter.key();
+                    } else {
+                        key = prop;
+                    }
+                    Object value = method.invoke(config, new Object[0]);
+                    String str = String.valueOf(value).trim();
+                    if (value != null && str.length() > 0) {
+                        if (parameter != null && parameter.escaped()) {
+                            str = encode(str);
+                        }
+                        if (prefix != null && prefix.length() > 0) {
+                            key = prefix + "." + key;
+                        }
+                        props.put(key, str);
+                    } else if (parameter != null && parameter.required()) {
+                        throw new IllegalStateException(config.getClass().getSimpleName() + "." + key + " == null");
+                    }
+                    //FIXME
+                }else if ("getParameters".equals(name)
+                    && Modifier.isPublic(method.getModifiers()) 
+                    && method.getParameterTypes().length == 0
+                    && method.getReturnType() == Map.class) {
+                Map<String, String> map = (Map<String, String>) method.invoke(config, new Object[0]);
+                if (map != null && map.size() > 0) {
+                    String pre = (prefix != null && prefix.length() > 0 ? prefix + "." : "");
+                    for (Map.Entry<String, String> entry : map.entrySet()) {
+                        props.put(pre + entry.getKey().replace('-', '.'), entry.getValue());
+                    }
+                }
+            }
+            }catch (Exception e) {
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        }
+    }
+    
+    public static String encode(String value) {
+        if (value == null || value.length() == 0) { 
+            return "";
+        }
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+    private static boolean isPrimitive(Class<?> type) {
+        return type.isPrimitive() 
+                || type == String.class 
+                || type == Character.class
+                || type == Boolean.class
+                || type == Byte.class
+                || type == Short.class
+                || type == Integer.class 
+                || type == Long.class
+                || type == Float.class 
+                || type == Double.class
+                || type == Object.class;
+    }
 	/**
 	 * @return the container
 	 */

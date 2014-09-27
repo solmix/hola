@@ -63,6 +63,9 @@ public class ServerConfig extends AbstractServiceConfig {
 	private Integer buffer;
 
 	
+	public ServerConfig(String protocol){
+	    setProtocol(protocol);
+	}
     /**
      * @return the delay
      */

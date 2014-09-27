@@ -22,8 +22,10 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rt.config.ServiceConfig;
+import org.solmix.runtime.Container;
 
 
 /**
@@ -36,6 +38,8 @@ public class GenericExportor implements ServiceExportor
 {
  private static final Logger LOG = LoggerFactory.getLogger(GenericExportor.class);
     protected   ServiceConfig<?> config;
+    
+    private final Container container;
     private  volatile boolean unexported;
 
     private  volatile boolean exported;
@@ -43,6 +47,10 @@ public class GenericExportor implements ServiceExportor
     public GenericExportor(ServiceConfig<?> type){
         this.config=type;
         this.config.setServiceExportor(this);
+        Assert.isNotNull(config);
+        this.container=type.getContainer();
+        Assert.isNotNull(container);
+       
     }
    
     @Override
@@ -112,11 +120,12 @@ public class GenericExportor implements ServiceExportor
         //如果不配置为LOCAL,远程发布
           if(!EndpointInfo.SCOPE_LOCAL.equalsIgnoreCase(scope)){
               if(LOG.isInfoEnabled()){
-                  LOG.info("Export service :"+endpoint.getShort(EndpointInfo.INTERFACE_KEY));
+                  LOG.info("Export service :"+config.getInterface());
               }
               //是否公告服务
               if(endpoint.getBoolean(EndpointInfo.ADVERTISE_KEY, true)){
                   //通过discovery来发布
+                  //TODO
               }else{
                   //直接发布
                   

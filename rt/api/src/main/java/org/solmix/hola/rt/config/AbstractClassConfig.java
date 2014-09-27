@@ -61,7 +61,7 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	/**
 	 * 远程服务实现
 	 */
-	protected String provider;
+	protected String protocol;
 
 	/**
 	 * @return the proxy
@@ -212,17 +212,17 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	/**
 	 * @return the provider
 	 */
-	public String getProvider() {
-		return provider;
+	public String getProtocol() {
+		return protocol;
 	}
 
 	/**
 	 * @param provider
 	 *            the provider to set
 	 */
-	public void setProvider(String provider) {
-		this.provider = provider;
-		checkExtension(RemoteManagerProtocol.class, "provider", provider);
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+		checkExtension(RemoteManagerProtocol.class, "protocol", protocol);
 	}
 	
 	/**

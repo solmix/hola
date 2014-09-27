@@ -20,8 +20,12 @@
 package org.solmix.hola.rt.config;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rs.service.GenericService;
 import org.solmix.hola.rt.ServiceExportor;
@@ -40,6 +44,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
 
     private static final long serialVersionUID = -7539697586814177467L;
 
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceConfig.class);
     private String interfaceName;
 
     protected Integer delay;
@@ -112,7 +117,12 @@ public class ServiceConfig<T> extends AbstractServiceConfig
     }
     protected void checkServer(){
         if(servers==null||servers.size()==0){
-            setServer(new ServerConfig());
+            if(getProtocol()==null){
+                if(LOG.isInfoEnabled())
+                    LOG.info("not set <hola:server .../> neither <hola:service protocol=.../>,set default protocol:hola ");
+                setProtocol("hola");
+            }
+            setServer(new ServerConfig(getProtocol()));
         }
     }
     
@@ -236,6 +246,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
     public List<EndpointInfo> getEndpointInfo(){
       //加载合并整理参数,准备
       prepareExport();
+      Map<String,Object> prop= new HashMap<String,Object>();
       return null;
         
     }
