@@ -29,9 +29,9 @@ import org.solmix.commons.util.ClassDescUtils;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.core.serialize.Serialization;
-import org.solmix.hola.rs.RSRequest;
-import org.solmix.hola.rs.support.RSRequestImpl;
-import org.solmix.hola.rs.support.RSResponseImpl;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.support.RemoteRequestImpl;
+import org.solmix.hola.rs.support.RemoteResponseImpl;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.hola.transport.codec.ExchangeCodec;
@@ -81,7 +81,7 @@ public class HolaCodec extends ExchangeCodec implements   Codec
                         data = decodeEventData(channel, in);
                     } else {
                         
-                        HolaRSResponse response = new HolaRSResponse(channel,res,in,getRequest(id));
+                        HolaRemoteResponse response = new HolaRemoteResponse(channel,res,in,getRequest(id));
                         response.decode();
                         data=response;
                     }
@@ -108,7 +108,7 @@ public class HolaCodec extends ExchangeCodec implements   Codec
                 } else if (req.isEvent()) {
                     data = decodeEventData(channel, in);
                 } else {
-                    HolaRSRequest response = new HolaRSRequest(channel,req,in);
+                    HolaRemoteRequest response = new HolaRemoteRequest(channel,req,in);
                     response.decode();
                     data=response;
                 }
@@ -121,14 +121,14 @@ public class HolaCodec extends ExchangeCodec implements   Codec
             return req;
         }
     }
-    protected RSRequest getRequest(long id) {
+    protected RemoteRequest getRequest(long id) {
        Object o=getRequestData(id);
-        return (RSRequest)o;
+        return (RemoteRequest)o;
     }
     @Override
     protected void encodeRequestData(Channel channel, ObjectOutput out,
         Object data) throws IOException {
-        RSRequestImpl req = (RSRequestImpl) data;
+        RemoteRequestImpl req = (RemoteRequestImpl) data;
        out.writeUTF(req.getProperty(RemoteInfo.PATH));
          out.writeUTF(req.getProperty(RemoteInfo.VERSION));
         out.writeUTF(req.getMethod());
@@ -146,7 +146,7 @@ public class HolaCodec extends ExchangeCodec implements   Codec
 
     @Override
     protected void encodeResponseData(Channel channel, ObjectOutput out, Object data) throws IOException {
-        RSResponseImpl result = (RSResponseImpl) data;
+        RemoteResponseImpl result = (RemoteResponseImpl) data;
 
         Throwable th = result.getException();
         if (th == null) {

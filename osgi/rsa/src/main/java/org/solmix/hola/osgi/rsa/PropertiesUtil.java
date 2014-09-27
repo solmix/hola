@@ -35,7 +35,7 @@ import java.util.TreeMap;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.remoteserviceadmin.RemoteConstants;
-import org.solmix.hola.rs.RemoteServiceReference;
+import org.solmix.hola.rs.RemoteReference;
 
 /**
  * 
@@ -316,7 +316,7 @@ public class PropertiesUtil
     }
 
     public static Map<String, Object> copyNonReservedProperties(
-        RemoteServiceReference<?> rsReference, Map<String, Object> target) {
+        RemoteReference<?> rsReference, Map<String, Object> target) {
         String[] keys = rsReference.getPropertyKeys();
         for (int i = 0; i < keys.length; i++)
             if (!isReservedProperty(keys[i]))

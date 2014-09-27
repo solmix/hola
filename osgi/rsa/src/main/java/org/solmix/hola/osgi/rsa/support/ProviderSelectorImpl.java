@@ -39,7 +39,7 @@ import org.solmix.hola.core.security.ConnectSecurityContext;
 import org.solmix.hola.osgi.rsa.AbstractSelector;
 import org.solmix.hola.osgi.rsa.HolaRemoteConstants;
 import org.solmix.hola.osgi.rsa.ProviderSelector;
-import org.solmix.hola.rs.ProviderCreateException;
+import org.solmix.hola.rs.ProtocolException;
 import org.solmix.hola.rs.RemoteServiceProvider;
 import org.solmix.hola.rs.RemoteServiceProviderDescription;
 import org.solmix.hola.rs.RemoteServiceProviderManager;
@@ -103,7 +103,7 @@ public class ProviderSelectorImpl extends AbstractSelector implements
         ServiceReference<?> serviceReference,
         Map<String, ?> overridingProperties, String[] exportedInterfaces,
         String[] requireConfigs, String[] serviceIntents)
-        throws ProviderCreateException {
+        throws ProtocolException {
         List<RemoteServiceProviderDescription> descs = getRemoteServiceProviderManager().getDescriptions();
         if (descs == null)
             return Collections.emptyList();
@@ -127,7 +127,7 @@ public class ProviderSelectorImpl extends AbstractSelector implements
         RemoteServiceProviderDescription desc,
         ServiceReference<?> serviceReference, Map<String, ?> properties,
         String[] exportedInterfaces, String[] requireConfigs,
-        String[] serviceIntents) throws ProviderCreateException {
+        String[] serviceIntents) throws ProtocolException {
         if (matchSupportedConfigTypes(requireConfigs, desc)
             && matchSupportedIntents(serviceIntents, desc)) {
             return createProvider(serviceReference, properties, desc);
@@ -137,7 +137,7 @@ public class ProviderSelectorImpl extends AbstractSelector implements
 
     private RemoteServiceProvider createProvider(
         ServiceReference<?> serviceReference, Map<String, ?> properties,
-        RemoteServiceProviderDescription desc) throws ProviderCreateException {
+        RemoteServiceProviderDescription desc) throws ProtocolException {
         String configNamePrefix = desc.getName();
         Map<String, Object> results = new HashMap<String, Object>();
         for (String origKey : properties.keySet()) {
@@ -156,7 +156,7 @@ public class ProviderSelectorImpl extends AbstractSelector implements
         Map<String, ?> properties, String[] exportedInterfaces,
         String[] serviceIntents, List<RemoteServiceProvider> results,
         List<RemoteServiceProviderDescription> descs)
-        throws ProviderCreateException {
+        throws ProtocolException {
         RemoteServiceProviderDescription[] defaultDescs = getDefaultDescriptions(descs);
 
         for (RemoteServiceProviderDescription desc : defaultDescs) {

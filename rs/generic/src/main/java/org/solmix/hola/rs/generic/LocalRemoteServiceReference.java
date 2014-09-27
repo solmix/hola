@@ -27,16 +27,16 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
  * @version 0.0.1  2014年5月1日
  */
 
-public class LocalRemoteServiceReference<S> implements org.solmix.hola.rs.RemoteServiceReference<S>
+public class LocalRemoteServiceReference<S> implements org.solmix.hola.rs.RemoteReference<S>
 
 {
 
-    private final HolaRemoteServiceRegistration<S> registration;
+    private final HolaRemoteRegistration<S> registration;
     /**
      * @param holaRemoteServiceRegistration
      */
     public LocalRemoteServiceReference(
-        HolaRemoteServiceRegistration<S> holaRemoteServiceRegistration)
+        HolaRemoteRegistration<S> holaRemoteServiceRegistration)
     {
         this.registration=holaRemoteServiceRegistration;
     }
@@ -56,7 +56,7 @@ public class LocalRemoteServiceReference<S> implements org.solmix.hola.rs.Remote
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getProperty(java.lang.String)
+     * @see org.solmix.hola.rs.generic.RemoteReference#getProperty(java.lang.String)
      */
     @Override
     public Object getProperty(String key) {
@@ -66,7 +66,7 @@ public class LocalRemoteServiceReference<S> implements org.solmix.hola.rs.Remote
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getPropertyKeys()
+     * @see org.solmix.hola.rs.generic.RemoteReference#getPropertyKeys()
      */
     @Override
     public String[] getPropertyKeys() {
@@ -76,7 +76,7 @@ public class LocalRemoteServiceReference<S> implements org.solmix.hola.rs.Remote
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#isActive()
+     * @see org.solmix.hola.rs.generic.RemoteReference#isActive()
      */
     @Override
     public boolean isActive() {

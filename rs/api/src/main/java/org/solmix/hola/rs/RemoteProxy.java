@@ -16,29 +16,19 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-
 package org.solmix.hola.rs;
 
-import org.solmix.hola.core.model.EndpointInfo;
-import org.solmix.runtime.Extension;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年8月19日
+ * @version 0.0.1  2014年4月29日
  */
-@Extension(name = "hola")
-public interface RemoteServiceManagerProtocol
+
+public interface RemoteProxy
 {
+    RemoteService getRemoteService();
+    
+    RemoteReference<?> getRemServiceReference();
 
-    RemoteServiceManager createManager(
-        RemoteServiceListener... listeners);
-
-    RemoteServiceManager createManager();
-
-    String[] getSupportedIntents(EndpointInfo info);
-
-    String[] getSupportedConfigs(EndpointInfo info);
-
-    String[] getImportedConfigs(EndpointInfo info, String[] remoteSupportedConfigs);
 }

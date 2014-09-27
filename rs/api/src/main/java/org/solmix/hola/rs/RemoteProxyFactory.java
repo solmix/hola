@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rs;
 
-import org.solmix.hola.rs.event.RemoteRequestEvent;
+import java.lang.reflect.InvocationHandler;
 
 
 /**
@@ -27,8 +27,7 @@ import org.solmix.hola.rs.event.RemoteRequestEvent;
  * @version 0.0.1  2014年4月29日
  */
 
-public interface RSRequestListener
+public interface RemoteProxyFactory
 {
-    
-    void onHandle(RemoteRequestEvent event);
+    Object createProxy(ClassLoader classloader, Class<?>[] interfaces, InvocationHandler handler);
 }

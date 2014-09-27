@@ -16,34 +16,32 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs;
+package org.solmix.hola.rs.event;
 
-import org.solmix.hola.core.HolaRuntimeException;
-
+import org.solmix.hola.rs.RemoteReference;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年8月19日
+ * @version 0.0.1  2014年7月13日
  */
 
-public class RemoteServiceException extends HolaRuntimeException
+public class RemoteUnregisteredEvent extends RemoteEvent
 {
-
-    /**
-     * @param string
-     * @param e
-     */
-    public RemoteServiceException(String msg, Throwable e)
-    {
-        super(msg,e);
-    }
-
-
     /**
      * 
      */
-    private static final long serialVersionUID = 8551806789868609191L;
+    private static final long serialVersionUID = 3681239370371274489L;
+
+    /**
+     * @param type
+     * @param reference
+     */
+    public RemoteUnregisteredEvent(
+        RemoteReference<?> reference)
+    {
+        super(UNREGISTERED, reference);
+    }
 
 }

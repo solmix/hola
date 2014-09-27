@@ -29,9 +29,9 @@ import org.solmix.hola.core.identity.Identifiable;
 
 public interface RemoteServiceContext extends Identifiable,ConnectContext
 {
-    RemoteServiceManager getManager();
+    RemoteManager getManager();
     
-    void addRemoteServiceListener(RemoteServiceListener listener);
+    void addRemoteServiceListener(RemoteListener listener);
 
-    void removeRemoteServiceListener(RemoteServiceListener listener);
+    void removeRemoteServiceListener(RemoteListener listener);
 }

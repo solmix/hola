@@ -16,32 +16,29 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.event;
 
-import org.solmix.hola.rs.RemoteServiceReference;
+package org.solmix.hola.rs;
 
+import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.runtime.Extension;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年7月13日
+ * @version 0.0.1 2014年8月19日
  */
-
-public class RemoteServiceRegisteredEvent extends RemoteServiceEvent
+@Extension(name = "hola")
+public interface RemoteManagerProtocol
 {
 
-    /**
-     * @param type
-     * @param reference
-     */
-    public RemoteServiceRegisteredEvent(
-        RemoteServiceReference<?> reference)
-    {
-        super(REGISTERED, reference);
-    }
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1563950423719120225L;
+    RemoteManager createManager(
+        RemoteListener... listeners);
 
+    RemoteManager createManager();
+
+    String[] getSupportedIntents(EndpointInfo info);
+
+    String[] getSupportedConfigs(EndpointInfo info);
+
+    String[] getImportedConfigs(EndpointInfo info, String[] remoteSupportedConfigs);
 }

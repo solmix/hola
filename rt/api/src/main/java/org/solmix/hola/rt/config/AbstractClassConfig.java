@@ -24,7 +24,7 @@ import java.util.List;
 import org.solmix.commons.util.DataUtils;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.discovery.ServiceInfo;
-import org.solmix.hola.rs.RemoteServiceManagerProtocol;
+import org.solmix.hola.rs.RemoteManagerProtocol;
 
 /**
  * 
@@ -222,7 +222,7 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	 */
 	public void setProvider(String provider) {
 		this.provider = provider;
-		checkExtension(RemoteServiceManagerProtocol.class, "provider", provider);
+		checkExtension(RemoteManagerProtocol.class, "provider", provider);
 	}
 	
 	/**

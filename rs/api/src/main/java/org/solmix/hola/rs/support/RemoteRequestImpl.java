@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.rs.RSRequest;
+import org.solmix.hola.rs.RemoteRequest;
 
 /**
  * 
@@ -32,7 +32,7 @@ import org.solmix.hola.rs.RSRequest;
  * @version 0.0.1 2014年5月17日
  */
 
-public class RSRequestImpl implements RSRequest, Serializable
+public class RemoteRequestImpl implements RemoteRequest, Serializable
 {
 
     private static final long serialVersionUID = -5293962379025983974L;
@@ -47,11 +47,11 @@ public class RSRequestImpl implements RSRequest, Serializable
 
     private Class<?>[] parameterTypes;
 
-    public RSRequestImpl()
+    public RemoteRequestImpl()
     {
     }
 
-    public RSRequestImpl(String method, Object[] parameters, int timeout,
+    public RemoteRequestImpl(String method, Object[] parameters, int timeout,
         Map<String, String> properties,Class<?>[] parameterTypes)
     {
         this.method = method;
@@ -64,17 +64,17 @@ public class RSRequestImpl implements RSRequest, Serializable
         Assert.isNotNull(this.method);
     }
 
-    public RSRequestImpl(String method, Object[] parameters,Class<?>[] parameterTypes)
+    public RemoteRequestImpl(String method, Object[] parameters,Class<?>[] parameterTypes)
     {
         this(method, parameters, DEFAULT_TIMEOUT, null,parameterTypes);
     }
 
-    public RSRequestImpl(String method, Object[] parameters,Class<?>[] parameterTypes, int timeout)
+    public RemoteRequestImpl(String method, Object[] parameters,Class<?>[] parameterTypes, int timeout)
     {
         this(method, parameters, timeout, null,parameterTypes);
     }
 
-    public RSRequestImpl(String method)
+    public RemoteRequestImpl(String method)
     {
         this(method, null,null);
     }

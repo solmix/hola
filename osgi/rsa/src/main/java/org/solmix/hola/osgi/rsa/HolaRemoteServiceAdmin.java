@@ -82,11 +82,11 @@ import org.solmix.hola.osgi.rsa.support.ProviderSelectorImpl;
 import org.solmix.hola.rs.RemoteConnectException;
 import org.solmix.hola.rs.RemoteConstants;
 import org.solmix.hola.rs.RemoteService;
-import org.solmix.hola.rs.RemoteServiceListener;
+import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteServiceProvider;
-import org.solmix.hola.rs.RemoteServiceReference;
-import org.solmix.hola.rs.RemoteServiceRegistration;
-import org.solmix.hola.rs.event.RemoteServiceEvent;
+import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteRegistration;
+import org.solmix.hola.rs.event.RemoteEvent;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
@@ -447,17 +447,17 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
         final ID[] idFilter = getIdFilter(desc, providerID);
         // SERVICE_ID osgi filter
         final String rsFilter = getRemoteServiceFilter(desc);
-        Collection<RemoteServiceReference<?>> rsRefs = new ArrayList<RemoteServiceReference<?>>();
+        Collection<RemoteReference<?>> rsRefs = new ArrayList<RemoteReference<?>>();
         ID rsProviderID = rsProvider.getID();
         try {
             // Get first interface name for service reference
             // lookup
             final String interf = interfaces.iterator().next();
             // Get/lookup remote service references
-            RemoteServiceReference<?>[] refs = AccessController.doPrivileged(new PrivilegedExceptionAction<RemoteServiceReference<?>[]>() {
+            RemoteReference<?>[] refs = AccessController.doPrivileged(new PrivilegedExceptionAction<RemoteReference<?>[]>() {
 
                 @Override
-                public RemoteServiceReference<?>[] run()
+                public RemoteReference<?>[] run()
                     throws ConnectException, InvalidSyntaxException,
                     RemoteConnectException {
                     return rsProvider.getRemoteServiceReferences(targetID,
@@ -480,7 +480,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
                     rsRefs.add(refs[i]);
             // If there are several refs resulting (should not be)
             // we select the one to use
-            RemoteServiceReference<?> selectedRsReference = selectRemoteServiceReference(
+            RemoteReference<?> selectedRsReference = selectRemoteServiceReference(
                 rsRefs, targetID, idFilter, interfaces, rsFilter, rsProvider);
             // If none found, we obviously can't continue
             if (selectedRsReference == null)
@@ -504,8 +504,8 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
         }
     }
 
-    private RemoteServiceReference<?> selectRemoteServiceReference(
-        Collection<RemoteServiceReference<?>> rsRefs, ID targetID,
+    private RemoteReference<?> selectRemoteServiceReference(
+        Collection<RemoteReference<?>> rsRefs, ID targetID,
         ID[] idFilter, Collection<String> interfaces, String rsFilter,
         RemoteServiceProvider rsContainer) {
         if (rsRefs.size() == 0)
@@ -524,7 +524,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
     private ImportEndpoint createAndRegisterProxy(
         final HolaEndpointDescription desc,
         final RemoteServiceProvider rsProvider,
-        final RemoteServiceReference<?> selectedRsReference) {
+        final RemoteReference<?> selectedRsReference) {
         final BundleContext proxyServiceFactoryContext = getProxyServiceFactoryContext(desc);
         if (proxyServiceFactoryContext == null)
             throw new IllegalStateException(
@@ -561,10 +561,10 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
         });
 
         return new ImportEndpoint(rsProvider.getID(), rsProvider,
-            selectedRsReference, rs, new RemoteServiceListener() {
+            selectedRsReference, rs, new RemoteListener() {
 
                 @Override
-                public void onHandle(RemoteServiceEvent event) {
+                public void onHandle(RemoteEvent event) {
                     if (event instanceof RemoteServiceUnregisteredEvent)
                         unimportService(event.getRemoteServiceReference().getID());
                 }
@@ -574,7 +574,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
 
     private Map<String,Object> createProxyProperties(ID importContainerID,
         EndpointDescription endpointDescription,
-        RemoteServiceReference<?> rsReference, RemoteService remoteService) {
+        RemoteReference<?> rsReference, RemoteService remoteService) {
 
         Map<String, Object> resultProperties = new TreeMap<String, Object>(
             String.CASE_INSENSITIVE_ORDER);
@@ -655,7 +655,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
      */
     protected ProxyServiceFactory createProxyServiceFactory(
         HolaEndpointDescription desc, RemoteServiceProvider rsProvider,
-        RemoteServiceReference<?> selectedRsReference, RemoteService rs) {
+        RemoteReference<?> selectedRsReference, RemoteService rs) {
         return new ProxyServiceFactory(desc.getInterfaceVersions(), rsProvider,
             selectedRsReference, rs);
     }
@@ -966,7 +966,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
                 return getClientBundleContext().getService(reference);
             }
         });
-        RemoteServiceRegistration<?> registration = provider.registerRemoteService(
+        RemoteRegistration<?> registration = provider.registerRemoteService(
             exportedInterfaces, service, remoteServiceProperties);
         // endpointDescriptionProperties.put(RemoteConstants.SERVICE_ID,
         // registration.getRelativeId)
@@ -1472,7 +1472,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
 
         private final RemoteServiceProvider rsProvider;
 
-        private final RemoteServiceReference<?> rsReference;
+        private final RemoteReference<?> rsReference;
 
         private final RemoteService remoteService;
 
@@ -1482,7 +1482,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
 
         public ProxyServiceFactory(Map<String, Version> interfaceVersions,
             RemoteServiceProvider rsProvider,
-            RemoteServiceReference<?> rsReference, RemoteService remoteService)
+            RemoteReference<?> rsReference, RemoteService remoteService)
         {
             this.rsProvider = rsProvider;
             this.rsReference = rsReference;
@@ -1766,13 +1766,13 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
 
         private HolaEndpointDescription endpointDescription;
 
-        private RemoteServiceRegistration<?> rsRegistration;
+        private RemoteRegistration<?> rsRegistration;
 
         private final Set<ExportRegistration> activeExportRegistrations = new HashSet<ExportRegistration>();
 
         ExportEndpoint(ServiceReference<?> serviceReference,
             HolaEndpointDescription endpointDescription,
-            RemoteServiceRegistration<?> reg)
+            RemoteRegistration<?> reg)
         {
             Assert.isNotNull(serviceReference);
             this.serviceReference = serviceReference;
@@ -1794,7 +1794,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
             return endpointDescription;
         }
 
-        synchronized RemoteServiceRegistration<?> getRemoteServiceRegistration() {
+        synchronized RemoteRegistration<?> getRemoteServiceRegistration() {
             return rsRegistration;
         }
 
@@ -1858,7 +1858,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
             return exportEndpoint;
         }
 
-        synchronized RemoteServiceRegistration<?> getRemoteServiceRegistration() {
+        synchronized RemoteRegistration<?> getRemoteServiceRegistration() {
             return (exportEndpoint == null) ? null
                 : exportEndpoint.getRemoteServiceRegistration();
         }
@@ -1953,7 +1953,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
                 : null;
         }
 
-        RemoteServiceRegistration<?> getRemoteServiceRegistration() {
+        RemoteRegistration<?> getRemoteServiceRegistration() {
             return exportReference.getRemoteServiceRegistration();
         }
 
@@ -2008,17 +2008,17 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
 
         private HolaEndpointDescription endpointDescription;
 
-        private RemoteServiceListener rsListener;
+        private RemoteListener rsListener;
 
-        private RemoteServiceReference<?> rsReference;
+        private RemoteReference<?> rsReference;
 
         private ServiceRegistration<?> proxyRegistration;
 
         private final Set<ImportRegistration> activeImportRegistrations = new HashSet<ImportRegistration>();
 
         ImportEndpoint(ID importContainerID, RemoteServiceProvider provider,
-            RemoteServiceReference rsReference, RemoteService rs,
-            RemoteServiceListener rsListener,
+            RemoteReference rsReference, RemoteService rs,
+            RemoteListener rsListener,
             ServiceRegistration proxyRegistration,
             HolaEndpointDescription endpointDescription)
         {

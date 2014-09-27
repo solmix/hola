@@ -33,12 +33,12 @@ import java.util.Vector;
 import org.solmix.commons.util.Reflection;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RSRequest;
-import org.solmix.hola.rs.RemoteServiceReference;
-import org.solmix.hola.rs.RemoteServiceRegistration;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.identity.RemoteServiceID;
-import org.solmix.hola.rs.support.RSRequestImpl;
-import org.solmix.hola.rs.support.RSResponseImpl;
+import org.solmix.hola.rs.support.RemoteRequestImpl;
+import org.solmix.hola.rs.support.RemoteResponseImpl;
 
 /**
  * 
@@ -46,8 +46,8 @@ import org.solmix.hola.rs.support.RSResponseImpl;
  * @version 0.0.1 2014年5月1日
  */
 
-public class HolaRemoteServiceRegistration<S> implements
-    RemoteServiceRegistration<S>, java.io.Serializable
+public class HolaRemoteRegistration<S> implements
+    RemoteRegistration<S>, java.io.Serializable
 {
     private static final long serialVersionUID = 319786149652327809L;
 
@@ -79,8 +79,8 @@ public class HolaRemoteServiceRegistration<S> implements
      * @param service2
      * @param info
      */
-    public HolaRemoteServiceRegistration(
-        HolaRemoteServiceManager manager, String[] clazzes,
+    public HolaRemoteRegistration(
+        HolaRemoteManager manager, String[] clazzes,
         Object service, RemoteInfo info)
     {
         this.manager=manager;
@@ -138,10 +138,10 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceRegistration#getReference()
+     * @see org.solmix.hola.rs.generic.RemoteRegistration#getReference()
      */
     @Override
-    public RemoteServiceReference<S> getReference() {
+    public RemoteReference<S> getReference() {
         if (reference == null) {
             synchronized (this) {
                 reference = new LocalRemoteServiceReference<S>(this);
@@ -153,7 +153,7 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceRegistration#unregister()
+     * @see org.solmix.hola.rs.generic.RemoteRegistration#unregister()
      */
     @Override
     public void unregister() {
@@ -165,7 +165,7 @@ public class HolaRemoteServiceRegistration<S> implements
     @Override
     public String toString() {
        StringBuffer sb = new StringBuffer();
-       sb.append("HolaRemoteServiceRegistration[")
+       sb.append("HolaRemoteRegistration[")
        .append("RemoteServiceID=").append(remoteServiceID)
        .append(";ServiceRanking=").append(serviceRanking)
        .append(";classes=").append(Arrays.toString(clazzes))
@@ -182,7 +182,7 @@ public class HolaRemoteServiceRegistration<S> implements
             return false;
         if (!(o.getClass().equals(this.getClass())))
             return false;
-        return getID().equals(((HolaRemoteServiceRegistration<?>) o).getID());
+        return getID().equals(((HolaRemoteRegistration<?>) o).getID());
     }
 
     @Override
@@ -350,7 +350,7 @@ public class HolaRemoteServiceRegistration<S> implements
 
     private final HolaServiceID remoteServiceID;
     
-    private final HolaRemoteServiceManager manager;
+    private final HolaRemoteManager manager;
 
   
     public Object getService(){
@@ -362,7 +362,7 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceRegistration#getID()
+     * @see org.solmix.hola.rs.generic.RemoteRegistration#getID()
      */
     @Override
     public RemoteServiceID getID() {
@@ -374,8 +374,8 @@ public class HolaRemoteServiceRegistration<S> implements
     /**
      * @param request
      */
-    public RSResponseImpl callService(RSRequest request)  {
-        RSRequestImpl req = (RSRequestImpl) request;
+    public RemoteResponseImpl callService(RemoteRequest request)  {
+        RemoteRequestImpl req = (RemoteRequestImpl) request;
         Object[] args = (request.getParameters() == null) ? new Object[0]
             : request.getParameters();
         final Method method = Reflection.findMethod(service.getClass(),
@@ -390,9 +390,9 @@ public class HolaRemoteServiceRegistration<S> implements
                     return null;
                 }
             });
-            return  new RSResponseImpl(method.invoke(service, args));
+            return  new RemoteResponseImpl(method.invoke(service, args));
         } catch (Throwable e) {
-            return  new RSResponseImpl(e);
+            return  new RemoteResponseImpl(e);
         }
         
     }

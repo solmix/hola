@@ -28,7 +28,7 @@ import org.solmix.hola.core.model.RemoteInfo;
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年8月19日
  */
-public interface RemoteServiceManager 
+public interface RemoteManager 
 {
     /**
      * 注册一个远程服务，服务提供者通过该方法将本地服务暴露给远程消费者．
@@ -38,8 +38,8 @@ public interface RemoteServiceManager
      * @param properties
      * @return
      */
-    RemoteServiceRegistration<?> registerRemoteService(String[] clazzes,
-        Object service, RemoteInfo info) throws RemoteServiceException;
+    RemoteRegistration<?> registerRemoteService(String[] clazzes,
+        Object service, RemoteInfo info) throws RemoteException;
 
     /**
      * 获取远程服务引用
@@ -52,7 +52,7 @@ public interface RemoteServiceManager
      * @throws InvalidSyntaxException
      * @throws RemoteConnectException
      */
-/*    RemoteServiceReference<?>[] getRemoteServiceReferences(ID target,
+/*    RemoteReference<?>[] getRemoteServiceReferences(ID target,
         ID[] idFilter, String clazz, String filter)
         throws InvalidSyntaxException, RemoteConnectException;
 */
@@ -66,32 +66,32 @@ public interface RemoteServiceManager
      * @throws InvalidSyntaxException
      * @throws RemoteConnectException
      */
-    RemoteServiceReference<?> getRemoteServiceReferences(
+    RemoteReference<?> getRemoteServiceReferences(
         String clazz, RemoteInfo info) throws InvalidSyntaxException,
         RemoteConnectException;
 
-    RemoteServiceReference<?>[] getAllRemoteServiceReferences(String clazz,
+    RemoteReference<?>[] getAllRemoteServiceReferences(String clazz,
         String filter) throws InvalidSyntaxException;
 
     Namespace getRemoteServiceNamespace();
 
-//    RemoteServiceReference<?> getRemoteServiceReference(RemoteServiceID serviceID);
+//    RemoteReference<?> getRemoteServiceReference(RemoteServiceID serviceID);
 
     /**
      * 根据远程服务引用，获取远程服务，调用远程服务成功后，如果不在使用服务需要｛@link
-     * {@link #ungetRemoteService(RemoteServiceReference)}注销对该服务的调用
+     * {@link #ungetRemoteService(RemoteReference)}注销对该服务的调用
      * 
      * @param reference
      * @return
      */
-    RemoteService getRemoteService(RemoteServiceReference<?> reference);
+    RemoteService getRemoteService(RemoteReference<?> reference);
 
-    boolean ungetRemoteService(RemoteServiceReference<?> reference);
+    boolean ungetRemoteService(RemoteReference<?> reference);
     
     RemoteFilter createRemoteFilter(String filter) throws InvalidSyntaxException;
     
     void destroy();
-    void addRemoteServiceListener(RemoteServiceListener listener);
+    void addRemoteServiceListener(RemoteListener listener);
 
-    void removeRemoteServiceListener(RemoteServiceListener listener);
+    void removeRemoteServiceListener(RemoteListener listener);
 }

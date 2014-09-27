@@ -20,7 +20,7 @@ package org.solmix.hola.cluster;
 
 import java.util.List;
 
-import org.solmix.hola.rs.RSRequest;
+import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteService;
 
 
@@ -39,5 +39,5 @@ public interface LoadBalance
 	 * @param request
 	 * @return
 	 */
-	RemoteService select(List<RemoteService> services,RSRequest request);
+	RemoteService select(List<RemoteService> services,RemoteRequest request);
 }

@@ -18,8 +18,8 @@
  */
 package org.solmix.hola.rs.call;
 
-import org.solmix.hola.rs.RSRequest;
-import org.solmix.hola.rs.RSResponse;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.RemoteResponse;
 
 
 /**
@@ -33,5 +33,5 @@ public interface RSCall
 {
 
 	
-	RSResponse call(RSRequest request);
+	RemoteResponse call(RemoteRequest request);
 }

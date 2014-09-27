@@ -20,6 +20,8 @@ package org.solmix.hola.rt;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rt.config.ServiceConfig;
 
@@ -32,7 +34,7 @@ import org.solmix.hola.rt.config.ServiceConfig;
 
 public class GenericExportor implements ServiceExportor
 {
-
+ private static final Logger LOG = LoggerFactory.getLogger(GenericExportor.class);
     protected   ServiceConfig<?> config;
     private  volatile boolean unexported;
 
@@ -98,14 +100,41 @@ public class GenericExportor implements ServiceExportor
     	
     }
    
+    protected void doExport(EndpointInfo endpoint) {
+      String scope= endpoint.getString(EndpointInfo.SCOPE_KEY);
+      //不设置,即发布远程,本地也发布
+      //如果配置为NONE,不发布任何服务.
+      if(!EndpointInfo.SCOPE_NONE.equalsIgnoreCase(scope)){
+          //如果不配置为REMOTE,在本地发布
+          if(!EndpointInfo.SCOPE_REMOTE.equalsIgnoreCase(scope)){
+              localExport(endpoint);
+          }
+        //如果不配置为LOCAL,远程发布
+          if(!EndpointInfo.SCOPE_LOCAL.equalsIgnoreCase(scope)){
+              if(LOG.isInfoEnabled()){
+                  LOG.info("Export service :"+endpoint.getShort(EndpointInfo.INTERFACE_KEY));
+              }
+              //是否公告服务
+              if(endpoint.getBoolean(EndpointInfo.ADVERTISE_KEY, true)){
+                  //通过discovery来发布
+              }else{
+                  //直接发布
+                  
+              }
+          }
+      }
+      
+        
+    }
     /**
-     * @param server
-     * @param endpoints
+     * 在JVM中发布
+     * @param endpoint
      */
-    private void doExport(EndpointInfo endpoints) {
+    private void localExport(EndpointInfo endpoint) {
         // TODO Auto-generated method stub
         
     }
+
     @Override
     public synchronized void unexport() {
         if (! exported) {

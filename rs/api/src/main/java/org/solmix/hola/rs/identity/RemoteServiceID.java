@@ -29,7 +29,7 @@ import org.solmix.hola.core.identity.ID;
 
 public interface RemoteServiceID extends ID
 {
-//    RemoteServiceManager getManager();
+//    RemoteManager getManager();
     
     /**
      * 在服务提供者中的相对ID

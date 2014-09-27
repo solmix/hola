@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.solmix.hola.rs.RSResponse;
+import org.solmix.hola.rs.RemoteResponse;
 
 
 /**
@@ -31,7 +31,7 @@ import org.solmix.hola.rs.RSResponse;
  * @version 0.0.1  2014年8月25日
  */
 
-public class RSResponseImpl implements RSResponse, Serializable
+public class RemoteResponseImpl implements RemoteResponse, Serializable
 {
     private static final long serialVersionUID = 9058448837652914452L;
 
@@ -40,19 +40,19 @@ public class RSResponseImpl implements RSResponse, Serializable
     private Throwable                exception;
 
     private final Map<String, String>      properties = new HashMap<String, String>();
-    public RSResponseImpl(){
+    public RemoteResponseImpl(){
     }
-   public RSResponseImpl(Object value){
+   public RemoteResponseImpl(Object value){
         this.value=value;
     }
     
-   public RSResponseImpl(Throwable exception){
+   public RemoteResponseImpl(Throwable exception){
         this.exception=exception;
     }
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RSResponse#getValue()
+     * @see org.solmix.hola.rs.RemoteResponse#getValue()
      */
     @Override
     public Object getValue() {
@@ -69,7 +69,7 @@ public class RSResponseImpl implements RSResponse, Serializable
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RSResponse#getException()
+     * @see org.solmix.hola.rs.RemoteResponse#getException()
      */
     @Override
     public Throwable getException() {
@@ -87,7 +87,7 @@ public class RSResponseImpl implements RSResponse, Serializable
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RSResponse#hasException()
+     * @see org.solmix.hola.rs.RemoteResponse#hasException()
      */
     @Override
     public boolean hasException() {

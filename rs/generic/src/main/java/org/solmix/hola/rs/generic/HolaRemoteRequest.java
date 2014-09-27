@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ClassDescUtils;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RSRequest;
-import org.solmix.hola.rs.support.RSRequestImpl;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.support.RemoteRequestImpl;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.codec.Decodeable;
 import org.solmix.hola.transport.exchange.Request;
@@ -39,11 +39,11 @@ import org.solmix.hola.transport.exchange.Request;
  * @version 0.0.1 2014年8月25日
  */
 
-public class HolaRSRequest extends RSRequestImpl implements RSRequest,
+public class HolaRemoteRequest extends RemoteRequestImpl implements RemoteRequest,
     Decodeable
 {
 
-    private static final Logger log = LoggerFactory.getLogger(HolaRSRequest.class);
+    private static final Logger log = LoggerFactory.getLogger(HolaRemoteRequest.class);
 
     private final Channel channel;
 
@@ -53,7 +53,7 @@ public class HolaRSRequest extends RSRequestImpl implements RSRequest,
 
     private volatile boolean decoded;
 
-    public HolaRSRequest(Channel channel, Request request, ObjectInput in)
+    public HolaRemoteRequest(Channel channel, Request request, ObjectInput in)
     {
         this.channel = channel;
         this.request = request;
@@ -69,7 +69,7 @@ public class HolaRSRequest extends RSRequestImpl implements RSRequest,
      */
     @Override
     public void decode() throws Exception {
-        if (!HolaRSRequest.this.decoded && channel != null && in != null) {
+        if (!HolaRemoteRequest.this.decoded && channel != null && in != null) {
             try {
                 setProperty(RemoteInfo.PATH, in.readUTF());
                 setProperty(RemoteInfo.VERSION, in.readUTF());
@@ -105,7 +105,7 @@ public class HolaRSRequest extends RSRequestImpl implements RSRequest,
             } catch (Exception e) {
                 throw new IOException("Read invocation data failed.", e);
             } finally {
-                HolaRSRequest.this.decoded = true;
+                HolaRemoteRequest.this.decoded = true;
             }
         }
 

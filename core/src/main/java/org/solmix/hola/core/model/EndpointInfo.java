@@ -62,7 +62,22 @@ public class EndpointInfo implements Adaptable
     /**
      * 密码
      */
-    public static final String PASSWORD="password";
+    public static final String PASSWORD = "password";
+
+    public static final String SCOPE_KEY = "scope";
+    
+    public static final String SCOPE_NONE = "none";
+    
+    public static final String SCOPE_REMOTE = "remote";
+    
+    public static final String SCOPE_LOCAL = "local";
+    
+    /**
+     * 是否公告服务
+     */
+    public static final String ADVERTISE_KEY = "advertise";
+    public static final String INTERFACE_KEY = "interface";
+    
     
     
     private final Map<String, Object> properties;

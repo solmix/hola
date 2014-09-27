@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rs.event;
 
-import org.solmix.hola.rs.RemoteServiceReference;
+import org.solmix.hola.rs.RemoteReference;
 
 
 /**
@@ -27,21 +27,21 @@ import org.solmix.hola.rs.RemoteServiceReference;
  * @version 0.0.1  2014年7月13日
  */
 
-public class RemoteServiceUnregisteredEvent extends RemoteServiceEvent
+public class RemoteRegisteredEvent extends RemoteEvent
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 3681239370371274489L;
 
     /**
      * @param type
      * @param reference
      */
-    public RemoteServiceUnregisteredEvent(
-        RemoteServiceReference<?> reference)
+    public RemoteRegisteredEvent(
+        RemoteReference<?> reference)
     {
-        super(UNREGISTERED, reference);
+        super(REGISTERED, reference);
     }
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1563950423719120225L;
 
 }

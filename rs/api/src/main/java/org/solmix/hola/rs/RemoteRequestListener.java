@@ -16,33 +16,19 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-
 package org.solmix.hola.rs;
 
-import org.solmix.hola.rs.identity.RemoteServiceID;
+import org.solmix.hola.rs.event.RemoteRequestEvent;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年4月29日
+ * @version 0.0.1  2014年4月29日
  */
 
-public interface RemoteServiceReference<S>
+public interface RemoteRequestListener
 {
-
-    RemoteServiceID getID();
     
-
-    String[] getInterfaces();
-
-    Object getProperty(String key);
-
-    String[] getPropertyKeys();
-
-    /**
-     * 该服务引用是否有效
-     * @return
-     */
-    boolean isActive();
+    void onHandle(RemoteRequestEvent event);
 }

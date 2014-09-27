@@ -3,7 +3,7 @@ package org.solmix.hola.cluster;
 import java.util.List;
 
 import org.solmix.hola.core.identity.Identifiable;
-import org.solmix.hola.rs.RSRequest;
+import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteService;
 
 /**
@@ -17,5 +17,5 @@ public interface Directory extends Identifiable{
 	String[] getInterfaces();
 	
 	
-	List<RemoteService> list(RSRequest request);
+	List<RemoteService> list(RemoteRequest request);
 }

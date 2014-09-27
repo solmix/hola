@@ -19,7 +19,8 @@
 
 package org.solmix.hola.rs;
 
-import java.util.Map;
+import org.solmix.hola.rs.identity.RemoteServiceID;
+
 
 /**
  * 
@@ -27,42 +28,21 @@ import java.util.Map;
  * @version 0.0.1 2014年4月29日
  */
 
-public interface RSRequest
+public interface RemoteReference<S>
 {
 
-    /**
-     * 远程调用超时时间默认值,可通过hola.remotecall.timeout在System中配置,单位为毫秒.
-     */
-    public static final int DEFAULT_TIMEOUT = new Integer(System.getProperty(
-        "hola.remotecall.timeout", "30000")).intValue();
+    RemoteServiceID getID();
+    
+
+    String[] getInterfaces();
+
+    Object getProperty(String key);
+
+    String[] getPropertyKeys();
 
     /**
-     * 远程方法名,非空.
-     * 
+     * 该服务引用是否有效
      * @return
      */
-    public String getMethod();
-
-    /**
-     * 方法调用所需要的参数,数组中的参数可序列化并参数到远程服务调用端
-     * 
-     * @return 返回非空对象数组
-     */
-    public Object[] getParameters();
-
-    /**
-     * 调用超时时间，单位：毫秒．
-     * 
-     * @return
-     */
-    public int getTimeout();
-    
-    Map<String, String> getProperties();
-   
-    String getProperty(String key);
-    
-    String getProperty(String key, String defaultValue);
-    
-   
-    
+    boolean isActive();
 }

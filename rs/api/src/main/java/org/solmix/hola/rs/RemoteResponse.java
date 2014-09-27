@@ -18,17 +18,42 @@
  */
 package org.solmix.hola.rs;
 
+import java.util.Map;
+
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年4月29日
+ * @version 0.0.1  2014年8月25日
  */
 
-public interface RemoteServiceProxy
+public interface RemoteResponse
 {
-    RemoteService getRemoteService();
-    
-    RemoteServiceReference<?> getRemServiceReference();
+    /**
+     * Get invoke result.
+     * 
+     * @return result. if no result return null.
+     */
+    Object getValue();
 
+    /**
+     * Get exception.
+     * 
+     * @return exception. if no exception return null.
+     */
+    Throwable getException();
+
+  /**
+   * Has exception.
+   * 
+   * @return has exception.
+   */
+  boolean hasException();
+  
+
+  Map<String, String> getProperties();
+ 
+  String getProperty(String key);
+  
+  String getProperty(String key, String defaultValue);
 }

@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.rs.RSRequest;
-import org.solmix.hola.rs.support.RSResponseImpl;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.support.RemoteResponseImpl;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.codec.Decodeable;
 import org.solmix.hola.transport.exchange.Response;
@@ -35,7 +35,7 @@ import org.solmix.hola.transport.exchange.Response;
  * @version 0.0.1 2014年8月25日
  */
 
-public class HolaRSResponse extends RSResponseImpl implements Decodeable
+public class HolaRemoteResponse extends RemoteResponseImpl implements Decodeable
 {
 
     private static final long serialVersionUID = -3494785915968389559L;
@@ -46,10 +46,10 @@ public class HolaRSResponse extends RSResponseImpl implements Decodeable
 
     private final ObjectInput input;
 
-    private final RSRequest request;
+    private final RemoteRequest request;
     private volatile boolean decoded;
-    public HolaRSResponse(Channel channel, Response res, ObjectInput in,
-        RSRequest requestData)
+    public HolaRemoteResponse(Channel channel, Response res, ObjectInput in,
+        RemoteRequest requestData)
     {
         this.channel = channel;
         this.response = res;
@@ -64,7 +64,7 @@ public class HolaRSResponse extends RSResponseImpl implements Decodeable
      */
     @Override
     public void decode() throws Exception {
-        if (!HolaRSResponse.this.decoded && channel != null && input != null) {
+        if (!HolaRemoteResponse.this.decoded && channel != null && input != null) {
       
         try{
             byte flag = input.readByte();            
@@ -95,7 +95,7 @@ public class HolaRSResponse extends RSResponseImpl implements Decodeable
             response.setStatus(Response.CLIENT_ERROR);
             response.setErrorMessage(StringUtils.toString(e));
         }finally{
-            HolaRSResponse.this.decoded=true;
+            HolaRemoteResponse.this.decoded=true;
         }
         }
     }

@@ -20,10 +20,10 @@ package org.solmix.hola.cluster.rs;
 
 import java.util.concurrent.Future;
 
-import org.solmix.hola.rs.RSRequest;
-import org.solmix.hola.rs.RSRequestListener;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.RemoteRequestListener;
 import org.solmix.hola.rs.RemoteService;
-import org.solmix.hola.rs.RemoteServiceException;
+import org.solmix.hola.rs.RemoteException;
 
 /**
  * 
@@ -52,10 +52,10 @@ public class ClusterRemoteService implements RemoteService{
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.solmix.hola.rs.RemoteService#sync(org.solmix.hola.rs.RSRequest)
+	 * @see org.solmix.hola.rs.RemoteService#sync(org.solmix.hola.rs.RemoteRequest)
 	 */
 	@Override
-	public Object sync(RSRequest call) throws RemoteServiceException {
+	public Object sync(RemoteRequest call) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -63,10 +63,10 @@ public class ClusterRemoteService implements RemoteService{
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RSRequest, org.solmix.hola.rs.RSRequestListener)
+	 * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RemoteRequest, org.solmix.hola.rs.RemoteRequestListener)
 	 */
 	@Override
-	public void async(RSRequest call, RSRequestListener listener) {
+	public void async(RemoteRequest call, RemoteRequestListener listener) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -74,10 +74,10 @@ public class ClusterRemoteService implements RemoteService{
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RSRequest)
+	 * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RemoteRequest)
 	 */
 	@Override
-	public Future<Object> async(RSRequest call) {
+	public Future<Object> async(RemoteRequest call) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -85,10 +85,10 @@ public class ClusterRemoteService implements RemoteService{
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.solmix.hola.rs.RemoteService#fireAsync(org.solmix.hola.rs.RSRequest)
+	 * @see org.solmix.hola.rs.RemoteService#fireAsync(org.solmix.hola.rs.RemoteRequest)
 	 */
 	@Override
-	public void fireAsync(RSRequest call) throws RemoteServiceException {
+	public void fireAsync(RemoteRequest call) throws RemoteException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -99,7 +99,7 @@ public class ClusterRemoteService implements RemoteService{
 	 * @see org.solmix.hola.rs.RemoteService#getProxy()
 	 */
 	@Override
-	public Object getProxy() throws RemoteServiceException {
+	public Object getProxy() throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -111,7 +111,7 @@ public class ClusterRemoteService implements RemoteService{
 	 */
 	@Override
 	public Object getProxy(ClassLoader classLoader, Class<?>[] interfaceClasses)
-			throws RemoteServiceException {
+			throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}

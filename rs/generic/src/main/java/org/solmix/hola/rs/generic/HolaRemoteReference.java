@@ -19,7 +19,7 @@
 package org.solmix.hola.rs.generic;
 
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RemoteServiceReference;
+import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 
@@ -29,16 +29,16 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
  * @version 0.0.1  2014年8月21日
  */
 
-public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
+public class HolaRemoteReference<S> implements RemoteReference<S>
 {
 
     private final String clazz;
     private final RemoteInfo info;
-    private final HolaRemoteServiceManager manager;
+    private final HolaRemoteManager manager;
     private RemoteServiceID id;
     private boolean active;
-    public HolaRemoteServiceReference(String clazz, RemoteInfo info,
-        HolaRemoteServiceManager manager)
+    public HolaRemoteReference(String clazz, RemoteInfo info,
+        HolaRemoteManager manager)
     {
         this.clazz=clazz;
         this.manager=manager;
@@ -47,7 +47,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getID()
+     * @see org.solmix.hola.rs.generic.RemoteReference#getID()
      */
     @Override
     public synchronized RemoteServiceID getID() {
@@ -60,7 +60,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getInterfaces()
+     * @see org.solmix.hola.rs.generic.RemoteReference#getInterfaces()
      */
     @Override
     public String[] getInterfaces() {
@@ -70,7 +70,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getProperty(java.lang.String)
+     * @see org.solmix.hola.rs.generic.RemoteReference#getProperty(java.lang.String)
      */
     @Override
     public Object getProperty(String key) {
@@ -80,7 +80,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#getPropertyKeys()
+     * @see org.solmix.hola.rs.generic.RemoteReference#getPropertyKeys()
      */
     @Override
     public String[] getPropertyKeys() {
@@ -90,7 +90,7 @@ public class HolaRemoteServiceReference<S> implements RemoteServiceReference<S>
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceReference#isActive()
+     * @see org.solmix.hola.rs.generic.RemoteReference#isActive()
      */
     @Override
     public boolean isActive() {

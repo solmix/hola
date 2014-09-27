@@ -21,7 +21,7 @@ package org.solmix.hola.rs.support;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
-import org.solmix.hola.rs.RemoteServiceProxyFactory;
+import org.solmix.hola.rs.RemoteProxyFactory;
 
 
 /**
@@ -30,13 +30,13 @@ import org.solmix.hola.rs.RemoteServiceProxyFactory;
  * @version 0.0.1  2014年5月1日
  */
 
-public class JDKRemoteServiceProxyFactory implements RemoteServiceProxyFactory
+public class JDKRemoteServiceProxyFactory implements RemoteProxyFactory
 {
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteServiceProxyFactory#createProxy(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler)
+     * @see org.solmix.hola.rs.RemoteProxyFactory#createProxy(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler)
      */
     @Override
     public Object createProxy(ClassLoader classloader, Class<?>[] interfaces,

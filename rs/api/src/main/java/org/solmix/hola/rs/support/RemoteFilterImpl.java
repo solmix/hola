@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 import org.solmix.hola.rs.RemoteFilter;
-import org.solmix.hola.rs.RemoteServiceReference;
+import org.solmix.hola.rs.RemoteReference;
 
 
 /**
@@ -82,10 +82,10 @@ public class RemoteFilterImpl implements RemoteFilter
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteFilter#match(org.solmix.hola.rs.RemoteServiceReference)
+     * @see org.solmix.hola.rs.RemoteFilter#match(org.solmix.hola.rs.RemoteReference)
      */
     @Override
-    public boolean match(RemoteServiceReference<?> reference) {
+    public boolean match(RemoteReference<?> reference) {
         // TODO Auto-generated method stub
         return false;
     }

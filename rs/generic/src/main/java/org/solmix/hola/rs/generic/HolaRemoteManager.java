@@ -34,18 +34,18 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RSRequest;
+import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteConnectException;
 import org.solmix.hola.rs.RemoteFilter;
 import org.solmix.hola.rs.RemoteService;
-import org.solmix.hola.rs.RemoteServiceException;
-import org.solmix.hola.rs.RemoteServiceListener;
-import org.solmix.hola.rs.RemoteServiceManager;
-import org.solmix.hola.rs.RemoteServiceReference;
-import org.solmix.hola.rs.RemoteServiceRegistration;
-import org.solmix.hola.rs.event.RemoteServiceEvent;
-import org.solmix.hola.rs.event.RemoteServiceRegisteredEvent;
-import org.solmix.hola.rs.event.RemoteServiceUnregisteredEvent;
+import org.solmix.hola.rs.RemoteException;
+import org.solmix.hola.rs.RemoteListener;
+import org.solmix.hola.rs.RemoteManager;
+import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteRegistration;
+import org.solmix.hola.rs.event.RemoteEvent;
+import org.solmix.hola.rs.event.RemoteRegisteredEvent;
+import org.solmix.hola.rs.event.RemoteUnregisteredEvent;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.exchange.ExchangeChannel;
 import org.solmix.hola.transport.exchange.ExchangeClient;
@@ -62,23 +62,23 @@ import org.solmix.runtime.Container;
  * @version 0.0.1  2014年5月17日
  */
 @ThreadSafe
-public class HolaRemoteServiceManager implements RemoteServiceManager
+public class HolaRemoteManager implements RemoteManager
 {
-    protected final List<RemoteServiceListener> listeners=new ArrayList<RemoteServiceListener>();
+    protected final List<RemoteListener> listeners=new ArrayList<RemoteListener>();
     private final Map<String, ExchangeServer> servers = new ConcurrentHashMap<String, ExchangeServer>(); // <host:port,Exchanger>
     private final Map<String, ReferenceCountExchangeClient> clients = new ConcurrentHashMap<String, ReferenceCountExchangeClient>(); // <host:port,Exchanger>
 
     private final Container container;
-    protected Map<ID, HolaRemoteServiceRegistration<?>>  publishedServices = 
-        new ConcurrentHashMap<ID, HolaRemoteServiceRegistration<?>>(50);
+    protected Map<ID, HolaRemoteRegistration<?>>  publishedServices = 
+        new ConcurrentHashMap<ID, HolaRemoteRegistration<?>>(50);
     private final ExchangeHandler handler=new ExchangeHandlerAdaptor(){
         
         @Override
         public Object reply(ExchangeChannel channel, Object msg)
             throws TransportException {
-            if(msg instanceof RSRequest){
-                RSRequest request=(RSRequest)msg;
-                HolaRemoteServiceRegistration<?> registration =  lookupRegistration(channel,request);
+            if(msg instanceof RemoteRequest){
+                RemoteRequest request=(RemoteRequest)msg;
+                HolaRemoteRegistration<?> registration =  lookupRegistration(channel,request);
                 try {
                  return   registration.callService(request);
                 } catch (Exception e) {
@@ -94,10 +94,10 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
             }
         }
     };
-    public HolaRemoteServiceManager(final Container container,RemoteServiceListener...listeners ){
+    public HolaRemoteManager(final Container container,RemoteListener...listeners ){
         this.container=container;
         if(listeners!=null){
-            for(RemoteServiceListener listener:listeners){
+            for(RemoteListener listener:listeners){
                 addRemoteServiceListener(listener);
             }
         }
@@ -106,12 +106,12 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
     /**
      * @param request
      */
-    protected HolaRemoteServiceRegistration<?> lookupRegistration(ExchangeChannel channel,RSRequest request) {
+    protected HolaRemoteRegistration<?> lookupRegistration(ExchangeChannel channel,RemoteRequest request) {
         int port =channel.getLocalAddress().getPort();
         String path=request.getProperty(RemoteInfo.PATH);
         HolaServiceID requestId= createRemoteServiceID(path, request.getProperty(RemoteInfo.VERSION), 
             request.getProperty(RemoteInfo.GROUP), port);
-        HolaRemoteServiceRegistration<?> reg = publishedServices.get(requestId);
+        HolaRemoteRegistration<?> reg = publishedServices.get(requestId);
         return reg;
     }
     /**
@@ -121,8 +121,8 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
      * @param properties {@link org.solmix.hola.osgi.rsa.HolaRemoteServiceAdmin#createExportEndpointDescriptionProperties}
      */
     @Override
-    public RemoteServiceRegistration<?> registerRemoteService(String[] clazzes,
-        Object service, RemoteInfo info) throws RemoteServiceException{
+    public RemoteRegistration<?> registerRemoteService(String[] clazzes,
+        Object service, RemoteInfo info) throws RemoteException{
         Assert.isNotNull(service, "register service is null");
         if (clazzes==null || clazzes.length == 0) {
             throw new IllegalArgumentException( "Service classes list is empty");
@@ -137,8 +137,8 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
             throw new IllegalArgumentException("Service=" + invalidService
                 + " is invalid");
         }
-        final HolaRemoteServiceRegistration<Object> reg 
-        = new HolaRemoteServiceRegistration<Object>(this, clazzes, service, info);
+        final HolaRemoteRegistration<Object> reg 
+        = new HolaRemoteRegistration<Object>(this, clazzes, service, info);
         adapteServer(info);
         publishedServices.put(reg.getID(), reg);
         fireRemoteServiceListeners(createRegisteredEvent(reg));
@@ -178,13 +178,13 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
             ExchangerProvider provider=   container.getExtensionLoader(ExchangerProvider.class).getExtension(info.getExchanger());
             server=provider.bind(info,handler);
         } catch (TransportException e) {
-           throw new RemoteServiceException("Failed to start server ",e);
+           throw new RemoteException("Failed to start server ",e);
         }
         return server;
     }
 
 
-    protected  void unregisterRemoteService(HolaRemoteServiceRegistration<?> reg){
+    protected  void unregisterRemoteService(HolaRemoteRegistration<?> reg){
         
         fireRemoteServiceListeners(createUnregisteredEvent(reg));
         publishedServices.remove(reg.getID());
@@ -195,12 +195,12 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
      * @param createRegisteredEvent
      */
     protected void fireRemoteServiceListeners(
-        RemoteServiceEvent registeredEvent) {
-        List<RemoteServiceListener> entries;
+        RemoteEvent registeredEvent) {
+        List<RemoteListener> entries;
         synchronized (listeners) {
-              entries = new ArrayList<RemoteServiceListener>(listeners);
+              entries = new ArrayList<RemoteListener>(listeners);
         }
-        for(RemoteServiceListener listener:entries){
+        for(RemoteListener listener:entries){
             listener.onHandle(registeredEvent);
         }
     }
@@ -209,24 +209,24 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
      * @param reg
      * @return
      */
-    private RemoteServiceRegisteredEvent createRegisteredEvent(
-        HolaRemoteServiceRegistration<Object> reg) {
-        return new RemoteServiceRegisteredEvent(reg.getReference());
+    private RemoteRegisteredEvent createRegisteredEvent(
+        HolaRemoteRegistration<Object> reg) {
+        return new RemoteRegisteredEvent(reg.getReference());
     }
     /**
      * @param reg
      * @return
      */
-    private RemoteServiceUnregisteredEvent createUnregisteredEvent(
-        HolaRemoteServiceRegistration<?> reg) {
-        return new RemoteServiceUnregisteredEvent(reg.getReference());
+    private RemoteUnregisteredEvent createUnregisteredEvent(
+        HolaRemoteRegistration<?> reg) {
+        return new RemoteUnregisteredEvent(reg.getReference());
     }
   
    
     @Override
-    public RemoteServiceReference<?> getRemoteServiceReferences(
+    public RemoteReference<?> getRemoteServiceReferences(
         String clazz,RemoteInfo info) throws InvalidSyntaxException, RemoteConnectException {
-        return new HolaRemoteServiceReference<Object>(clazz,info,this);
+        return new HolaRemoteReference<Object>(clazz,info,this);
     }
 
     /**
@@ -235,7 +235,7 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
      * @see org.solmix.hola.rs.generic.RemoteServiceProvider#getAllRemoteServiceReferences(java.lang.String, java.lang.String)
      */
     @Override
-    public RemoteServiceReference<?>[] getAllRemoteServiceReferences(
+    public RemoteReference<?>[] getAllRemoteServiceReferences(
         String clazz, String filter) throws InvalidSyntaxException {
         // TODO Auto-generated method stub
         return null;
@@ -251,8 +251,8 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
         return  container.getExtension(IDFactory.class).getNamespaceByName(HolaNamespace.NAME);
     }
 
-    private final Map<RemoteServiceReference<?>,RemoteService> remoteServices=
-        new ConcurrentHashMap<RemoteServiceReference<?>,RemoteService>();
+    private final Map<RemoteReference<?>,RemoteService> remoteServices=
+        new ConcurrentHashMap<RemoteReference<?>,RemoteService>();
     
     private final ConcurrentMap<String, LazyConnectExchangeClient> ghostClients 
     = new ConcurrentHashMap<String, LazyConnectExchangeClient>();
@@ -260,10 +260,10 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#getRemoteService(org.solmix.hola.rs.generic.RemoteServiceReference)
+     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#getRemoteService(org.solmix.hola.rs.generic.RemoteReference)
      */
     @Override
-    public RemoteService getRemoteService(RemoteServiceReference<?> reference) {
+    public RemoteService getRemoteService(RemoteReference<?> reference) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -331,17 +331,17 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
             }
             
         }catch(TransportException e){
-            throw new RemoteServiceException("Failed to create remote service for url:"+info.toString(),e);
+            throw new RemoteException("Failed to create remote service for url:"+info.toString(),e);
         }
         return client;
     }
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#ungetRemoteService(org.solmix.hola.rs.generic.RemoteServiceReference)
+     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#ungetRemoteService(org.solmix.hola.rs.generic.RemoteReference)
      */
     @Override
-    public boolean ungetRemoteService(RemoteServiceReference<?> reference) {
+    public boolean ungetRemoteService(RemoteReference<?> reference) {
        if(reference==null){
            return false;
        }
@@ -371,10 +371,10 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#addRemoteServiceListener(org.solmix.hola.rs.generic.RemoteServiceListener)
+     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#addRemoteServiceListener(org.solmix.hola.rs.generic.RemoteListener)
      */
     @Override
-    public void addRemoteServiceListener(RemoteServiceListener listener) {
+    public void addRemoteServiceListener(RemoteListener listener) {
         synchronized (listeners) {
             listeners.add(listener);
       }
@@ -384,10 +384,10 @@ public class HolaRemoteServiceManager implements RemoteServiceManager
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#removeRemoteServiceListener(org.solmix.hola.rs.generic.RemoteServiceListener)
+     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#removeRemoteServiceListener(org.solmix.hola.rs.generic.RemoteListener)
      */
     @Override
-    public void removeRemoteServiceListener(RemoteServiceListener listener) {
+    public void removeRemoteServiceListener(RemoteListener listener) {
         synchronized (listeners) {
             listeners.remove(listener);
       }

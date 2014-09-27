@@ -16,44 +16,53 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rs;
 
 import java.util.Map;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年8月25日
+ * @version 0.0.1 2014年4月29日
  */
 
-public interface RSResponse
+public interface RemoteRequest
 {
-    /**
-     * Get invoke result.
-     * 
-     * @return result. if no result return null.
-     */
-    Object getValue();
 
     /**
-     * Get exception.
-     * 
-     * @return exception. if no exception return null.
+     * 远程调用超时时间默认值,可通过hola.remotecall.timeout在System中配置,单位为毫秒.
      */
-    Throwable getException();
+    public static final int DEFAULT_TIMEOUT = new Integer(System.getProperty(
+        "hola.remotecall.timeout", "30000")).intValue();
 
-  /**
-   * Has exception.
-   * 
-   * @return has exception.
-   */
-  boolean hasException();
-  
+    /**
+     * 远程方法名,非空.
+     * 
+     * @return
+     */
+    public String getMethod();
 
-  Map<String, String> getProperties();
- 
-  String getProperty(String key);
-  
-  String getProperty(String key, String defaultValue);
+    /**
+     * 方法调用所需要的参数,数组中的参数可序列化并参数到远程服务调用端
+     * 
+     * @return 返回非空对象数组
+     */
+    public Object[] getParameters();
+
+    /**
+     * 调用超时时间，单位：毫秒．
+     * 
+     * @return
+     */
+    public int getTimeout();
+    
+    Map<String, String> getProperties();
+   
+    String getProperty(String key);
+    
+    String getProperty(String key, String defaultValue);
+    
+   
+    
 }

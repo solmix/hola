@@ -32,7 +32,7 @@ import org.solmix.hola.osgi.rsa.AbstractSelector;
 import org.solmix.hola.osgi.rsa.ConsumerSelector;
 import org.solmix.hola.osgi.rsa.HolaEndpointDescription;
 import org.solmix.hola.osgi.rsa.PropertiesUtil;
-import org.solmix.hola.rs.ProviderCreateException;
+import org.solmix.hola.rs.ProtocolException;
 import org.solmix.hola.rs.RemoteServiceProvider;
 import org.solmix.hola.rs.RemoteServiceProviderDescription;
 import org.solmix.hola.rs.RemoteServiceProviderManager;
@@ -115,7 +115,7 @@ public class ConsumerSelectorImpl extends AbstractSelector implements
                         provider=manager.createProvider(descriptionName,properties);
                     if(provider!=null)
                         return provider;
-                } catch (ProviderCreateException e) {
+                } catch (ProtocolException e) {
                     LOG.error("create provider failed", e);
                 }
             }

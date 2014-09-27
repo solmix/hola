@@ -24,7 +24,7 @@ import java.util.EventObject;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.solmix.hola.rs.RemoteServiceReference;
+import org.solmix.hola.rs.RemoteReference;
 
 /**
  * 
@@ -32,7 +32,7 @@ import org.solmix.hola.rs.RemoteServiceReference;
  * @version 0.0.1 2014年4月29日
  */
 
-public class RemoteServiceEvent extends EventObject
+public class RemoteEvent extends EventObject
 {
 
     /**
@@ -40,7 +40,7 @@ public class RemoteServiceEvent extends EventObject
      */
     private static final long serialVersionUID = 6307503964324620448L;
 
-    private final RemoteServiceReference<?> reference;
+    private final RemoteReference<?> reference;
 
     /**
      * Type of service lifecycle change.
@@ -85,7 +85,7 @@ public class RemoteServiceEvent extends EventObject
      */
     public final static int UNREGISTERED = 0x00000004;
 
-    public RemoteServiceEvent(int type, RemoteServiceReference<?> reference)
+    public RemoteEvent(int type, RemoteReference<?> reference)
     {
         super(reference);
         this.reference = reference;
@@ -100,7 +100,7 @@ public class RemoteServiceEvent extends EventObject
      * 
      * @return Reference to the service that had a lifecycle change.
      */
-    public RemoteServiceReference<?> getRemoteServiceReference() {
+    public RemoteReference<?> getRemoteServiceReference() {
         return reference;
     }
 

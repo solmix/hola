@@ -18,16 +18,32 @@
  */
 package org.solmix.hola.rs;
 
-import java.lang.reflect.InvocationHandler;
+import org.solmix.hola.core.HolaRuntimeException;
+
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年4月29日
+ * @version 0.0.1  2014年8月19日
  */
 
-public interface RemoteServiceProxyFactory
+public class RemoteException extends HolaRuntimeException
 {
-    Object createProxy(ClassLoader classloader, Class<?>[] interfaces, InvocationHandler handler);
+
+    /**
+     * @param string
+     * @param e
+     */
+    public RemoteException(String msg, Throwable e)
+    {
+        super(msg,e);
+    }
+
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8551806789868609191L;
+
 }

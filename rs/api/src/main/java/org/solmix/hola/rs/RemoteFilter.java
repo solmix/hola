@@ -36,5 +36,5 @@ public interface RemoteFilter extends Filter
      * @param reference
      * @return
      */
-    boolean match(RemoteServiceReference<?> reference);
+    boolean match(RemoteReference<?> reference);
 }

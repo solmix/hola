@@ -18,8 +18,8 @@
  */
 package org.solmix.hola.osgi.rsa;
 
-import org.solmix.hola.rs.RemoteServiceReference;
-import org.solmix.hola.rs.event.RemoteServiceEvent;
+import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.event.RemoteEvent;
 
 
 /**
@@ -28,7 +28,7 @@ import org.solmix.hola.rs.event.RemoteServiceEvent;
  * @version 0.0.1  2014年6月5日
  */
 
-public class RemoteServiceUnregisteredEvent extends RemoteServiceEvent
+public class RemoteServiceUnregisteredEvent extends RemoteEvent
 {
 
     /**
@@ -36,7 +36,7 @@ public class RemoteServiceUnregisteredEvent extends RemoteServiceEvent
      * @param reference
      */
     public RemoteServiceUnregisteredEvent(int type,
-        RemoteServiceReference<?> reference)
+        RemoteReference<?> reference)
     {
         super(type, reference);
     }

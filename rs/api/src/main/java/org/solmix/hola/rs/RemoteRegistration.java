@@ -26,14 +26,14 @@ import org.solmix.hola.core.identity.ID;
 
 /**
  * 远程服务注册返回结果,在调用
- * {@link RemoteServiceManager#registerRemoteService(String[], Object, Dictionary)}
+ * {@link RemoteManager#registerRemoteService(String[], Object, Dictionary)}
  * 后返回,稍后可以通过该结果注销服务.
  * 
  * @author solmix.f@gmail.com
  * @version 0.0.1 2014年4月29日
  */
 
-public interface RemoteServiceRegistration<S>
+public interface RemoteRegistration<S>
 {
 
     /**
@@ -57,7 +57,7 @@ public interface RemoteServiceRegistration<S>
      * 
      * @return
      */
-    RemoteServiceReference<S> getReference();
+    RemoteReference<S> getReference();
 
     /**
      * 注销服务

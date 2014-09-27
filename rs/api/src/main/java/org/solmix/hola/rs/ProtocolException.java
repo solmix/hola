@@ -18,19 +18,27 @@
  */
 package org.solmix.hola.rs;
 
-import java.util.EventListener;
-
-import org.solmix.hola.rs.event.RemoteServiceEvent;
-
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年4月29日
+ * @version 0.0.1  2014年6月7日
  */
 
-public interface RemoteServiceListener extends EventListener
+public class ProtocolException extends Exception
 {
-    void onHandle(final RemoteServiceEvent event);
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6719489326958521585L;
+
+    /**
+     * @param string
+     */
+    public ProtocolException(String string)
+    {
+        super(string);
+    }
 
 }
