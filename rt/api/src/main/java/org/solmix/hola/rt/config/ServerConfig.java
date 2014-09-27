@@ -41,7 +41,8 @@ public class ServerConfig extends AbstractServiceConfig {
 	 * 服务端口
 	 */
 	private Integer port;
-
+	 // 延迟暴露
+	    protected Integer              delay;
 	/**
      * 
      */
@@ -61,7 +62,23 @@ public class ServerConfig extends AbstractServiceConfig {
 	
 	private Integer buffer;
 
-	/**
+	
+    /**
+     * @return the delay
+     */
+    public Integer getDelay() {
+        return delay;
+    }
+
+    
+    /**
+     * @param delay the delay to set
+     */
+    public void setDelay(Integer delay) {
+        this.delay = delay;
+    }
+
+    /**
 	 * @return the host
 	 */
 	public String getHost() {

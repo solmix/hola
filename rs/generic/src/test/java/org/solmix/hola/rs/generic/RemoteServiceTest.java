@@ -26,7 +26,7 @@ import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteServiceException;
-import org.solmix.hola.rs.RemoteServiceManagerProvider;
+import org.solmix.hola.rs.RemoteServiceManagerProtocol;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
 
@@ -39,12 +39,12 @@ import org.solmix.runtime.Containers;
 
 public class RemoteServiceTest extends TestCase
 {
-    private  RemoteServiceManagerProvider provider;
+    private  RemoteServiceManagerProtocol provider;
     private Container container;
     @Override
     public  void setUp(){
         container=Containers.get();
-        provider=container.getExtensionLoader(RemoteServiceManagerProvider.class).getExtension("hola");
+        provider=container.getExtensionLoader(RemoteServiceManagerProtocol.class).getExtension("hola");
     }
 
     @Test

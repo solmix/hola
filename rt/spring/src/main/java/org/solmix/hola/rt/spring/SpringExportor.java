@@ -83,9 +83,6 @@ public class SpringExportor extends GenericExportor implements InitializingBean,
     private boolean isDelay() {
         ServiceConfig<?> config = getConfig();
         Integer delay = config.getDelay();
-        if (delay == null&&config.getServer()!=null) {
-            delay = config.getServer().getDelay();
-        }
         return supportedApplicationListener&&(delay != null && delay > 0) ? true : false;
     }
 

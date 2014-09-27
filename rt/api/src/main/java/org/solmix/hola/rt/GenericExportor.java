@@ -18,9 +18,9 @@
  */
 package org.solmix.hola.rt;
 
-import org.solmix.hola.rt.config.ApplicationConfig;
-import org.solmix.hola.rt.config.ModuleConfig;
-import org.solmix.hola.rt.config.ServerConfig;
+import java.util.List;
+
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rt.config.ServiceConfig;
 
 
@@ -37,17 +37,10 @@ public class GenericExportor implements ServiceExportor
     private  volatile boolean unexported;
 
     private  volatile boolean exported;
-    private Class<?> interfaceClass;
-    public GenericExportor(){
-        
-    }
+   
     public GenericExportor(ServiceConfig<?> type){
         this.config=type;
-    }
-  
-    @Override
-    public void setConfig(ServiceConfig<?> config) {
-        this.config=config;
+        this.config.setServiceExportor(this);
     }
    
     @Override
@@ -62,11 +55,12 @@ public class GenericExportor implements ServiceExportor
         if(exported)
             return;
         exported=true;
-        config=prepareConfig(config);
-        prepareLoad();
+        config=checkConfig(config);
+        //可以设置为普通服务,不发布服务.
         if(config.getExport()!=null&&!config.getExport().booleanValue()){
             return;
         }
+        //延迟启动
         final Integer delay=config.getDelay();
         if(delay != null && delay > 0){
             Thread thread = new Thread(new Runnable() {
@@ -93,27 +87,23 @@ public class GenericExportor implements ServiceExportor
      * 
      */
     protected void doExport() {
-    	config.register();
+        
+    	List<EndpointInfo> endpoints= config.getEndpointInfo();
+    	
+    	//发布服务
+    	for(EndpointInfo endpoint: endpoints){
+    	    doExport(endpoint);
+    	}
+    	
+    	
     }
-    private void prepareLoad() {
-        try {
-            interfaceClass = Class.forName(config.getInterface(), true, Thread.currentThread()
-                    .getContextClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
-        if (config.getRef() == null) {
-            throw new IllegalStateException("ref not allow null!");
-        }
-        if (! interfaceClass.isInstance(config.getRef())) {
-            throw new IllegalStateException("The class "
-                    + config.getRef().getClass().getName() + " unimplemented interface "
-                    + interfaceClass + "!");
-        }
-        //path
-        if(config.getPath()==null || config.getPath().length()==0){
-            config.setPath(config.getInterface());
-        }
+   
+    /**
+     * @param server
+     * @param endpoints
+     */
+    private void doExport(EndpointInfo endpoints) {
+        // TODO Auto-generated method stub
         
     }
     @Override
@@ -137,55 +127,14 @@ public class GenericExportor implements ServiceExportor
         return unexported;
     }
     
-    protected  ServiceConfig<?> prepareConfig(ServiceConfig<?> s){
+    protected  ServiceConfig<?> checkConfig(ServiceConfig<?> s){
         if(s==null){
             throw new IllegalArgumentException("ServiceConfig is null");
         }
         if (s.getInterface() == null || s.getInterface().length() == 0) {
             throw new IllegalStateException("<hola:service interface=\"\" /> interface not allow null!");
         }
-        if (s.getServer() != null) {
-           ServerConfig server= s.getServer();
-           if(s.getExport()==null){
-               s.setExport(server.getExport());
-           }
-           if(s.getDelay()==null){
-               s.setDelay(server.getDelay());
-           }
-           if(s.getApplication()==null){
-               s.setApplication(server.getApplication());
-           }
-           if(s.getModule()==null){
-               s.setModule(server.getModule());
-           }
-           if(s.getDiscoveries()==null){
-               s.setDiscoveries(server.getDiscoveries());
-           }
-           if(s.getMonitor()==null){
-               s.setMonitor(server.getMonitor());
-           }
-           /*if(s.getProtocols()==null){
-               s.setProtocols(server.getProtocols());
-           }*/
-        }
-        if(s.getModule()!=null){
-            ModuleConfig module= s.getModule();
-            if(s.getDiscoveries()==null){
-                s.setDiscoveries(module.getDiscoveries());
-            }
-            if(s.getMonitor()==null){
-                s.setMonitor(module.getMonitor());
-            }
-        }
-        if(s.getApplication()!=null){
-            ApplicationConfig app= s.getApplication();
-            if(s.getDiscoveries()==null){
-                s.setDiscoveries(app.getDiscoveries());
-            }
-            if(s.getMonitor()==null){
-                s.setMonitor(app.getMonitor());
-            }
-        }
+       
         return s;
     }
 }

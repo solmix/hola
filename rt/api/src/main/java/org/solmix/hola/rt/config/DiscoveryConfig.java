@@ -75,7 +75,14 @@ public class DiscoveryConfig extends AbstractConfig
     // 在该注册中心上服务是否引用
     private Boolean           subscribe;
     
+    private Boolean    isDefault;
+    
     private Map<String, Object> properties;
+    
+    /**
+     * 公告服务协议
+     */
+    private String protocol;
     
     public DiscoveryConfig(){
     	
@@ -84,28 +91,29 @@ public class DiscoveryConfig extends AbstractConfig
     public DiscoveryConfig(String address){
     	setAddress(address);
     }
-    /**
-     * 公告服务实现
-     */
-    private String provider;
-    
     
     /**
 	 * @return the provider
 	 */
-	public String getProvider() {
-		return provider;
+	public String getProtocol() {
+		return protocol;
 	}
 
+	public Boolean isDefault() {
+	        return isDefault;
+	 }
 
-	/**
+	public void setDefault(Boolean isDefault) {
+	        this.isDefault = isDefault;
+	}
+	
+        /**
 	 * @param provider the provider to set
 	 */
-	public void setProvider(String provider) {
-		checkName("provider", provider);
-		this.provider = provider;
+	public void setProtocol(String protocol) {
+		checkName("protocol", protocol);
+		this.protocol = protocol;
 	}
-
 
 	/**
      * @return the address
@@ -121,7 +129,6 @@ public class DiscoveryConfig extends AbstractConfig
     public void setAddress(String address) {
         this.address = address;
     }
-
     
     /**
      * @return the username

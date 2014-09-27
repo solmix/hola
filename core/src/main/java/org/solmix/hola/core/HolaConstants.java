@@ -113,4 +113,6 @@ public class HolaConstants
     
     public static final String KEY_DYNAMIC = "hola.dynamic";
 
+    public static final String ANYHOST_VALUE =   "0.0.0.0";
+
 }

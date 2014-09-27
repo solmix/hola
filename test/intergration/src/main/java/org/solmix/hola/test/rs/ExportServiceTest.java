@@ -22,12 +22,14 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.solmix.hola.rt.ServiceExportor;
+import org.solmix.hola.rt.ServiceManager;
 import org.solmix.hola.rt.config.DiscoveryConfig;
 import org.solmix.hola.rt.config.ServiceConfig;
 import org.solmix.hola.test.services.HelloWorldService;
 import org.solmix.hola.test.services.HelloWorldServiceImpl;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
+
 
 /**
  * 
@@ -45,8 +47,9 @@ public class ExportServiceTest extends TestCase {
 	}
 	@Test
 	public void testExport(){
-		ServiceExportor export =container.getExtension(ServiceExportor.class);
-		assertNotNull(export);
+	    ServiceManager manager =container.getExtension(ServiceManager.class);
+	  
+		assertNotNull(manager);
 		ServiceConfig<HelloWorldService> cf=new ServiceConfig<HelloWorldService>(container);
 		cf.setInterface(HelloWorldService.class.getName());
 		cf.setRef(new HelloWorldServiceImpl());
@@ -56,7 +59,7 @@ public class ExportServiceTest extends TestCase {
 		cf.setDiscovery(dcf);
 		
 		//服务配置
-		export.setConfig(cf);
+		ServiceExportor	export= manager.createExporter(cf);
 		
 		//发布
 		export.export();

@@ -21,7 +21,10 @@ package org.solmix.hola.rt.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.solmix.hola.rs.RemoteServiceManagerProvider;
+import org.solmix.commons.util.DataUtils;
+import org.solmix.hola.core.HolaConstants;
+import org.solmix.hola.discovery.ServiceInfo;
+import org.solmix.hola.rs.RemoteServiceManagerProtocol;
 
 /**
  * 
@@ -219,9 +222,43 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	 */
 	public void setProvider(String provider) {
 		this.provider = provider;
-		checkExtension(RemoteServiceManagerProvider.class, "provider", provider);
+		checkExtension(RemoteServiceManagerProtocol.class, "provider", provider);
 	}
 	
+	/**
+	 * 从公告牌加载服务信息
+	 * 
+	 * @param server
+	 * @return
+	 */
+    protected List<ServiceInfo> loadServiceInfo(boolean server) {
+        checkDiscovery();
+        List<ServiceInfo> discoveried = new ArrayList<ServiceInfo>();
+        if (DataUtils.isNotNullAndEmpty(discoveried)) {
+            for (DiscoveryConfig discovery : discoveries) {
+                String address = discovery.getAddress();
+                if (address == null || address.length() == 0) {
+                    //为空先从系统配置中查找
+                    String sysaddress = System.getProperty("hola.discovery.address");
+                    if (sysaddress != null && sysaddress.length() > 0) {
+                        address = sysaddress;
+                    }
+                }
+                
+                if (address == null || address.length() == 0) {
+                    address = HolaConstants.ANYHOST_VALUE;
+                }
+                
+                if(address!=null
+                    && address.length() >0
+                    && DiscoveryConfig.NO_AVAILABLE.equalsIgnoreCase(address)){
+                    
+                }
+            }
+        }
+        return discoveried;
+    }
+
 	 protected void checkInterfaceAndMethods(Class<?> interfaceClass, List<MethodConfig> methods) {
 		 if (interfaceClass == null) {
 	            throw new IllegalStateException("interface not allow null!");
@@ -253,9 +290,11 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 		 if(application==null)
 			 application=new ApplicationConfig();
 	 }
+	 
 	 protected void checkDiscovery(){
 		 if(discoveries==null||discoveries.size()==0){
 			 setDiscovery(new DiscoveryConfig(DiscoveryConfig.NO_AVAILABLE));
 		 }
 	 }
+	
 }

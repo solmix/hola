@@ -21,7 +21,7 @@ package org.solmix.hola.rs.generic;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rs.RemoteServiceListener;
 import org.solmix.hola.rs.RemoteServiceManager;
-import org.solmix.hola.rs.RemoteServiceManagerProvider;
+import org.solmix.hola.rs.RemoteServiceManagerProtocol;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
@@ -31,15 +31,15 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年8月19日
  */
-@Extension(name=HolaRemoteManagerProvider.NAME)
-public class HolaRemoteManagerProvider implements RemoteServiceManagerProvider
+@Extension(name=HolaRemoteManagerProtocol.NAME)
+public class HolaRemoteManagerProtocol implements RemoteServiceManagerProtocol
 {
 
     public static final String NAME="hola";
     
     private final Container container;
     
-   public HolaRemoteManagerProvider(Container container){
+   public HolaRemoteManagerProtocol(Container container){
        this.container=container;
    }
  
@@ -52,7 +52,7 @@ public class HolaRemoteManagerProvider implements RemoteServiceManagerProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProvider#createManager(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProtocol#createManager(org.solmix.hola.core.model.RemoteInfo)
      */
     @Override
     public RemoteServiceManager createManager() {
@@ -62,7 +62,7 @@ public class HolaRemoteManagerProvider implements RemoteServiceManagerProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProvider#getSupportedIntents(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProtocol#getSupportedIntents(org.solmix.hola.core.model.RemoteInfo)
      */
     @Override
     public String[] getSupportedIntents(EndpointInfo info) {
@@ -73,7 +73,7 @@ public class HolaRemoteManagerProvider implements RemoteServiceManagerProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProvider#getSupportedConfigs(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProtocol#getSupportedConfigs(org.solmix.hola.core.model.RemoteInfo)
      */
     @Override
     public String[] getSupportedConfigs(EndpointInfo info) {
@@ -84,7 +84,7 @@ public class HolaRemoteManagerProvider implements RemoteServiceManagerProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProvider#getImportedConfigs(org.solmix.hola.core.model.RemoteInfo, java.lang.String[])
+     * @see org.solmix.hola.rs.generic.RemoteServiceManagerProtocol#getImportedConfigs(org.solmix.hola.core.model.RemoteInfo, java.lang.String[])
      */
     @Override
     public String[] getImportedConfigs(EndpointInfo info,

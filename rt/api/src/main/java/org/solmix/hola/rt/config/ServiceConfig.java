@@ -19,9 +19,12 @@
 
 package org.solmix.hola.rt.config;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rs.service.GenericService;
+import org.solmix.hola.rt.ServiceExportor;
 import org.solmix.runtime.Container;
 
 
@@ -39,43 +42,22 @@ public class ServiceConfig<T> extends AbstractServiceConfig
 
     private String interfaceName;
 
-    /**
-     * 服务版本
-     */
-    protected String version;
-
-    /**
-     *  服务分组
-     */
-    protected String group;
-
     protected Integer delay;
-
-    protected Boolean register;
-
-    protected Integer weight;
-
-    protected String document;
-
-    protected Boolean dynamic;
-
-    private Integer executes;
-
-    private Boolean export;
 
     // 服务名称
     private String path;
+    
+    private ServiceExportor serviceExportor;
 
-    private ServerConfig server;
+    /**
+     * 一个服务可以通过多种协议发布
+     */
+    private List<ServerConfig> servers;
 
     /**
      * 接口实现类引用
      */
     private T ref;
-
-    private transient volatile boolean unregistered;
-
-    private transient volatile boolean registered;
 
     private Class<?> interfaceClass;
 
@@ -86,17 +68,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig
     public ServiceConfig(Container container){
     	setContainer(container);
     }
-
-    /**
-     * a
-     */
-    public synchronized void register() {
-        if(unregistered)
-            throw new IllegalStateException("Service already unregistered!");
-        //已经注册了,不重复注册
-        if(registered)
-            return;
-        registered=true;
+    
+    public synchronized void prepareExport() {
+        mergeConfiguration();
         //通用服务
         if(ref instanceof GenericService){
         	 interfaceClass = GenericService.class;
@@ -113,15 +87,33 @@ public class ServiceConfig<T> extends AbstractServiceConfig
 	            throw new IllegalStateException(e.getMessage(), e);
 	        }
 	        checkInterfaceAndMethods(interfaceClass,methods);
+	        checkRef();
         }
+        //TODO sub mock local
+        checkApplication();
+        checkDiscovery();
+        checkServer();
         //path
-        if(path == null && path.length() == 0){
+        if(path == null || path.length() == 0){
             path = interfaceName;
         }
-        doExport();
     }
-    protected void checkInterface(){
-    	
+    
+    private void mergeConfiguration() {
+        if(module!=null){
+            if(discoveries==null) discoveries=module.getDiscoveries();
+            if(monitor==null)     monitor=module.getMonitor();
+        }
+        if(application!=null){
+            if(discoveries==null) discoveries=application.getDiscoveries();
+            if(monitor==null)     monitor=application.getMonitor();
+        }
+       
+    }
+    protected void checkServer(){
+        if(servers==null||servers.size()==0){
+            setServer(new ServerConfig());
+        }
     }
     
     protected void checkRef(){
@@ -134,25 +126,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
                     + interfaceClass + "!");
         }
     }
-    /**
-	 * 
-	 */
-	private void doExport() {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	
-	public synchronized void unregister() {
-        if (! registered) {
-            return;
-        }
-        if (unregistered) {
-            return;
-        }
-        unregistered = true;
-    }
-
     public String getInterface() {
         return interfaceName;
     }
@@ -185,20 +159,6 @@ public class ServiceConfig<T> extends AbstractServiceConfig
         checkPathName("path", path);
         this.path = path;
     }
-    
-    /**
-     * @return the server
-     */
-    public ServerConfig getServer() {
-        return server;
-    }
-    
-    /**
-     * @param server the server to set
-     */
-    public void setServer(ServerConfig server) {
-        this.server = server;
-    }
 	/**
 	 * @return the methods
 	 */
@@ -211,6 +171,74 @@ public class ServiceConfig<T> extends AbstractServiceConfig
 	public void setMethods(List<MethodConfig> methods) {
 		this.methods = methods;
 	}
+	
+	
     
+    /**
+     * @return the delay
+     */
+    public Integer getDelay() {
+        return delay;
+    }
+
+    
+    /**
+     * @param delay the delay to set
+     */
+    public void setDelay(Integer delay) {
+        this.delay = delay;
+    }
+
+    
+    /**
+     * @return the servers
+     */
+    public List<ServerConfig> getServers() {
+        //如果没有配置server,可以根据protocol,和系统默认值生成一个server
+        return servers;
+    }
+
+    
+    /**
+     * @param servers the servers to set
+     */
+    public void setServers(List<ServerConfig> servers) {
+        this.servers = servers;
+    }
+
+    public ServerConfig getServer() {
+        return servers == null || servers.size() == 0 ? null : servers.get(0);
+    }
+
+    public void setServer(ServerConfig server) {
+        this.servers = Arrays.asList(new ServerConfig[] {server});
+    }
+
+    
+    /**
+     * @return the serviceExportor
+     */
+    public ServiceExportor getServiceExportor() {
+        return serviceExportor;
+    }
+
+    
+    /**
+     * @param serviceExportor the serviceExportor to set
+     */
+    public void setServiceExportor(ServiceExportor serviceExportor) {
+        this.serviceExportor = serviceExportor;
+    }
+    /**
+     * 根据配置信息生成EndpointInfo.
+     * @return
+     */
+    public List<EndpointInfo> getEndpointInfo(){
+      //加载合并整理参数,准备
+      prepareExport();
+      return null;
+        
+    }
+
 }
 

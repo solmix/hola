@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.rt.config;
 
-import java.util.List;
 
 
 /**
@@ -34,33 +33,30 @@ public class AbstractServiceConfig extends AbstractClassConfig
      * 
      */
     private static final long serialVersionUID = 90513768239318002L;
-    // 延迟暴露
-    protected Integer              delay;
-
-    // 是否暴露
-    protected Boolean              export;
-
-    // 权重
-    protected Integer              weight;
-
-    // 应用文档
-    protected String               document;
-
-    protected List<String> protocols;
     /**
-     * @return the delay
+     * 服务版本
      */
-    public Integer getDelay() {
-        return delay;
-    }
+    protected String version;
 
-    
     /**
-     * @param delay the delay to set
+     *  服务分组
      */
-    public void setDelay(Integer delay) {
-        this.delay = delay;
-    }
+    protected String group;
+    protected Boolean register;
+
+    protected Integer weight;
+
+    protected String document;
+
+    protected Boolean dynamic;
+
+    /**
+     * 允许的请求次数
+     */
+    private Integer executes;
+
+    private Boolean export;
+
 
     
     /**

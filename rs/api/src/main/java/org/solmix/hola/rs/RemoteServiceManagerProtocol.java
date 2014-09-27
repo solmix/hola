@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 The Solmix Project
+ * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,27 +17,28 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.rt;
+package org.solmix.hola.rs;
 
-import org.solmix.hola.rt.config.ServiceConfig;
+import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.runtime.Extension;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年9月10日
+ * @version 0.0.1 2014年8月19日
  */
-
-public interface ServiceExportor
+@Extension(name = "hola")
+public interface RemoteServiceManagerProtocol
 {
 
+    RemoteServiceManager createManager(
+        RemoteServiceListener... listeners);
 
-    ServiceConfig<?> getConfig();
+    RemoteServiceManager createManager();
 
-    void export();
+    String[] getSupportedIntents(EndpointInfo info);
 
-    void unexport();
+    String[] getSupportedConfigs(EndpointInfo info);
 
-    boolean isExported();
-
-    boolean isUnexported();
+    String[] getImportedConfigs(EndpointInfo info, String[] remoteSupportedConfigs);
 }
