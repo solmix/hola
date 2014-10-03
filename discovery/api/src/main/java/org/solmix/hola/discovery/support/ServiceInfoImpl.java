@@ -23,6 +23,7 @@ import java.net.URI;
 
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.ServiceID;
@@ -34,7 +35,7 @@ import org.solmix.hola.discovery.identity.ServiceType;
  * @version 0.0.1 2014年4月13日
  */
 
-public class ServiceMetadataImpl implements ServiceInfo
+public class ServiceInfoImpl implements ServiceInfo
 {
 
     private static final long serialVersionUID = 3885770619029848938L;
@@ -59,37 +60,37 @@ public class ServiceMetadataImpl implements ServiceInfo
 
     protected long timeToLive;
 
-    public ServiceMetadataImpl()
+    public ServiceInfoImpl()
     {
     }
 
-    /**
-     * @param uri
-     * @param serviceName
-     * @param type
-     * @param serviceProperties
-     */
-    public ServiceMetadataImpl(URI uri, String serviceName, ServiceType type,
+    public ServiceInfoImpl(RemoteInfo info){
+        
+    }
+    
+    public ServiceInfoImpl(URI uri, String serviceName, ServiceType type,
         ServiceProperties serviceProperties)
     {
     }
-    public ServiceMetadataImpl(URI uri, String serviceName, ServiceType type, int priority,
-        int weight, ServiceProperties props, long ttl) {
+
+    public ServiceInfoImpl(URI uri, String serviceName, ServiceType type,
+        int priority, int weight, ServiceProperties props, long ttl)
+    {
         Assert.isNotNull(uri);
         Assert.isNotNull(serviceName);
         Assert.isNotNull(type);
-        
+
         String scheme = uri.getScheme();
         if (scheme == null) {
-              scheme = UNKNOWN_PROTOCOL;
+            scheme = UNKNOWN_PROTOCOL;
         }
 
         // UserInfo
         String userInfo = uri.getUserInfo();
         if (userInfo == null) {
-              userInfo = "";
+            userInfo = "";
         } else {
-              userInfo += "@";
+            userInfo += "@";
         }
 
         // Host
@@ -99,53 +100,55 @@ public class ServiceMetadataImpl implements ServiceInfo
         // Port
         int port = uri.getPort();
         if (port == -1) {
-              port = 0;
+            port = 0;
         }
 
         // Path
         String path = uri.getPath();
         if (path == null) {
-              path = "/";
+            path = "/";
         }
 
         // query
         String query = uri.getQuery();
         if (query == null) {
-              query = "";
+            query = "";
         } else {
-              query = "?" + query;
+            query = "?" + query;
         }
 
         // fragment
         String fragment = uri.getFragment();
         if (fragment == null) {
-              fragment = "";
+            fragment = "";
         } else {
-              fragment = "#" + fragment;
+            fragment = "#" + fragment;
         }
-        URI u = URI.create(scheme + "://" + userInfo + host + ":" + port + path + query + fragment);
-        
+        URI u = URI.create(scheme + "://" + userInfo + host + ":" + port + path
+            + query + fragment);
+
         // service id
         Namespace ns = type.getNamespace();
-        this.serviceID = (ServiceID) ns.createID((new Object[]{type, u}));
-        ((ServiceIDImpl)serviceID).setServiceMetadata(this);
-        
+        this.serviceID = (ServiceID) ns.createID((new Object[] { type, u }));
+        ((ServiceIDImpl) serviceID).setServiceMetadata(this);
+
         this.serviceName = serviceName;
-        
+
         this.weight = weight;
         this.priority = priority;
-        
+
         properties = (props == null) ? new ServicePropertiesImpl() : props;
-        
+
         this.timeToLive = ttl;
-        
+
     }
-    
-    public ServiceMetadataImpl(URI location, String serviceName,
+
+    public ServiceInfoImpl(URI location, String serviceName,
         ServiceType serviceType, int priority, int weight,
         ServiceProperties serviceProperties)
     {
-        this(location,serviceName,serviceType,priority,weight,serviceProperties,DEFAULT_TTL);
+        this(location, serviceName, serviceType, priority, weight,
+            serviceProperties, DEFAULT_TTL);
     }
 
     /**

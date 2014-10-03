@@ -20,7 +20,8 @@ package org.solmix.hola.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+
+import org.solmix.commons.annotation.ThreadSafe;
 
 
 /**
@@ -28,9 +29,11 @@ import java.util.Properties;
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年8月13日
  */
-
-public class ExecutorInfo extends EndpointInfo
+@ThreadSafe
+public class ExecutorInfo extends ExtensionInfo<ExecutorInfo>
 {
+
+    private static final long serialVersionUID = -4873010981768016604L;
 
     public ExecutorInfo(Map<String, Object> properties)
     {
@@ -56,75 +59,7 @@ public class ExecutorInfo extends EndpointInfo
      * 活动时间
      */
     public static  final  String EXECUTOR_ALIVE="executor.alive";
-    @Override
-    public ExecutorInfo addProperty(String key, Object value) {
-        if (key == null || key.length() == 0 || value == null)
-            return this;
-        if (value.equals(getProperty(key)))
-            return this;
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        map.put(key, value);
-        return new ExecutorInfo(map);
-    }
-    @Override
-    public ExecutorInfo addProperties(Map<String, Object> properties) {
-        if (properties == null || properties.size() == 0) {
-            return this;
-        }
-        boolean hasAndEqual = true;
-        for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            Object value = getProperty(entry.getKey());
-            if (value == null && entry.getValue() != null
-                || !value.equals(entry.getValue())) {
-                hasAndEqual = false;
-                break;
-            }
-        }
-        // 如果没有修改，直接返回。
-        if (hasAndEqual)
-            return this;
-
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        map.putAll(properties);
-        return new ExecutorInfo(map);
-    }
-
-    @Override
-    public ExecutorInfo addProperties(Properties properties) {
-        if (properties == null || properties.size() == 0) {
-            return this;
-        }
-        boolean hasAndEqual = true;
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            Object value = getProperty(entry.getKey().toString());
-            if (value == null && entry.getValue() != null
-                || !value.equals(entry.getValue())) {
-                hasAndEqual = false;
-                break;
-            }
-        }
-        // 如果没有修改，直接返回。
-        if (hasAndEqual)
-            return this;
-
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            map.put(entry.getKey().toString(), entry.getValue());
-        }
-        return new ExecutorInfo(map);
-    }
-
-    @Override
-    public ExecutorInfo addPropertyIfAbsent(String key, Object value) {
-        if (key == null || key.length() == 0 || value == null)
-            return this;
-        if (hasProperty(key))
-            return this;
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        map.put(key, value);
-        return new ExecutorInfo(map);
-    }
-
+  
     /**
      * @return the threadName
      */
@@ -179,7 +114,7 @@ public class ExecutorInfo extends EndpointInfo
     public static Builder newBuilder(){
         return new Builder();
     }
-    public static Builder newBuilder(EndpointInfo info){
+    public static Builder newBuilder(ExtensionInfo<?> info){
         return new Builder(info);
     }
     public static class Builder{
@@ -192,7 +127,7 @@ public class ExecutorInfo extends EndpointInfo
         /**
          * @param info
          */
-        public Builder(EndpointInfo info)
+        public Builder(ExtensionInfo<?> info)
         {
             properties.putAll(info.getProperties());
         }
@@ -241,5 +176,23 @@ public class ExecutorInfo extends EndpointInfo
             //TODO validate properties.
             return info;
         }
+    }
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#getSelf()
+     */
+    @Override
+    protected ExecutorInfo getSelf() {
+        return this;
+    }
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#makeSelf(java.util.Map)
+     */
+    @Override
+    protected ExecutorInfo makeSelf(Map<String, Object> map) {
+        return new ExecutorInfo(map);
     }
 }

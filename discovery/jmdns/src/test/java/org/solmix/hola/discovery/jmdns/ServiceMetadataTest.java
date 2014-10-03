@@ -30,7 +30,7 @@ import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
-import org.solmix.hola.discovery.support.ServiceMetadataImpl;
+import org.solmix.hola.discovery.support.ServiceInfoImpl;
 import org.solmix.hola.discovery.support.ServicePropertiesImpl;
 
 
@@ -42,7 +42,7 @@ import org.solmix.hola.discovery.support.ServicePropertiesImpl;
 
 public class ServiceMetadataTest 
 {
-    private ServiceMetadataImpl meta;
+    private ServiceInfoImpl meta;
     
     protected String serviceName="test-service";
 
@@ -68,12 +68,12 @@ public class ServiceMetadataTest
         DefaultIDFactory.getDefault().addNamespace(new JmDNSNamespace("jmdns"));
         Namespace ns= DefaultIDFactory.getDefault().getNamespaceByName(JmDNSNamespace.NAME);
         type=DefaultServiceTypeFactory.getDefault().create(ns,services,protocols);
-        meta=new ServiceMetadataImpl(uri,serviceName,type,priority,weight,properties,timeToLive);
+        meta=new ServiceInfoImpl(uri,serviceName,type,priority,weight,properties,timeToLive);
         
     }
 
     /**
-     * Test method for {@link org.solmix.hola.discovery.support.ServiceMetadataImpl#getPriority()}.
+     * Test method for {@link org.solmix.hola.discovery.support.ServiceInfoImpl#getPriority()}.
      */
     @Test
     public void testGetPriority() {
@@ -81,7 +81,7 @@ public class ServiceMetadataTest
     }
 
     /**
-     * Test method for {@link org.solmix.hola.discovery.support.ServiceMetadataImpl#getWeight()}.
+     * Test method for {@link org.solmix.hola.discovery.support.ServiceInfoImpl#getWeight()}.
      */
     @Test
     public void testGetWeight() {
@@ -89,7 +89,7 @@ public class ServiceMetadataTest
     }
 
     /**
-     * Test method for {@link org.solmix.hola.discovery.support.ServiceMetadataImpl#getTTL()}.
+     * Test method for {@link org.solmix.hola.discovery.support.ServiceInfoImpl#getTTL()}.
      */
     @Test
     public void testGetTTL() {
@@ -97,7 +97,7 @@ public class ServiceMetadataTest
     }
 
     /**
-     * Test method for {@link org.solmix.hola.discovery.support.ServiceMetadataImpl#getServiceProperties()}.
+     * Test method for {@link org.solmix.hola.discovery.support.ServiceInfoImpl#getServiceProperties()}.
      */
     @Test
     public void testGetServiceProperties() {
@@ -105,7 +105,7 @@ public class ServiceMetadataTest
     }
 
     /**
-     * Test method for {@link org.solmix.hola.discovery.support.ServiceMetadataImpl#getServiceName()}.
+     * Test method for {@link org.solmix.hola.discovery.support.ServiceInfoImpl#getServiceName()}.
      */
     @Test
     public void testGetServiceName() {

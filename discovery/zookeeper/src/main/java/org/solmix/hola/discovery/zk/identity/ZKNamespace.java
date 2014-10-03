@@ -42,6 +42,10 @@ public class ZKNamespace extends AbstractNamespace implements Namespace
     public static final String NAME = "namespace.jmdns";
 
     public static final String SCHEME = "jmdns";
+    public ZKNamespace(){
+        
+        super(NAME,"zookeeper discovery namespace");
+    }
     @Override
     public String getScheme() {
         return SCHEME;

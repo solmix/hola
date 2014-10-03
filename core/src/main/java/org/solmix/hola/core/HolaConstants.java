@@ -31,7 +31,7 @@ public class HolaConstants
 {
 
     public static final Pattern SPLIT_SEMICOLON_PATTERN = Pattern.compile("\\s*[;]+\\s*");
-
+    public static final Pattern REGISTRY_SPLIT_PATTERN    = Pattern .compile("\\s*[|;]+\\s*");
     public static final Pattern SPLIT_COMMA_PATTERN = Pattern.compile("\\s*[,]+\\s*");
 
     public final static String PATH_SEPARATOR = "/";
@@ -110,6 +110,10 @@ public class HolaConstants
     public static final String DEFAULT_THREADPOOL = "pooled";
 
     public static String KEY_CHANNEL_ATTRIBUTE_READONLY="channel.readonly";
+    
+    public static String HOLA_DEFAULT_CONFIG_FILE="hola.default.config.file";
+    
+    public static String DEFAULT_HOLA_CONFIG_FILE="hola.properties";
     
     public static final String KEY_DYNAMIC = "hola.dynamic";
 

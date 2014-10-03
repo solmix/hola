@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.runtime.Container;
@@ -38,19 +40,21 @@ public class ExtensionIDFactory extends AbstractIDFactory implements IDFactory
 {
     private final Map<String, Namespace> namespaces = new java.util.concurrent.ConcurrentHashMap<String, Namespace>();
 
-    private final Container container;
-    
+    private static final Logger LOG = LoggerFactory.getLogger(ExtensionIDFactory.class);
     public ExtensionIDFactory(Container container){
-        this.container=container;
         addNamespace(new StringNamespace());
         addNamespace(new GUIDNamespace());
         addNamespace(new LongNamespace());
         addNamespace(new URINamespace());
         ExtensionLoader<Namespace> loader=  container.getExtensionLoader(Namespace.class);
-        if(loader!=null){
-         for(String name:   loader.getLoadedExtensions()){
-             addNamespace(loader.getExtension(name));
-         }
+        try {
+            if(loader!=null){
+             for(String name:   loader.getLoadedExtensions()){
+                 addNamespace(loader.getExtension(name));
+             }
+            }
+        } catch (Exception e) {
+            LOG.error("Error add extension namespace:",e);
         }
     }
     /**

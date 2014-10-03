@@ -29,7 +29,7 @@ import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
-import org.solmix.hola.discovery.support.ServiceMetadataImpl;
+import org.solmix.hola.discovery.support.ServiceInfoImpl;
 
 /**
  * 
@@ -95,7 +95,7 @@ public class ServiceMetadataTracker
   final ServiceType serviceType = specificServiceID
               .getServiceType();
 
-  return new ServiceMetadataImpl(genericServiceID.getLocation(),
+  return new ServiceInfoImpl(genericServiceID.getLocation(),
       genericMeta.getServiceName(), serviceType,
       genericMeta.getPriority(), genericMeta.getWeight(),
       genericMeta.getServiceProperties());

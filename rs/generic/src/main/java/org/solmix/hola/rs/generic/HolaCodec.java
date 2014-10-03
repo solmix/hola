@@ -129,8 +129,8 @@ public class HolaCodec extends ExchangeCodec implements   Codec
     protected void encodeRequestData(Channel channel, ObjectOutput out,
         Object data) throws IOException {
         RemoteRequestImpl req = (RemoteRequestImpl) data;
-       out.writeUTF(req.getProperty(RemoteInfo.PATH));
-         out.writeUTF(req.getProperty(RemoteInfo.VERSION));
+        out.writeUTF(req.getProperty(RemoteInfo.PATH));
+        out.writeUTF(req.getProperty(RemoteInfo.VERSION));
         out.writeUTF(req.getMethod());
         out.writeUTF(ClassDescUtils.getTypeDesc(req.getParameterTypes()));
         

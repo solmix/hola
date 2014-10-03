@@ -21,6 +21,7 @@ package org.solmix.hola.test.rs;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.rt.ServiceExportor;
 import org.solmix.hola.rt.ServiceManager;
 import org.solmix.hola.rt.config.DiscoveryConfig;
@@ -53,14 +54,14 @@ public class ExportServiceTest extends TestCase {
 		ServiceConfig<HelloWorldService> cf=new ServiceConfig<HelloWorldService>(container);
 		cf.setInterface(HelloWorldService.class.getName());
 		cf.setRef(new HelloWorldServiceImpl());
-		cf.setProvider("hola");
+		cf.setProtocol("hola");
+		DiscoveryConfig dicovery=cf.createDiscovery();
 		
-		DiscoveryConfig dcf= new DiscoveryConfig(DiscoveryConfig.NO_AVAILABLE);
-		cf.setDiscovery(dcf);
-		
+		dicovery.setAddress(DiscoveryConfig.NO_AVAILABLE);
+		cf.setDiscovery(dicovery);
 		//服务配置
 		ServiceExportor	export= manager.createExporter(cf);
-		
+		assertNotNull(container.getExtension(IDFactory.class));
 		//发布
 		export.export();
 		

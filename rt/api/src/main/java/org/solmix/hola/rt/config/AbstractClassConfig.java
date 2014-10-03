@@ -19,12 +19,19 @@
 package org.solmix.hola.rt.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.solmix.commons.util.DataUtils;
+import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.HolaConstants;
+import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.rs.RemoteManagerProtocol;
+import org.solmix.runtime.Container;
 
 /**
  * 
@@ -34,7 +41,15 @@ import org.solmix.hola.rs.RemoteManagerProtocol;
 
 public class AbstractClassConfig extends AbstractMethodConfig {
 
-	private static final long serialVersionUID = -3515821709848299465L;
+	/**
+     * @param container
+     */
+    public AbstractClassConfig(Container container)
+    {
+        super(container);
+    }
+
+    private static final long serialVersionUID = -3515821709848299465L;
 	/**
 	 * 代理实现
 	 */
@@ -288,13 +303,146 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	 }
 	 protected void checkApplication(){
 		 if(application==null)
-			 application=new ApplicationConfig();
+			 application=createApplication();
+		 appendDefault(application);
 	 }
 	 
 	 protected void checkDiscovery(){
 		 if(discoveries==null||discoveries.size()==0){
-			 setDiscovery(new DiscoveryConfig(DiscoveryConfig.NO_AVAILABLE));
+		     DiscoveryConfig noavailable= createDiscovery();
+			 setDiscovery(noavailable);
+		 }
+		 for(DiscoveryConfig config:discoveries){
+		     appendDefault( config);
 		 }
 	 }
-	
+	  protected List<DiscoveryInfo> getDiscoveryInfos() {
+	        List<DiscoveryInfo> discoveryInfos = new ArrayList<DiscoveryInfo>();
+	        for (DiscoveryConfig discovery : discoveries) {
+	            String address = discovery.getAddress();
+	            String defAdd = ConfigUtils.getProperty("hola.discovery.address");
+	            if (defAdd != null && defAdd.length() > 0) {
+	                address = defAdd;
+	            }
+	            if (address != null && address.length() > 0
+	                && !DiscoveryConfig.NO_AVAILABLE.equalsIgnoreCase(address)) {
+	                Map<String, Object> prop = new HashMap<String, Object>();
+	                appendProperties(prop, application);
+	                appendProperties(prop, discovery);
+	                prop.put(DiscoveryInfo.PATH, Discovery.class.getName());
+	                prop.put(EndpointInfo.VERSION, ConfigUtils.getVersion());
+	                prop.put(EndpointInfo.TIMESTAMP_KEY, String.valueOf(System.currentTimeMillis()));
+	                Boolean advertise = discovery.getAdvertise();
+	                // 是否公告
+	                if (advertise == null || advertise == Boolean.TRUE) {
+	                    String[] addresses = HolaConstants.REGISTRY_SPLIT_PATTERN.split(address);
+	                    for (String add : addresses) {
+	                        DiscoveryInfo discoveryInfo = parseDiscoveryInfo(add,prop);
+	                        if (discoveryInfo != null)
+	                            discoveryInfos.add(discoveryInfo);
+	                    }
+	                }
+	            }
+	        }
+	        return discoveryInfos;
+	    }
+
+	   
+	    protected DiscoveryInfo parseDiscoveryInfo(String address, Map<String, Object> defaults) {
+	        if (address == null || address.length() == 0) {
+	            return null;
+	        }
+	        String uri;
+	        if (address.indexOf("://") >= 0) {
+	            uri = address;
+	        } else {
+	            String[] addresses = HolaConstants.SPLIT_COMMA_PATTERN.split(address);
+	            uri = addresses[0];
+	            if (addresses.length > 1) {
+	                StringBuilder backup = new StringBuilder();
+	                for (int i = 1; i < addresses.length; i++) {
+	                    if (i > 1) {
+	                        backup.append(",");
+	                    }
+	                    backup.append(addresses[i]);
+	                }
+	                uri += "?" + DiscoveryInfo.BACKUP + "=" + backup.toString();
+	            }
+	        }
+	        String defaultProtocol = defaults.get(DiscoveryInfo.PROTOCOL) == null ? null
+	                                : defaults.get(DiscoveryInfo.PROTOCOL).toString();
+	        if (defaultProtocol == null || defaultProtocol.length() == 0) {
+	            defaultProtocol = "composite";
+	        }
+	        String defaultUsername = defaults.get(DiscoveryInfo.USERNAME)==null? null 
+	                                : defaults.get(DiscoveryInfo.USERNAME).toString();
+	        String defaultPassword = defaults.get(DiscoveryInfo.PASSWORD) == null ? null 
+	                                : defaults.get(DiscoveryInfo.PASSWORD).toString();
+	        int defaultPort = StringUtils.parseInteger(defaults.get(DiscoveryInfo.PORT) == null ? null 
+	                          : defaults.get(DiscoveryInfo.PORT).toString());
+	        String defaultPath =  defaults.get(DiscoveryInfo.PATH)==null? null 
+	                            : defaults.get(DiscoveryInfo.PATH).toString();
+	        Map<String, Object> defaultParameters = new HashMap<String, Object>(defaults);
+	        if (defaultParameters != null) {
+	            defaultParameters.remove(DiscoveryInfo.PROTOCOL);
+	            defaultParameters.remove(DiscoveryInfo.USERNAME);
+	            defaultParameters.remove(DiscoveryInfo.PASSWORD);
+	            defaultParameters.remove(DiscoveryInfo.HOST);
+	            defaultParameters.remove(DiscoveryInfo.PORT);
+	            defaultParameters.remove(DiscoveryInfo.PATH);
+	        }
+	        DiscoveryInfo u = DiscoveryInfo.valueOf(uri);
+	        boolean changed = false;
+	        String protocol = u.getProtocol();
+	        String username = u.getUsername();
+	        String password = u.getPassword();
+	        String host = u.getHost();
+	        int port = u.getPort();
+	        String path = u.getPath();
+	        Map<String, Object> parameters = new HashMap<String, Object>(u.getProperties());
+	        if ((protocol == null || protocol.length() == 0) && defaultProtocol != null && defaultProtocol.length() > 0) {
+	            changed = true;
+	            protocol = defaultProtocol;
+	        }
+	        if ((username == null || username.length() == 0) && defaultUsername != null && defaultUsername.length() > 0) {
+	            changed = true;
+	            username = defaultUsername;
+	        }
+	        if ((password == null || password.length() == 0) && defaultPassword != null && defaultPassword.length() > 0) {
+	            changed = true;
+	            password = defaultPassword;
+	        }
+	        if (port <= 0) {
+	            if (defaultPort > 0) {
+	                changed = true;
+	                port = defaultPort;
+	            } else {
+	                changed = true;
+	                port = 9090;
+	            }
+	        }
+	        if (path == null || path.length() == 0) {
+	            if (defaultPath != null && defaultPath.length() > 0) {
+	                changed = true;
+	                path = defaultPath;
+	            }
+	        }
+	        if (defaultParameters != null && defaultParameters.size() > 0) {
+	            for (Map.Entry<String, Object> entry : defaultParameters.entrySet()) {
+	                String key = entry.getKey();
+	                Object defaultValue = entry.getValue();
+	                if (defaultValue != null && defaultValue.toString().length() > 0) {
+	                    Object value = parameters.get(key);
+	                    if (value == null || value.toString().length() == 0) {
+	                        changed = true;
+	                        parameters.put(key, defaultValue);
+	                    }
+	                }
+	            }
+	        }
+	        if (changed) {
+	            u = new DiscoveryInfo(protocol, username, password, host, port, path, parameters);
+	        }
+	        return u;
+	    }
 }

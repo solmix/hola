@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.solmix.hola.core.model.RemoteInfo.Builder;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
 import org.solmix.runtime.monitor.MonitorInfo;
@@ -39,31 +38,6 @@ import org.solmix.runtime.monitor.MonitorService;
 public class RemoteInfoTest extends Assert
 {
 
-    @Test
-    public void mergeTest() throws Exception{
-        Builder c1=  RemoteInfo.newBuilder();
-        c1.setHost("127.0.0.1");
-        c1.setPort(8080);
-        c1.setAccepts(100);
-        c1.setBuffer(1024);
-        c1.setHeartbeat(1000);
-        c1.setCodec("hola");
-        c1.setAwait(true);
-        RemoteInfo info1=c1.build();
-        Builder c2=  RemoteInfo.newBuilder();
-        c2.setHost("127.0.0.1");
-        c2.setPort(8081);
-        c2.setAccepts(100);
-        c2.setBuffer(1024);
-        c2.setHeartbeat(1000);
-        c2.setCodec("hola2");
-        c2.setAwait(false);
-        RemoteInfo info2=c2.build();
-        RemoteInfo c3= InfoUtils.merge(info2, info1);
-        assertEquals(info2.getPort(), c3.getPort());
-        assertEquals(info2.getCodec(), c3.getCodec());
-        assertEquals(info2.getAwait(), c3.getAwait());
-    }
     @Test
     public void testMermey(){
         Container c = Containers.get();
@@ -101,21 +75,14 @@ public class RemoteInfoTest extends Assert
         b.setAlive(400);
         ExecutorInfo e=  b.build();
         
-        RemoteInfo.Builder r=  RemoteInfo.newBuilder(e);
+        RemoteInfo.Builder r=  RemoteInfo.newBuilder();
+        r.setProperties(e.getProperties());
         r.setAccepts(100);
         RemoteInfo ri=r.build();
         RemoteInfo a=  ri.addProperty("aaa", "bb");
         Assert.assertNotSame(a, ri);
-        ExecutorInfo exe= ri.adaptTo(ExecutorInfo.class);
+        ExecutorInfo exe= ExecutorInfo.newBuilder(ri).build();
         Assert.assertEquals(exe.getAlive(), new Integer(400));
         
-    }
-    @Test
-    public void testTheSame(){
-        EndpointInfo e=EndpointInfo.parse("hola://localhost:8008/test?codec=exchange&transport=hola");
-        RemoteInfo r=e.adaptTo(RemoteInfo.class);
-        Assert.assertEquals(r.getTransport(), "hola");
-        RemoteInfo r2=r.adaptTo(RemoteInfo.class);
-        Assert.assertSame(r, r2);
     }
 }

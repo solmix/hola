@@ -21,6 +21,8 @@ package org.solmix.hola.rt.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.solmix.runtime.Container;
+
 
 /**
  * 
@@ -30,6 +32,15 @@ import java.util.List;
 
 public class ModuleConfig extends AbstractConfig
 {
+
+    /**
+     * @param container
+     */
+     ModuleConfig(Container container)
+    {
+        super(container);
+    }
+
 
     private static final long serialVersionUID = -4697214685144844538L;
     
@@ -54,6 +65,7 @@ public class ModuleConfig extends AbstractConfig
     /**
      * @return the name
      */
+    @Property(key="module.name")
     public String getName() {
         return name;
     }

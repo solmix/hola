@@ -20,11 +20,16 @@
 package org.solmix.hola.core.model;
 
 import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
+import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.NetUtils;
+import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.core.identity.IDFactory;
+import org.solmix.hola.core.identity.support.URIID;
 
 /**
  * 简化EndpointInfo中参数调用.
@@ -32,10 +37,13 @@ import org.solmix.commons.util.NetUtils;
  * @author solmix.f@gmail.com
  * @version 0.0.1 2014年8月13日
  */
-
-public class RemoteInfo extends EndpointInfo
+@ThreadSafe
+public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
 {
 
+    private static final long serialVersionUID = 7701475600214777271L;
+
+//    private static final Logger LOG = LoggerFactory.getLogger(RemoteInfo.class);
     /**
      * 版本信息
      */
@@ -180,87 +188,70 @@ public class RemoteInfo extends EndpointInfo
      * 是否检查启动错误,如果为true,当出现错误时抛错.
      */
     public static final String CHECK = "check";
+    
+    private IDFactory idFactory;
+  
 
     /**
      * @param properties
      */
-    public RemoteInfo(Map<String, Object> properties)
+    public RemoteInfo(String protocol,  String host, int port)
     {
-        super(properties);
+       this(protocol,null,null,host,port,null,null);
     }
-
-    public RemoteInfo()
+    public RemoteInfo(String protocol,  String host, int port,String path,Map<String, Object> properties)
     {
-        this(null);
+       this(protocol,null,null,host,port,path,properties);
     }
-    @Override
-    public RemoteInfo addProperty(String key, Object value) {
-        if (key == null || key.length() == 0 || value == null)
-            return this;
-        if (value.equals(getProperty(key)))
-            return this;
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        map.put(key, value);
-        return new RemoteInfo(map);
+    public RemoteInfo(String protocol, String username, String password, String host, int port, String path, Map<String, Object> properties) {
+        super(protocol,username,password,host,port,path,properties);
+        
     }
-    @Override
-    public RemoteInfo addProperties(Map<String, Object> properties) {
-        if (properties == null || properties.size() == 0) {
-            return this;
+    public static RemoteInfo valueOf(URI uri){
+        if(uri==null)
+            return null;
+        Builder b= newBuilder();
+        b.setProtocol(uri.getScheme());
+       String userInfo=uri.getRawUserInfo();
+       String username=null;
+       String password=null;
+       if(userInfo!=null&&userInfo.length()>0){
+           int j = userInfo.indexOf(":");
+           if (j >= 0) {
+               password = userInfo.substring(j + 1);
+               username = userInfo.substring(0, j);
+           }else{
+               username=userInfo;
+           }
+       }
+       b.setUserName(username);
+       b.setPassword(password);
+       b.setHost(uri.getHost());
+       b.setPort(uri.getPort());
+       b.setPath(uri.getRawPath());
+       Map<String,Object> param= parseQuery(uri.getRawQuery());
+       if(param!=null&&param.size()>0)
+       b.setProperties(param);
+        
+        return b.build();
+    }
+   
+    
+    public static RemoteInfo valueOf(String uri){
+        try {
+            URI u = new URI(uri);
+            return valueOf(u);
+        } catch (URISyntaxException e) {
+            throw  new IllegalArgumentException(e);
         }
-        boolean hasAndEqual = true;
-        for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            Object value = getProperty(entry.getKey());
-            if (value == null && entry.getValue() != null
-                || !value.equals(entry.getValue())) {
-                hasAndEqual = false;
-                break;
-            }
-        }
-        // 如果没有修改，直接返回。
-        if (hasAndEqual)
-            return this;
+    }
+    
 
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        map.putAll(properties);
-        return new RemoteInfo(map);
+    public ID getRemoteID(){
+        
+        return idFactory.createID(URIID.class.getName(), new Object[]{toURI()});
     }
-
-    @Override
-    public RemoteInfo addProperties(Properties properties) {
-        if (properties == null || properties.size() == 0) {
-            return this;
-        }
-        boolean hasAndEqual = true;
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            Object value = getProperty(entry.getKey().toString());
-            if (value == null && entry.getValue() != null
-                || !value.equals(entry.getValue())) {
-                hasAndEqual = false;
-                break;
-            }
-        }
-        // 如果没有修改，直接返回。
-        if (hasAndEqual)
-            return this;
-
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            map.put(entry.getKey().toString(), entry.getValue());
-        }
-        return new RemoteInfo(map);
-    }
-
-    @Override
-    public RemoteInfo addPropertyIfAbsent(String key, Object value) {
-        if (key == null || key.length() == 0 || value == null)
-            return this;
-        if (hasProperty(key))
-            return this;
-        Map<String, Object> map = new HashMap<String, Object>(getProperties());
-        map.put(key, value);
-        return new RemoteInfo(map);
-    }
+  
 
     /**
      * @return the reconnectPeriod
@@ -284,13 +275,7 @@ public class RemoteInfo extends EndpointInfo
         return getBoolean(CHECK, df);
     }
 
-    /**
-     * @return the host
-     */
-    public String getHost() {
-        return getString(HOST);
-    }
-
+  
     /**
      * @return the transport
      */
@@ -313,12 +298,7 @@ public class RemoteInfo extends EndpointInfo
         return getString(THREAD_NAME, defaultValue);
     }
 
-    /**
-     * @return the port
-     */
-    public Integer getPort() {
-        return getInt(PORT);
-    }
+   
 
     /**
      * @return the heartbeat
@@ -579,17 +559,11 @@ public class RemoteInfo extends EndpointInfo
     /**
      * @return
      */
-    public String getPath() {
-        return getString(PATH);
-    }
-
-    /**
-     * @return
-     */
     public String getGroup() {
         return getString(GROUP);
     }
 
+    @Override
     public String getAddress() {
         return getPort() <= 0 ? getHost() : getHost() + ":" + getPort();
     }
@@ -598,6 +572,7 @@ public class RemoteInfo extends EndpointInfo
         return new InetSocketAddress(getHost(), getPort());
     }
 
+    @Override
     public String getIp() {
         return NetUtils.getIpByHost(getHost());
     }
@@ -606,15 +581,20 @@ public class RemoteInfo extends EndpointInfo
         return new Builder();
     }
 
-    public static Builder newBuilder(EndpointInfo info) {
+    public static Builder newBuilder(AbstractURIInfo<?> info) {
         return new Builder(info);
     }
 
     public static class Builder
     {
 
-        private final Map<String, Object> properties = new HashMap<String, Object>();
-
+        private  Map<String, Object> properties = new HashMap<String, Object>();
+        protected  String protocol;
+        protected  String username;
+        protected  String password;
+        protected  String host;
+        protected  int port;
+        protected  String path;
         private Builder()
         {
         }
@@ -622,9 +602,15 @@ public class RemoteInfo extends EndpointInfo
         /**
          * @param info
          */
-        public Builder(EndpointInfo info)
+        public Builder(AbstractURIInfo<?> info)
         {
             properties.putAll(info.getProperties());
+            protocol=info.getProtocol();
+            username=info.getUsername();
+            password=info.getPassword();
+            host=info.getHost();
+            port=info.getPort();
+            path=info.getPath();
         }
         
         public Builder setPropertyIfAbsent(String key, Object value){
@@ -751,7 +737,27 @@ public class RemoteInfo extends EndpointInfo
             properties.put(ACCEPTS, accepts);
             return this;
         }
-
+        public Builder setPort(int  port) {
+            this.port=port;
+             return this;
+         }
+        public Builder setPath(String  path) {
+           this.path=path;
+            return this;
+        }
+        public Builder setUserName(String  username) {
+            this.username=username;
+             return this;
+         }
+        public Builder setPassword(String  password) {
+            this.password=password;
+             return this;
+         }
+        
+        public Builder setProtocol(String  protocol) {
+            this.protocol=protocol;
+             return this;
+         }
         /**
          * @param buffer the buffer to set
          */
@@ -807,6 +813,11 @@ public class RemoteInfo extends EndpointInfo
             properties.put(READ_ONLY, readOnly);
             return this;
         }
+        
+        public Builder setProperties(Map<String,Object> properties) {
+            this.properties=new HashMap<String, Object>(properties);
+            return this;
+        }
 
         /**
          * @param reconnect the reconnect to set
@@ -836,18 +847,11 @@ public class RemoteInfo extends EndpointInfo
          * @param host the host to set
          */
         public Builder setHost(String host) {
-            properties.put(HOST, host);
+           this.host=host;
             return this;
         }
 
-        /**
-         * @param port the port to set
-         */
-        public Builder setPort(Integer port) {
-            properties.put(PORT, port);
-            return this;
-        }
-
+      
         /**
          * 多少次连接失败后输出一次警告信息.
          */
@@ -866,9 +870,7 @@ public class RemoteInfo extends EndpointInfo
 
         public RemoteInfo build() {
 
-            RemoteInfo info = new RemoteInfo(properties);
-            // TODO 验证
-            return info;
+            return new RemoteInfo(protocol,username,password,host,port,path,properties);
         }
 
         /**
@@ -879,6 +881,26 @@ public class RemoteInfo extends EndpointInfo
             properties.put(HEARTBEAT_TIMEOUT, i);
             return this;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#getSelf()
+     */
+    @Override
+    protected RemoteInfo getSelf() {
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#makeSelf(java.util.Map)
+     */
+    @Override
+    protected RemoteInfo makeSelf(Map<String, Object> map) {
+        return new RemoteInfo(protocol,username,password,host,port,path,map);
     }
 
 }

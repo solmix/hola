@@ -18,15 +18,17 @@
  */
 package org.solmix.hola.rs.generic;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteManagerProtocol;
+import org.solmix.hola.rs.RemoteService;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
 
@@ -52,11 +54,18 @@ public class RemoteServiceTest extends TestCase
         HolaRemoteManager manager=(HolaRemoteManager) provider.createManager();
         assertNotNull(provider);
         SimpleServiceImpl ss= new SimpleServiceImpl();
-        EndpointInfo ei=EndpointInfo.parse("hola://localhost:1314/simple?codec=hola&heartbeat=60000");
-        manager.registerRemoteService(new String[]{SimpleService.class.getName()}, ss, ei.adaptTo(RemoteInfo.class));
-        EndpointInfo ec=EndpointInfo.parse("hola://localhost:1314/simple?codec=hola&heartbeat=60000");
-        RemoteService rs=  manager.getRemoteService(SimpleService.class.getName(), ec.adaptTo(RemoteInfo.class));
+        RemoteInfo ei=RemoteInfo.valueOf("hola://localhost:1314/simple?codec=hola&heartbeat=60000");
+        manager.registerRemoteService(new String[]{SimpleService.class.getName()}, ss, ei);
+        RemoteInfo ec=RemoteInfo.valueOf("hola://localhost:1314/simple?codec=hola&heartbeat=60000");
+        RemoteService rs=  manager.getRemoteService(SimpleService.class.getName(), ec);
     
+        try {
+            URI uri = new URI("hola://localhost:1314/simple?codec=hola&heartbeat=60000");
+            System.out.println(uri.toString());
+        } catch (URISyntaxException e1) {
+            e1.printStackTrace();
+        }
+      
       try {
         Object o=  rs.getProxy();
         Assert.assertTrue(o instanceof SimpleService);

@@ -35,6 +35,8 @@ public interface RemoteManagerProtocol
         RemoteListener... listeners);
 
     RemoteManager createManager();
+    
+    int getDefaultPort();
 
     String[] getSupportedIntents(EndpointInfo info);
 

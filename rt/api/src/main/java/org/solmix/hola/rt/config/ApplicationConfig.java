@@ -22,6 +22,8 @@ package org.solmix.hola.rt.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.solmix.runtime.Container;
+
 /**
  * 
  * @author solmix.f@gmail.com
@@ -30,6 +32,15 @@ import java.util.List;
 
 public class ApplicationConfig extends AbstractConfig
 {
+
+    /**
+     * @param container
+     */
+     ApplicationConfig(Container container)
+    {
+        super(container);
+    }
+
 
     /**
      * 
@@ -56,6 +67,7 @@ public class ApplicationConfig extends AbstractConfig
     /**
      * @return the name
      */
+    @Property(key="application.name")
     public String getName() {
         return name;
     }

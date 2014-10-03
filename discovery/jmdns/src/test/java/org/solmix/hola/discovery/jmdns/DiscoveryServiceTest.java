@@ -41,7 +41,7 @@ import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
-import org.solmix.hola.discovery.support.ServiceMetadataImpl;
+import org.solmix.hola.discovery.support.ServiceInfoImpl;
 import org.solmix.hola.discovery.support.ServicePropertiesImpl;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
@@ -115,7 +115,7 @@ public class DiscoveryServiceTest
                 JmDNSNamespace.NAME);
             ServiceType type = DefaultServiceTypeFactory.getDefault().create(
                 ns, services, protocols);
-            meta = new ServiceMetadataImpl(uri, serviceName, type, priority,
+            meta = new ServiceInfoImpl(uri, serviceName, type, priority,
                 weight, properties, timeToLive);
         }
         return meta;

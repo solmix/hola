@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rt.config;
 
+import org.solmix.runtime.Container;
+
 
 /**
  * 
@@ -25,7 +27,15 @@ package org.solmix.hola.rt.config;
  * @version 0.0.1  2014年9月6日
  */
 
-public class ClientConfig
+public class ClientConfig 
 {
+
+    /**
+     * @param container
+     */
+     ClientConfig(Container container)
+    {
+        // TODO Auto-generated constructor stub
+    }
 
 }

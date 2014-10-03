@@ -93,4 +93,14 @@ public class HolaRemoteManagerProtocol implements RemoteManagerProtocol
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.rs.RemoteManagerProtocol#getDefaultPort()
+     */
+    @Override
+    public int getDefaultPort() {
+        return 2999;
+    }
+
 }

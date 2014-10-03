@@ -19,10 +19,8 @@
 package org.solmix.hola.rt.config;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +28,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.commons.util.TransformUtils;
 import org.solmix.runtime.Container;
 
 
@@ -61,13 +60,19 @@ public class AbstractConfig implements Serializable
 
     private static final Pattern PATTERN_KEY = Pattern.compile("[*,\\-._0-9a-zA-Z]+");
 
+    private static final String HOLA_PREFIX = "hola";
+    
     protected Container container;
     
     protected String id;
     
+    public AbstractConfig(Container container){
+        this.container=container;
+    }
     /**
      * @return the id
      */
+    @Property(excluded=true)
     public String getId() {
         return id;
     }
@@ -146,7 +151,7 @@ public class AbstractConfig implements Serializable
                         && ! "getClass".equals(name)
                         && Modifier.isPublic(method.getModifiers()) 
                         && method.getParameterTypes().length == 0
-                        && isPrimitive(method.getReturnType())) {
+                        && ConfigUtils.isPrimitive(method.getReturnType())) {
                     Property parameter = method.getAnnotation(Property.class);
                     if (method.getReturnType() == Object.class || parameter != null && parameter.excluded()) {
                         continue;
@@ -163,7 +168,7 @@ public class AbstractConfig implements Serializable
                     String str = String.valueOf(value).trim();
                     if (value != null && str.length() > 0) {
                         if (parameter != null && parameter.escaped()) {
-                            str = encode(str);
+                            str = ConfigUtils.encode(str);
                         }
                         if (prefix != null && prefix.length() > 0) {
                             key = prefix + "." + key;
@@ -191,29 +196,79 @@ public class AbstractConfig implements Serializable
         }
     }
     
-    public static String encode(String value) {
-        if (value == null || value.length() == 0) { 
-            return "";
+    protected static void appendDefault(AbstractConfig config) {
+        if(config==null){
+            return;
         }
-        try {
-            return URLEncoder.encode(value, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        String type= config.getClass().getSimpleName();
+        if (type.endsWith("Config")) {
+            type = type.substring(0, type.length() - "Config".length());
         }
+        type=type.toLowerCase();
+        String prefix=HOLA_PREFIX+"."+type+".";
+        Method[] methods = config.getClass().getMethods();
+        for (Method method : methods) {
+            try {
+                String name = method.getName();
+                if (name.length() > 3 && name.startsWith("set") && Modifier.isPublic(method.getModifiers()) 
+                        && method.getParameterTypes().length == 1 && ConfigUtils.isPrimitive(method.getParameterTypes()[0])) {
+                    String property = StringUtils.camelToSplitName(name.substring(3, 4).toLowerCase() + name.substring(4), "-");
+
+                    String value = null;
+                    if (config.getId() != null && config.getId().length() > 0) {
+                        String pn = prefix + config.getId() + "." + property;
+                        value = System.getProperty(pn);
+                        if(! StringUtils.isBlank(value)) {
+                            logger.info("Use System Property " + pn + " to config dubbo");
+                        }
+                    }
+                    if (value == null || value.length() == 0) {
+                        String pn = prefix + property;
+                        value = System.getProperty(pn);
+                        if(! StringUtils.isBlank(value)) {
+                            logger.info("Use System Property " + pn + " to config dubbo");
+                        }
+                    }
+                    if (value == null || value.length() == 0) {
+                        Method getter;
+                        try {
+                            getter = config.getClass().getMethod("get" + name.substring(3), new Class<?>[0]);
+                        } catch (NoSuchMethodException e) {
+                            try {
+                                getter = config.getClass().getMethod("is" + name.substring(3), new Class<?>[0]);
+                            } catch (NoSuchMethodException e2) {
+                                getter = null;
+                            }
+                        }
+                        if (getter != null) {
+                            if (getter.invoke(config, new Object[0]) == null) {
+                                if (config.getId() != null && config.getId().length() > 0) {
+                                    value = ConfigUtils.getProperty(prefix + config.getId() + "." + property);
+                                }
+                                if (value == null || value.length() == 0) {
+                                    value = ConfigUtils.getProperty(prefix + property);
+                                }
+                               /* if (value == null || value.length() == 0) {
+                                    String legacyKey = legacyProperties.get(prefix + property);
+                                    if (legacyKey != null && legacyKey.length() > 0) {
+                                        value = convertLegacyValue(legacyKey, ConfigUtils.getProperty(legacyKey));
+                                    }
+                                }*/
+                                
+                            }
+                        }
+                    }
+                    if (value != null && value.length() > 0) {
+                        method.invoke(config, new Object[] {TransformUtils.transformType(method.getParameterTypes()[0], value)});
+                    }
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        
     }
-    private static boolean isPrimitive(Class<?> type) {
-        return type.isPrimitive() 
-                || type == String.class 
-                || type == Character.class
-                || type == Boolean.class
-                || type == Byte.class
-                || type == Short.class
-                || type == Integer.class 
-                || type == Long.class
-                || type == Float.class 
-                || type == Double.class
-                || type == Object.class;
-    }
+    
 	/**
 	 * @return the container
 	 */
@@ -227,5 +282,36 @@ public class AbstractConfig implements Serializable
 	public void setContainer(Container container) {
 		this.container = container;
 	}
-    
+	
+    public ApplicationConfig createApplication() {
+        return new ApplicationConfig(container);
+    }
+
+    public DiscoveryConfig createDiscovery() {
+        return new DiscoveryConfig(container);
+    }
+
+    public ClientConfig createClient() {
+        return new ClientConfig(container);
+    }
+
+    public ServerConfig createServer() {
+        return new ServerConfig(container);
+    }
+
+    public ArgumentConfig createArgument() {
+        return new ArgumentConfig();
+    }
+
+    public MethodConfig createMethod() {
+        return new MethodConfig();
+    }
+
+    public ModuleConfig createModule() {
+        return new ModuleConfig(container);
+    }
+
+    public MonitorConfig createMonitor() {
+        return new MonitorConfig();
+    }
 }

@@ -18,6 +18,7 @@
  */
 package org.solmix.hola.rt.config;
 
+
 /**
  * 
  * @author solmix.f@gmail.com
@@ -26,7 +27,14 @@ package org.solmix.hola.rt.config;
 
 public class MethodConfig extends AbstractMethodConfig {
 
-	 private static final long serialVersionUID = 537718142933383316L;
+	 /**
+     * @param container
+     */
+     MethodConfig()
+    {
+        super(null);
+    }
+    private static final long serialVersionUID = 537718142933383316L;
 	 
 	 /**
 	 *方法名称 

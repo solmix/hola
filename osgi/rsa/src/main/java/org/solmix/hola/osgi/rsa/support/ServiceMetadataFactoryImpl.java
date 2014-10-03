@@ -34,7 +34,7 @@ import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceType;
-import org.solmix.hola.discovery.support.ServiceMetadataImpl;
+import org.solmix.hola.discovery.support.ServiceInfoImpl;
 import org.solmix.hola.discovery.support.ServicePropertiesImpl;
 import org.solmix.hola.osgi.rsa.AbstractMetadataFactory;
 import org.solmix.hola.osgi.rsa.HolaRemoteConstants;
@@ -74,7 +74,7 @@ public class ServiceMetadataFactoryImpl extends AbstractMetadataFactory
 
     private ServiceInfo createMetadata(URI uri, String serviceName,
         ServiceType type, ServiceProperties serviceProperties) {
-        return new ServiceMetadataImpl(uri, serviceName, type,
+        return new ServiceInfoImpl(uri, serviceName, type,
             serviceProperties);
     }
 

@@ -20,10 +20,12 @@ package org.solmix.hola.core.model;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.hola.core.HolaConstants;
 
 
@@ -32,33 +34,61 @@ import org.solmix.hola.core.HolaConstants;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年9月14日
  */
-
-public class DiscoveryInfo extends EndpointInfo
+@ThreadSafe
+public class DiscoveryInfo extends AbstractURIInfo<DiscoveryInfo>
 {
+    private static final long serialVersionUID = -2090513507409471371L;
     private static final Logger LOG = LoggerFactory.getLogger(DiscoveryInfo.class);
-    /**
-     * @param properties
-     */
-    public DiscoveryInfo(Map<String, Object> properties)
+    public static final String ADDRESS_KEY="discovery.address";
+   
+    public DiscoveryInfo(String protocol,  String host, int port)
     {
-        super(properties);
+       this(protocol,null,null,host,port,null,null);
+    }
+  
+    public DiscoveryInfo(String protocol, String username, String password, String host, int port, String path, Map<String, Object> properties) {
+        super(protocol,username,password,host,port,path,properties);
+        
+    }
+    public static DiscoveryInfo valueOf(URI uri){
+        if(uri==null)
+            return null;
+        Builder b= newBuilder();
+        b.setProtocol(uri.getScheme());
+       String userInfo=uri.getRawUserInfo();
+       String username=null;
+       String password=null;
+       if(userInfo!=null&&userInfo.length()>0){
+           int j = userInfo.indexOf(":");
+           if (j >= 0) {
+               password = userInfo.substring(j + 1);
+               username = userInfo.substring(0, j);
+           }else{
+               username=userInfo;
+           }
+       }
+       b.setUserName(username);
+       b.setPassword(password);
+       b.setHost(uri.getHost());
+       b.setPort(uri.getPort());
+       b.setPath(uri.getRawPath());
+       Map<String,Object> param= parseQuery(uri.getRawQuery());
+       if(param!=null&&param.size()>0)
+       b.setProperties(param);
+        
+        return b.build();
     }
     
-    public DiscoveryInfo()
-    {
-        this(null);
-    }
-    
-    public URI getURI(){
-        String address=getAddress();
+    public static DiscoveryInfo valueOf(String uri){
         try {
-            URI uri= new URI(address);
-            return uri;
+            URI u = new URI(uri);
+            return valueOf(u);
         } catch (URISyntaxException e) {
-           LOG.error("Can't parse uri string:"+address+"to URI",e);
+            throw  new IllegalArgumentException(e);
         }
-        return null;
     }
+  
+    @Override
     public String getAddress(){
         return getString("address");
     }
@@ -80,6 +110,7 @@ public class DiscoveryInfo extends EndpointInfo
         return sb.toString();
     }
     
+    @Override
     public String getAuthority() {
         String username=getString("username");
         String password=getString("password");
@@ -111,5 +142,124 @@ public class DiscoveryInfo extends EndpointInfo
     public boolean getCheck(boolean b) {
         return getBoolean("check", b);
         
+    }
+    @Override
+    public String getProtocol(){
+        return getString("protocol");
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#getSelf()
+     */
+    @Override
+    protected DiscoveryInfo getSelf() {
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#makeSelf(java.util.Map)
+     */
+    @Override
+    protected DiscoveryInfo makeSelf(Map<String, Object> map) {
+        return new DiscoveryInfo(protocol,username,password,host,port,path,map);
+
+    }
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static Builder newBuilder(AbstractURIInfo<?> info) {
+        return new Builder(info);
+    }
+
+    public static class Builder
+    {
+
+        private   Map<String, Object> properties = new HashMap<String, Object>();
+        protected  String protocol;
+        protected  String username;
+        protected  String password;
+        protected  String host;
+        protected  int port;
+        protected  String path;
+        private Builder()
+        {
+        }
+
+        /**
+         * @param info
+         */
+        public Builder(AbstractURIInfo<?> info)
+        {
+            properties.putAll(info.getProperties());
+            protocol=info.getProtocol();
+            username=info.getUsername();
+            password=info.getPassword();
+            host=info.getHost();
+            port=info.getPort();
+            path=info.getPath();
+        }
+        
+        public Builder setProperties(Map<String,Object> properties) {
+            this.properties=new HashMap<String, Object>(properties);
+            return this;
+        }
+
+        public Builder setPropertyIfAbsent(String key, Object value){
+            if (key == null || key.length() == 0 || value == null)
+                return this;
+            if (hasProperty(key))
+                return this;
+            properties.put(key, value);
+            return this;
+        }
+
+        public boolean hasProperty(String key){
+            Object value = properties.get(key);
+            return value != null;
+        }
+        
+        public Builder setPort(int  port) {
+            this.port=port;
+             return this;
+         }
+        public Builder setPath(String  path) {
+           this.path=path;
+            return this;
+        }
+        public Builder setUserName(String  username) {
+            this.username=username;
+             return this;
+         }
+        public Builder setPassword(String  password) {
+            this.password=password;
+             return this;
+         }
+        
+        public Builder setProtocol(String  protocol) {
+            this.protocol=protocol;
+             return this;
+         }
+       
+        /**
+         * @param host the host to set
+         */
+        public Builder setHost(String host) {
+           this.host=host;
+            return this;
+        }
+
+      
+     
+
+        public DiscoveryInfo build() {
+
+            return new DiscoveryInfo(protocol,username,password,host,port,path,properties);
+        }
+
     }
 }

@@ -18,6 +18,7 @@
  */
 package org.solmix.hola.core.identity;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -25,6 +26,8 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,6 +46,47 @@ public class URIIDTest extends AbstractIDTestCase
 {
     public static final String URI="http://www.solmix.org/hola";
     
+    @Test
+    public void testuri(){
+        try {
+            
+            URI u1 = new URI("http://www.solmix.org/hola");
+            assertEquals("http", u1.getScheme());
+            assertEquals("/hola", u1.getPath());
+            
+            URI u2 = new URI("file:///home/solmix/o/pom.xml");
+            assertEquals("file", u2.getScheme());
+            assertEquals("/home/solmix/o/pom.xml", u2.getPath());
+            
+            URI u3 = new URI("/context/path?version=1.0.0&application=morgan");
+            assertEquals(null, u3.getScheme());
+            assertEquals(null, u3.getHost());
+            assertEquals(null, u3.getUserInfo());
+            assertEquals(null, u3.getScheme());
+            assertEquals(-1, u3.getPort());
+            
+            
+            URI u4 = new URI("context/path?version=1.0.0&application=morgan");
+            assertEquals(null, u4.getHost());
+            
+            URI u5 = new URI("http://127.0.0.1");
+            assertEquals("127.0.0.1", u5.getHost());
+            
+            URI u6 = new URI("admin://hello1234@127.0.0.1:1314/context/path?version=1.0.0");
+            assertEquals("127.0.0.1", u6.getHost());
+            assertEquals("hello1234", u6.getUserInfo());
+            
+            URI u7 = new URI("admin://aa:hello1234@127.0.0.1:1314/context/path?version=1.0.0");
+            assertEquals("127.0.0.1", u7.getHost());
+            assertEquals("aa:hello1234", u7.getUserInfo());
+            
+//            URI u8 = new URI("://127.0.0.1:1314/context/path?version=1.0.0");
+//            assertEquals("127.0.0.1", u8.getHost());
+            
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
     @Test
     public void testCreate() {
         ID id= createID();

@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rt.config;
 
+import org.solmix.runtime.Container;
+
 
 
 /**
@@ -28,6 +30,14 @@ package org.solmix.hola.rt.config;
 
 public class AbstractServiceConfig extends AbstractClassConfig
 {
+
+    /**
+     * @param container
+     */
+    public AbstractServiceConfig(Container container)
+    {
+        super(container);
+    }
 
     /**
      * 

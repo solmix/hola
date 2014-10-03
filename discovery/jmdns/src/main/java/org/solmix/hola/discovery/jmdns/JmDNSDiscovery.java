@@ -61,7 +61,7 @@ import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace;
 import org.solmix.hola.discovery.support.AbstractDiscovery;
-import org.solmix.hola.discovery.support.ServiceMetadataImpl;
+import org.solmix.hola.discovery.support.ServiceInfoImpl;
 import org.solmix.hola.discovery.support.ServicePropertiesImpl;
 import org.solmix.runtime.Container;
 
@@ -489,7 +489,7 @@ public class JmDNSDiscovery extends AbstractDiscovery implements
         // service name
         final String name = info.getName();
 
-        return new ServiceMetadataImpl(uri, name, sID, priority, weight,
+        return new ServiceInfoImpl(uri, name, sID, priority, weight,
             new ServicePropertiesImpl(props));
 
     }

@@ -55,7 +55,7 @@ public class URINamespace extends AbstractNamespace
                       return new URIID(this, new URI((String) parameters[0]));
                 throw new IDCreateException("Cannot create URIID");
           } catch (Exception e) {
-                throw new IDCreateException(getName()  + " createInstance()", e); 
+                throw new IDCreateException(getName()  + " createID()", e); 
           }
     }
 

@@ -19,6 +19,12 @@
 
 package org.solmix.hola.rt.config;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +32,13 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.collections.DataTypeMap;
+import org.solmix.commons.util.NetUtils;
+import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.rs.RemoteManagerProtocol;
 import org.solmix.hola.rs.service.GenericService;
 import org.solmix.hola.rt.ServiceExportor;
 import org.solmix.runtime.Container;
@@ -45,7 +57,10 @@ public class ServiceConfig<T> extends AbstractServiceConfig
     private static final long serialVersionUID = -7539697586814177467L;
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceConfig.class);
-    private String interfaceName;
+    
+    private static final Map<String, Integer> RANDOM_PORT_MAP = new HashMap<String, Integer>();
+
+    private String[] interfaceNames;
 
     protected Integer delay;
 
@@ -64,43 +79,53 @@ public class ServiceConfig<T> extends AbstractServiceConfig
      */
     private T ref;
 
-    private Class<?> interfaceClass;
+    private Class<?>[] interfaceClass;
 
     private List<MethodConfig> methods;
+    
+    
+    private boolean generic;
     /**
      * default instance.
      */
     public ServiceConfig(Container container){
-    	setContainer(container);
+    	super(container);
     }
     
     public synchronized void prepareExport() {
         mergeConfiguration();
+        
+        if (interfaceNames == null || interfaceNames.length == 0) {
+            throw new IllegalStateException("<hola:service interface=\"\" /> interface not allow null!");
+        }
         //通用服务
         if(ref instanceof GenericService){
-        	 interfaceClass = GenericService.class;
+        	 interfaceClass = new Class<?>[]{ GenericService.class};
+        	 generic=true;
         	 //TODO
         }else{
-	        if (interfaceName == null || interfaceName.length() == 0) {
-	            throw new IllegalStateException("<hola:service interface=\"\" /> interface not allow null!");
-	        }
+            interfaceClass=new Class<?>[interfaceNames.length];
+            for(int i=0;i<interfaceNames.length;i++){
+                String interfaceName=interfaceNames[i];
 	        //check interface config.
 	        try {
-	            interfaceClass = Class.forName(interfaceName, true, 
+	            interfaceClass[i] = Class.forName(interfaceName, true, 
 	            		Thread.currentThread().getContextClassLoader());
 	        } catch (ClassNotFoundException e) {
 	            throw new IllegalStateException(e.getMessage(), e);
 	        }
-	        checkInterfaceAndMethods(interfaceClass,methods);
-	        checkRef();
+	        checkInterfaceAndMethods(interfaceClass[i],methods);
+	        checkRef(interfaceClass[i]);
+            }
         }
         //TODO sub mock local
         checkApplication();
         checkDiscovery();
         checkServer();
+        appendDefault(this);
         //path
-        if(path == null || path.length() == 0){
-            path = interfaceName;
+        if((path == null || path.length() == 0)&&interfaceNames.length==1){
+            path = interfaceNames[0];
         }
     }
     
@@ -122,15 +147,19 @@ public class ServiceConfig<T> extends AbstractServiceConfig
                     LOG.info("not set <hola:server .../> neither <hola:service protocol=.../>,set default protocol:hola ");
                 setProtocol("hola");
             }
-            setServer(new ServerConfig(getProtocol()));
+            ServerConfig mock = new ServerConfig(container,getProtocol());
+            setServer(mock);
+        }
+        for(ServerConfig server:servers){
+            appendDefault(server);
         }
     }
     
-    protected void checkRef(){
+    protected void checkRef(Class<?> type){
     	if (ref == null) {
-            throw new IllegalStateException("ref not allow null!");
+            throw new IllegalStateException("<hola:service ref=\"\" /> interface not allow null!");
         }
-        if (! interfaceClass.isInstance(ref)) {
+        if (! type.isInstance(ref)) {
             throw new IllegalStateException("The class "
                     + ref.getClass().getName() + " unimplemented interface "
                     + interfaceClass + "!");
@@ -138,19 +167,26 @@ public class ServiceConfig<T> extends AbstractServiceConfig
     }
 	
     public String getInterface() {
-        return interfaceName;
+        return StringUtils.join(interfaceNames,',');
     }
     public void setInterface(String interfaceName) {
-        this.interfaceName = interfaceName;
-        if (id == null || id.length() == 0) {
-            id = interfaceName;
+       String[] classes= StringUtils.split(interfaceName, ",");
+       setInterfaces(classes);
+    }
+    public String[] getInterfaces() {
+        return interfaceNames;
+    }
+    public void setInterfaces(String[] interfaceNames) {
+        this.interfaceNames = interfaceNames;
+        if ((id == null || id.length() == 0)&&interfaceNames.length==0) {
+            id = interfaceNames[0];
         }
     }
     public void setInterface(Class<?> interfaceClass) {
         if (interfaceClass != null && ! interfaceClass.isInterface()) {
             throw new IllegalStateException("The interface class " + interfaceClass + " is not a interface!");
         }
-        this.interfaceClass = interfaceClass;
+        this.interfaceClass = new Class<?>[]{interfaceClass};
         setInterface(interfaceClass == null ? (String) null : interfaceClass.getName());
     }
 
@@ -161,6 +197,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
     public void setRef(T ref) {
         this.ref = ref;
     }
+    @Property(excluded=true)
     public String getPath() {
         return path;
     }
@@ -244,11 +281,140 @@ public class ServiceConfig<T> extends AbstractServiceConfig
      * @return
      */
     public List<EndpointInfo> getEndpointInfo(){
-      //加载合并整理参数,准备
+      //加载合并整理参数
       prepareExport();
-      Map<String,Object> prop= new HashMap<String,Object>();
-      return null;
-        
+      
+      List<EndpointInfo> endpoints = new ArrayList<EndpointInfo>();
+      List<DiscoveryInfo> discoveryInfos=getDiscoveryInfos();
+      for(ServerConfig server:servers){
+          List<EndpointInfo> eds= getEndpointForServer(server,discoveryInfos);
+          endpoints.addAll(eds);
+      }
+      return endpoints;
+    }
+    
+    
+    private List<EndpointInfo> getEndpointForServer(ServerConfig server,  List<DiscoveryInfo> discoveryInfos) {
+        List<EndpointInfo> endpoints= new ArrayList<EndpointInfo>();
+        //protocol
+        String protocol=server.getProtocol();
+       if(protocol==null){
+           server.setProtocol("hola");
+       }
+       //host
+       String host =server.getHost();
+       boolean anyhost = false;
+       if (NetUtils.isInvalidLocalHost(host)) {
+           anyhost = true;
+           try {
+               host = InetAddress.getLocalHost().getHostAddress();
+           } catch (UnknownHostException e) {
+               logger.warn(e.getMessage(), e);
+           }
+           if (NetUtils.isInvalidLocalHost(host)) {
+               if (discoveryInfos != null && discoveryInfos.size() > 0) {
+                   for (DiscoveryInfo info : discoveryInfos) {
+                       try {
+                           Socket socket = new Socket();
+                           try {
+                               SocketAddress addr = new InetSocketAddress(info.getHost(), info.getPort());
+                               socket.connect(addr, 1000);
+                               host = socket.getLocalAddress().getHostAddress();
+                               break;
+                           } finally {
+                               try {
+                                   socket.close();
+                               } catch (Throwable e) {}
+                           }
+                       } catch (Exception e) {
+                           logger.warn(e.getMessage(), e);
+                       }
+                   }
+               }
+               if (NetUtils.isInvalidLocalHost(host)) {
+                   host = NetUtils.getLocalHost();
+               }
+           }
+       }//end host
+     //port
+       Integer port = server.getPort();
+        if (port == null || port <= 0) {
+            int defaultPort = container.getExtensionLoader(
+                RemoteManagerProtocol.class).getExtension(protocol).getDefaultPort();
+            if (defaultPort <= 0) {
+                port = getRandomPort(protocol);
+                if (port == null || port < 0) {
+                    port = NetUtils.getAvailablePort(defaultPort);
+                    putRandomPort(protocol, port);
+                }
+                logger.warn("Use random available port(" + port + ") for protocol :" + protocol);
+            } else {
+                port = defaultPort;
+            }
+        }
+        //path
+        String contextpath= server.getContextpath();
+        if(contextpath!=null){
+           if(contextpath.endsWith("/")){
+               path=contextpath+path;
+           }else{
+               path=contextpath+"/"+path;
+           }
+        }
+        //properties
+        DataTypeMap map = new DataTypeMap();
+        if (anyhost) {
+            map.put("anyhost", "true");
+        }
+       map.put("hola", ConfigUtils.getVersion());
+       map.put(EndpointInfo.TIMESTAMP_KEY, String.valueOf(System.currentTimeMillis()));
+       appendProperties(map, application);
+       appendProperties(map, module);
+       appendProperties(map, server);
+       appendProperties(map, this);
+       if(methods!=null && methods.size()>0){
+           for(MethodConfig method:methods){
+               appendProperties(map, method,method.getName());
+           }
+       }
+       if(generic){
+           map.put("generic", true);
+           map.put("methods", "*");
+       }else{
+          String rivision= ConfigUtils.getVersion(interfaceClass[0]);
+          if(rivision!=null&&rivision.length()>0){
+              map.put("rivision", rivision);
+          }
+       }
+     
+       if("jvm".equalsIgnoreCase(map.get("protocol").toString())){
+           server.setAdvertise(false);
+           map.put(EndpointInfo.ADVERTISE_KEY, false);
+       }
+       RemoteInfo remoteInfo = new RemoteInfo(protocol,host,port,path,map);
+       EndpointInfo endpoint=new EndpointInfo(remoteInfo);
+       Boolean advertise= endpoint.getAdvertise(true);
+        if ((advertise == null || advertise.booleanValue())
+            && discoveryInfos != null && discoveryInfos.size() > 0) {
+            endpoint.setDiscoveryInfos(discoveryInfos);
+        }
+        endpoints.add(endpoint);
+        return endpoints;
+    }
+
+    private static Integer getRandomPort(String protocol) {
+        protocol = protocol.toLowerCase();
+        if (RANDOM_PORT_MAP.containsKey(protocol)) {
+            return RANDOM_PORT_MAP.get(protocol);
+        }
+        return Integer.MIN_VALUE;
+    }
+
+    private static void putRandomPort(String protocol, Integer port) {
+        protocol = protocol.toLowerCase();
+        if (!RANDOM_PORT_MAP.containsKey(protocol)) {
+            RANDOM_PORT_MAP.put(protocol, port);
+        }
     }
 
 }

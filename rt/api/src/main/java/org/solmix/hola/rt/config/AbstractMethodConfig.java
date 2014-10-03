@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rt.config;
 
+import org.solmix.runtime.Container;
+
 /**
  * 
  * @author solmix.f@gmail.com
@@ -27,6 +29,14 @@ package org.solmix.hola.rt.config;
 public class AbstractMethodConfig extends AbstractConfig {
 
 	/**
+     * @param container
+     */
+    public AbstractMethodConfig(Container container)
+    {
+        super(container);
+    }
+
+    /**
 	 * 
 	 */
 	private static final long serialVersionUID = 7448502891914975044L;

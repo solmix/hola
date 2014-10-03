@@ -21,6 +21,8 @@ package org.solmix.hola.rt.config;
 
 import java.util.Map;
 
+import org.solmix.runtime.Container;
+
 /**
  * 
  * @author solmix.f@gmail.com
@@ -69,8 +71,7 @@ public class DiscoveryConfig extends AbstractConfig
     // 在该注册中心上注册是动态的还是静态的服务
     private Boolean           dynamic;
     
-    // 在该注册中心上服务是否暴露
-    private Boolean           register;
+    private Boolean           advertise;
     
     // 在该注册中心上服务是否引用
     private Boolean           subscribe;
@@ -84,17 +85,19 @@ public class DiscoveryConfig extends AbstractConfig
      */
     private String protocol;
     
-    public DiscoveryConfig(){
-    	
+     DiscoveryConfig(Container container){
+    	super(container);
     }
 
-    public DiscoveryConfig(String address){
+    public DiscoveryConfig(Container container,String address){
+        super(container);
     	setAddress(address);
     }
     
     /**
 	 * @return the provider
 	 */
+    @Property(excluded=true)
 	public String getProtocol() {
 		return protocol;
 	}
@@ -118,6 +121,7 @@ public class DiscoveryConfig extends AbstractConfig
 	/**
      * @return the address
      */
+	@Property(excluded=true)
     public String getAddress() {
         return address;
     }
@@ -133,6 +137,7 @@ public class DiscoveryConfig extends AbstractConfig
     /**
      * @return the username
      */
+    @Property(excluded=true)
     public String getUsername() {
         return username;
     }
@@ -150,6 +155,7 @@ public class DiscoveryConfig extends AbstractConfig
     /**
      * @return the password
      */
+    @Property(excluded=true)
     public String getPassword() {
         return password;
     }
@@ -167,6 +173,7 @@ public class DiscoveryConfig extends AbstractConfig
     /**
      * @return the port
      */
+    @Property(excluded=true)
     public Integer getPort() {
         return port;
     }
@@ -277,22 +284,6 @@ public class DiscoveryConfig extends AbstractConfig
 
     
     /**
-     * @return the register
-     */
-    public Boolean getRegister() {
-        return register;
-    }
-
-    
-    /**
-     * @param register the register to set
-     */
-    public void setRegister(Boolean register) {
-        this.register = register;
-    }
-
-    
-    /**
      * @return the subscribe
      */
     public Boolean getSubscribe() {
@@ -321,6 +312,22 @@ public class DiscoveryConfig extends AbstractConfig
      */
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
+    }
+
+    
+    /**
+     * @return the advertise
+     */
+    public Boolean getAdvertise() {
+        return advertise;
+    }
+
+    
+    /**
+     * @param advertise the advertise to set
+     */
+    public void setAdvertise(Boolean advertise) {
+        this.advertise = advertise;
     }
 
 }

@@ -45,7 +45,7 @@ import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.support.AbstractDiscovery;
-import org.solmix.hola.discovery.support.ServiceMetadataImpl;
+import org.solmix.hola.discovery.support.ServiceInfoImpl;
 
 /**
  * 
@@ -101,7 +101,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
         ServiceID sid = smeta.getServiceID();
         ServiceID nsid = getServiceIDforProvider(sid, provider);
         ServiceType type = nsid.getServiceType();
-        return new ServiceMetadataImpl(sid.getLocation(), sid.getServiceName(),
+        return new ServiceInfoImpl(sid.getLocation(), sid.getServiceName(),
             type, smeta.getServiceProperties());
     }
 
