@@ -9,7 +9,6 @@ import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.executor.ExecutorProvider;
-import org.solmix.hola.core.model.ExecutorInfo;
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
@@ -35,12 +34,8 @@ public class AbstractDispatcherHandler implements ChannelHandlerDelegate {
         this.handler = handler;
         this.info = info;
         this.container=container;
-        ExecutorInfo einfo=info.adaptTo(ExecutorInfo.class);
-        if(einfo.getThreadName()==null){
-            einfo=  einfo.addProperty(ExecutorInfo.EXECUTOR_THREAD_NAME, info.getThreadName());
-        }
         String eprovider=info.getThreadPool(HolaConstants.DEFAULT_THREADPOOL);
-        executor= (ExecutorService) container.getExtensionLoader(ExecutorProvider.class).getExtension(eprovider).getExecutor(einfo);
+        executor= (ExecutorService) container.getExtensionLoader(ExecutorProvider.class).getExtension(eprovider).getExecutor(info);
         //XXX 使用object缓存技术
     }
     

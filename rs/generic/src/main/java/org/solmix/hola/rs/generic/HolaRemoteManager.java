@@ -34,15 +34,15 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteConnectException;
-import org.solmix.hola.rs.RemoteFilter;
-import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteException;
+import org.solmix.hola.rs.RemoteFilter;
 import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteManager;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.event.RemoteEvent;
 import org.solmix.hola.rs.event.RemoteRegisteredEvent;
 import org.solmix.hola.rs.event.RemoteUnregisteredEvent;
@@ -80,7 +80,11 @@ public class HolaRemoteManager implements RemoteManager
                 RemoteRequest request=(RemoteRequest)msg;
                 HolaRemoteRegistration<?> registration =  lookupRegistration(channel,request);
                 try {
-                 return   registration.callService(request);
+                    RemoteReference<?> ref=   registration.getReference();
+                    if(ref.isActive())
+                        return ref.doInvoke(request);
+                    else
+                        throw new TransportException(channel,"RemoteReference is not active!");
                 } catch (Exception e) {
                     throw new TransportException(channel, e);
                 }
@@ -114,15 +118,9 @@ public class HolaRemoteManager implements RemoteManager
         HolaRemoteRegistration<?> reg = publishedServices.get(requestId);
         return reg;
     }
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#registerRemoteService(java.lang.String[], java.lang.Object, java.util.Map)
-     * @param properties {@link org.solmix.hola.osgi.rsa.HolaRemoteServiceAdmin#createExportEndpointDescriptionProperties}
-     */
+   
     @Override
-    public RemoteRegistration<?> registerRemoteService(String[] clazzes,
-        Object service, RemoteInfo info) throws RemoteException{
+    public RemoteRegistration<?> registerRemoteService(String[] clazzes, Object service, RemoteInfo info) throws RemoteException{
         Assert.isNotNull(service, "register service is null");
         if (clazzes==null || clazzes.length == 0) {
             throw new IllegalArgumentException( "Service classes list is empty");
@@ -132,25 +130,25 @@ public class HolaRemoteManager implements RemoteManager
             copy[i] = new String(clazzes[i].getBytes());
         }
         clazzes = copy;
+        //验证接口和实例是否对应
         final String invalidService = checkServiceClass(clazzes, service);
         if (invalidService != null) {
             throw new IllegalArgumentException("Service=" + invalidService
                 + " is invalid");
         }
-        final HolaRemoteRegistration<Object> reg 
-        = new HolaRemoteRegistration<Object>(this, clazzes, service, info);
-        adapteServer(info);
+        final HolaRemoteRegistration<Object> reg = new HolaRemoteRegistration<Object>(this, clazzes, service, info);
+        //创建适合配置的server.
+        makeServer(info);
         publishedServices.put(reg.getID(), reg);
+        //触发注册完毕事项
         fireRemoteServiceListeners(createRegisteredEvent(reg));
         return reg;
     }
     
-    /**
-     * @param reg
-     */
-    private void adapteServer(RemoteInfo info) {
+    private void makeServer(RemoteInfo info) {
        boolean isServer= info.getServer(true);
        String key = info.getAddress();
+       //根据地址创建服务器
        if(isServer){
            ExchangeServer server=  servers.get(key);
            if(server==null){

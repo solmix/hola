@@ -16,10 +16,32 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.rs.proxy;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
+import org.solmix.hola.rs.RemoteProxyFactory;
+
+
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月4日
+ * @version 0.0.1  2014年5月1日
  */
 
-package org.solmix.hola.rs.call;
+public class JDKRemoteProxyFactory implements RemoteProxyFactory
+{
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.rs.RemoteProxyFactory#createProxy(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler)
+     */
+    @Override
+    public Object createProxy(ClassLoader classloader, Class<?>[] interfaces,
+        InvocationHandler handler) {
+        return Proxy.newProxyInstance(classloader, interfaces, handler);
+    }
+
+}

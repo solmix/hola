@@ -1,3 +1,4 @@
+package org.solmix.hola.rs;
 import org.junit.Assert;
 import org.junit.Test;
 

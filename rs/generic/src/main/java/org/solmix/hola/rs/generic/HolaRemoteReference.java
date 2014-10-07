@@ -67,25 +67,7 @@ public class HolaRemoteReference<S> implements RemoteReference<S>
         return new String[]{clazz};
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.generic.RemoteReference#getProperty(java.lang.String)
-     */
-    @Override
-    public Object getProperty(String key) {
-        return info.getProperty(key);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rs.generic.RemoteReference#getPropertyKeys()
-     */
-    @Override
-    public String[] getPropertyKeys() {
-        return  info.getProperties().keySet().toArray(new String[]{});
-    }
+   
 
     /**
      * {@inheritDoc}
@@ -99,6 +81,15 @@ public class HolaRemoteReference<S> implements RemoteReference<S>
     
     public void setActive(boolean active){
         this.active=active;
+    }
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.rs.RemoteReference#getRemoteInfo()
+     */
+    @Override
+    public RemoteInfo getRemoteInfo() {
+        return info;
     }
 
 }

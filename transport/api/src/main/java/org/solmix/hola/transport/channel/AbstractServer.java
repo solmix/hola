@@ -29,7 +29,6 @@ import org.solmix.commons.util.ExecutorUtils;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.ExecutorInfo;
-import org.solmix.hola.core.model.InfoUtils;
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.dispatch.AbstractDispatcherHandler;
@@ -103,10 +102,9 @@ public abstract class AbstractServer extends AbstractPeer implements Server
         }
         try {
             if(info.hasProperty(ExecutorInfo.EXECUTOR_THREADS)){
-                ExecutorInfo ex =info.adaptTo(ExecutorInfo.class);
-                if(ex.getThreads()!=null&& executor instanceof ThreadPoolExecutor && !executor.isShutdown()){
+                if(info.getThreads()!=null&& executor instanceof ThreadPoolExecutor && !executor.isShutdown()){
                     ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
-                    int threads=ex.getThreads();
+                    int threads=info.getThreads();
                     int max = threadPoolExecutor.getMaximumPoolSize();
                     int core = threadPoolExecutor.getCorePoolSize();
                     if (threads > 0 && (threads != max || threads != core)) {
@@ -128,7 +126,7 @@ public abstract class AbstractServer extends AbstractPeer implements Server
             logger.error(t.getMessage(), t);
         }
         //合并参数
-        setInfo(InfoUtils.merge(info, getInfo()));
+        setInfo(getInfo().addProperties(info.getProperties()));
     }
     @Override
     public void send(Object message, boolean sent) throws TransportException {

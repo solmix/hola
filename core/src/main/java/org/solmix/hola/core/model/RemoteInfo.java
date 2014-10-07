@@ -25,6 +25,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.core.identity.ID;
@@ -79,10 +81,6 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
      */
     public static final String TRANSPORT = "transport";
 
-    /**
-     * 线程名称
-     */
-    public static final String THREAD_NAME = "threadName";
 
     /**
      * 超时时间(ms)
@@ -104,11 +102,7 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
      */
     public static final String IDLE_TIMEOUT = "idleTimeout";
 
-    /**
-     * 线程池实现
-     */
-    public static final String THREAD_POOL = "threadPool";
-
+    
     /**
      * 编码/解码实现
      */
@@ -142,7 +136,7 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
     /**
      * IO线程数
      */
-    public static final String IO_THREADS = "ioThreads";
+    public static final String IO_THREADS = "iothreads";
 
     /**
      * 每次通信负载
@@ -162,7 +156,7 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
     /**
      * 是否启用只读模式
      */
-    public static final String READ_ONLY = "readOnly";
+    public static final String READ_ONLY = "readonly";
 
     /**
      * 是否启用重连
@@ -188,9 +182,34 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
      * 是否检查启动错误,如果为true,当出现错误时抛错.
      */
     public static final String CHECK = "check";
-    
-    private IDFactory idFactory;
+    /**
+     * 线程池实现
+     */
+    public static final String THREAD_POOL = "threadPool";
+
+    /**
+     * 线程名称
+     */
+    public static final String THREAD_NAME = "threadName";
+    /**
+     * 核心线程
+     */
+    public static  final  String EXECUTOR_CORE_THREADS="corethreads";
+    /**
+     * 线程
+     */
+    public static  final  String EXECUTOR_THREADS="threads";
+    /**
+     * 队列
+     */
+    public static  final  String EXECUTOR_QUEUES="queues";
+    /**
+     * 活动时间
+     */
+    public static  final  String EXECUTOR_ALIVE="alive";
   
+    @Resource
+    private IDFactory idFactory;
 
     /**
      * @param properties
@@ -207,32 +226,33 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
         super(protocol,username,password,host,port,path,properties);
         
     }
-    public static RemoteInfo valueOf(URI uri){
-        if(uri==null)
+
+    public static RemoteInfo valueOf(URI uri) {
+        if (uri == null)
             return null;
-        Builder b= newBuilder();
+        Builder b = newBuilder();
         b.setProtocol(uri.getScheme());
-       String userInfo=uri.getRawUserInfo();
-       String username=null;
-       String password=null;
-       if(userInfo!=null&&userInfo.length()>0){
-           int j = userInfo.indexOf(":");
-           if (j >= 0) {
-               password = userInfo.substring(j + 1);
-               username = userInfo.substring(0, j);
-           }else{
-               username=userInfo;
-           }
-       }
-       b.setUserName(username);
-       b.setPassword(password);
-       b.setHost(uri.getHost());
-       b.setPort(uri.getPort());
-       b.setPath(uri.getRawPath());
-       Map<String,Object> param= parseQuery(uri.getRawQuery());
-       if(param!=null&&param.size()>0)
-       b.setProperties(param);
-        
+        String userInfo = uri.getRawUserInfo();
+        String username = null;
+        String password = null;
+        if (userInfo != null && userInfo.length() > 0) {
+            int j = userInfo.indexOf(":");
+            if (j >= 0) {
+                password = userInfo.substring(j + 1);
+                username = userInfo.substring(0, j);
+            } else {
+                username = userInfo;
+            }
+        }
+        b.setUserName(username);
+        b.setPassword(password);
+        b.setHost(uri.getHost());
+        b.setPort(uri.getPort());
+        b.setPath(uri.getRawPath());
+        Map<String, Object> param = parseQuery(uri.getRawQuery());
+        if (param != null && param.size() > 0)
+            b.setProperties(param);
+
         return b.build();
     }
    
@@ -298,8 +318,21 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
         return getString(THREAD_NAME, defaultValue);
     }
 
-   
-
+    public Integer getCoreThreads(int dfValue) {
+        return getInt(EXECUTOR_CORE_THREADS, dfValue);
+    }
+    public Integer getThreads() {
+        return getInt(EXECUTOR_THREADS);
+    }
+    public Integer getThreads(int dfValue) {
+        return getInt(EXECUTOR_THREADS, dfValue);
+    }
+    public Integer getQueues(int dfValue) {
+        return getInt(EXECUTOR_QUEUES, dfValue);
+    }
+    public Integer getAlive(int dfValue) {
+        return getInt(EXECUTOR_ALIVE, dfValue);
+    }
     /**
      * @return the heartbeat
      */
@@ -634,6 +667,22 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
             return this;
         }
 
+        public Builder setCoreThreads(Integer coreThreads) {
+            properties.put(EXECUTOR_CORE_THREADS, coreThreads);
+            return this;
+        }
+        public Builder setThreads(Integer threads) {
+            properties.put(EXECUTOR_THREADS, threads);
+            return this;
+        }
+        public Builder setQueues(int queues) {
+            properties.put(EXECUTOR_QUEUES, queues);
+            return this;
+        }
+        public Builder setAlive(int alive) {
+            properties.put(EXECUTOR_ALIVE, alive);
+            return this;
+        }
         /**
          * @param transport the transport to set
          */

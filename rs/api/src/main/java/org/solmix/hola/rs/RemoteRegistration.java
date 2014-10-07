@@ -20,9 +20,9 @@
 package org.solmix.hola.rs;
 
 import java.util.Dictionary;
-import java.util.Map;
 
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
  * 远程服务注册返回结果,在调用
@@ -40,17 +40,9 @@ public interface RemoteRegistration<S>
      * 返回非空服务ID
      * @return
      */
-    ID getID();
+    RemoteServiceID getID();
 
-
-    Object getProperty(String key);
-
-    String[] getPropertyKeys();
-
-    /**
-     * @param properties
-     */
-    void setProperties(Map<String, Object> properties);
+    RemoteInfo getRemoteInfo();
 
     /**
      * 返回服务引用

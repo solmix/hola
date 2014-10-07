@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.cluster;
 
-import org.solmix.hola.rs.call.RSCall;
+import org.solmix.hola.rs.call.RemoteCall;
 
 
 /**
@@ -36,6 +36,6 @@ public interface Cluster
 	 * @param dic
 	 * @return
 	 */
-	RSCall join(Directory dic);
+	RemoteCall join(Directory dic);
 
 }

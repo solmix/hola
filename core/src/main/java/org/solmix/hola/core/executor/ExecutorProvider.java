@@ -20,7 +20,7 @@ package org.solmix.hola.core.executor;
 
 import java.util.concurrent.Executor;
 
-import org.solmix.hola.core.model.ExecutorInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.runtime.Extension;
 
 
@@ -33,5 +33,5 @@ import org.solmix.runtime.Extension;
 public interface ExecutorProvider
 {
 
-    Executor getExecutor(ExecutorInfo info);
+    Executor getExecutor(RemoteInfo info);
 }

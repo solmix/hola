@@ -19,6 +19,7 @@
 
 package org.solmix.hola.rt.config;
 
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -62,9 +63,15 @@ public class ServiceConfig<T> extends AbstractServiceConfig
 
     private String[] interfaceNames;
 
+    /**
+     * 延迟发布时间(ms)
+     */
     protected Integer delay;
 
-    // 服务名称
+    /**
+     * 服务路径,默认为interface名称,如果设置了{@link ServerConfig#getContextpath()
+     * contextpath}为 contextpath/path.
+     */
     private String path;
     
     private ServiceExportor serviceExportor;
@@ -81,6 +88,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig
 
     private Class<?>[] interfaceClass;
 
+    /**
+     * 方法配置
+     */
     private List<MethodConfig> methods;
     
     
@@ -375,6 +385,50 @@ public class ServiceConfig<T> extends AbstractServiceConfig
        if(methods!=null && methods.size()>0){
            for(MethodConfig method:methods){
                appendProperties(map, method,method.getName());
+               
+               List<ArgumentConfig> arguments = method.getArguments();
+               if (arguments != null && arguments.size() > 0) {
+                   for (ArgumentConfig argument : arguments) {
+                       //类型自动转换.
+                       if(argument.getType() != null && argument.getType().length() >0){
+                           Method[] methods = interfaceClass[0].getMethods();
+                           //遍历所有方法
+                           if(methods != null && methods.length > 0){
+                               for (int i = 0; i < methods.length; i++) {
+                                   String methodName = methods[i].getName();
+                                   //匹配方法名称，获取方法签名.
+                                   if(methodName.equals(method.getName())){
+                                       Class<?>[] argtypes = methods[i].getParameterTypes();
+                                       //一个方法中单个callback
+                                       if (argument.getIndex() != -1 ){
+                                           if (argtypes[argument.getIndex()].getName().equals(argument.getType())){
+                                               appendProperties(map, argument, method.getName() + "." + argument.getIndex());
+                                           }else {
+                                               throw new IllegalArgumentException("argument config error : the index attribute and type attirbute not match :index :"+argument.getIndex() + ", type:" + argument.getType());
+                                           }
+                                       } else {
+                                           //一个方法中多个callback
+                                           for (int j = 0 ;j<argtypes.length ;j++) {
+                                               Class<?> argclazz = argtypes[j];
+                                               if (argclazz.getName().equals(argument.getType())){
+                                                   appendProperties(map, argument, method.getName() + "." + j);
+                                                   if (argument.getIndex() != -1 && argument.getIndex() != j){
+                                                       throw new IllegalArgumentException("argument config error : the index attribute and type attirbute not match :index :"+argument.getIndex() + ", type:" + argument.getType());
+                                                   }
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                           }
+                       }else if(argument.getIndex() != -1){
+                           appendProperties(map, argument, method.getName() + "." + argument.getIndex());
+                       }else {
+                           throw new IllegalArgumentException("argument config must set index or type attribute.eg: <dubbo:argument index='0' .../> or <dubbo:argument type=xxx .../>");
+                       }
+
+                   }
+               }
            }
        }
        if(generic){
@@ -391,7 +445,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
            server.setAdvertise(false);
            map.put(EndpointInfo.ADVERTISE_KEY, false);
        }
-       RemoteInfo remoteInfo = new RemoteInfo(protocol,host,port,path,map);
+       RemoteInfo remoteInfo = injectObject(new RemoteInfo(protocol,host,port,path,map));
        EndpointInfo endpoint=new EndpointInfo(remoteInfo);
        Boolean advertise= endpoint.getAdvertise(true);
         if ((advertise == null || advertise.booleanValue())
@@ -401,6 +455,8 @@ public class ServiceConfig<T> extends AbstractServiceConfig
         endpoints.add(endpoint);
         return endpoints;
     }
+    
+    
 
     private static Integer getRandomPort(String protocol) {
         protocol = protocol.toLowerCase();

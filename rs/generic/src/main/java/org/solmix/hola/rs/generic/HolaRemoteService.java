@@ -18,15 +18,15 @@
  */
 package org.solmix.hola.rs.generic;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.AbstractRemoteService;
-import org.solmix.hola.rs.RemoteRequest;
-import org.solmix.hola.rs.RemoteRequestListener;
-import org.solmix.hola.rs.RemoteResponse;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteRequest;
+import org.solmix.hola.rs.RemoteResponse;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 import org.solmix.hola.rs.support.RemoteRequestImpl;
 import org.solmix.hola.transport.TransportException;
@@ -101,11 +101,11 @@ public class HolaRemoteService extends AbstractRemoteService
      * 
      * @see org.solmix.hola.rs.RemoteService#async(org.solmix.hola.rs.RemoteRequest, org.solmix.hola.rs.RemoteRequestListener)
      */
-    @Override
-    public void async(RemoteRequest call, RemoteRequestListener listener) {
-        // TODO Auto-generated method stub
-
-    }
+//    @Override
+//    public void async(RemoteRequest call, RemoteRequestListener listener) {
+//        // TODO Auto-generated method stub
+//
+//    }
 
     /**
      * {@inheritDoc}
@@ -143,5 +143,15 @@ public class HolaRemoteService extends AbstractRemoteService
     protected RemoteReference<Object> getRemoteServiceReference() {
         return new HolaRemoteReference<Object>(clazzs[0], info, manager);
     }
-
+    @Override
+    protected boolean isAsync(Object proxy, Method method, Object[] args) {
+        //首先按照父类的规则判断是否为异步
+        boolean first=super.isAsync(proxy, method, args);
+        if(first)
+            return first;
+        else{
+            //根据remoteInfo中配置判断
+            return true;
+        }
+    }
 }

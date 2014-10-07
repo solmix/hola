@@ -20,6 +20,12 @@ package org.solmix.hola.rs;
 
 
 
+/**
+ * 该接口的实现类,在远处调用的时候使用异步调用.
+ * 
+ * @author solmix.f@gmail.com
+ * @version $Id$  2014年10月3日
+ */
 public interface AsyncRemoteServiceProxy
 {
     public static final String ASYNC_INTERFACE_SUFFIX = "Async"; 

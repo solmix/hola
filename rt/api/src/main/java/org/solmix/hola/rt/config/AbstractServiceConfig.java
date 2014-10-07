@@ -39,9 +39,6 @@ public class AbstractServiceConfig extends AbstractClassConfig
         super(container);
     }
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 90513768239318002L;
     /**
      * 服务版本
@@ -52,12 +49,20 @@ public class AbstractServiceConfig extends AbstractClassConfig
      *  服务分组
      */
     protected String group;
-    protected Boolean register;
-
+    
+    /**
+     * 服务权重
+     */
     protected Integer weight;
 
+    /**
+     * 文档地址
+     */
     protected String document;
 
+    /**
+     * 是否为动态服务
+     */
     protected Boolean dynamic;
 
     /**
@@ -65,10 +70,11 @@ public class AbstractServiceConfig extends AbstractClassConfig
      */
     private Integer executes;
 
+    /**
+     * 服务是否允许暴露
+     */
     private Boolean export;
 
-
-    
     /**
      * @return the export
      */
@@ -113,6 +119,60 @@ public class AbstractServiceConfig extends AbstractClassConfig
      */
     public void setDocument(String document) {
         this.document = document;
+    }
+
+
+    
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+
+    
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+
+    
+    /**
+     * @return the group
+     */
+    public String getGroup() {
+        return group;
+    }
+
+
+    
+    /**
+     * @param group the group to set
+     */
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+
+    
+    /**
+     * @return the executes
+     */
+    public Integer getExecutes() {
+        return executes;
+    }
+
+
+    
+    /**
+     * @param executes the executes to set
+     */
+    public void setExecutes(Integer executes) {
+        this.executes = executes;
     }
 
    /* *//**

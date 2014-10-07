@@ -45,33 +45,13 @@ public interface RemoteManager
      * 获取远程服务引用
      * 
      * @param target
-     * @param idFilter
      * @param clazz
      * @param filter
      * @return
      * @throws InvalidSyntaxException
      * @throws RemoteConnectException
      */
-/*    RemoteReference<?>[] getRemoteServiceReferences(ID target,
-        ID[] idFilter, String clazz, String filter)
-        throws InvalidSyntaxException, RemoteConnectException;
-*/
-    /**
-     * 获取远程服务引用
-     * 
-     * @param target
-     * @param clazz
-     * @param filter
-     * @return
-     * @throws InvalidSyntaxException
-     * @throws RemoteConnectException
-     */
-    RemoteReference<?> getRemoteServiceReferences(
-        String clazz, RemoteInfo info) throws InvalidSyntaxException,
-        RemoteConnectException;
-
-    RemoteReference<?>[] getAllRemoteServiceReferences(String clazz,
-        String filter) throws InvalidSyntaxException;
+    RemoteReference<?> getRemoteServiceReferences(  String clazz, RemoteInfo info) throws  RemoteConnectException;
 
     Namespace getRemoteServiceNamespace();
 

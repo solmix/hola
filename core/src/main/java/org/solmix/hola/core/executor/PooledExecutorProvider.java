@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.ExecutorInfo;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.runtime.Extension;
 
 /**
@@ -41,13 +41,9 @@ import org.solmix.runtime.Extension;
 public class PooledExecutorProvider implements ExecutorProvider
 {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.executor.ExecutorProvider#getExecutor(org.solmix.hola.core.model.ExecutorInfo)
-     */
+  
     @Override
-    public Executor getExecutor(ExecutorInfo info) {
+    public Executor getExecutor(RemoteInfo info) {
         int coreSize = info.getCoreThreads(HolaConstants.DEFAULT_CORE_THREADS);
         int maxSize = info.getThreads(Integer.MAX_VALUE);
         int alive = info.getAlive(HolaConstants.DEFAULT_ALIVE);

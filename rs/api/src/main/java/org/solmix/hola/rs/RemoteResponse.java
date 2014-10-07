@@ -16,19 +16,20 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rs;
 
 import java.util.Map;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年8月25日
+ * @version 0.0.1 2014年8月25日
  */
 
 public interface RemoteResponse
 {
+
     /**
      * Get invoke result.
      * 
@@ -43,17 +44,16 @@ public interface RemoteResponse
      */
     Throwable getException();
 
-  /**
-   * Has exception.
-   * 
-   * @return has exception.
-   */
-  boolean hasException();
-  
+    /**
+     * Has exception.
+     * 
+     * @return has exception.
+     */
+    boolean hasException();
 
-  Map<String, String> getProperties();
- 
-  String getProperty(String key);
-  
-  String getProperty(String key, String defaultValue);
+    Map<String, String> getProperties();
+
+    String getProperty(String key);
+
+    String getProperty(String key, String defaultValue);
 }

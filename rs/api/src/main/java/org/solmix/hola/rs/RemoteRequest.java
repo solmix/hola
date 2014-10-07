@@ -34,7 +34,7 @@ public interface RemoteRequest
      * 远程调用超时时间默认值,可通过hola.remotecall.timeout在System中配置,单位为毫秒.
      */
     public static final int DEFAULT_TIMEOUT = new Integer(System.getProperty(
-        "hola.remotecall.timeout", "30000")).intValue();
+        "hola.remote.timeout", "30000")).intValue();
 
     /**
      * 远程方法名,非空.

@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rt.config;
 
+import org.solmix.runtime.Container;
+
 
 /**
  * 
@@ -25,8 +27,19 @@ package org.solmix.hola.rt.config;
  * @version 0.0.1  2014年9月5日
  */
 
-public class ReferenceConfig<T>
+public class ReferenceConfig<T> extends AbstractReferenceConfig
 {
+
+    private static final long serialVersionUID = 2378116601286142248L;
+
+    /**
+     * @param container
+     */
+    public ReferenceConfig(Container container)
+    {
+        super(container);
+        // TODO Auto-generated constructor stub
+    }
 
     /**
      * 

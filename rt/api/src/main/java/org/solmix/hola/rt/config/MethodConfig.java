@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rt.config;
 
+import java.util.List;
+
 
 /**
  * 
@@ -40,6 +42,31 @@ public class MethodConfig extends AbstractMethodConfig {
 	 *方法名称 
 	 */
 	private String            name;
+	
+	 // 是否重试
+	    private Boolean           retry;
+	 // 是否需要返回
+	    private Boolean           isReturn;
+	    
+	    //异步调用回调实例
+	    private Object            oninvoke;
+
+	    //异步调用回调方法
+	    private String            oninvokeMethod;
+	    
+	    //异步调用回调实例
+	    private Object            onreturn;
+
+	    //异步调用回调方法
+	    private String            onreturnMethod;
+	    
+	    //异步调用异常回调实例
+	    private Object            onthrow;
+	    
+	    //异步调用异常回调方法
+	    private String            onthrowMethod;
+	    
+	    private List<ArgumentConfig> arguments;
 	/**
 	 * @return the name
 	 */
@@ -52,7 +79,15 @@ public class MethodConfig extends AbstractMethodConfig {
 	public void setName(String name) {
 		 checkMethodName("name", name);
 		this.name = name;
+		if (id == null || id.length() == 0) {
+	            id = name;
+	        }
 	}
-	 
+	 public void setArguments(List<? extends ArgumentConfig> arguments) {
+	        this.arguments = (List<ArgumentConfig>) arguments;
+	    }
+	    public List<ArgumentConfig> getArguments() {
+	        return arguments;
+	    }
 	 
 }

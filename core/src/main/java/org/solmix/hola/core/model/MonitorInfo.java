@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,16 +16,40 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.call;
+package org.solmix.hola.core.model;
+
+import java.util.Map;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月4日
+ * @version $Id$  2014年10月3日
  */
 
-public interface RSCallManager
+public class MonitorInfo extends AbstractURIInfo<MonitorInfo>
 {
+
+    private static final long serialVersionUID = 2315183160517205446L;
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#getSelf()
+     */
+    @Override
+    protected MonitorInfo getSelf() {
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.core.model.ExtensionInfo#makeSelf(java.util.Map)
+     */
+    @Override
+    protected MonitorInfo makeSelf(Map<String, Object> map) {
+        return null;
+    }
 
 }

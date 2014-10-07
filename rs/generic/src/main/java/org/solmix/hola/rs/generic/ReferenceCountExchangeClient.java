@@ -178,7 +178,7 @@ public class ReferenceCountExchangeClient implements ExchangeClient
         // 最差情况下只有一个幽灵连接
         LazyConnectExchangeClient gclient = ghostClientMap.get(key);
         if (gclient == null || gclient.isClosed()) {
-            gclient = new LazyConnectExchangeClient(new RemoteInfo(),
+            gclient = new LazyConnectExchangeClient(lazyInfo,
                 client.getExchangeHandler(),manager);
             ghostClientMap.put(key, gclient);
         }

@@ -59,7 +59,6 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 
 	protected Integer connections;
 
-	protected String payload;
 
 	protected String scope;
 
@@ -121,21 +120,6 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	 */
 	public void setConnections(Integer connections) {
 		this.connections = connections;
-	}
-
-	/**
-	 * @return the payload
-	 */
-	public String getPayload() {
-		return payload;
-	}
-
-	/**
-	 * @param payload
-	 *            the payload to set
-	 */
-	public void setPayload(String payload) {
-		this.payload = payload;
 	}
 
 	/**

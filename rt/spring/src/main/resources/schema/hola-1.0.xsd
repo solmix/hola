@@ -53,19 +53,25 @@
     <xsd:element name="service" type="serviceType">
     </xsd:element>
 
-    <xsd:complexType name="abstractInterfaceType">
-    	<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
-    	<xsd:attribute name="cluster" type="xsd:string"></xsd:attribute>
-    	<xsd:attribute name="application" type="xsd:string"></xsd:attribute>
-    	<xsd:attribute name="module" type="xsd:string"></xsd:attribute>
-    	<xsd:attribute name="discovery" type="xsd:string"></xsd:attribute>
-    	<xsd:attribute name="monitor" type="xsd:string"></xsd:attribute>
-    	<xsd:attribute name="scope" type="xsd:string"></xsd:attribute>
+    <xsd:complexType name="abstractClassType">
+    	<xsd:complexContent>
+    		<xsd:extension base="abstractMethodType">
+
+    			<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
+    			<xsd:attribute name="cluster" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="application" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="module" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="discovery" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="monitor" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="scope" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="protocol" type="xsd:string"></xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
     </xsd:complexType>
 
     <xsd:complexType name="abstractServiceType">
     	<xsd:complexContent>
-    		<xsd:extension base="abstractInterfaceType">
+    		<xsd:extension base="abstractClassType">
     			<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="group" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="export" type="xsd:boolean"></xsd:attribute>
@@ -83,6 +89,37 @@
     			<xsd:sequence>
     				<xsd:element ref="beans:property" minOccurs="0"
     					maxOccurs="unbounded">
+    				</xsd:element>
+    				<xsd:element name="method" minOccurs="0"
+    					maxOccurs="unbounded">
+    					<xsd:complexType>
+    						<xsd:complexContent>
+    							<xsd:extension
+    								base="abstractMethodType">
+    								<xsd:attribute name="name"
+    									type="xsd:string">
+    								</xsd:attribute>
+    								<xsd:attribute name="executes"
+    									type="xsd:string">
+    								</xsd:attribute>
+    								<xsd:attribute name="retry"
+    									type="xsd:string">
+    								</xsd:attribute>
+    								<xsd:attribute name="return"
+    									type="xsd:string">
+    								</xsd:attribute>
+    								<xsd:attribute name="oninvoke"
+    									type="xsd:string">
+    								</xsd:attribute>
+    								<xsd:attribute name="onreturn"
+    									type="xsd:string">
+    								</xsd:attribute>
+    								<xsd:attribute name="onthrow"
+    									type="xsd:string">
+    								</xsd:attribute>
+    							</xsd:extension>
+    						</xsd:complexContent>
+    					</xsd:complexType>
     				</xsd:element>
     			</xsd:sequence>
     			<xsd:attribute name="interface" type="xsd:token"
@@ -108,21 +145,20 @@
     			</xsd:choice>
     			<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="port" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="threadpool" type="xsd:string"></xsd:attribute>
+                <xsd:attribute name="contextpath" type="xsd:string"></xsd:attribute>
+                <xsd:attribute name="threadpool" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="threads" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="iothreads" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="queues" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="accepts" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="codec" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="serialization" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="serial" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="charset" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="payload" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="buffer" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="transporter" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="exchanger" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="dispatcher" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="path" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="contextpath" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="wait" type="xsd:string"></xsd:attribute>
     			<xsd:anyAttribute></xsd:anyAttribute>
     		</xsd:extension>
@@ -157,4 +193,35 @@
     </xsd:element>
 
     <xsd:element name="server" type="serverType"></xsd:element>
+
+    <xsd:element name="reference" type="ReferenceType"></xsd:element>
+
+    <xsd:complexType name="ReferenceType">
+	    <xsd:complexContent>
+			<xsd:extension base="abstractReferenceType">
+			</xsd:extension>
+		</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="abstractReferenceType">
+    	<xsd:complexContent>
+			<xsd:extension base="abstractClassType">
+			</xsd:extension>
+		</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="abstractMethodType">
+    	<xsd:attribute name="timeout" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="retries" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="actives" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="loadbalance" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="async" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="asyncwait" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="ArgumentType">
+    	<xsd:attribute name="index" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="callback" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
 </xsd:schema>

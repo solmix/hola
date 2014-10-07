@@ -30,10 +30,6 @@ import org.solmix.runtime.Container;
 
 public class ServerConfig extends AbstractServiceConfig
 {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = -4040109969678654602L;
 
     /**
@@ -45,31 +41,90 @@ public class ServerConfig extends AbstractServiceConfig
      * 服务端口
      */
     private Integer port;
-
-    // 延迟暴露
-    protected Integer delay;
+    /**
+     * 上下文路径
+     */
+    private String contextpath;
+  
+    /**
+     * 线程池名称
+     */
+    private String threadpool;
+    
+    /**
+     * 线程池大小
+     */
+    private Integer   threads;
+    
+    /**
+     * IO线程池大小
+     */
+    private Integer     iothreads;
 
     /**
-     * 
+     * 线程池队列大小
+     */
+    private Integer queues;
+
+    /**
+     * 最大接收连接数
+     */
+    private Integer accepts;
+    /**
+     * 编码实现名称
      */
     private String codec;
 
-    private String executor;
+    /**
+     * 序列化方法
+     */
+    private String serial;
 
-    private Integer queues;
-
-    private Integer accepts;
-
-    private String contextpath;
-
-    private String serialization;
-
+    /**
+     * 字符集
+     */
     private String charset;
-
+    /**
+     * 最大请求数据长度
+     */
+    private Integer      payload;
+    
+    /**
+     * 心跳间隔
+     */
+    private Integer    heartbeat;
+    
+    /**
+     * 网络传输方式
+     */
+    private String    transporter;
+    /**
+     * 缓存区大小
+     */
     private Integer buffer;
+    /**
+     * 信息交换方式
+     */
+    private String    exchanger;
+    
+    /**
+     * 信息线程模型派发方式
+     */
+    private String   dispatcher;
 
+    /**
+     * 是否公告
+     */
     private Boolean advertise;
-
+    /**
+     * 组网方式
+     */
+    private String      networker;
+    
+    /**
+     * 是否为默认设置
+     */
+    private Boolean isDefault;
      ServerConfig(Container container)
     {
         super(container);
@@ -79,20 +134,6 @@ public class ServerConfig extends AbstractServiceConfig
     {
         super(container);
         setProtocol(protocol);
-    }
-
-    /**
-     * @return the delay
-     */
-    public Integer getDelay() {
-        return delay;
-    }
-
-    /**
-     * @param delay the delay to set
-     */
-    public void setDelay(Integer delay) {
-        this.delay = delay;
     }
 
     /**
@@ -182,19 +223,7 @@ public class ServerConfig extends AbstractServiceConfig
         this.contextpath = contextpath;
     }
 
-    /**
-     * @return the serialization
-     */
-    public String getSerialization() {
-        return serialization;
-    }
-
-    /**
-     * @param serialization the serialization to set
-     */
-    public void setSerialization(String serialization) {
-        this.serialization = serialization;
-    }
+    
 
     /**
      * @return the charset
@@ -227,16 +256,16 @@ public class ServerConfig extends AbstractServiceConfig
     /**
      * @return the executor
      */
-    public String getExecutor() {
-        return executor;
+    public String getThreadpool() {
+        return threadpool;
     }
 
     /**
      * @param executor the executor to set
      */
-    public void setExecutor(String executor) {
-        this.executor = executor;
-        checkExtension(ExecutorProvider.class, "executor", executor);
+    public void setThreadpool(String threadpool) {
+        this.threadpool = threadpool;
+        checkExtension(ExecutorProvider.class, "threadpool", threadpool);
     }
 
     /**
@@ -251,6 +280,166 @@ public class ServerConfig extends AbstractServiceConfig
      */
     public void setAdvertise(Boolean advertise) {
         this.advertise = advertise;
+    }
+
+    
+    /**
+     * @return the threads
+     */
+    public Integer getThreads() {
+        return threads;
+    }
+
+    
+    /**
+     * @param threads the threads to set
+     */
+    public void setThreads(Integer threads) {
+        this.threads = threads;
+    }
+
+    
+    /**
+     * @return the iothreads
+     */
+    public Integer getIothreads() {
+        return iothreads;
+    }
+
+    
+    /**
+     * @param iothreads the iothreads to set
+     */
+    public void setIothreads(Integer iothreads) {
+        this.iothreads = iothreads;
+    }
+
+    
+    /**
+     * @return the serial
+     */
+    public String getSerial() {
+        return serial;
+    }
+
+    
+    /**
+     * @param serial the serial to set
+     */
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    
+    /**
+     * @return the payload
+     */
+    public Integer getPayload() {
+        return payload;
+    }
+
+    
+    /**
+     * @param payload the payload to set
+     */
+    public void setPayload(Integer payload) {
+        this.payload = payload;
+    }
+
+    
+    /**
+     * @return the heartbeat
+     */
+    public Integer getHeartbeat() {
+        return heartbeat;
+    }
+
+    
+    /**
+     * @param heartbeat the heartbeat to set
+     */
+    public void setHeartbeat(Integer heartbeat) {
+        this.heartbeat = heartbeat;
+    }
+
+    
+    /**
+     * @return the transporter
+     */
+    public String getTransporter() {
+        return transporter;
+    }
+
+    
+    /**
+     * @param transporter the transporter to set
+     */
+    public void setTransporter(String transporter) {
+        this.transporter = transporter;
+    }
+
+    
+    /**
+     * @return the exchanger
+     */
+    public String getExchanger() {
+        return exchanger;
+    }
+
+    
+    /**
+     * @param exchanger the exchanger to set
+     */
+    public void setExchanger(String exchanger) {
+        this.exchanger = exchanger;
+    }
+
+    
+    /**
+     * @return the dispatcher
+     */
+    public String getDispatcher() {
+        return dispatcher;
+    }
+
+    
+    /**
+     * @param dispatcher the dispatcher to set
+     */
+    public void setDispatcher(String dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+
+    
+    /**
+     * @return the networker
+     */
+    public String getNetworker() {
+        return networker;
+    }
+
+    
+    /**
+     * @param networker the networker to set
+     */
+    public void setNetworker(String networker) {
+        this.networker = networker;
+    }
+
+    
+    /**
+     * @return the isDefault
+     */
+    public Boolean getIsDefault() {
+        return isDefault;
+    }
+
+    
+    /**
+     * @param isDefault the isDefault to set
+     */
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
 }

@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.commons.util.TransformUtils;
 import org.solmix.runtime.Container;
+import org.solmix.runtime.resource.ResourceInjector;
+import org.solmix.runtime.resource.ResourceManager;
 
 
 /**
@@ -313,5 +315,17 @@ public class AbstractConfig implements Serializable
 
     public MonitorConfig createMonitor() {
         return new MonitorConfig();
+    }
+    
+    protected <T> T injectObject(T instance){
+        if(container==null){
+            throw new IllegalStateException("container is null");
+        }
+        ResourceManager rm= container.getExtension(ResourceManager.class);
+        if(rm!=null){
+            ResourceInjector injector= new ResourceInjector(rm);
+            injector.inject(instance);
+        }
+        return instance;
     }
 }

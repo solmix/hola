@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,17 +16,31 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.call;
+package org.solmix.hola.rs.proxy;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 
 /**
- * 远程服务调用拦截器
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月4日
+ * @version $Id$  2014年10月5日
  */
 
-public interface RSCallInterceptor
+public class ReferenceInvocationHandler implements InvocationHandler
 {
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
+     */
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args)
+        throws Throwable {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -40,13 +40,13 @@ public interface RemoteService
      */
     Object sync(RemoteRequest call) throws RemoteException;
 
-    /**
-     * 异步调用远程方法
-     * 
-     * @param call
-     * @return
-     */
-    void async(RemoteRequest call,RemoteRequestListener listener);
+//    /**
+//     * 异步调用远程方法
+//     * 
+//     * @param call
+//     * @return
+//     */
+//    void async(RemoteRequest call,RemoteRequestListener listener);
     
     /**
      * 立即返回调用结果

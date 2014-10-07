@@ -19,26 +19,12 @@
 
 package org.solmix.hola.rs.generic;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
 
-import org.solmix.commons.util.Reflection;
-import org.solmix.hola.core.HolaConstants;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.identity.RemoteServiceID;
-import org.solmix.hola.rs.support.RemoteRequestImpl;
-import org.solmix.hola.rs.support.RemoteResponseImpl;
 
 /**
  * 
@@ -53,8 +39,6 @@ public class HolaRemoteRegistration<S> implements
 
     protected RemoteServiceID id;
 
-    protected Properties properties;
-
     transient protected Object registrationLock = new Object();
 
     /** The registration state */
@@ -66,11 +50,12 @@ public class HolaRemoteRegistration<S> implements
 
     public static final int UNREGISTERED = 0x02;
 
-    protected transient LocalRemoteServiceReference<S> reference;
+    protected transient LocalRemoteReference<S> reference;
 
     private int serviceRanking;
 
     private final String[] clazzes;
+    private final RemoteInfo remoteInfo;
 
 
     /**
@@ -85,55 +70,12 @@ public class HolaRemoteRegistration<S> implements
     {
         this.manager=manager;
         this.service = service;
-        this.reference = new LocalRemoteServiceReference<S>(this);
+        this.reference = new LocalRemoteReference<S>(this);
         this.clazzes = clazzes;
-            this.remoteServiceID = manager.createRemoteServiceID(info);
-            this.properties = createProperties(info.getProperties());
+        this.remoteServiceID = manager.createRemoteServiceID(info);
+        this.remoteInfo=info;
     }
 
-
-
-    @Override
-    public Object getProperty(String key) {
-        return properties.getProperty(key);
-    }
-    
- 
-
-    @Override
-    public void setProperties(Map<String, Object> properties) {
-        synchronized (registrationLock) {
-            /* in the process of unregistering */
-            if (state != REGISTERED) {
-                throw new IllegalStateException("Service already registered"); //$NON-NLS-1$
-            }
-            this.properties = createProperties(properties);
-        }
-    }
-
-    /**
-     * 添加额外的参数
-     */
-    private Properties createProperties(Map<String, ?> props) {
-        final Properties resultProps = new Properties(props);
-
-        resultProps.setProperty(HolaConstants.REMOTE_OBJECTCLASS, clazzes);
-
-        resultProps.setProperty(HolaConstants.REMOTE_SERVICE_ID, getID().toQueryString());
-
-        final Object ranking = (props == null) ? null
-            : props.get(HolaConstants.REMOTE_RANKING);
-
-        serviceRanking = (ranking instanceof Integer) ? 
-            ((Integer) ranking).intValue() : 0;
-
-        return resultProps;
-    }
-
-    @Override
-    public String[] getPropertyKeys() {
-        return properties.getPropertyKeys();
-    }
 
     /**
      * {@inheritDoc}
@@ -144,7 +86,7 @@ public class HolaRemoteRegistration<S> implements
     public RemoteReference<S> getReference() {
         if (reference == null) {
             synchronized (this) {
-                reference = new LocalRemoteServiceReference<S>(this);
+                reference = new LocalRemoteReference<S>(this);
             }
         }
         return reference;
@@ -190,158 +132,6 @@ public class HolaRemoteRegistration<S> implements
         return getID().hashCode();
     }
 
-    /**
-     * 存放远程服务的配置信息
-     */
-    static class Properties extends Hashtable<String, Object>
-    {
-
-        private static final long serialVersionUID = -3684607010228779249L;
-
-        private Properties(int size, Map<String, ?> props)
-        {
-            super((size << 1) + 1);
-            if (props != null) {
-                synchronized (props) {
-                    final Iterator<String> keysEnum = props.keySet().iterator();
-                    while (keysEnum.hasNext()) {
-                        final Object key = keysEnum.next();
-                        if (key instanceof String) {
-                            final String header = (String) key;
-                            setProperty(header, props.get(header));
-                        }
-                    }
-                }
-            }
-        }
-
-        protected Properties(Map<String, ?> props)
-        {
-            this((props == null) ? 2 : Math.max(2, props.size()), props);
-        }
-
-        /**
-         * Get a clone of the value of a service's property.
-         * 
-         * @param key header name.
-         * @return Clone of the value of the property or <code>null</code> if
-         *         there is no property by that name.
-         */
-        protected Object getProperty(String key) {
-            return (cloneValue(get(key)));
-        }
-
-        /**
-         * Get the list of key names for the service's properties.
-         * 
-         * @return The list of property key names.
-         */
-        protected synchronized String[] getPropertyKeys() {
-            final int size = size();
-            final String[] keynames = new String[size];
-            final Enumeration<String> keysEnum = keys();
-            for (int i = 0; i < size; i++) {
-                keynames[i] = keysEnum.nextElement();
-            }
-            return (keynames);
-        }
-
-        /**
-         * Put a clone of the property value into this property object.
-         * 
-         * @param key Name of property.
-         * @param value Value of property.
-         * @return previous property value.
-         */
-        protected synchronized Object setProperty(String key, Object value) {
-            return (put(key, cloneValue(value)));
-        }
-
-        /**
-         * Attempt to clone the value if necessary and possible.
-         * 
-         * For some strange reason, you can test to see of an Object is
-         * Cloneable but you can't call the clone method since it is protected
-         * on Object!
-         * 
-         * @param value object to be cloned.
-         * @return cloned object or original object if we didn't clone it.
-         */
-        protected static Object cloneValue(Object value) {
-            if (value == null) {
-                return null;
-            }
-            if (value instanceof String) {
-                return (value);
-            }
-
-            final Class<?> clazz = value.getClass();
-            if (clazz.isArray()) {
-                // Do an array copy
-                final Class<?> type = clazz.getComponentType();
-                final int len = Array.getLength(value);
-                final Object clonedArray = Array.newInstance(type, len);
-                System.arraycopy(value, 0, clonedArray, 0, len);
-                return clonedArray;
-            }
-            // must use reflection because Object clone method is protected!!
-            try {
-                return (clazz.getMethod("clone", (Class[]) null).invoke(value,
-                    (Object[]) null));
-            } catch (final Exception e) {
-                /* clone is not a public method on value's class */
-            } catch (final Error e) {
-                /* JCL does not support reflection; try some well known types */
-                if (value instanceof Vector<?>) {
-                    return (((Vector<?>) value).clone());
-                }
-                if (value instanceof Hashtable<?, ?>) {
-                    return (((Hashtable<?, ?>) value).clone());
-                }
-            }
-            return (value);
-        }
-
-        /**
-         * 剔除{@link HolaConstants#REMOTE_OBJECTCLASS}
-         */
-        @Override
-        public synchronized String toString() {
-            final String keys[] = getPropertyKeys();
-            final int size = keys.length;
-            final StringBuffer sb = new StringBuffer(20 * size);
-            sb.append('{');
-            int n = 0;
-            for (int i = 0; i < size; i++) {
-                final String key = keys[i];
-                if (!key.equals(HolaConstants.REMOTE_OBJECTCLASS)) {
-                    if (n > 0) {
-                        sb.append(", ");
-                    }
-                    sb.append(key);
-                    sb.append('=');
-                    final Object value = get(key);
-                    if (value.getClass().isArray()) {
-                        sb.append('[');
-                        final int length = Array.getLength(value);
-                        for (int j = 0; j < length; j++) {
-                            if (j > 0) {
-                                sb.append(',');
-                            }
-                            sb.append(Array.get(value, j));
-                        }
-                        sb.append(']');
-                    } else {
-                        sb.append(value);
-                    }
-                    n++;
-                }
-            }
-            sb.append('}');
-            return (sb.toString());
-        }
-    }
-
     protected String[] getClasses() {
         return clazzes;
     }
@@ -358,7 +148,6 @@ public class HolaRemoteRegistration<S> implements
     }
 
 
-
     /**
      * {@inheritDoc}
      * 
@@ -369,32 +158,13 @@ public class HolaRemoteRegistration<S> implements
         return remoteServiceID;
     }
 
-
-
     /**
-     * @param request
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.rs.RemoteRegistration#getRemoteInfo()
      */
-    public RemoteResponseImpl callService(RemoteRequest request)  {
-        RemoteRequestImpl req = (RemoteRequestImpl) request;
-        Object[] args = (request.getParameters() == null) ? new Object[0]
-            : request.getParameters();
-        final Method method = Reflection.findMethod(service.getClass(),
-            req.getMethod(), req.getParameterTypes());
-        try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-
-                @Override
-                public Object run() throws Exception {
-                    if (!method.isAccessible())
-                        method.setAccessible(true);
-                    return null;
-                }
-            });
-            return  new RemoteResponseImpl(method.invoke(service, args));
-        } catch (Throwable e) {
-            return  new RemoteResponseImpl(e);
-        }
-        
+    @Override
+    public RemoteInfo getRemoteInfo() {
+        return remoteInfo;
     }
-
 }

@@ -62,11 +62,29 @@ public class AbstractMethodConfig extends AbstractConfig {
     protected String              loadbalance;
 
     /**
-     * 异步标示
+     * 异步标志
      */
     protected Boolean             async;
+    
+    protected Boolean asyncwait;
 
-	/**
+	
+    /**
+     * @return the asyncwait
+     */
+    public Boolean getAsyncwait() {
+        return asyncwait;
+    }
+
+    
+    /**
+     * @param asyncwait the asyncwait to set
+     */
+    public void setAsyncwait(Boolean asyncwait) {
+        this.asyncwait = asyncwait;
+    }
+
+    /**
 	 * @return the timeout
 	 */
 	public Integer getTimeout() {

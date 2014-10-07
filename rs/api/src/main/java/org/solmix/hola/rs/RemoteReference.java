@@ -19,6 +19,7 @@
 
 package org.solmix.hola.rs;
 
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 
@@ -33,12 +34,12 @@ public interface RemoteReference<S>
 
     RemoteServiceID getID();
     
+    RemoteInfo getRemoteInfo();
+    
 
     String[] getInterfaces();
-
-    Object getProperty(String key);
-
-    String[] getPropertyKeys();
+    
+    RemoteResponse doInvoke(RemoteRequest request);
 
     /**
      * 该服务引用是否有效

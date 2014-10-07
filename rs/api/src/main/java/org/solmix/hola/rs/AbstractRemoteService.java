@@ -72,10 +72,11 @@ public abstract class AbstractRemoteService implements RemoteService,
     public Object invoke(Object proxy, Method method, Object[] args)
         throws Throwable {
         try {
-
+            //普通方法invoke
             Object resultObject = invokeObject(proxy, method, args);
             if (resultObject != null)
                 return resultObject;
+            //是否为异步
             if (isAsync(proxy, method, args))
                 return invokeAsync(method, args);
             else {
@@ -149,7 +150,7 @@ public abstract class AbstractRemoteService implements RemoteService,
             } catch (IllegalArgumentException e) {
                 return Boolean.FALSE;
             }
-            // 调用 RemoteServiceProxy中的方法
+            // 调用 RemoteManager中RemoteServiceProxy中的方法
         } else if (methodName.equals("getRemoteService")) {
             return getRemoteService();
         } else if (methodName.equals("getRemoteServiceReference")) {
@@ -215,15 +216,12 @@ public abstract class AbstractRemoteService implements RemoteService,
     }
 
     /**
-     * @param proxy
-     * @param method
-     * @param args
-     * @return
+     * 判断该方法是否执行异步调用,子类可以重载增加判断条件
      */
-    private boolean isAsync(Object proxy, Method method, Object[] args) {
-        return (Arrays.asList(method.getDeclaringClass().getInterfaces()).contains(
-            AsyncRemoteServiceProxy.class) || method.getName().endsWith(
-            AsyncRemoteServiceProxy.ASYNC_METHOD_SUFFIX));
+    protected boolean isAsync(Object proxy, Method method, Object[] args) {
+        return (Arrays.asList(method.getDeclaringClass().getInterfaces())
+                .contains(AsyncRemoteServiceProxy.class) 
+            || method.getName().endsWith(AsyncRemoteServiceProxy.ASYNC_METHOD_SUFFIX));
     }
 
     protected Object getRemoteService() {
