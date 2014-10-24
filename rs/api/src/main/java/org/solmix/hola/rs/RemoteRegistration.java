@@ -26,7 +26,7 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
  * 远程服务注册返回结果,在调用
- * {@link RemoteManager#registerRemoteService(String[], Object, Dictionary)}
+ * {@link RemoteProtocol#registerRemoteService(String[], Object, Dictionary)}
  * 后返回,稍后可以通过该结果注销服务.
  * 
  * @author solmix.f@gmail.com

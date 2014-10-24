@@ -30,7 +30,7 @@ import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceInfo;
-import org.solmix.hola.rs.RemoteManagerProtocol;
+import org.solmix.hola.rs.RemoteProtocolFactory;
 import org.solmix.runtime.Container;
 
 /**
@@ -221,7 +221,7 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	 */
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
-		checkExtension(RemoteManagerProtocol.class, "protocol", protocol);
+		checkExtension(RemoteProtocolFactory.class, "protocol", protocol);
 	}
 	
 	/**

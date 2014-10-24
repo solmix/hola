@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,31 +16,61 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.doc;
 
-package org.solmix.hola.rs;
-
-import org.solmix.hola.core.model.EndpointInfo;
-import org.solmix.runtime.Extension;
 
 /**
  * 
- * @author solmix.f@gmail.com
- * @version 0.0.1 2014年8月19日
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
  */
-@Extension(name = "hola")
-public interface RemoteManagerProtocol
+
+public class Docs_Phase
 {
 
-    RemoteManager createManager(
-        RemoteListener... listeners);
-
-    RemoteManager createManager();
-    
-    int getDefaultPort();
-
-    String[] getSupportedIntents(EndpointInfo info);
-
-    String[] getSupportedConfigs(EndpointInfo info);
-
-    String[] getImportedConfigs(EndpointInfo info, String[] remoteSupportedConfigs);
 }

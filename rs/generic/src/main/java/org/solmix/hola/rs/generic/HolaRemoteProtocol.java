@@ -38,7 +38,7 @@ import org.solmix.hola.rs.RemoteConnectException;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteFilter;
 import org.solmix.hola.rs.RemoteListener;
-import org.solmix.hola.rs.RemoteManager;
+import org.solmix.hola.rs.RemoteProtocol;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteRequest;
@@ -62,7 +62,7 @@ import org.solmix.runtime.Container;
  * @version 0.0.1  2014年5月17日
  */
 @ThreadSafe
-public class HolaRemoteManager implements RemoteManager
+public class HolaRemoteProtocol implements RemoteProtocol
 {
     protected final List<RemoteListener> listeners=new ArrayList<RemoteListener>();
     private final Map<String, ExchangeServer> servers = new ConcurrentHashMap<String, ExchangeServer>(); // <host:port,Exchanger>
@@ -98,7 +98,7 @@ public class HolaRemoteManager implements RemoteManager
             }
         }
     };
-    public HolaRemoteManager(final Container container,RemoteListener...listeners ){
+    public HolaRemoteProtocol(final Container container,RemoteListener...listeners ){
         this.container=container;
         if(listeners!=null){
             for(RemoteListener listener:listeners){

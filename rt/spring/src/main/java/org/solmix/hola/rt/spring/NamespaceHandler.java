@@ -19,13 +19,6 @@
 package org.solmix.hola.rt.spring;
 
 import org.solmix.hola.rt.spring.parser.ApplicationDefinitionParser;
-import org.solmix.hola.rt.spring.parser.ClientDefinitionParser;
-import org.solmix.hola.rt.spring.parser.DiscoveryDefinitionParser;
-import org.solmix.hola.rt.spring.parser.ModuleDefinitionParser;
-import org.solmix.hola.rt.spring.parser.MonitorDefinitionParser;
-import org.solmix.hola.rt.spring.parser.ReferenceDefinitionParser;
-import org.solmix.hola.rt.spring.parser.ServerDefinitionParser;
-import org.solmix.hola.rt.spring.parser.ServiceDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 
@@ -46,13 +39,13 @@ public class NamespaceHandler extends NamespaceHandlerSupport
     @Override
     public void init() {
        registerBeanDefinitionParser("application", new ApplicationDefinitionParser());
-       registerBeanDefinitionParser("module", new ModuleDefinitionParser());
-       registerBeanDefinitionParser("discovery", new DiscoveryDefinitionParser());
-       registerBeanDefinitionParser("monitor", new MonitorDefinitionParser());
-       registerBeanDefinitionParser("server", new ServerDefinitionParser());
-       registerBeanDefinitionParser("client", new ClientDefinitionParser());
-       registerBeanDefinitionParser("service", new ServiceDefinitionParser());
-       registerBeanDefinitionParser("reference", new ReferenceDefinitionParser());
+//       registerBeanDefinitionParser("module", new ModuleDefinitionParser());
+//       registerBeanDefinitionParser("discovery", new DiscoveryDefinitionParser());
+//       registerBeanDefinitionParser("monitor", new MonitorDefinitionParser());
+//       registerBeanDefinitionParser("server", new ServerDefinitionParser());
+//       registerBeanDefinitionParser("client", new ClientDefinitionParser());
+//       registerBeanDefinitionParser("service", new ServiceDefinitionParser());
+//       registerBeanDefinitionParser("reference", new ReferenceDefinitionParser());
 
     }
 

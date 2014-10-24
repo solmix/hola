@@ -27,7 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.RemoteException;
-import org.solmix.hola.rs.RemoteManagerProtocol;
+import org.solmix.hola.rs.RemoteProtocolFactory;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
@@ -41,17 +41,17 @@ import org.solmix.runtime.Containers;
 
 public class RemoteServiceTest extends TestCase
 {
-    private  RemoteManagerProtocol provider;
+    private  RemoteProtocolFactory provider;
     private Container container;
     @Override
     public  void setUp(){
         container=Containers.get();
-        provider=container.getExtensionLoader(RemoteManagerProtocol.class).getExtension("hola");
+        provider=container.getExtensionLoader(RemoteProtocolFactory.class).getExtension("hola");
     }
 
     @Test
     public void test() throws InterruptedException {
-        HolaRemoteManager manager=(HolaRemoteManager) provider.createManager();
+        HolaRemoteProtocol manager=(HolaRemoteProtocol) provider.createProtocol();
         assertNotNull(provider);
         SimpleServiceImpl ss= new SimpleServiceImpl();
         RemoteInfo ei=RemoteInfo.valueOf("hola://localhost:1314/simple?codec=hola&heartbeat=60000");

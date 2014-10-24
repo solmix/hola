@@ -43,7 +43,7 @@ public class HolaRemoteService extends AbstractRemoteService
 {
 
     private final String[] clazzs;
-    private final HolaRemoteManager manager;
+    private final HolaRemoteProtocol manager;
     private final RemoteInfo info;
     private final ExchangeClient[] clients;
     
@@ -54,7 +54,7 @@ public class HolaRemoteService extends AbstractRemoteService
      * @param clients
      */
     public HolaRemoteService(String[] clazzs, RemoteInfo info,
-        ExchangeClient[] clients,HolaRemoteManager manager)
+        ExchangeClient[] clients,HolaRemoteProtocol manager)
     {
         this.clazzs=clazzs;
         this.manager=manager;

@@ -58,13 +58,13 @@ public class LazyConnectExchangeClient implements ExchangeClient
     static final  String REQUEST_WITH_WARNING_KEY = "lazyclient_request_with_warning";
     
     private final AtomicLong warningcount = new AtomicLong(0);
-    private final HolaRemoteManager container;
+    private final HolaRemoteProtocol container;
     /**
      * @param lazyInfo
      * @param exchangeHandler
      */
     public LazyConnectExchangeClient(RemoteInfo lazyInfo,
-        ExchangeHandler exchangeHandler,HolaRemoteManager container)
+        ExchangeHandler exchangeHandler,HolaRemoteProtocol container)
     {
         lazyInfo=  lazyInfo.addProperty(RemoteInfo.RECONNECT, false);
         this.container=container;

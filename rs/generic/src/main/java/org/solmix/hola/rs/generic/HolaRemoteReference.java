@@ -34,11 +34,11 @@ public class HolaRemoteReference<S> implements RemoteReference<S>
 
     private final String clazz;
     private final RemoteInfo info;
-    private final HolaRemoteManager manager;
+    private final HolaRemoteProtocol manager;
     private RemoteServiceID id;
     private boolean active;
     public HolaRemoteReference(String clazz, RemoteInfo info,
-        HolaRemoteManager manager)
+        HolaRemoteProtocol manager)
     {
         this.clazz=clazz;
         this.manager=manager;

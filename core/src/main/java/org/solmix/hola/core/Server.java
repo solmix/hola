@@ -16,29 +16,27 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rt.spring.parser;
+package org.solmix.hola.core;
 
-import org.solmix.hola.rt.config.ClientConfig;
-import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import org.solmix.runtime.exchange.Endpoint;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月7日
+ * @version $Id$  2014年10月11日
  */
 
-public class ClientDefinitionParser extends AbstractRootBeanDefinitionParser implements
-    BeanDefinitionParser
+public interface Server
 {
 
-    /**
-     * @param type
-     */
-    public ClientDefinitionParser()
-    {
-        super(ClientConfig.class);
-    }
-
+    void start();
+    
+    void stop();
+    
+    void destroy();
+    
+    boolean isStarted();
+    
+    Endpoint getEndpoint();
 }

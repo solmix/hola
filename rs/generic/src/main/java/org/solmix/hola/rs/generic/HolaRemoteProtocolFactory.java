@@ -20,8 +20,8 @@ package org.solmix.hola.rs.generic;
 
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.rs.RemoteListener;
-import org.solmix.hola.rs.RemoteManager;
-import org.solmix.hola.rs.RemoteManagerProtocol;
+import org.solmix.hola.rs.RemoteProtocol;
+import org.solmix.hola.rs.RemoteProtocolFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
@@ -31,38 +31,38 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年8月19日
  */
-@Extension(name=HolaRemoteManagerProtocol.NAME)
-public class HolaRemoteManagerProtocol implements RemoteManagerProtocol
+@Extension(name=HolaRemoteProtocolFactory.NAME)
+public class HolaRemoteProtocolFactory implements RemoteProtocolFactory
 {
 
     public static final String NAME="hola";
     
     private final Container container;
     
-   public HolaRemoteManagerProtocol(Container container){
+   public HolaRemoteProtocolFactory(Container container){
        this.container=container;
    }
  
     @Override
-    public RemoteManager createManager(
+    public RemoteProtocol createProtocol(
         RemoteListener... listeners) {
-        return new HolaRemoteManager(container, listeners);
+        return new HolaRemoteProtocol(container, listeners);
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteManagerProtocol#createManager(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#createProtocol(org.solmix.hola.core.model.RemoteInfo)
      */
     @Override
-    public RemoteManager createManager() {
-        return createManager(new RemoteListener[]{} );
+    public RemoteProtocol createProtocol() {
+        return createProtocol(new RemoteListener[]{} );
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteManagerProtocol#getSupportedIntents(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getSupportedIntents(org.solmix.hola.core.model.RemoteInfo)
      */
     @Override
     public String[] getSupportedIntents(EndpointInfo info) {
@@ -73,7 +73,7 @@ public class HolaRemoteManagerProtocol implements RemoteManagerProtocol
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteManagerProtocol#getSupportedConfigs(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getSupportedConfigs(org.solmix.hola.core.model.RemoteInfo)
      */
     @Override
     public String[] getSupportedConfigs(EndpointInfo info) {
@@ -84,7 +84,7 @@ public class HolaRemoteManagerProtocol implements RemoteManagerProtocol
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteManagerProtocol#getImportedConfigs(org.solmix.hola.core.model.RemoteInfo, java.lang.String[])
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getImportedConfigs(org.solmix.hola.core.model.RemoteInfo, java.lang.String[])
      */
     @Override
     public String[] getImportedConfigs(EndpointInfo info,
@@ -96,7 +96,7 @@ public class HolaRemoteManagerProtocol implements RemoteManagerProtocol
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.RemoteManagerProtocol#getDefaultPort()
+     * @see org.solmix.hola.rs.RemoteProtocolFactory#getDefaultPort()
      */
     @Override
     public int getDefaultPort() {

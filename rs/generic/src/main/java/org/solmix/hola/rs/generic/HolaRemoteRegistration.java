@@ -65,7 +65,7 @@ public class HolaRemoteRegistration<S> implements
      * @param info
      */
     public HolaRemoteRegistration(
-        HolaRemoteManager manager, String[] clazzes,
+        HolaRemoteProtocol manager, String[] clazzes,
         Object service, RemoteInfo info)
     {
         this.manager=manager;
@@ -140,7 +140,7 @@ public class HolaRemoteRegistration<S> implements
 
     private final HolaServiceID remoteServiceID;
     
-    private final HolaRemoteManager manager;
+    private final HolaRemoteProtocol manager;
 
   
     public Object getService(){

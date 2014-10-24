@@ -32,8 +32,8 @@ import org.solmix.hola.discovery.DiscoveryProvider;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.support.ServiceInfoImpl;
 import org.solmix.hola.rs.RemoteListener;
-import org.solmix.hola.rs.RemoteManager;
-import org.solmix.hola.rs.RemoteManagerProtocol;
+import org.solmix.hola.rs.RemoteProtocol;
+import org.solmix.hola.rs.RemoteProtocolFactory;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.event.RemoteEvent;
@@ -135,7 +135,7 @@ public class GenericExportor implements ServiceExportor
                   LOG.info("Export service :"+config.getInterface());
               }
               String protocol=endpoint.getRemoteProtocol();
-              RemoteManagerProtocol manager =  container.getExtensionLoader(RemoteManagerProtocol.class)
+              RemoteProtocolFactory manager =  container.getExtensionLoader(RemoteProtocolFactory.class)
                                                         .getExtension(protocol);
               List<DiscoveryInfo> infos= endpoint.getDiscoveryInfos();
               //是否公告服务
@@ -145,7 +145,7 @@ public class GenericExportor implements ServiceExportor
                       registrations.add(registration);
               }else{
                   //直接发布
-                RemoteManager rm=  manager.createManager();
+                RemoteProtocol rm=  manager.createProtocol();
                 RemoteRegistration<?> registration= rm.registerRemoteService(config.getInterfaces(), config.getRef(), endpoint.getRemoteInfo());
                 registrations.add(registration);
               }
@@ -156,9 +156,9 @@ public class GenericExportor implements ServiceExportor
     }
     
     
-    private RemoteRegistration<?> registerDiscoverys( RemoteManagerProtocol manager, RemoteInfo remoteInfo,  List<DiscoveryInfo> infos) {
+    private RemoteRegistration<?> registerDiscoverys( RemoteProtocolFactory manager, RemoteInfo remoteInfo,  List<DiscoveryInfo> infos) {
         List<RemoteListener> listeners= getRemoteListeners(infos,remoteInfo);
-        RemoteManager rm =manager.createManager(listeners.toArray(new RemoteListener[listeners.size()]));
+        RemoteProtocol rm =manager.createProtocol(listeners.toArray(new RemoteListener[listeners.size()]));
         return rm.registerRemoteService(config.getInterfaces(), config.getRef(), remoteInfo);
     }
 

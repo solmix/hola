@@ -19,6 +19,7 @@
 package org.solmix.hola.rt.spring.parser;
 
 import org.solmix.hola.rt.config.ServerConfig;
+import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 
 
@@ -28,7 +29,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
  * @version 0.0.1  2014年9月7日
  */
 
-public class ServerDefinitionParser extends AbstractDefinitionParser implements
+public class ServerDefinitionParser extends AbstractRootBeanDefinitionParser implements
     BeanDefinitionParser
 {
 

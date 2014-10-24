@@ -16,40 +16,113 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.core.model;
 
-import java.util.Map;
+package org.solmix.hola.core.model;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年10月3日
+ * @version $Id$ 2014年10月3日
  */
 
-public class MonitorInfo extends AbstractURIInfo<MonitorInfo>
+public class MonitorInfo extends AbstractHolaInfo
 {
 
     private static final long serialVersionUID = 2315183160517205446L;
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.model.ExtensionInfo#getSelf()
-     */
-    @Override
-    protected MonitorInfo getSelf() {
-        return this;
+    private String address;
+
+    private String protocol;
+
+    private String username;
+
+    private String password;
+
+    private String group;
+
+    private String version;
+    
+    private Boolean isDefault;
+
+    
+    public String getAddress() {
+        return address;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.model.ExtensionInfo#makeSelf(java.util.Map)
-     */
-    @Override
-    protected MonitorInfo makeSelf(Map<String, Object> map) {
-        return null;
+    
+    public void setAddress(String address) {
+        this.address = address;
     }
 
+    
+    public String getProtocol() {
+        return protocol;
+    }
+
+    
+    /**   */
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    
+    /**   */
+    public String getUsername() {
+        return username;
+    }
+
+    
+    /**   */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    
+    /**   */
+    public String getPassword() {
+        return password;
+    }
+
+    
+    /**   */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    
+    /** 分组  */
+    public String getGroup() {
+        return group;
+    }
+
+    
+    /** 分组  */
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    
+    /** 版本号  */
+    public String getVersion() {
+        return version;
+    }
+
+    
+    /**版本号*/
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /** 是否为默认配置  */
+    public Boolean isDefault() {
+        return isDefault;
+    }
+
+    
+    /** 设置为默认配置  */
+    public void setDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+    
 }

@@ -20,6 +20,7 @@ package org.solmix.hola.rt.spring.parser;
 
 import javax.lang.model.type.ReferenceType;
 
+import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 
 
@@ -29,7 +30,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
  * @version 0.0.1  2014年9月7日
  */
 
-public class ReferenceDefinitionParser extends AbstractDefinitionParser
+public class ReferenceDefinitionParser extends AbstractRootBeanDefinitionParser
     implements BeanDefinitionParser
 {
 

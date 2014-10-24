@@ -20,11 +20,15 @@ package org.solmix.hola.rt.spring.parser;
 
 import org.solmix.hola.rt.config.ServiceConfig;
 import org.solmix.hola.rt.spring.SpringExportor;
+import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.w3c.dom.Element;
 
 
@@ -34,7 +38,7 @@ import org.w3c.dom.Element;
  * @version 0.0.1  2014年9月7日
  */
 
-public class ServiceDefinitionParser extends AbstractDefinitionParser implements
+public class ServiceDefinitionParser extends AbstractRootBeanDefinitionParser implements
     BeanDefinitionParser
 {
 
@@ -43,7 +47,7 @@ public class ServiceDefinitionParser extends AbstractDefinitionParser implements
      */
     public ServiceDefinitionParser()
     {
-        super(ServiceConfig.class);
+        super(SpringRemoteServiceInfo.class);
     }
 
     /**
@@ -87,4 +91,19 @@ public class ServiceDefinitionParser extends AbstractDefinitionParser implements
         }
     }
 
+    public static class SpringRemoteServiceInfo implements ApplicationContextAware{
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+         */
+        @Override
+        public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+            // TODO Auto-generated method stub
+            
+        }
+        
+    }
 }

@@ -19,6 +19,7 @@
 package org.solmix.hola.rt.spring.parser;
 
 import org.solmix.hola.rt.config.DiscoveryConfig;
+import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -32,7 +33,7 @@ import org.springframework.beans.factory.xml.ParserContext;
  * @version 0.0.1  2014年9月6日
  */
 
-public class DiscoveryDefinitionParser extends AbstractDefinitionParser
+public class DiscoveryDefinitionParser extends AbstractRootBeanDefinitionParser
     implements BeanDefinitionParser
 {
 

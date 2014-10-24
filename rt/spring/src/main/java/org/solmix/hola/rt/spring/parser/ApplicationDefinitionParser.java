@@ -19,11 +19,12 @@
 
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.ApplicationConfig;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.solmix.hola.core.model.ApplicationInfo;
+import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -31,18 +32,35 @@ import org.springframework.beans.factory.xml.ParserContext;
  * @version 0.0.1 2014年9月6日
  */
 
-public class ApplicationDefinitionParser extends AbstractDefinitionParser
+public class ApplicationDefinitionParser extends AbstractBeanDefinitionParser
+implements BeanDefinitionParser
 {
 
-    /**
-     * @param type
-     */
     public ApplicationDefinitionParser()
     {
-        super(ApplicationConfig.class);
+        super();
+        setBeanClass(ApplicationInfo.class);
     }
-
     @Override
+    protected void doParse(Element element, ParserContext ctx, BeanDefinitionBuilder bean) {
+        bean.addPropertyValue("id", "aaa");
+        super.doParse(element, ctx, bean);
+    }
+    @Override
+    protected void processNameAttribute(Element element, ParserContext ctx,
+        BeanDefinitionBuilder bean, String val) {
+       mapToProperty(bean, "name", val, ctx);
+    }
+    @Override
+    protected void mapToProperty(BeanDefinitionBuilder bean,
+        String property, String val,ParserContext ctx) {
+        if("discovery".equals(property) && val.indexOf(",") != -1){
+            parseMultiRef("discoveries", val, bean,ctx);
+        }else{
+            super.mapToProperty(bean, property, val,ctx);
+        }
+    }
+/*    @Override
     protected void parserValue(RootBeanDefinition beanDefinition,
         String property, Class<?> propertyType, String value,
         ParserContext parserContext) {
@@ -65,5 +83,5 @@ public class ApplicationDefinitionParser extends AbstractDefinitionParser
             beanDefinition.getPropertyValues().addPropertyValue(property,
                 new RuntimeBeanReference(value));
         }
-    }
+    }*/
 }

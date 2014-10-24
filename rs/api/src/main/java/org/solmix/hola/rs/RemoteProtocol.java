@@ -28,7 +28,7 @@ import org.solmix.hola.core.model.RemoteInfo;
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年8月19日
  */
-public interface RemoteManager 
+public interface RemoteProtocol 
 {
     /**
      * 注册一个远程服务，服务提供者通过该方法将本地服务暴露给远程消费者．

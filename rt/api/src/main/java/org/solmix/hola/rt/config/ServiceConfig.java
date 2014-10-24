@@ -39,7 +39,7 @@ import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RemoteManagerProtocol;
+import org.solmix.hola.rs.RemoteProtocolFactory;
 import org.solmix.hola.rs.service.GenericService;
 import org.solmix.hola.rt.ServiceExportor;
 import org.solmix.runtime.Container;
@@ -350,7 +350,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
        Integer port = server.getPort();
         if (port == null || port <= 0) {
             int defaultPort = container.getExtensionLoader(
-                RemoteManagerProtocol.class).getExtension(protocol).getDefaultPort();
+                RemoteProtocolFactory.class).getExtension(protocol).getDefaultPort();
             if (defaultPort <= 0) {
                 port = getRandomPort(protocol);
                 if (port == null || port < 0) {

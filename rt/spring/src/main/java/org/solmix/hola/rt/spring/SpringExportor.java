@@ -51,8 +51,9 @@ public class SpringExportor extends GenericExportor implements InitializingBean,
     /**
      * @param type
      */
-    public SpringExportor()
+    public SpringExportor(ServiceConfig<?> type)
     {
+        super(type);
     }
 
     /**

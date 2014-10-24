@@ -2,14 +2,45 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:hola="http://www.solmix.org/schema/hola"
+	xmlns:c="http://www.solmix.org/schema/rt"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.solmix.org/schema/hola 
-						http://www.solmix.org/schema/hola/hola.xsd">
+						http://www.solmix.org/schema/hola/hola.xsd
+						http://www.solmix.org/schema/rt 
+						http://www.solmix.org/schema/rt/rt.xsd">
 
-<hola:application name="test"/>
-<hola:application id="test2" version="1.0.2"/>
-<hola:module id="module" version="1.0.2"/>
-<hola:service id="service" interface="org.solmix.hola.rt.spring.DemoService" ref="demo" />
-<bean id="demo" class="org.solmix.hola.rt.spring.DemoService"></bean>
+
+	 <hola:application name="test" 
+		version="1.0.2" 
+		owner="solmix"
+		organization="solmix.org" 
+		architecture="linux" 
+		environment="test"
+		default="true" /> 
+		<!-- id -->
+	 <hola:application  id="test2"/> 
+	 <c:container name="solmix3"/>
+	<!-- 
+	<hola:module name="module" 
+		version="1.0.2" 
+		owner="solmix"
+		organization="solmix.org" 
+		default="true" />
+		id
+	<hola:module id="module2" />
+	
+	<hola:monitor id="monitor" 
+		address="hola://localhost:9812" 
+		username="hola"
+		password="hola" 
+		group="default"
+		version="1.0.0"
+		default="true" >
+		<hola:properties>
+			<entry key="key" value="value" />
+		</hola:properties>
+		
+		</hola:monitor> -->
+		
 </beans>

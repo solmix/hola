@@ -49,9 +49,9 @@ public class ReferenceCountExchangeClient implements ExchangeClient
 
     private final ConcurrentMap<String, LazyConnectExchangeClient> ghostClientMap;
 
-    private final HolaRemoteManager manager;
+    private final HolaRemoteProtocol manager;
     public ReferenceCountExchangeClient(ExchangeClient client,
-        ConcurrentMap<String, LazyConnectExchangeClient> ghostClientMap,HolaRemoteManager manager)
+        ConcurrentMap<String, LazyConnectExchangeClient> ghostClientMap,HolaRemoteProtocol manager)
     {
         this.client = client;
         this.manager =manager;

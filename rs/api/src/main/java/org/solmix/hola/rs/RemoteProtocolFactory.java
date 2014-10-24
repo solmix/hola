@@ -17,29 +17,30 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.core;
+package org.solmix.hola.rs;
 
-import java.net.SocketAddress;
-
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.runtime.Extension;
 
 /**
- * Endpoint represents a peer in the cluster.
- *  It can be either a member or a client.
  * 
  * @author solmix.f@gmail.com
+ * @version 0.0.1 2014年8月19日
  */
-
-public interface Endpoint
+@Extension(name = "hola")
+public interface RemoteProtocolFactory
 {
 
-    ID getID();
+    RemoteProtocol createProtocol(
+        RemoteListener... listeners);
 
-    /**
-     * Returns socket address of this endpoint
-     * 
-     * @return socket address of this endpoint
-     */
-    SocketAddress getSocketAddress();
+    RemoteProtocol createProtocol();
+    
+    int getDefaultPort();
 
+    String[] getSupportedIntents(EndpointInfo info);
+
+    String[] getSupportedConfigs(EndpointInfo info);
+
+    String[] getImportedConfigs(EndpointInfo info, String[] remoteSupportedConfigs);
 }
