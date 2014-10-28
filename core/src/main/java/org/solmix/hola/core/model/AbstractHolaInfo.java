@@ -99,7 +99,9 @@ public class AbstractHolaInfo extends InfoPropertiesSupport implements
     protected static void checkName(String property, String value) {
         checkProperty(property, value, MAX_LENGTH, PATTERN_NAME);
     }
-
+    protected static void checkPathLength(String property, String value) {
+        checkProperty(property, value, MAX_PATH_LENGTH, null);
+    }
     protected static void checkLength(String property, String value) {
         checkProperty(property, value, MAX_LENGTH, null);
     }

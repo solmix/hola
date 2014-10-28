@@ -16,250 +16,243 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.core.model;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.solmix.commons.annotation.ThreadSafe;
-import org.solmix.hola.core.HolaConstants;
-
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月14日
+ * @version $Id$ 2014年9月14日
  */
 @ThreadSafe
-public class DiscoveryInfo extends AbstractURIInfo<DiscoveryInfo>
+public class DiscoveryInfo extends AbstractHolaInfo
 {
-    private static final long serialVersionUID = -2090513507409471371L;
-    private static final Logger LOG = LoggerFactory.getLogger(DiscoveryInfo.class);
-    public static final String ADDRESS_KEY="discovery.address";
+
+    private static final long serialVersionUID = 7819222894033381016L;
+
+    public static final String NO_AVAILABLE = "N/A";
+
+    private String name;
+
+    /**
+     * 公告服务地址
+     */
+    private String address;
+
+    /**
+     * 登陆公告服务用户名
+     */
+    private String username;
+
+    /**
+     * 登陆公告服务密码
+     */
+    private String password;
+
+    /**
+     * 公告服务协议
+     */
+    private String protocol;
+    /**
+     * 公告服务端口
+     */
+    private Integer port;
+
+    private String cluster;
+
+    private String group;
+
+    private String version;
+
+    // 注册中心请求超时时间(毫秒)
+    private Integer timeout;
+
+    // 启动时检查注册中心是否存在
+    private Boolean check;
+
+    // 在该注册中心上注册是动态的还是静态的服务
+    private Boolean dynamic;
+
+    private Boolean advertise;
+
+    // 在该注册中心上服务是否引用
+    private Boolean subscribe;
+
+
+    /** 本地缓存公告,启动时可以临时使用   */
+    private String file;
+
+    private Boolean isDefault;
+    
+    /**   */
+    public String getFile() {
+        return file;
+    }
+
+    
+    /**   */
+    public void setFile(String file) {
+        checkPathLength("file", file);
+        this.file = file;
+    }
+
    
-    public DiscoveryInfo(String protocol,  String host, int port)
-    {
-       this(protocol,null,null,host,port,null,null);
+
+    /**   */
+    public String getName() {
+        return name;
     }
-  
-    public DiscoveryInfo(String protocol, String username, String password, String host, int port, String path, Map<String, Object> properties) {
-        super(protocol,username,password,host,port,path,properties);
-        
-    }
-    public static DiscoveryInfo valueOf(URI uri){
-        if(uri==null)
-            return null;
-        Builder b= newBuilder();
-        b.setProtocol(uri.getScheme());
-       String userInfo=uri.getRawUserInfo();
-       String username=null;
-       String password=null;
-       if(userInfo!=null&&userInfo.length()>0){
-           int j = userInfo.indexOf(":");
-           if (j >= 0) {
-               password = userInfo.substring(j + 1);
-               username = userInfo.substring(0, j);
-           }else{
-               username=userInfo;
-           }
-       }
-       b.setUserName(username);
-       b.setPassword(password);
-       b.setHost(uri.getHost());
-       b.setPort(uri.getPort());
-       b.setPath(uri.getRawPath());
-       Map<String,Object> param= parseQuery(uri.getRawQuery());
-       if(param!=null&&param.size()>0)
-       b.setProperties(param);
-        
-        return b.build();
-    }
-    
-    public static DiscoveryInfo valueOf(String uri){
-        try {
-            URI u = new URI(uri);
-            return valueOf(u);
-        } catch (URISyntaxException e) {
-            throw  new IllegalArgumentException(e);
+
+    /**   */
+    public void setName(String name) {
+        checkName("name", name);
+        this.name = name;
+        if (id == null || id.length() == 0) {
+            id = name;
         }
     }
-  
-    @Override
-    public String getAddress(){
-        return getString("address");
+
+    /**   */
+    public String getAddress() {
+        return address;
     }
 
-    /**
-     * @return
-     */
-    public String getBackupAddress() {
-       StringBuilder sb = new StringBuilder();
-       sb.append(getAddress());
-       String backup= getString("backup", null);
-       if(backup!=null&&backup.length()>0){
-         String[] backs=  HolaConstants.SPLIT_COMMA_PATTERN.split(backup);
-         for(String back:backs){
-             sb.append(",");
-             sb.append(back);
-         }
-       }
-        return sb.toString();
-    }
-    
-    @Override
-    public String getAuthority() {
-        String username=getString("username");
-        String password=getString("password");
-        if ((username == null || username.length() == 0)
-                && (password == null || password.length() == 0)) {
-            return null;
-        }
-        return (username == null ? "" : username) 
-                + ":" + (password == null ? "" : password);
-    }
-    
-    public String getGroup(String df){
-        return getString("group", df);
+    /**   */
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    /**
-     * @param retryPeriod
-     * @return
-     */
-    public int getRetyPeriod(int retryPeriod) {
-        return getInt("retry.peroid", retryPeriod);
+    /**   */
+    public String getUsername() {
+        return username;
     }
 
-    /**
-     * 启动时是否检查错误
-     * 
-     * @param b
-     */
-    public boolean getCheck(boolean b) {
-        return getBoolean("check", b);
-        
-    }
-    @Override
-    public String getProtocol(){
-        return getString("protocol");
+    /**   */
+    public void setUsername(String username) {
+        checkName("username", username);
+        this.username = username;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.model.ExtensionInfo#getSelf()
-     */
-    @Override
-    protected DiscoveryInfo getSelf() {
-        return this;
+    /**   */
+    public String getPassword() {
+        return password;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.core.model.ExtensionInfo#makeSelf(java.util.Map)
-     */
-    @Override
-    protected DiscoveryInfo makeSelf(Map<String, Object> map) {
-        return new DiscoveryInfo(protocol,username,password,host,port,path,map);
-
-    }
-    public static Builder newBuilder() {
-        return new Builder();
+    /**   */
+    public void setPassword(String password) {
+        checkLength("password", password);
+        this.password = password;
     }
 
-    public static Builder newBuilder(AbstractURIInfo<?> info) {
-        return new Builder(info);
+    /**   */
+    public Integer getPort() {
+        return port;
     }
 
-    public static class Builder
-    {
+    /**   */
+    public void setPort(Integer port) {
+        this.port = port;
+    }
 
-        private   Map<String, Object> properties = new HashMap<String, Object>();
-        protected  String protocol;
-        protected  String username;
-        protected  String password;
-        protected  String host;
-        protected  int port;
-        protected  String path;
-        private Builder()
-        {
-        }
+    /**   */
+    public String getCluster() {
+        return cluster;
+    }
 
-        /**
-         * @param info
-         */
-        public Builder(AbstractURIInfo<?> info)
-        {
-            properties.putAll(info.getProperties());
-            protocol=info.getProtocol();
-            username=info.getUsername();
-            password=info.getPassword();
-            host=info.getHost();
-            port=info.getPort();
-            path=info.getPath();
-        }
-        
-        public Builder setProperties(Map<String,Object> properties) {
-            this.properties=new HashMap<String, Object>(properties);
-            return this;
-        }
+    /**   */
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
+    }
 
-        public Builder setPropertyIfAbsent(String key, Object value){
-            if (key == null || key.length() == 0 || value == null)
-                return this;
-            if (hasProperty(key))
-                return this;
-            properties.put(key, value);
-            return this;
-        }
+    /**   */
+    public String getGroup() {
+        return group;
+    }
 
-        public boolean hasProperty(String key){
-            Object value = properties.get(key);
-            return value != null;
-        }
-        
-        public Builder setPort(int  port) {
-            this.port=port;
-             return this;
-         }
-        public Builder setPath(String  path) {
-           this.path=path;
-            return this;
-        }
-        public Builder setUserName(String  username) {
-            this.username=username;
-             return this;
-         }
-        public Builder setPassword(String  password) {
-            this.password=password;
-             return this;
-         }
-        
-        public Builder setProtocol(String  protocol) {
-            this.protocol=protocol;
-             return this;
-         }
-       
-        /**
-         * @param host the host to set
-         */
-        public Builder setHost(String host) {
-           this.host=host;
-            return this;
-        }
+    /**   */
+    public void setGroup(String group) {
+        this.group = group;
+    }
 
-      
-     
+    /**   */
+    public String getVersion() {
+        return version;
+    }
 
-        public DiscoveryInfo build() {
+    /**   */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-            return new DiscoveryInfo(protocol,username,password,host,port,path,properties);
-        }
+    /**   */
+    public Integer getTimeout() {
+        return timeout;
+    }
 
+    /**   */
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
+    }
+
+    /**   */
+    public Boolean isCheck() {
+        return check;
+    }
+
+    /**   */
+    public void setCheck(Boolean check) {
+        this.check = check;
+    }
+
+    /**   */
+    public Boolean isDynamic() {
+        return dynamic;
+    }
+
+    /**   */
+    public void setDynamic(Boolean dynamic) {
+        this.dynamic = dynamic;
+    }
+
+    /**   */
+    public Boolean getAdvertise() {
+        return advertise;
+    }
+
+    /**   */
+    public void setAdvertise(Boolean advertise) {
+        this.advertise = advertise;
+    }
+
+    /**   */
+    public Boolean isSubscribe() {
+        return subscribe;
+    }
+
+    /**   */
+    public void setSubscribe(Boolean subscribe) {
+        this.subscribe = subscribe;
+    }
+
+    /**   */
+    public String getProtocol() {
+        return protocol;
+    }
+
+    /**   */
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    /** 是否为默认配置 */
+    public Boolean isDefault() {
+        return isDefault;
+    }
+
+    /** 设置为默认配置 */
+    public void setDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 }

@@ -18,9 +18,13 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
+import java.util.Map;
+
 import org.solmix.hola.core.model.MonitorInfo;
-import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.xml.ParserContext;
+import org.w3c.dom.Element;
 
 
 /**
@@ -29,8 +33,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
  * @version 0.0.1  2014年9月6日
  */
 
-public class MonitorDefinitionParser extends AbstractRootBeanDefinitionParser implements
-    BeanDefinitionParser
+public class MonitorDefinitionParser extends AbstractBeanDefinitionParser
 {
 
     /**
@@ -38,7 +41,20 @@ public class MonitorDefinitionParser extends AbstractRootBeanDefinitionParser im
      */
     public MonitorDefinitionParser()
     {
-        super(MonitorInfo.class);
+        super();
+        setBeanClass(MonitorInfo.class);
     }
-
+    @Override
+    protected void parseNameAttribute(Element element, ParserContext ctx,
+        BeanDefinitionBuilder bean, String val) {
+       attributeToProperty(bean, "name", val, ctx);
+    }
+    @Override
+    protected void parseElement(ParserContext ctx, BeanDefinitionBuilder bean,
+        Element e, String name) {
+        if ("properties".equals(name)) {
+            Map<?, ?> map = ctx.getDelegate().parseMapElement(e, bean.getBeanDefinition());
+            bean.addPropertyValue("properties", map);
+        }
+    }
 }

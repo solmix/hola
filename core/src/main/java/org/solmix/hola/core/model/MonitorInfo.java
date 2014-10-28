@@ -30,6 +30,8 @@ public class MonitorInfo extends AbstractHolaInfo
 {
 
     private static final long serialVersionUID = 2315183160517205446L;
+    
+    private String name;
 
     private String address;
 
@@ -75,12 +77,14 @@ public class MonitorInfo extends AbstractHolaInfo
     
     /**   */
     public void setUsername(String username) {
+        checkName("username", username);
         this.username = username;
     }
 
     
     /**   */
     public String getPassword() {
+        checkLength("password", password);
         return password;
     }
 
@@ -123,6 +127,20 @@ public class MonitorInfo extends AbstractHolaInfo
     /** 设置为默认配置  */
     public void setDefault(Boolean isDefault) {
         this.isDefault = isDefault;
+    }
+    
+    /**   */
+    public String getName() {
+        return name;
+    }
+    
+    /**   */
+    public void setName(String name) {
+        checkName("name", name);
+        this.name = name;
+        if (id == null || id.length() == 0) {
+            id = name;
+        }
     }
     
 }

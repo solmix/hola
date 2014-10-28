@@ -55,11 +55,13 @@ public class AbstractClassConfig extends AbstractMethodConfig {
 	 */
 	protected String proxy;
 
+	/**集群方式 */
 	protected String cluster;
 
+	/**服务连接数,0表示共享连接 */
 	protected Integer connections;
 
-
+	/** 服务注册和引用的范围,local为本地,remote为远程 */
 	protected String scope;
 
 	protected ApplicationConfig application;

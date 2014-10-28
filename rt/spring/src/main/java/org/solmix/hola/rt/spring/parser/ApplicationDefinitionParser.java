@@ -42,22 +42,22 @@ implements BeanDefinitionParser
         setBeanClass(ApplicationInfo.class);
     }
     @Override
-    protected void doParse(Element element, ParserContext ctx, BeanDefinitionBuilder bean) {
-        bean.addPropertyValue("id", "aaa");
-        super.doParse(element, ctx, bean);
-    }
-    @Override
-    protected void processNameAttribute(Element element, ParserContext ctx,
+    protected void parseNameAttribute(Element element, ParserContext ctx,
         BeanDefinitionBuilder bean, String val) {
-       mapToProperty(bean, "name", val, ctx);
+       attributeToProperty(bean, "name", val, ctx);
     }
     @Override
-    protected void mapToProperty(BeanDefinitionBuilder bean,
+    protected void attributeToProperty(BeanDefinitionBuilder bean,
         String property, String val,ParserContext ctx) {
-        if("discovery".equals(property) && val.indexOf(",") != -1){
-            parseMultiRef("discoveries", val, bean,ctx);
-        }else{
-            super.mapToProperty(bean, property, val,ctx);
+        if("discovery".equals(property)){
+            if( val.indexOf(",") != -1){
+                parseMultiRef("discoveries", val, bean,ctx);
+            }else{
+                bean.addPropertyReference("discovery", val);
+            }
+        }
+        else{
+            super.attributeToProperty(bean, property, val,ctx);
         }
     }
 /*    @Override

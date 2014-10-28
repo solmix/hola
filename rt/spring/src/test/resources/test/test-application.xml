@@ -17,30 +17,141 @@
 		organization="solmix.org" 
 		architecture="linux" 
 		environment="test"
+		discovery="discovery"
 		default="true" /> 
 		<!-- id -->
 	 <hola:application  id="test2"/> 
 	 <c:container name="solmix3"/>
-	<!-- 
+	 
 	<hola:module name="module" 
 		version="1.0.2" 
 		owner="solmix"
 		organization="solmix.org" 
-		default="true" />
-		id
+		default="true" 
+		discovery="discovery,discovery2"/>
 	<hola:module id="module2" />
 	
-	<hola:monitor id="monitor" 
+	<hola:monitor name="monitor" 
 		address="hola://localhost:9812" 
 		username="hola"
 		password="hola" 
 		group="default"
 		version="1.0.0"
 		default="true" >
-		<hola:properties>
+		<hola:properties>                                                                       
 			<entry key="key" value="value" />
 		</hola:properties>
 		
-		</hola:monitor> -->
+		</hola:monitor> 
 		
+	<hola:discovery name="discovery"
+		address="zk://localhost:2340"
+		username="hola"
+		password="hola"
+		protocol="zk"
+		port="2340"
+		cluster="true"
+		group="default"
+		version="1.0.0"
+		timeout="5000"
+		check="false"
+		dynamic="true"
+		advertise="true"
+		subscribe="true"
+		file="/home/solmix/a"
+		default="true">
+		<hola:properties>
+			<entry key="key" value="value2" />
+		</hola:properties>
+		</hola:discovery>
+		
+		<hola:discovery name="discovery2"
+		address="zk://localhost:2340"
+		username="hola"
+		password="hola">
+		
+		</hola:discovery>
+		
+		<!-- server definition -->
+	<hola:server id="server"
+		timeout="5000"
+		retries="3"
+		actives="200"
+		loadbalance="robin"
+		async="true"
+		asyncwait="false"
+		connections="100"
+		protocol="hola"
+		proxy="jdk"
+		cluster="failover"
+		scope="local"
+		discovery="discovery"
+		application="test"
+		module="module"
+		monitor="monitor"
+		version="1.0.9"
+		group="group1"
+		weight="9999"
+		document="http://localhost/docs/docserver.html"
+		dynamic="true"
+		executes="1000"
+		export="true"
+		host="localhost"
+		port="1314"
+		contextpath="/slx"
+		executor="fixed"
+		threads="188"
+		iothreads="20"
+		queues="89"
+		accepts="45"
+		codec="hola"
+		serial="jdk"
+		charset="utf-8"
+		payload="8096"
+		heartbeat="6000"
+		transporter="netty"
+		buffer="10000"
+		exchanger="generic"
+		dispatcher="normal"
+		advertise="true"
+		networker="default"
+		default="true">
+		<hola:properties>
+			<entry key="key1" value="value1" />
+		</hola:properties>
+	</hola:server>
+	<hola:service id="service"
+		timeout="5000"
+		retries="3"
+		actives="200"
+		loadbalance="robin"
+		async="true"
+		asyncwait="false"
+		connections="100"
+		protocol="hola"
+		proxy="jdk"
+		cluster="failover"
+		scope="local"
+		discovery="discovery"
+		application="test"
+		module="module"
+		monitor="monitor"
+		version="1.0.9"
+		group="group1"
+		weight="9999"
+		document="http://localhost/docs/docserver.html"
+		dynamic="true"
+		executes="1000"
+		export="true"
+		interface="org.solmix.hola.rt.spring.HelloService"
+		delay="3000"
+		path="/service"
+		ref="hello"
+		server="server"
+		generic="false">
+		<hola:properties>
+			<entry key="key1" value="value1" />
+		</hola:properties>
+	</hola:service>
+	<bean id="hello" class="org.solmix.hola.rt.spring.HelloServiceImpl"></bean>
 </beans>

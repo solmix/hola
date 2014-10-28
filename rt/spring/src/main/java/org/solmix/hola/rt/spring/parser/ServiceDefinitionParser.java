@@ -18,14 +18,14 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.ServiceConfig;
-import org.solmix.hola.rt.spring.SpringExportor;
-import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
+import java.util.Map;
+
+import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.core.model.ServiceInfo;
+import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -38,8 +38,7 @@ import org.w3c.dom.Element;
  * @version 0.0.1  2014年9月7日
  */
 
-public class ServiceDefinitionParser extends AbstractRootBeanDefinitionParser implements
-    BeanDefinitionParser
+public class ServiceDefinitionParser extends AbstractBeanDefinitionParser
 {
 
     /**
@@ -47,14 +46,58 @@ public class ServiceDefinitionParser extends AbstractRootBeanDefinitionParser im
      */
     public ServiceDefinitionParser()
     {
-        super(SpringRemoteServiceInfo.class);
+        super();
+        setBeanClass(SpringRemoteServiceInfo.class);
     }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)
-     */
+    @Override
+    protected void parseIdAttribute(BeanDefinitionBuilder bean, Element element,
+        String name, String val, ParserContext ctx) {
+        bean.addPropertyValue("id", val);
+    }
+    @Override
+    protected void attributeToProperty(BeanDefinitionBuilder bean,
+        String property, String val,ParserContext ctx) {
+        if("application".equals(property)
+            ||"module".equals(property)
+            ||"monitor".equals(property)){
+            bean.addPropertyReference(property, val);
+        }else if ("discovery".equals(property)){
+            if( val.indexOf(",") != -1){
+                parseMultiRef("discoveries", val, bean,ctx);
+            }else{
+                bean.addPropertyReference("discovery", val);
+            }
+        }else if ("server".equals(property)){
+            if( val.indexOf(",") != -1){
+                parseMultiRef("servers", val, bean,ctx);
+            }else{
+                bean.addPropertyReference("server", val);
+            } 
+        }else if ("ref".equals(property)){
+            if (!StringUtils.isEmpty(val)) {
+                if(ctx.getRegistry().containsBeanDefinition(val)){
+                    BeanDefinition refBean = ctx.getRegistry().getBeanDefinition(val);
+                    if (! refBean.isSingleton()) {
+                        throw new IllegalStateException("The exported service ref " + val +
+                            " must be singleton! Please set the " + val + " bean scope to singleton, eg: "
+                                + "<bean id=\"" + val+ "\" scope=\"singleton\" ...>");
+                    }
+                }
+                bean.addPropertyReference(property, val);
+            }
+        }else{
+            super.attributeToProperty(bean, property, val,ctx);
+        }
+    }
+    @Override
+    protected void parseElement(ParserContext ctx, BeanDefinitionBuilder bean,
+        Element e, String name) {
+        if ("properties".equals(name)) {
+            Map<?, ?> map = ctx.getDelegate().parseMapElement(e, bean.getBeanDefinition());
+            bean.addPropertyValue("properties", map);
+        }
+    }
+   /*
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
         BeanDefinition bf= parse(element, parserContext, ServiceConfig.class);
@@ -89,9 +132,11 @@ public class ServiceDefinitionParser extends AbstractRootBeanDefinitionParser im
             beanDefinition.getPropertyValues().addPropertyValue(property,
                 new RuntimeBeanReference(value));
         }
-    }
+    }*/
 
-    public static class SpringRemoteServiceInfo implements ApplicationContextAware{
+    public static class SpringRemoteServiceInfo<T>  extends ServiceInfo<T> implements ApplicationContextAware{
+
+        private static final long serialVersionUID = 2154745084368911732L;
 
         /**
          * {@inheritDoc}

@@ -20,11 +20,10 @@
 package org.solmix.hola.rt.spring.parser;
 
 import org.solmix.hola.core.model.ModuleInfo;
-import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -32,7 +31,7 @@ import org.springframework.beans.factory.xml.ParserContext;
  * @version 0.0.1 2014年9月6日
  */
 
-public class ModuleDefinitionParser extends AbstractRootBeanDefinitionParser
+public class ModuleDefinitionParser extends AbstractBeanDefinitionParser
 {
 
     /**
@@ -40,11 +39,28 @@ public class ModuleDefinitionParser extends AbstractRootBeanDefinitionParser
      */
     public ModuleDefinitionParser()
     {
-        super(ModuleInfo.class);
+        super();
+        setBeanClass(ModuleInfo.class);
     }
-
     @Override
-    protected void parserValue(RootBeanDefinition beanDefinition,
+    protected void parseNameAttribute(Element element, ParserContext ctx,
+        BeanDefinitionBuilder bean, String val) {
+       attributeToProperty(bean, "name", val, ctx);
+    }
+    @Override
+    protected void attributeToProperty(BeanDefinitionBuilder bean,
+        String property, String val,ParserContext ctx) {
+        if("discovery".equals(property)){
+            if( val.indexOf(",") != -1){
+                parseMultiRef("discoveries", val, bean,ctx);
+            }else{
+                bean.addPropertyReference("discovery", val);
+            }
+        }else{
+            super.attributeToProperty(bean, property, val,ctx);
+        }
+    }
+   /* protected void parserValue(RootBeanDefinition beanDefinition,
         String property, Class<?> propertyType, String value,
         ParserContext parserContext) {
         if (isPrimitive(propertyType))  {
@@ -66,5 +82,5 @@ public class ModuleDefinitionParser extends AbstractRootBeanDefinitionParser
             beanDefinition.getPropertyValues().addPropertyValue(property,
                 new RuntimeBeanReference(value));
         }
-    }
+    }*/
 }

@@ -18,13 +18,13 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.DiscoveryConfig;
-import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import java.util.Map;
+
+import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.w3c.dom.Element;
 
 
 /**
@@ -33,8 +33,7 @@ import org.springframework.beans.factory.xml.ParserContext;
  * @version 0.0.1  2014年9月6日
  */
 
-public class DiscoveryDefinitionParser extends AbstractRootBeanDefinitionParser
-    implements BeanDefinitionParser
+public class DiscoveryDefinitionParser extends AbstractBeanDefinitionParser
 {
 
     /**
@@ -42,28 +41,20 @@ public class DiscoveryDefinitionParser extends AbstractRootBeanDefinitionParser
      */
     public DiscoveryDefinitionParser()
     {
-        super(DiscoveryConfig.class);
+        super();
+        setBeanClass(DiscoveryInfo.class);
     }
     @Override
-    protected void parserValue(RootBeanDefinition beanDefinition,
-        String property, Class<?> propertyType, String value,
-        ParserContext parserContext) {
-        if (isPrimitive(propertyType))  {
-            beanDefinition.getPropertyValues().addPropertyValue(property, value);
-        } else {
-            if ("ref".equals(property)
-                && parserContext.getRegistry().containsBeanDefinition(value)) {
-                BeanDefinition refBean = parserContext.getRegistry().getBeanDefinition(
-                    value);
-                if (!refBean.isSingleton()) {
-                    throw new IllegalStateException("The exported service ref "
-                        + value + " must be singleton! Please set the " + value
-                        + " bean scope to singleton, eg: <bean id=\"" + value
-                        + "\" scope=\"singleton\" ...>");
-                }
-            }
-            beanDefinition.getPropertyValues().addPropertyValue(property,
-                new RuntimeBeanReference(value));
+    protected void parseNameAttribute(Element element, ParserContext ctx,
+        BeanDefinitionBuilder bean, String val) {
+       attributeToProperty(bean, "name", val, ctx);
+    }
+    @Override
+    protected void parseElement(ParserContext ctx, BeanDefinitionBuilder bean,
+        Element e, String name) {
+        if ("properties".equals(name)) {
+            Map<?, ?> map = ctx.getDelegate().parseMapElement(e, bean.getBeanDefinition());
+            bean.addPropertyValue("properties", map);
         }
     }
 }
