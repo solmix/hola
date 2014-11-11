@@ -16,32 +16,37 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rt;
-
-import org.solmix.hola.rt.config.ServiceConfig;
+package org.solmix.hola.core.model;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月26日
+ * @version $Id$  2014年10月30日
  */
 
-public class GenericManager implements ServiceManager
+public class ClientInfo extends AbstractReferenceInfo
 {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rt.ServiceManager#createExporter(org.solmix.hola.rt.config.ServiceConfig)
-     */
+    /**    */
+    private static final long serialVersionUID = -2030026232826658223L;
+    private Boolean    isDefault;
+    
     @Override
-    public ServicePublisher createExporter(ServiceConfig<?> config) {
-        ServicePublisher e=config.getServiceExportor();
-        if(e!=null)
-            return e;
-        else
-            return new GenericPublisher(config);
+    public void setTimeout(Integer timeout) {
+        super.setTimeout(timeout);
+        String rmiTimeout = System.getProperty("sun.rmi.transport.tcp.responseTimeout");
+        if (timeout != null && timeout > 0
+                && (rmiTimeout == null || rmiTimeout.length() == 0)) {
+            System.setProperty("sun.rmi.transport.tcp.responseTimeout", String.valueOf(timeout));
+        }
     }
 
+    public Boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+    }
 }

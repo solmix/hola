@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.runtime.exchange.model.InfoPropertiesSupport;
 
 /**
  * 
@@ -109,7 +110,9 @@ public class AbstractHolaInfo extends InfoPropertiesSupport implements
     protected static void checkMultiName(String property, String value) {
         checkProperty(property, value, MAX_LENGTH, PATTERN_MULTI_NAME);
     }
-
+    protected static void checkKey(String property, String value) {
+        checkProperty(property, value, MAX_LENGTH, PATTERN_KEY);
+    }
     protected static void checkPathName(String property, String value) {
         checkProperty(property, value, MAX_PATH_LENGTH, PATTERN_PATH);
     }

@@ -22,6 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.solmix.commons.util.StringUtils;
+import org.solmix.runtime.Container;
+import org.solmix.runtime.ContainerAware;
+import org.solmix.runtime.ContainerFactory;
 
 
 
@@ -32,7 +35,7 @@ import org.solmix.commons.util.StringUtils;
  * @version $Id$  2014年10月28日
  */
 
-public class ServiceInfo<T> extends AbstractServiceInfo
+public class ServiceInfo<T> extends AbstractServiceInfo implements ContainerAware
 {
     /**    */
     private static final long serialVersionUID = -6412855348674400197L;
@@ -68,7 +71,15 @@ public class ServiceInfo<T> extends AbstractServiceInfo
     
     private boolean generic;
     
+    private Container container;
     
+    public ServiceInfo(T t){
+        this(ContainerFactory.getThreadDefaultContainer(),t);
+    }
+    public ServiceInfo(Container c,T t){
+        this.container=c;
+        this.ref=t;
+    }
     /**   */
     public boolean isGeneric() {
         return generic;
@@ -78,13 +89,16 @@ public class ServiceInfo<T> extends AbstractServiceInfo
     public void setGeneric(boolean generic) {
         this.generic = generic;
     }
+    
     public String getInterface() {
         return StringUtils.join(interfaceNames,',');
     }
+    
     public void setInterface(String interfaceName) {
        String[] classes= StringUtils.split(interfaceName, ",");
        setInterfaces(classes);
     }
+    
     public String[] getInterfaces() {
         return interfaceNames;
     }
@@ -170,6 +184,17 @@ public class ServiceInfo<T> extends AbstractServiceInfo
 
     public void setServer(ServerInfo server) {
         this.servers = Arrays.asList(new ServerInfo[] {server});
+    }
+    
+    @Override
+    public void setContainer(Container container) {
+        this.container=container;
+        
+    }
+    
+    @Override
+    public Container getContainer() {
+        return container;
     }
 
 }

@@ -16,32 +16,33 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rt;
+package org.solmix.hola.core.security;
 
-import org.solmix.hola.rt.config.ServiceConfig;
+import java.security.BasicPermission;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月26日
+ * @version $Id$  2014年10月31日
  */
 
-public class GenericManager implements ServiceManager
+public class HolaServicePermission extends BasicPermission
 {
 
     /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rt.ServiceManager#createExporter(org.solmix.hola.rt.config.ServiceConfig)
+     * @param name 
      */
-    @Override
-    public ServicePublisher createExporter(ServiceConfig<?> config) {
-        ServicePublisher e=config.getServiceExportor();
-        if(e!=null)
-            return e;
-        else
-            return new GenericPublisher(config);
+    public HolaServicePermission(String name)
+    {
+        super(name);
     }
+    
+    public HolaServicePermission(String name, String actions) {
+        super(name, actions);
+    }
+    
+    /**    */
+    private static final long serialVersionUID = -257225152976956518L;
 
 }

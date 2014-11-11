@@ -16,28 +16,50 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.core.model;
 
-package org.solmix.hola.rt;
-
-import org.solmix.hola.rt.config.ServiceConfig;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年9月10日
+ * @version $Id$  2014年10月30日
  */
 
-public interface ServiceExportor
+public class ArgumentInfo
 {
+    private Integer index;
+    private String type;
+    private String callback;
+    
+    /**   */
+    public Integer getIndex() {
+        return index;
+    }
+    
+    /**   */
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+    
+    /**   */
+    public String getType() {
+        return type;
+    }
+    
+    /**   */
+    public void setType(String type) {
+        this.type = type;
+    }
+    
+    /**   */
+    public String getCallback() {
+        return callback;
+    }
+    
+    /**   */
+    public void setCallback(String callback) {
+        this.callback = callback;
+    }
+    
 
-
-    ServiceConfig<?> getConfig();
-
-    void export();
-
-    void unexport();
-
-    boolean isExported();
-
-    boolean isUnexported();
 }

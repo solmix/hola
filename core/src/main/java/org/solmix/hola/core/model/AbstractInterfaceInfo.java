@@ -32,7 +32,11 @@ public class AbstractInterfaceInfo extends AbstractMethodInfo
 {
 
     private static final long serialVersionUID = -5387102076550844738L;
-
+    public static final String SCOPE_NONE = "none";
+    
+    public static final String SCOPE_REMOTE = "remote";
+    
+    public static final String SCOPE_LOCAL = "local";
     private String protocol;
     /**
      * 代理实现

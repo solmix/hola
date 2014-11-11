@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.solmix.hola.core.identity.IDFactory;
-import org.solmix.hola.rt.ServiceExportor;
+import org.solmix.hola.rt.ServicePublisher;
 import org.solmix.hola.rt.ServiceManager;
 import org.solmix.hola.rt.config.DiscoveryConfig;
 import org.solmix.hola.rt.config.ServiceConfig;
@@ -60,10 +60,10 @@ public class ExportServiceTest extends TestCase {
 		dicovery.setAddress(DiscoveryConfig.NO_AVAILABLE);
 		cf.setDiscovery(dicovery);
 		//服务配置
-		ServiceExportor	export= manager.createExporter(cf);
+		ServicePublisher	export= manager.createExporter(cf);
 		assertNotNull(container.getExtension(IDFactory.class));
 		//发布
-		export.export();
+		export.publish();
 		
 	}
 	

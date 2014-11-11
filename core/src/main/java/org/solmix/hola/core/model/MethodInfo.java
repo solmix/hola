@@ -16,13 +16,15 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.core.model;
 
+import java.util.List;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年10月28日
+ * @version $Id$ 2014年10月28日
  */
 
 public class MethodInfo extends AbstractMethodInfo
@@ -31,4 +33,64 @@ public class MethodInfo extends AbstractMethodInfo
     /**    */
     private static final long serialVersionUID = 1308437448372357031L;
 
+    private String name;
+
+    private Boolean retry;
+
+    private Integer executes;
+
+    private List<ArgumentInfo> arguments;
+
+    
+    /**   */
+    public String getName() {
+        return name;
+    }
+
+    
+    /**   */
+    public void setName(String name) {
+        checkName("name", name);
+        this.name = name;
+        if (id == null || id.length() == 0) {
+            id = name;
+        }
+    }
+
+    
+    /**   */
+    public Boolean getRetry() {
+        return retry;
+    }
+
+    
+    /**   */
+    public void setRetry(Boolean retry) {
+        this.retry = retry;
+    }
+
+    
+    /**   */
+    public Integer getExecutes() {
+        return executes;
+    }
+
+    
+    /**   */
+    public void setExecutes(Integer executes) {
+        this.executes = executes;
+    }
+
+    
+    /**   */
+    public List<ArgumentInfo> getArguments() {
+        return arguments;
+    }
+
+    
+    /**   */
+    public void setArguments(List<ArgumentInfo> arguments) {
+        this.arguments = arguments;
+    }
+    
 }

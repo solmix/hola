@@ -31,5 +31,5 @@ import org.solmix.runtime.Extension;
 public interface ServiceManager
 {
 
-    ServiceExportor createExporter(ServiceConfig<?> config);
+    ServicePublisher createExporter(ServiceConfig<?> config);
 }

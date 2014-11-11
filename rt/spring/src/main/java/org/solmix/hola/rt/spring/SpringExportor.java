@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.rt.GenericExportor;
+import org.solmix.hola.rt.GenericPublisher;
 import org.solmix.hola.rt.config.ServiceConfig;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
@@ -41,7 +41,7 @@ import org.springframework.context.support.AbstractApplicationContext;
  * @version 0.0.1  2014年9月10日
  */
 
-public class SpringExportor extends GenericExportor implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware
+public class SpringExportor extends GenericPublisher implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware
 {
     private static final Logger LOG= LoggerFactory.getLogger(SpringExportor.class);
     private  String beanName;
@@ -71,11 +71,11 @@ public class SpringExportor extends GenericExportor implements InitializingBean,
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (ContextRefreshedEvent.class.getName().equals(event.getClass().getName())) {
-            if (isDelay() && ! isExported() && ! isUnexported()) {
+            if (isDelay() && ! isPublished() && ! isUnpublished()) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info("The service ready on spring started. service: " + getConfig().getInterface());
                 }
-                export();
+                publish();
             }
         }
         
@@ -124,7 +124,7 @@ public class SpringExportor extends GenericExportor implements InitializingBean,
      */
     @Override
     public void destroy() throws Exception {
-      unexport();
+      unpublish();
     }
 
     /**
@@ -144,7 +144,7 @@ public class SpringExportor extends GenericExportor implements InitializingBean,
             }
         }
         if (! isDelay()) {
-            export();
+            publish();
         }
     }
 

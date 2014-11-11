@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.solmix.hola.core.model.ServerInfo;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
@@ -69,7 +70,12 @@ public class ServerDefinitionParser extends AbstractBeanDefinitionParser
     @Override
     protected void parseElement(ParserContext ctx, BeanDefinitionBuilder bean,
         Element e, String name) {
-        if ("properties".equals(name)) {
+        if("service".equals(name)){
+            BeanDefinition service= ctx.getDelegate().parseCustomElement(e);
+            if(service!=null){
+                service.getPropertyValues().addPropertyValue("server", bean.getBeanDefinition());
+            }
+        }else if ("properties".equals(name)) {
             Map<?, ?> map = ctx.getDelegate().parseMapElement(e, bean.getBeanDefinition());
             bean.addPropertyValue("properties", map);
         }

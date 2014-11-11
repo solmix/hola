@@ -16,32 +16,29 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rt;
 
-import org.solmix.hola.rt.config.ServiceConfig;
+import org.solmix.hola.core.model.ServiceInfo;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月26日
+ * @version 0.0.1 2014年9月10日
  */
 
-public class GenericManager implements ServiceManager
+public interface ServicePublisher
 {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rt.ServiceManager#createExporter(org.solmix.hola.rt.config.ServiceConfig)
-     */
-    @Override
-    public ServicePublisher createExporter(ServiceConfig<?> config) {
-        ServicePublisher e=config.getServiceExportor();
-        if(e!=null)
-            return e;
-        else
-            return new GenericPublisher(config);
-    }
 
+    ServiceInfo<?> getService();
+
+    void publish();
+
+    void unpublish();
+
+    boolean isPublished();
+
+    boolean isUnpublished();
 }

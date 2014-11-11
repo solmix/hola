@@ -39,9 +39,9 @@ import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.model.DiscoveryInfo;
 import org.solmix.hola.core.model.EndpointInfo;
 import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.core.service.GenericService;
 import org.solmix.hola.rs.RemoteProtocolFactory;
-import org.solmix.hola.rs.service.GenericService;
-import org.solmix.hola.rt.ServiceExportor;
+import org.solmix.hola.rt.ServicePublisher;
 import org.solmix.runtime.Container;
 
 
@@ -74,7 +74,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig
      */
     private String path;
     
-    private ServiceExportor serviceExportor;
+    private ServicePublisher servicePublisher;
 
     /**
      * 一个服务可以通过多种协议发布
@@ -273,18 +273,18 @@ public class ServiceConfig<T> extends AbstractServiceConfig
 
     
     /**
-     * @return the serviceExportor
+     * @return the servicePublisher
      */
-    public ServiceExportor getServiceExportor() {
-        return serviceExportor;
+    public ServicePublisher getServiceExportor() {
+        return servicePublisher;
     }
 
     
     /**
-     * @param serviceExportor the serviceExportor to set
+     * @param servicePublisher the servicePublisher to set
      */
-    public void setServiceExportor(ServiceExportor serviceExportor) {
-        this.serviceExportor = serviceExportor;
+    public void setServiceExportor(ServicePublisher servicePublisher) {
+        this.servicePublisher = servicePublisher;
     }
     /**
      * 根据配置信息生成EndpointInfo.

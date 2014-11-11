@@ -95,7 +95,7 @@
 		document="http://localhost/docs/docserver.html"
 		dynamic="true"
 		executes="1000"
-		export="true"
+		publish="true"
 		host="localhost"
 		port="1314"
 		contextpath="/slx"
@@ -116,10 +116,20 @@
 		advertise="true"
 		networker="default"
 		default="true">
+		
+		<hola:service id="innerService"
+			interface="org.solmix.hola.rt.spring.HelloService"
+			ref="hello">
+		</hola:service>
+		<hola:service id="innerService2"
+			interface="org.solmix.hola.rt.spring.HelloService"
+			ref="hello">
+		</hola:service>
 		<hola:properties>
 			<entry key="key1" value="value1" />
 		</hola:properties>
 	</hola:server>
+	<bean id="hello" class="org.solmix.hola.rt.spring.HelloServiceImpl"></bean>
 	<hola:service id="service"
 		timeout="5000"
 		retries="3"
@@ -142,7 +152,7 @@
 		document="http://localhost/docs/docserver.html"
 		dynamic="true"
 		executes="1000"
-		export="true"
+		publish="true"
 		interface="org.solmix.hola.rt.spring.HelloService"
 		delay="3000"
 		path="/service"
@@ -153,5 +163,75 @@
 			<entry key="key1" value="value1" />
 		</hola:properties>
 	</hola:service>
-	<bean id="hello" class="org.solmix.hola.rt.spring.HelloServiceImpl"></bean>
+	
+	
+	<hola:service id="service2"
+				  interface="org.solmix.hola.rt.spring.HelloService">
+		<hola:ref>
+			<bean class="org.solmix.hola.rt.spring.HelloServiceImpl"></bean>
+		</hola:ref>
+		<hola:methods>
+			<hola:method name="sayhello">
+				<hola:argument index="0"></hola:argument>
+			</hola:method>
+		</hola:methods>
+	</hola:service> 
+	
+		<!-- client definition -->
+	<hola:client id="client"
+		timeout="5000"
+		retries="3"
+		actives="200"
+		loadbalance="robin"
+		async="true"
+		asyncwait="false"
+		connections="100"
+		protocol="hola"
+		proxy="jdk"
+		cluster="failover"
+		scope="local"
+		discovery="discovery"
+		application="test"
+		module="module"
+		monitor="monitor"
+		version="1.0.9"
+		group="group1"
+		check="true"
+		generic="true"
+		reconnect="rec"
+		lazy="true"
+		default="true">
+		<hola:properties>
+			<entry key="key1" value="value1" />
+		</hola:properties>
+	</hola:client>
+	<hola:reference id="reference"
+		timeout="5000"
+		retries="3"
+		actives="200"
+		loadbalance="robin"
+		async="true"
+		asyncwait="false"
+		connections="100"
+		protocol="hola"
+		proxy="jdk"
+		cluster="failover"
+		scope="local"
+		discovery="discovery"
+		application="test"
+		module="module"
+		monitor="monitor"
+		version="1.0.9"
+		group="group1"
+		check="true"
+		generic="true"
+		reconnect="rec"
+		lazy="true"
+	 client="client"
+	 url="hola://localhost:1314"
+	interface="org.solmix.hola.rt.spring.HelloService">
+	<hola:properties>
+			<entry key="key1" value="value1" />
+		</hola:properties>
+	</hola:reference>
 </beans>

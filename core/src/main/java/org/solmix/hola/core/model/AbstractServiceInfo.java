@@ -62,24 +62,25 @@ public class AbstractServiceInfo extends AbstractInterfaceInfo
     /**
      * 服务是否允许暴露
      */
-    private Boolean export;
-
-    /**
-     * @return the export
-     */
-    public Boolean isExport() {
-        return export;
-    }
+    private Boolean publish;
 
     
-    /**
-     * @param export the export to set
-     */
-    public void setExport(Boolean export) {
-        this.export = export;
-    }
 
     
+    
+    /**   */
+    public Boolean isPublish() {
+        return publish;
+    }
+
+
+    
+    /**   */
+    public void setPublish(Boolean publish) {
+        this.publish = publish;
+    }
+
+
     /**
      * @return the weight
      */

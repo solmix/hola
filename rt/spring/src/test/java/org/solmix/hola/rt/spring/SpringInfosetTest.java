@@ -23,9 +23,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.solmix.hola.core.model.ApplicationInfo;
+import org.solmix.hola.core.model.ArgumentInfo;
+import org.solmix.hola.core.model.ClientInfo;
 import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.core.model.MethodInfo;
 import org.solmix.hola.core.model.ModuleInfo;
 import org.solmix.hola.core.model.MonitorInfo;
+import org.solmix.hola.core.model.ReferenceInfo;
 import org.solmix.hola.core.model.ServerInfo;
 import org.solmix.hola.core.model.ServiceInfo;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -145,7 +149,7 @@ public class SpringInfosetTest extends Assert
         assertEquals( "http://localhost/docs/docserver.html",m.getDocument());
         assertEquals( Boolean.TRUE,m.isDynamic());
         assertEquals(Integer.valueOf(1000), m.getExecutes());
-        assertEquals( Boolean.TRUE,m.isExport());
+        assertEquals( Boolean.TRUE,m.isPublish());
         
         assertEquals( "localhost",m.getHost());
         assertEquals( Integer.valueOf(1314),m.getPort());
@@ -167,12 +171,11 @@ public class SpringInfosetTest extends Assert
         assertEquals( Boolean.TRUE,m.isAdvertise());
         assertEquals( "default",m.getNetworker());
         assertEquals( "value1",m.getProperty("key1"));
-//        assertEquals( "",m);
-//        assertEquals( "",m);
-//        assertEquals( "",m);
-//        assertEquals( "",m);
-//        assertEquals( "",m);
-//        assertEquals( "",m);
+        
+        ServiceInfo<?> inner = ctx.getBean("innerService", ServiceInfo.class);
+        assertNotNull(inner);
+        assertEquals(m.getDocument(), inner.getServer().getDocument());
+
     }
     @Test
     public void testService()  {
@@ -199,12 +202,83 @@ public class SpringInfosetTest extends Assert
         assertEquals( "http://localhost/docs/docserver.html",m.getDocument());
         assertEquals( Boolean.TRUE,m.isDynamic());
         assertEquals(Integer.valueOf(1000), m.getExecutes());
-        assertEquals( Boolean.TRUE,m.isExport());
+        assertEquals( Boolean.TRUE,m.isPublish());
         
         assertEquals(Integer.valueOf(3000), m.getDelay());
         assertEquals( "/service",m.getPath());
         assertEquals( Boolean.FALSE,m.isGeneric());
         assertEquals( "org.solmix.hola.rt.spring.HelloService",m.getInterface());
         assertNotNull(m.getRef());
+        
+        ServiceInfo<?> m2 = ctx.getBean("service2", ServiceInfo.class);
+        assertNotNull(m2.getRef());
+        assertEquals(1, m2.getMethods().size());
+        MethodInfo mi= m2.getMethods().get(0);
+        assertEquals( "sayhello",mi.getName());
+        
+        assertEquals(1, mi.getArguments().size());
+        ArgumentInfo arg=  mi.getArguments().get(0);
+        assertEquals(Integer.valueOf(0), arg.getIndex());
+    }
+    
+    @Test
+    public void testinit()  {
+        
+    }
+    @Test
+    public void testClient()  {
+        ClientInfo m = ctx.getBean("client", ClientInfo.class);
+        assertNotNull(m);
+        assertEquals( Integer.valueOf(5000),m.getTimeout());
+        assertEquals( Integer.valueOf(3),m.getRetries());
+        assertEquals( Integer.valueOf(200),m.getActives());
+        assertEquals( Integer.valueOf(100),m.getConnections());
+        assertEquals( Boolean.TRUE,m.isAsync());
+        assertEquals( Boolean.FALSE,m.isAsyncwait());
+        assertEquals( Boolean.TRUE,m.isDefault());
+        assertEquals( "jdk",m.getProxy());
+        assertEquals( "hola",m.getProtocol());
+        assertEquals( "failover",m.getCluster());
+        assertEquals( "local",m.getScope());
+        assertEquals(1, m.getDiscoveries().size());
+        assertNotNull(m.getApplication());
+        assertNotNull(m.getModule());
+        assertNotNull(m.getMonitor());
+        assertEquals( "1.0.9",m.getVersion());
+        assertEquals( "group1",m.getGroup());
+        assertEquals( Boolean.TRUE,m.isCheck());
+        assertEquals( Boolean.TRUE,m.isGeneric());
+        assertEquals( "rec",m.getReconnect());
+        assertEquals( Boolean.TRUE,m.isLazy());
+        assertEquals( Boolean.TRUE,m.isDefault());
+        assertEquals( "value1",m.getProperty("key1"));
+    }
+    @Test
+    public void testReference()  {
+        ReferenceInfo m = ctx.getBean("reference", ReferenceInfo.class);
+        assertNotNull(m);
+        assertEquals( Integer.valueOf(5000),m.getTimeout());
+        assertEquals( Integer.valueOf(3),m.getRetries());
+        assertEquals( Integer.valueOf(200),m.getActives());
+        assertEquals( Integer.valueOf(100),m.getConnections());
+        assertEquals( Boolean.TRUE,m.isAsync());
+        assertEquals( Boolean.FALSE,m.isAsyncwait());
+        assertEquals( "jdk",m.getProxy());
+        assertEquals( "hola",m.getProtocol());
+        assertEquals( "failover",m.getCluster());
+        assertEquals( "local",m.getScope());
+        assertEquals(1, m.getDiscoveries().size());
+        assertNotNull(m.getApplication());
+        assertNotNull(m.getModule());
+        assertNotNull(m.getMonitor());
+        assertEquals( "1.0.9",m.getVersion());
+        assertEquals( "group1",m.getGroup());
+        assertEquals( Boolean.TRUE,m.isCheck());
+        assertEquals( Boolean.TRUE,m.isGeneric());
+        assertEquals( "rec",m.getReconnect());
+        assertEquals( Boolean.TRUE,m.isLazy());
+        assertEquals( "hola://localhost:1314",m.getUrl());
+        assertEquals( "value1",m.getProperty("key1"));
+        assertNotNull(m.getClient());
     }
 }

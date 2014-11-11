@@ -18,9 +18,13 @@
  */
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.rt.config.ClientConfig;
-import org.solmix.runtime.support.spring.AbstractRootBeanDefinitionParser;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import java.util.Map;
+
+import org.solmix.hola.core.model.ClientInfo;
+import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.xml.ParserContext;
+import org.w3c.dom.Element;
 
 
 /**
@@ -29,8 +33,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
  * @version 0.0.1  2014年9月7日
  */
 
-public class ClientDefinitionParser extends AbstractRootBeanDefinitionParser implements
-    BeanDefinitionParser
+public class ClientDefinitionParser extends  AbstractBeanDefinitionParser
 {
 
     /**
@@ -38,7 +41,37 @@ public class ClientDefinitionParser extends AbstractRootBeanDefinitionParser imp
      */
     public ClientDefinitionParser()
     {
-        super(ClientConfig.class);
+        super();
+        setBeanClass(ClientInfo.class);
     }
-
+    @Override
+    protected void parseIdAttribute(BeanDefinitionBuilder bean, Element element,
+        String name, String val, ParserContext ctx) {
+        bean.addPropertyValue("id", val);
+    }
+    @Override
+    protected void attributeToProperty(BeanDefinitionBuilder bean,
+        String property, String val,ParserContext ctx) {
+        if("application".equals(property)
+            ||"module".equals(property)
+            ||"monitor".equals(property)){
+            bean.addPropertyReference(property, val);
+        }else if ("discovery".equals(property)){
+            if( val.indexOf(",") != -1){
+                parseMultiRef("discoveries", val, bean,ctx);
+            }else{
+                bean.addPropertyReference("discovery", val);
+            }
+        }else{
+            super.attributeToProperty(bean, property, val,ctx);
+        }
+    }
+    @Override
+    protected void parseElement(ParserContext ctx, BeanDefinitionBuilder bean,
+        Element e, String name) {
+        if ("properties".equals(name)) {
+            Map<?, ?> map = ctx.getDelegate().parseMapElement(e, bean.getBeanDefinition());
+            bean.addPropertyValue("properties", map);
+        }
+    }
 }

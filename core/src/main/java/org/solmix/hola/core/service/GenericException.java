@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.service;
+package org.solmix.hola.core.service;
 
 import org.solmix.commons.util.StringUtils;
 
