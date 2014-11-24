@@ -11,6 +11,8 @@ target/
 *.iml
 *.ipr
 *.iws
+*.checkstyle
+*.pmd
 .DS_Store
 reports/
 .directory

@@ -79,10 +79,10 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.osgi.internal.Activator;
 import org.solmix.hola.osgi.rsa.support.ConsumerSelectorImpl;
 import org.solmix.hola.osgi.rsa.support.ProviderSelectorImpl;
+import org.solmix.hola.rm.RemoteListener;
 import org.solmix.hola.rs.RemoteConnectException;
 import org.solmix.hola.rs.RemoteConstants;
 import org.solmix.hola.rs.RemoteService;
-import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteServiceProvider;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
@@ -373,7 +373,7 @@ public class HolaRemoteServiceAdmin implements RemoteServiceAdmin
             // As specified in section 122.5.2, return null
             return null;
         }
-        // If none found, log an error and return null
+        // If none found, LOG an error and return null
         if (rsProvider == null) {
             LOG.error("No RemoteServiceProvider selected for endpoint=" + desc
                 + ".Remote service NOT IMPORTED");

@@ -90,7 +90,7 @@ public class JmDNSImpl extends JmDNS implements DNSStatefulObject, DNSTaskStarte
     private final DNSCache                                           _cache;
 
     /**
-     * This hashtable holds the services that have been registered. Keys are instances of String which hold an all lower-case version of the fully qualified service name. Values are instances of ServiceInfo.
+     * This hashtable holds the services that have been registered. Keys are instances of String which hold an all lower-case version of the fully qualified service name. Values are instances of RemoteServiceInfo.
      */
     private final ConcurrentMap<String, ServiceInfo>                 _services;
 
@@ -2059,7 +2059,7 @@ public class JmDNSImpl extends JmDNS implements DNSStatefulObject, DNSTaskStarte
         }
 
         /**
-         * A service has been resolved. Its details are now available in the ServiceInfo record.
+         * A service has been resolved. Its details are now available in the RemoteServiceInfo record.
          *
          * @param event
          *            service event

@@ -31,7 +31,7 @@ import org.solmix.hola.core.model.ModuleInfo;
 import org.solmix.hola.core.model.MonitorInfo;
 import org.solmix.hola.core.model.ReferenceInfo;
 import org.solmix.hola.core.model.ServerInfo;
-import org.solmix.hola.core.model.ServiceInfo;
+import org.solmix.hola.core.model.RemoteServiceInfo;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
@@ -172,14 +172,14 @@ public class SpringInfosetTest extends Assert
         assertEquals( "default",m.getNetworker());
         assertEquals( "value1",m.getProperty("key1"));
         
-        ServiceInfo<?> inner = ctx.getBean("innerService", ServiceInfo.class);
+        RemoteServiceInfo<?> inner = ctx.getBean("innerService", RemoteServiceInfo.class);
         assertNotNull(inner);
         assertEquals(m.getDocument(), inner.getServer().getDocument());
 
     }
     @Test
     public void testService()  {
-        ServiceInfo<?> m = ctx.getBean("service", ServiceInfo.class);
+        RemoteServiceInfo<?> m = ctx.getBean("service", RemoteServiceInfo.class);
         assertNotNull(m);
         assertEquals( Integer.valueOf(5000),m.getTimeout());
         assertEquals( Integer.valueOf(3),m.getRetries());
@@ -210,7 +210,7 @@ public class SpringInfosetTest extends Assert
         assertEquals( "org.solmix.hola.rt.spring.HelloService",m.getInterface());
         assertNotNull(m.getRef());
         
-        ServiceInfo<?> m2 = ctx.getBean("service2", ServiceInfo.class);
+        RemoteServiceInfo<?> m2 = ctx.getBean("service2", RemoteServiceInfo.class);
         assertNotNull(m2.getRef());
         assertEquals(1, m2.getMethods().size());
         MethodInfo mi= m2.getMethods().get(0);

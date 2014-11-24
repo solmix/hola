@@ -34,6 +34,7 @@ import java.util.concurrent.Future;
 import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.hola.rm.RemoteException;
 import org.solmix.hola.rs.event.RemoteRequestCompleteEvent;
 import org.solmix.hola.rs.event.RemoteRequestEvent;
 import org.solmix.hola.rs.identity.RemoteServiceID;

@@ -21,6 +21,8 @@ package org.solmix.hola.rs;
 import org.osgi.framework.InvalidSyntaxException;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.rm.RemoteException;
+import org.solmix.hola.rm.RemoteListener;
 
 
 /**
@@ -30,6 +32,8 @@ import org.solmix.hola.core.model.RemoteInfo;
  */
 public interface RemoteProtocol 
 {
+    
+    
     /**
      * 注册一个远程服务，服务提供者通过该方法将本地服务暴露给远程消费者．
      * 

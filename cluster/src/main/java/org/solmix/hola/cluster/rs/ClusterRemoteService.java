@@ -20,10 +20,10 @@ package org.solmix.hola.cluster.rs;
 
 import java.util.concurrent.Future;
 
+import org.solmix.hola.rm.RemoteException;
 import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteRequestListener;
 import org.solmix.hola.rs.RemoteService;
-import org.solmix.hola.rs.RemoteException;
 
 /**
  * 

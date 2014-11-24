@@ -69,7 +69,7 @@ public class Configuration
 
     /**
      * The single name of the directory in {@link #ZOOKEEPER_TEMPDIR} where the
-     * log is stored. It may be the same as {@link #ZOOKEEPER_DATADIR} but
+     * LOG is stored. It may be the same as {@link #ZOOKEEPER_DATADIR} but
      * better if separate. OPTIONAL
      **/
   public static final  String ZOOKEEPER_DATALOGDIR = "dataLogDir"; 

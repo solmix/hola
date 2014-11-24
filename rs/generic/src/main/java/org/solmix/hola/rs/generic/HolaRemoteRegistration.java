@@ -35,20 +35,20 @@ import org.solmix.hola.rs.identity.RemoteServiceID;
 public class HolaRemoteRegistration<S> implements
     RemoteRegistration<S>, java.io.Serializable
 {
-    private static final long serialVersionUID = 319786149652327809L;
-
-    protected RemoteServiceID id;
-
-    transient protected Object registrationLock = new Object();
-
-    /** The registration state */
-    protected int state = REGISTERED;
-
     public static final int REGISTERED = 0x00;
 
     public static final int UNREGISTERING = 0x01;
 
     public static final int UNREGISTERED = 0x02;
+    
+    private static final long serialVersionUID = 319786149652327809L;
+
+    protected RemoteServiceID id;
+
+    protected transient  Object registrationLock = new Object();
+
+    /** The registration state */
+    protected int state = REGISTERED;
 
     protected transient LocalRemoteReference<S> reference;
 

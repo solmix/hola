@@ -24,7 +24,7 @@ import org.solmix.commons.util.DOMUtils;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.core.model.ArgumentInfo;
 import org.solmix.hola.core.model.MethodInfo;
-import org.solmix.hola.core.model.ServiceInfo;
+import org.solmix.hola.core.model.RemoteServiceInfo;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.solmix.runtime.support.spring.ContainerPostProcessor;
@@ -220,7 +220,7 @@ public class ServiceDefinitionParser extends AbstractBeanDefinitionParser
         return beanDefinition;
     }
 
-    public static class SpringRemoteServiceInfo<T>  extends ServiceInfo<T> implements ApplicationContextAware{
+    public static class SpringRemoteServiceInfo<T>  extends RemoteServiceInfo<T> implements ApplicationContextAware{
 
         private static final long serialVersionUID = 2154745084368911732L;
 

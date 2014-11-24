@@ -20,6 +20,7 @@ package org.solmix.hola.rs;
 
 import org.solmix.hola.core.ConnectContext;
 import org.solmix.hola.core.identity.Identifiable;
+import org.solmix.hola.rm.RemoteListener;
 
 
 /**

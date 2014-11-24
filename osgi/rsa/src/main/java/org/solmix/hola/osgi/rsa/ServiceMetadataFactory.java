@@ -33,8 +33,8 @@ public interface ServiceMetadataFactory
 {
 
     /**
-     * 创建{@link ServiceInfo},创建的ServiceMetaData用于发布服务公告
-     * {@link DiscoveryAdvertiser#register(ServiceInfo)}
+     * 创建{@link RemoteServiceInfo},创建的ServiceMetaData用于发布服务公告
+     * {@link DiscoveryAdvertiser#register(RemoteServiceInfo)}
      * 
      * @param advertiser
      * @param des

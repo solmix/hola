@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,32 +16,27 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rt;
 
-import org.solmix.hola.rt.config.ServiceConfig;
-
+import org.solmix.hola.core.model.RemoteServiceInfo;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年9月26日
+ * @version $Id$ 2014年9月26日
  */
 
-public class GenericManager implements ServiceManager
-{
+public class GenericManager implements ServiceManager {
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rt.ServiceManager#createExporter(org.solmix.hola.rt.config.ServiceConfig)
+     * @see org.solmix.hola.rt.ServiceManager#createPublisher(org.solmix.hola.core.model.RemoteServiceInfo)
      */
     @Override
-    public ServicePublisher createExporter(ServiceConfig<?> config) {
-        ServicePublisher e=config.getServiceExportor();
-        if(e!=null)
-            return e;
-        else
-            return new GenericPublisher(config);
+    public ServicePublisher createPublisher(RemoteServiceInfo<?> config) {
+        return new GenericPublisher(config);
     }
 
 }

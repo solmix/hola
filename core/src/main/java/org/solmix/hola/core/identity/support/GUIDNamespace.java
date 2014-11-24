@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,54 +16,56 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.core.identity.support;
 
 import org.solmix.hola.core.identity.AbstractNamespace;
 import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDCreateException;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年4月4日
+ * @version 0.0.1 2014年4月4日
  */
 
-public class GUIDNamespace extends AbstractNamespace
-{
+public class GUIDNamespace extends AbstractNamespace {
+
     private static final long serialVersionUID = 1041703442049428943L;
-    public static  String ID=GUID.class.getName();
+
+    public static String ID = GUID.class.getName();
+
     public GUIDNamespace() {
         super(ID, "GUID Namespace"); //$NON-NLS-1$
-  }
+    }
 
-  @Override
-public ID createID(Object[] args) throws IDCreateException {
+    @Override
+    public ID createID(Object[] args) throws IDCreateException {
         try {
-              String init = getInitStringFromQueryString(args);
-              if (init != null)
-                    return new GUID(this, init);
-              if (args == null || args.length <= 0)
-                    return new GUID(this);
-              else if (args.length == 1 && args[0] instanceof Integer)
-                    return new GUID(this, ((Integer) args[0]).intValue());
-              else if (args.length == 1 && args[0] instanceof String)
-                    return new GUID(this, ((String) args[0]));
-              else
-                    return new GUID(this);
+            String init = getInitStringFromQueryString(args);
+            if (init != null)
+                return new GUID(this, init);
+            if (args == null || args.length <= 0)
+                return new GUID(this);
+            else if (args.length == 1 && args[0] instanceof Integer)
+                return new GUID(this, ((Integer) args[0]).intValue());
+            else if (args.length == 1 && args[0] instanceof String)
+                return new GUID(this, ((String) args[0]));
+            else
+                return new GUID(this);
         } catch (Exception e) {
-              throw new IDCreateException(getName() + " createInstance()", e); //$NON-NLS-1$
+            throw new IDCreateException(getName() + " createInstance()", e); //$NON-NLS-1$
         }
-  }
+    }
 
-  @Override
-public String getScheme() {
+    @Override
+    public String getScheme() {
         return GUID.class.getName();
-  }
+    }
 
-  @Override
-public Class<?>[][] getSupportedParameterTypes() {
+    @Override
+    public Class<?>[][] getSupportedParameterTypes() {
         return new Class[][] { {}, { Integer.class } };
-  }
+    }
 
 }

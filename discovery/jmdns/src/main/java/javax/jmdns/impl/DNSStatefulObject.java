@@ -451,7 +451,7 @@ public interface DNSStatefulObject {
     public boolean isAssociatedWithTask(DNSTask task, DNSState state);
 
     /**
-     * Sets the state and notifies all objects that wait on the ServiceInfo.
+     * Sets the state and notifies all objects that wait on the RemoteServiceInfo.
      *
      * @param task
      *            associated task
@@ -461,7 +461,7 @@ public interface DNSStatefulObject {
     public boolean advanceState(DNSTask task);
 
     /**
-     * Sets the state and notifies all objects that wait on the ServiceInfo.
+     * Sets the state and notifies all objects that wait on the RemoteServiceInfo.
      *
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      * @see DNSState#revert()
@@ -469,21 +469,21 @@ public interface DNSStatefulObject {
     public boolean revertState();
 
     /**
-     * Sets the state and notifies all objects that wait on the ServiceInfo.
+     * Sets the state and notifies all objects that wait on the RemoteServiceInfo.
      *
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      */
     public boolean cancelState();
 
     /**
-     * Sets the state and notifies all objects that wait on the ServiceInfo.
+     * Sets the state and notifies all objects that wait on the RemoteServiceInfo.
      *
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      */
     public boolean closeState();
 
     /**
-     * Sets the state and notifies all objects that wait on the ServiceInfo.
+     * Sets the state and notifies all objects that wait on the RemoteServiceInfo.
      *
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      */

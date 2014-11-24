@@ -591,7 +591,7 @@ public abstract class DNSRecord extends DNSEntry {
             // Nothing to do (?)
             // Shouldn't we care if we get a conflict at this level?
             /*
-             * ServiceInfo info = (ServiceInfo) dns.services.get(name.toLowerCase()); if (info != null) { if (! Arrays.equals(text,info.text)) { info.revertState(); return true; } }
+             * RemoteServiceInfo info = (RemoteServiceInfo) dns.services.get(name.toLowerCase()); if (info != null) { if (! Arrays.equals(text,info.text)) { info.revertState(); return true; } }
              */
             return false;
         }

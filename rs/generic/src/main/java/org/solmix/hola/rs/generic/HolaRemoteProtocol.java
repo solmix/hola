@@ -34,10 +34,10 @@ import org.solmix.hola.core.identity.ID;
 import org.solmix.hola.core.identity.IDFactory;
 import org.solmix.hola.core.identity.Namespace;
 import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.rm.RemoteException;
+import org.solmix.hola.rm.RemoteListener;
 import org.solmix.hola.rs.RemoteConnectException;
-import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteFilter;
-import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteProtocol;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
@@ -369,7 +369,7 @@ public class HolaRemoteProtocol implements RemoteProtocol
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#addRemoteServiceListener(org.solmix.hola.rs.generic.RemoteListener)
+     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#addRemoteServiceListener(org.org.solmix.hola.rm.RemoteListener)
      */
     @Override
     public void addRemoteServiceListener(RemoteListener listener) {
@@ -382,7 +382,7 @@ public class HolaRemoteProtocol implements RemoteProtocol
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#removeRemoteServiceListener(org.solmix.hola.rs.generic.RemoteListener)
+     * @see org.solmix.hola.rs.generic.RemoteServiceProvider#removeRemoteServiceListener(org.org.solmix.hola.rm.RemoteListener)
      */
     @Override
     public void removeRemoteServiceListener(RemoteListener listener) {

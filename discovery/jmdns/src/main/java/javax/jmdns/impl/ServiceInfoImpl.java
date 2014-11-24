@@ -925,7 +925,7 @@ public class ServiceInfoImpl extends ServiceInfo implements DNSListener, DNSStat
                     dns.handleServiceResolved(event);
                 }
             }
-            // This is done, to notify the wait loop in method JmDNS.waitForInfoData(ServiceInfo info, int timeout);
+            // This is done, to notify the wait loop in method JmDNS.waitForInfoData(RemoteServiceInfo info, int timeout);
             synchronized (this) {
                 this.notifyAll();
             }

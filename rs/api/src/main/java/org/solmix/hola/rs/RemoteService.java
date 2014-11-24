@@ -21,6 +21,8 @@ package org.solmix.hola.rs;
 
 import java.util.concurrent.Future;
 
+import org.solmix.hola.rm.RemoteException;
+
 /**
  * 
  * @author solmix.f@gmail.com

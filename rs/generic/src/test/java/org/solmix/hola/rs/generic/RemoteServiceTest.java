@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.rs.RemoteException;
+import org.solmix.hola.rm.RemoteException;
 import org.solmix.hola.rs.RemoteProtocolFactory;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.runtime.Container;

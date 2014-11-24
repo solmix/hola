@@ -18,7 +18,7 @@ public interface ServiceListener extends EventListener {
      * To get the full resolved information you need to listen to {@link #serviceResolved(ServiceEvent)} or call {@link JmDNS#getServiceInfo(String, String, long)}
      *
      * <pre>
-     *  ServiceInfo info = event.getDNS().getServiceInfo(event.getType(), event.getName())
+     *  RemoteServiceInfo info = event.getDNS().getServiceInfo(event.getType(), event.getName())
      * </pre>
      * <p>
      * Please note that service resolution may take a few second to resolve.
@@ -38,7 +38,7 @@ public interface ServiceListener extends EventListener {
     void serviceRemoved(ServiceEvent event);
 
     /**
-     * A service has been resolved. Its details are now available in the ServiceInfo record.<br/>
+     * A service has been resolved. Its details are now available in the RemoteServiceInfo record.<br/>
      * <b>Note:</b>This call back will never be called if the service does not resolve.<br/>
      *
      * @param event
