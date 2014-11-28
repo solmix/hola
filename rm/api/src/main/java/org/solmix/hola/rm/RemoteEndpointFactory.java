@@ -21,6 +21,8 @@ package org.solmix.hola.rm;
 
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
+import org.solmix.runtime.exchange.Service;
+import org.solmix.runtime.exchange.serialize.Serialization;
 import org.solmix.runtime.exchange.support.AbstractEndpointFactory;
 
 /**
@@ -36,6 +38,8 @@ public class RemoteEndpointFactory extends AbstractEndpointFactory {
     private Class<?> serviceClass;
 
     private ReflectServiceFactory serviceFactory;
+    
+    private Serialization serialization;
 
     protected RemoteEndpointFactory(ReflectServiceFactory factory) {
         this.serviceFactory = factory;
@@ -48,11 +52,30 @@ public class RemoteEndpointFactory extends AbstractEndpointFactory {
 
     @Override
     protected Endpoint createEndpoint() throws EndpointException {
-        // TODO Auto-generated method stub
+        Service service = serviceFactory.getService();
+        if (service == null) {
+            initializeServiceFactory();
+            //创建service
+            service = serviceFactory.create();
+        }
         return null;
     }
 
     
+    /**
+     * 
+     */
+    protected void initializeServiceFactory() {
+        Class<?> cls = getServiceClass();
+
+        serviceFactory.setServiceClass(cls);
+        serviceFactory.setContainer(getContainer());
+        if (serialization != null) {
+            serviceFactory.setSerialization(serialization);
+        }
+        
+    }
+
     /**   */
     public Class<?> getServiceClass() {
         return serviceClass;
@@ -62,6 +85,30 @@ public class RemoteEndpointFactory extends AbstractEndpointFactory {
     /**   */
     public void setServiceClass(Class<?> serviceClass) {
         this.serviceClass = serviceClass;
+    }
+
+    
+    /**   */
+    public ReflectServiceFactory getServiceFactory() {
+        return serviceFactory;
+    }
+
+    
+    /**   */
+    public void setServiceFactory(ReflectServiceFactory serviceFactory) {
+        this.serviceFactory = serviceFactory;
+    }
+
+    
+    /**   */
+    public Serialization getSerialization() {
+        return serialization;
+    }
+
+    
+    /**   */
+    public void setSerialization(Serialization serialization) {
+        this.serialization = serialization;
     }
 
 }

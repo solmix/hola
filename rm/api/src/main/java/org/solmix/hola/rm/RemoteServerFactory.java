@@ -18,7 +18,17 @@
  */
 package org.solmix.hola.rm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.ClassLoaderUtils;
+import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
+import org.solmix.runtime.exchange.Endpoint;
+import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.Server;
+import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
+import org.solmix.runtime.exchange.invoker.Invoker;
+import org.solmix.runtime.exchange.support.ClassHelper;
+import org.solmix.runtime.exchange.support.DefaultServer;
 
 
 
@@ -31,23 +41,137 @@ import org.solmix.runtime.exchange.Server;
 public class RemoteServerFactory extends RemoteEndpointFactory {
 
     private static final long serialVersionUID = 7245670739694833151L;
-
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteServerFactory.class);
+    private boolean start = true;
+    private Server server;
     private Object serviceBean;
+    
+    private Invoker invoker;
     /**
      * @param factory 
      */
     public RemoteServerFactory(ReflectServiceFactory factory) {
-        // TODO Auto-generated constructor stub
+        super(factory);
     }
 
     /**
      * @return
      */
     public Server create() {
-        // TODO Auto-generated method stub
-        return null;
+        ClassLoaderHolder loader = null;
+        try {
+            try {
+                if (container != null) {
+                    ClassLoader cl = container.getExtension(ClassLoader.class);
+                    if (cl != null) {
+                        loader = ClassLoaderUtils.setThreadContextClassloader(cl);
+                    }
+                }
+                if (getServiceFactory().getProperties() == null) {
+                    getServiceFactory().setProperties(getProperties());
+                } else if (getProperties() != null) {
+                    getServiceFactory().getProperties().putAll(getProperties());
+                }
+                if (serviceBean != null && getServiceClass() == null) {
+                    setServiceClass(ClassHelper.getRealClass(serviceBean));
+                }
+                if (invoker != null) {
+                    getServiceFactory().setInvoker(invoker);
+                } else if (serviceBean != null) {
+                    invoker = createInvoker();
+                    getServiceFactory().setInvoker(invoker);
+                }
+                Endpoint ep = createEndpoint();
+                getServiceFactory().pulishEvent(new ServiceFactoryEvent(
+                        ServiceFactoryEvent.PRE_SERVER_CREATE,getServiceFactory(), 
+                        server,
+                        serviceBean==null?
+                            (getServiceClass()==null?getServiceFactory().getServiceClass():getServiceClass())
+                            :(getServiceClass()==null?ClassHelper.getRealClass(getServiceBean()):getServiceClass())));
+
+                server=new DefaultServer(getContainer(), 
+                                            ep, 
+                                            getProtocolFactory(), 
+                                            getTargetFactory());
+                if(ep.getService().getInvoker()==null){
+                    if (invoker == null) {
+                        ep.getService().setInvoker(createInvoker());
+                    } else {
+                        ep.getService().setInvoker(invoker);
+                    }
+                }
+                
+                
+                
+            } catch (EndpointException epe) {
+                throw new RemoteException(epe);
+            }
+            if (serviceBean != null) {
+                Class<?> cls = ClassHelper.getRealClass(getServiceBean());
+                if (getServiceClass() == null || cls.equals(getServiceClass())) {
+                    initializeAnnotationInterceptors(server.getEndpoint(), cls);
+                } else {
+                    initializeAnnotationInterceptors(server.getEndpoint(), cls,
+                        getServiceClass());
+                }
+            } else if (getServiceClass() != null) {
+                initializeAnnotationInterceptors(server.getEndpoint(),
+                    getServiceClass());
+            }
+            getServiceFactory().pulishEvent(new ServiceFactoryEvent(
+                ServiceFactoryEvent.SERVER_CREATED,getServiceFactory(), 
+                server,
+                serviceBean==null?
+                    (getServiceClass()==null?getServiceFactory().getServiceClass():getServiceClass())
+                    :(getServiceClass()==null?ClassHelper.getRealClass(getServiceBean()):getServiceClass())));
+
+            if (start) {
+                try {
+                    server.start();
+                } catch (RuntimeException re) {
+                    server.destroy(); // prevent resource leak
+                    throw re;
+                }
+            }
+            return server;
+        } finally {
+            if (loader != null) {
+                loader.reset();
+            }
+        }
     }
     
+    public void destroy() {
+        if (getServer() != null) {
+            getServer().destroy();
+            setServer(null);
+        }
+    }
+
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+    public boolean isStart() {
+        return start;
+    }
+    public void setStart(boolean start) {
+        this.start = start;
+    }
+
+    /**
+     * @return
+     */
+    protected Invoker createInvoker() {
+        if (getServiceBean() == null) {
+            return new FactoryInvoker(new SingletonFactory(getServiceClass()));
+        }
+        return new BeanInvoker(getServiceBean());
+    }
+
     /**   */
     public Object getServiceBean() {
         return serviceBean;
@@ -56,6 +180,18 @@ public class RemoteServerFactory extends RemoteEndpointFactory {
     /**   */
     public void setServiceBean(Object serviceBean) {
         this.serviceBean = serviceBean;
+    }
+
+    
+    /**   */
+    public Invoker getInvoker() {
+        return invoker;
+    }
+
+    
+    /**   */
+    public void setInvoker(Invoker invoker) {
+        this.invoker = invoker;
     }
 
 }

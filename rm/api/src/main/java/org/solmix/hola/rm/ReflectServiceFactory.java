@@ -19,11 +19,19 @@
 
 package org.solmix.hola.rm;
 
+import java.lang.reflect.Proxy;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.hola.core.model.RemoteServiceInfo;
 import org.solmix.runtime.exchange.Service;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
+import org.solmix.runtime.exchange.invoker.Invoker;
+import org.solmix.runtime.exchange.model.ServiceInfo;
 import org.solmix.runtime.exchange.serialize.Serialization;
 import org.solmix.runtime.exchange.support.AbstractServiceFactory;
+import org.solmix.runtime.exchange.support.DefaultService;
 
 /**
  * 
@@ -33,10 +41,15 @@ import org.solmix.runtime.exchange.support.AbstractServiceFactory;
 
 public class ReflectServiceFactory extends AbstractServiceFactory {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ReflectServiceFactory.class);
     protected Class<?> serviceClass;
 
     private RemoteServiceInfo<?> serviceInfo;
+    
+    private Map<String, Object> properties;
 
+    private Invoker invoker;
+    
     @Override
     public Service create() {
         // 重置service,重新创建.
@@ -52,21 +65,36 @@ public class ReflectServiceFactory extends AbstractServiceFactory {
     protected void initialService() {
         // 从配置来
         if (getServiceInfo() != null) {
-
+            createServiceFromRemoteInfo();
             // 从class来
         } else if (getServiceClass() != null) {
-            createInfoFromClass();
+            createServiceFromClass();
         } else {
             throw new IllegalStateException("Not Service class configured!");
         }
 
     }
 
+    private void createServiceFromRemoteInfo() {
+        // TODO Auto-generated method stub
+        
+    }
+
     /**
      * 
      */
-    private void createInfoFromClass() {
-        RemoteServiceInfo<?> info = new RemoteServiceInfo<T>();
+    private void createServiceFromClass() {
+        if(LOG.isInfoEnabled()){
+            LOG.info("create Service from class :"+getServiceClass().getName());
+        }
+        if (Proxy.isProxyClass(this.getServiceClass())) {
+            LOG.warn("USING_PROXY_FOR_SERVICE", getServiceClass());
+        }
+        pulishEvent(ServiceFactoryEvent.CREATE_FROM_CLASS,getServiceClass());
+        
+        ServiceInfo info = new ServiceInfo();
+        
+        Service service = new DefaultService(info);
         
     }
 
@@ -94,14 +122,38 @@ public class ReflectServiceFactory extends AbstractServiceFactory {
         this.serviceClass = serviceClass;
     }
 
-    /**   */
-    public RemoteServiceInfo<?> getServiceInfo() {
+    /** RemoteServiceInfo用于初始化ServiceFactory不对外提供信息  */
+    private RemoteServiceInfo<?> getServiceInfo() {
         return serviceInfo;
     }
 
     /**   */
     public void setServiceInfo(RemoteServiceInfo<?> serviceInfo) {
         this.serviceInfo = serviceInfo;
+    }
+
+    
+    /**   */
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    
+    /**   */
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    
+    /**   */
+    public Invoker getInvoker() {
+        return invoker;
+    }
+
+    
+    /**   */
+    public void setInvoker(Invoker invoker) {
+        this.invoker = invoker;
     }
 
 }
