@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.core.model;
 
-import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.model.ProtocolInfo;
 import org.solmix.runtime.exchange.model.ServiceInfo;
 
@@ -29,7 +28,7 @@ import org.solmix.runtime.exchange.model.ServiceInfo;
  * @version $Id$  2014年11月17日
  */
 
-public class RemoteEndpointInfo implements EndpointInfo {
+public class RemoteEndpointInfo /*implements EndpointInfo */{
 
     /**
      * {@inheritDoc}
@@ -67,7 +66,7 @@ public class RemoteEndpointInfo implements EndpointInfo {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.model.EndpointInfo#getTransportId()
+     * @see org.solmix.runtime.exchange.model.EndpointInfo#getTransporterName()
      */
     @Override
     public String getTransportId() {

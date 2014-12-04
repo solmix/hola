@@ -19,11 +19,22 @@
 
 package org.solmix.hola.rm;
 
+import java.util.List;
+
+import org.solmix.hola.core.HolaConstants;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
+import org.solmix.runtime.exchange.EndpointInfoFactory;
+import org.solmix.runtime.exchange.ProtocolFactoryManager;
 import org.solmix.runtime.exchange.Service;
+import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
+import org.solmix.runtime.exchange.model.EndpointInfo;
+import org.solmix.runtime.exchange.model.NamedID;
+import org.solmix.runtime.exchange.model.ProtocolInfo;
+import org.solmix.runtime.exchange.model.ServiceInfo;
 import org.solmix.runtime.exchange.serialize.Serialization;
 import org.solmix.runtime.exchange.support.AbstractEndpointFactory;
+import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 
 /**
  * 
@@ -31,7 +42,7 @@ import org.solmix.runtime.exchange.support.AbstractEndpointFactory;
  * @version $Id$ 2014年11月21日
  */
 
-public class RemoteEndpointFactory extends AbstractEndpointFactory {
+public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
 
     private static final long serialVersionUID = 121982796534012439L;
 
@@ -40,6 +51,8 @@ public class RemoteEndpointFactory extends AbstractEndpointFactory {
     private ReflectServiceFactory serviceFactory;
     
     private Serialization serialization;
+    
+   
 
     protected RemoteEndpointFactory(ReflectServiceFactory factory) {
         this.serviceFactory = factory;
@@ -52,16 +65,179 @@ public class RemoteEndpointFactory extends AbstractEndpointFactory {
 
     @Override
     protected Endpoint createEndpoint() throws EndpointException {
+
+        if (getServiceName() != null) {
+            serviceFactory.setServiceName(getServiceName());
+        }
+        if (getEndpointName() != null) {
+            serviceFactory.setEndpointName(getEndpointName());
+        }
         Service service = serviceFactory.getService();
+        // 初始化ServiceFactory,创建service
         if (service == null) {
             initializeServiceFactory();
-            //创建service
             service = serviceFactory.create();
         }
-        return null;
+        if (getEndpointName() == null) {
+            setEndpointName(serviceFactory.getEndpointName());
+        }
+
+        EndpointInfo info = service.getEndpointInfo(getEndpointName());
+        if (info != null) {
+            //传输ID不一致
+            if (transporterId != null
+                && !transporterId.equals(info.getTransporterId())) {
+                info = null;
+            } else {
+                ProtocolFactoryManager pfm = getContainer().getExtension(
+                    ProtocolFactoryManager.class);
+                protocolFactory = pfm.getProtocolFactory(info.getProtocol().getProtocolId());
+            }
+        }
+        if (info == null) {
+            //service中查找
+           List<ServiceInfo> sinfos= service.getServiceInfos();
+           for(ServiceInfo si:sinfos){
+               for(EndpointInfo ei:si.getEndpoints()){
+                   if(ei.getInterface().getName().equals(service.getServiceName())){
+                       info=ei;
+                   }
+               }
+           }
+           if(info!=null){
+               ProtocolFactoryManager pfm = getContainer().getExtension(
+                   ProtocolFactoryManager.class);
+               protocolFactory = pfm.getProtocolFactory(info.getProtocol().getProtocolId());
+           }
+           //创建一个
+           if(info==null){
+               info=createEndpointInfo(null);
+           }else  if (transporterId != null
+               && !transporterId.equals(info.getTransporterId())) {
+               ProtocolInfo ptl = info.getProtocol();
+               info = createEndpointInfo(ptl);
+           }
+        }else if(getAddress()!=null){
+            info.setAddress(getAddress());
+        }
+        
+        Endpoint ep = service.getEndpoints().get(info.getName());
+        
+        if(ep==null){
+            //创建endpoint
+            ep = serviceFactory.createEndpoint(info);
+        }else{
+            serviceFactory.setEndpointName(info.getName());
+        }
+        if (properties != null) {
+            ep.putAll(properties);
+        }
+        //建立关联
+        service.getEndpoints().put(ep.getEndpointInfo().getName(), ep);
+
+        if (getInInterceptors() != null) {
+            ep.getInInterceptors().addAll(getInInterceptors());
+        }
+        if (getOutInterceptors() != null) {
+            ep.getOutInterceptors().addAll(getOutInterceptors());
+        }
+        if (getInFaultInterceptors() != null) {
+            ep.getInFaultInterceptors().addAll(getInFaultInterceptors());
+        }
+        if (getOutFaultInterceptors() != null) {
+            ep.getOutFaultInterceptors().addAll(getOutFaultInterceptors());
+        }
+        serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINT_SELECTED, info, ep,
+                                 serviceFactory.getServiceClass(), getServiceClass());
+        return ep;
     }
 
     
+    /**
+     * @return
+     */
+    protected EndpointInfo createEndpointInfo(ProtocolInfo ptl) {
+        Service service = serviceFactory.getService();
+        // 创建protocolInfo
+        if (ptl == null) {
+            ptl = createProtocolInfo();
+            service.getServiceInfo().addProtocol(ptl);
+        }
+
+        if (transporterId == null) {
+            if (transporterId == null && getAddress() != null
+                && getAddress().contains("://")) {
+                transporterId = getProtocolTypeFromAddress(getAddress());
+            }
+            if (transporterId == null) {
+                transporterId = HolaConstants.DEFAULT_TRANSPORTER;
+            }
+        }
+        setTransporterId(transporterId);
+
+        EndpointInfoFactory eif = getEndpointInfoFactory();
+        EndpointInfo endpointInfo;
+        if (eif != null) {
+            endpointInfo = eif.createEndpointInfo(getContainer(),
+                service.getServiceInfo(), ptl, (List<?>) null);
+            endpointInfo.setTransporterId(transporterId);
+        } else {
+            endpointInfo = new EndpointInfo(service.getServiceInfo(),
+                transporterId);
+        }
+        int count = 1;
+        while (service.getEndpointInfo(endpointName) != null) {
+            endpointName = new NamedID(endpointName.getServiceNamespace(),
+                endpointName.getName() + count);
+            count++;
+        }
+        endpointInfo.setName(endpointName);
+        endpointInfo.setAddress(getAddress());
+        endpointInfo.setProtocol(ptl);
+
+        service.getServiceInfo().addEndpoint(endpointInfo);
+
+        serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINTINFO_CREATED,
+            endpointInfo);
+        return endpointInfo;
+    }
+
+    /**
+     * 用于生成EndpointInfo的工厂.
+     * 如configObject可以用于子类获取信息
+     * 
+     * @return
+     */
+    protected abstract  EndpointInfoFactory getEndpointInfoFactory() ;
+
+    /**
+     * 根据配置的服务发布地址,检查使用协议类型.
+     * 
+     * @param address
+     * @return
+     */
+    protected abstract String getProtocolTypeFromAddress(String address) ;
+
+    /**
+     * @return
+     */
+    protected ProtocolInfo createProtocolInfo() {
+
+        String protocol = protocolId;
+        if (protocol == null) {
+            protocol = HolaConstants.DEFAULT_PROTOCOL;
+        }
+        ProtocolFactoryManager pfm = getContainer().getExtension(
+            ProtocolFactoryManager.class);
+
+        protocolFactory = pfm.getProtocolFactory(protocol);
+
+        ProtocolInfo pi = protocolFactory.createProtocolInfo(
+            serviceFactory.getService(), protocol, getConfigObject());
+        serviceFactory.pulishEvent(ServiceFactoryEvent.BINDING_CREATED, pi);
+        return pi;
+    }
+
     /**
      * 
      */
@@ -110,5 +286,4 @@ public class RemoteEndpointFactory extends AbstractEndpointFactory {
     public void setSerialization(Serialization serialization) {
         this.serialization = serialization;
     }
-
 }

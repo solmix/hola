@@ -16,31 +16,50 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rm.generic;
+package org.solmix.hola.rm;
 
-import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.support.ReflectServiceFactory;
+import java.util.SortedSet;
+
+import org.solmix.runtime.interceptor.phase.Phase;
+import org.solmix.runtime.interceptor.phase.PhasePolicy;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年11月21日
+ * @version $Id$  2014年12月4日
  */
 
-public class GenericServiceFactory extends ReflectServiceFactory {
+public class RemotePhasePolicy implements PhasePolicy {
 
- 
+    private SortedSet<Phase> inPhases;
+    private SortedSet<Phase> outPhases;
+    
+    public RemotePhasePolicy() {
+        createInPhases();
+        createOutPhases();
+    }
+    
+    private void createOutPhases() {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    private void createInPhases() {
+        // TODO Auto-generated method stub
+        
+    }
     @Override
-    public Service create() {
+    public SortedSet<Phase> getInPhases() {
         // TODO Auto-generated method stub
         return null;
     }
 
+   
     @Override
-    protected void buildService() {
+    public SortedSet<Phase> getOutPhases() {
         // TODO Auto-generated method stub
-        
+        return null;
     }
 
 }

@@ -24,11 +24,16 @@ import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
+import org.solmix.runtime.exchange.EndpointInfoFactory;
 import org.solmix.runtime.exchange.Server;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
+import org.solmix.runtime.exchange.invoker.BeanInvoker;
+import org.solmix.runtime.exchange.invoker.FactoryInvoker;
 import org.solmix.runtime.exchange.invoker.Invoker;
+import org.solmix.runtime.exchange.invoker.SingletonFactory;
 import org.solmix.runtime.exchange.support.ClassHelper;
 import org.solmix.runtime.exchange.support.DefaultServer;
+import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 
 
 
@@ -92,7 +97,7 @@ public class RemoteServerFactory extends RemoteEndpointFactory {
                 server=new DefaultServer(getContainer(), 
                                             ep, 
                                             getProtocolFactory(), 
-                                            getTargetFactory());
+                                            getTransporterFactory());
                 if(ep.getService().getInvoker()==null){
                     if (invoker == null) {
                         ep.getService().setInvoker(createInvoker());
@@ -192,6 +197,26 @@ public class RemoteServerFactory extends RemoteEndpointFactory {
     /**   */
     public void setInvoker(Invoker invoker) {
         this.invoker = invoker;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.rm.RemoteEndpointFactory#getEndpointInfoFactory()
+     */
+    @Override
+    protected EndpointInfoFactory getEndpointInfoFactory() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.rm.RemoteEndpointFactory#getProtocolTypeFromAddress(java.lang.String)
+     */
+    @Override
+    protected String getProtocolTypeFromAddress(String address) {
+        return null;
     }
 
 }

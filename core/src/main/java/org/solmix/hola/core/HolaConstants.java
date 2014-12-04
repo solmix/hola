@@ -29,6 +29,11 @@ import java.util.regex.Pattern;
 
 public class HolaConstants
 {
+    
+    public static final String DEFAULT_TRANSPORTER = "netty";
+    public static final String DEFAULT_PROTOCOL = "hola";
+
+
 
     public static final Pattern SPLIT_SEMICOLON_PATTERN = Pattern.compile("\\s*[;]+\\s*");
     public static final Pattern REGISTRY_SPLIT_PATTERN    = Pattern .compile("\\s*[|;]+\\s*");
@@ -103,7 +108,6 @@ public class HolaConstants
 
     public static final String DEFAULT_DISPATHER = "all";
 
-    public static final String DEFAULT_TRANSPORTER = "netty";
 
     public static final String DEFAULT_EXCHANGER = "protocol";
 
