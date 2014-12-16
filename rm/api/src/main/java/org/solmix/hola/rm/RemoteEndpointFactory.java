@@ -21,7 +21,7 @@ package org.solmix.hola.rm;
 
 import java.util.List;
 
-import org.solmix.hola.core.HolaConstants;
+import org.solmix.hola.common.HolaConstants;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.EndpointInfoFactory;

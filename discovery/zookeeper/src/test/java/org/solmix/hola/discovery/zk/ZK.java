@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.common.config.DiscoveryInfo;
 import org.solmix.hola.discovery.zk.support.CuratorZKClient;
 
 

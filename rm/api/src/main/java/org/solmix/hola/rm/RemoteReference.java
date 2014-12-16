@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rm;
 
-import org.solmix.hola.core.model.RemoteEndpointInfo;
+import org.solmix.hola.common.config.RemoteServiceConfig;
 
 /**
  * 
@@ -36,5 +36,5 @@ public interface RemoteReference<S> {
      */
     boolean isActive();
     
-    RemoteEndpointInfo getEndpointInfo();
+    RemoteServiceConfig getEndpointInfo();
 }

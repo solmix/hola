@@ -20,10 +20,10 @@ package org.solmix.hola.discovery.zk.identity;
 
 import java.net.URI;
 
-import org.solmix.hola.core.identity.AbstractNamespace;
-import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.core.identity.IDCreateException;
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.common.identity.AbstractNamespace;
+import org.solmix.hola.common.identity.ID;
+import org.solmix.hola.common.identity.IDCreateException;
+import org.solmix.hola.common.identity.Namespace;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.runtime.Extension;
 
@@ -54,7 +54,7 @@ public class ZKNamespace extends AbstractNamespace implements Namespace
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.AbstractNamespace#createID(java.lang.Object[])
+     * @see org.solmix.hola.common.identity.AbstractNamespace#createID(java.lang.Object[])
      */
     @Override
     public ID createID(Object[] parameters) throws IDCreateException {

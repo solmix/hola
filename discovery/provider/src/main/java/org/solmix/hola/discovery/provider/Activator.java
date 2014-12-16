@@ -32,8 +32,8 @@ import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
-import org.solmix.hola.core.ConnectException;
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.common.ConnectException;
+import org.solmix.hola.common.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryAdvertiser;
 import org.solmix.hola.discovery.DiscoveryLocator;
 

@@ -21,7 +21,7 @@ package org.solmix.hola.test.rs;
 import junit.framework.TestCase;
 
 import org.junit.Test;
-import org.solmix.hola.core.identity.IDFactory;
+import org.solmix.hola.common.identity.IDFactory;
 import org.solmix.hola.rt.ServicePublisher;
 import org.solmix.hola.rt.ServiceManager;
 import org.solmix.hola.rt.config.DiscoveryConfig;

@@ -22,7 +22,7 @@ package org.solmix.hola.osgi.rsa;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 
 /**
  * 

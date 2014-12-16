@@ -12,8 +12,8 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 import java.io.IOException;
 import java.util.List;
 
-import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.codec.Codec;
 
 final class NettyCodecAdapter {

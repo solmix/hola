@@ -21,8 +21,8 @@ package org.solmix.hola.rs.generic;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.solmix.hola.core.identity.IDFactory;
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.common.identity.IDFactory;
+import org.solmix.hola.common.identity.Namespace;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
 

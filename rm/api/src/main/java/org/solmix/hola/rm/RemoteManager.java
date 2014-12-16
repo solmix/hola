@@ -22,7 +22,7 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 
 import org.osgi.framework.ServiceReference;
-import org.solmix.hola.core.model.RemoteEndpointInfo;
+import org.solmix.hola.common.config.RemoteServiceConfig;
 
 
 /**
@@ -33,15 +33,15 @@ import org.solmix.hola.core.model.RemoteEndpointInfo;
 
 public interface RemoteManager {
 
-    RemoteRegistration<?> registerService(String[] clazzes,Object service, RemoteEndpointInfo hei) throws RemoteException;
+//    RemoteRegistration<?> registerService(String[] clazzes,Object service, RemoteServiceConfig hei) throws RemoteException;
     
-    RemoteRegistration<?> registerService(String clazze,Object service, RemoteEndpointInfo hei) throws RemoteException;
+    RemoteRegistration<?> registerService(String clazze,Object service, RemoteServiceConfig hei) throws RemoteException;
     
-    <S> RemoteRegistration<S> registerService(Class<S> clazze,S service, RemoteEndpointInfo hei) throws RemoteException;
+    <S> RemoteRegistration<S> registerService(Class<S> clazze,S service, RemoteServiceConfig hei) throws RemoteException;
     
     <S> ServiceReference<S> getServiceReference(Class<S> clazz);
     
-    <S> ServiceReference<S> getServiceReference(Class<S> clazz,RemoteEndpointInfo hei);
+    <S> ServiceReference<S> getServiceReference(Class<S> clazz,RemoteServiceConfig hei);
     
     <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> clazz, String filter) throws RemoteException;
     

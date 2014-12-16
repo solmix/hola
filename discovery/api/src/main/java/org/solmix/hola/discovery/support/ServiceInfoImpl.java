@@ -22,8 +22,8 @@ package org.solmix.hola.discovery.support;
 import java.net.URI;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
+import org.solmix.hola.common.identity.Namespace;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.ServiceID;

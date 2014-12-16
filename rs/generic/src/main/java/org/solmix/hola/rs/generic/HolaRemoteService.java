@@ -21,7 +21,7 @@ package org.solmix.hola.rs.generic;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.rm.RemoteException;
 import org.solmix.hola.rs.AbstractRemoteService;
 import org.solmix.hola.rs.RemoteReference;

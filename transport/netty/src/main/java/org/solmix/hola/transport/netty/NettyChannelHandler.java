@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.solmix.commons.util.NetUtils;
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;
 

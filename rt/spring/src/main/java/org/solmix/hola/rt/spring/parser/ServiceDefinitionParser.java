@@ -22,9 +22,9 @@ import java.util.Map;
 
 import org.solmix.commons.util.DOMUtils;
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.core.model.ArgumentInfo;
-import org.solmix.hola.core.model.MethodInfo;
-import org.solmix.hola.core.model.RemoteServiceInfo;
+import org.solmix.hola.common.config.ArgumentConfig;
+import org.solmix.hola.common.config.MethodConfig;
+import org.solmix.hola.common.config.ServiceConfig;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.solmix.runtime.support.spring.ContainerPostProcessor;
@@ -154,7 +154,7 @@ public class ServiceDefinitionParser extends AbstractBeanDefinitionParser
                         if (methods == null) {
                             methods = new ManagedList<BeanDefinitionHolder>();
                         }
-                        BeanDefinition methodBeanDefinition = parse(((Element) node), parserContext,MethodInfo.class);
+                        BeanDefinition methodBeanDefinition = parse(((Element) node), parserContext,MethodConfig.class);
                         String name = bean.getBeanDefinition().getPropertyValues().get(ID_ATTRIBUTE) + "." + methodName;
                         BeanDefinitionHolder methodBeanDefinitionHolder = new BeanDefinitionHolder(
                             methodBeanDefinition, name);
@@ -181,7 +181,7 @@ public class ServiceDefinitionParser extends AbstractBeanDefinitionParser
                         if (arguments == null) {
                             arguments = new ManagedList<BeanDefinitionHolder>();
                         }
-                        BeanDefinition methodBeanDefinition = parse(((Element) node), parserContext,ArgumentInfo.class);
+                        BeanDefinition methodBeanDefinition = parse(((Element) node), parserContext,ArgumentConfig.class);
                         String name = bean.getPropertyValues().get(ID_ATTRIBUTE) + "." + index;
                         BeanDefinitionHolder methodBeanDefinitionHolder = new BeanDefinitionHolder(
                             methodBeanDefinition, name);
@@ -220,7 +220,7 @@ public class ServiceDefinitionParser extends AbstractBeanDefinitionParser
         return beanDefinition;
     }
 
-    public static class SpringRemoteServiceInfo<T>  extends RemoteServiceInfo<T> implements ApplicationContextAware{
+    public static class SpringRemoteServiceInfo<T>  extends ServiceConfig<T> implements ApplicationContextAware{
 
         private static final long serialVersionUID = 2154745084368911732L;
 

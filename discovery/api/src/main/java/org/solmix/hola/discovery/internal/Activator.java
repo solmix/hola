@@ -23,7 +23,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.common.identity.Namespace;
 import org.solmix.hola.discovery.identity.DiscoveryNamespace;
 import org.solmix.runtime.adapter.AdapterManager;
 

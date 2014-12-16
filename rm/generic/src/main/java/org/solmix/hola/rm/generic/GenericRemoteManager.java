@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.rm.generic;
 
-import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -28,7 +27,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.osgi.framework.ServiceReference;
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.model.RemoteEndpointInfo;
+import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.solmix.hola.rm.RemoteException;
 import org.solmix.hola.rm.RemoteListener;
 import org.solmix.hola.rm.RemoteManager;
 import org.solmix.hola.rm.RemoteRegistration;
@@ -37,6 +37,7 @@ import org.solmix.hola.rm.event.RemoteRegisteredEvent;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.bean.BeanConfigurer;
+import org.solmix.runtime.exchange.Server;
 
 
 /**
@@ -64,23 +65,18 @@ public class GenericRemoteManager implements RemoteManager {
     }
     
     @Override
-    public RemoteRegistration<?> registerService(String[] clazzes,
-        Object service, RemoteEndpointInfo hei) throws RemoteException {
+    public RemoteRegistration<?> registerService(String clazze,
+        Object service, RemoteServiceConfig hei) throws RemoteException {
         Assert.isNotNull(service, "register service is null");
-        if (clazzes==null || clazzes.length == 0) {
+        if (clazze==null ) {
             throw new IllegalArgumentException( "Service classes list is empty");
         }
-        final String[] copy = new String[clazzes.length];
-        for (int i = 0; i < clazzes.length; i++) {
-            copy[i] = new String(clazzes[i].getBytes());
-        }
-        clazzes = copy;
+        final String copy = new String(clazze.getBytes());
+        
+        clazze = copy;
         //验证接口和实例是否对应
-        final String invalidService = checkServiceClass(clazzes, service);
-        if (invalidService != null) {
-            throw new IllegalArgumentException("Service=" + invalidService+ " is invalid");
-        }
-        final GenericRemoteRegistration<?> reg= new GenericRemoteRegistration<Object>(this, clazzes, service, hei);
+        final Class<?> clz = checkServiceClass(clazze, service);
+        final GenericRemoteRegistration<Object> reg = new GenericRemoteRegistration<Object>(this, clz, service, hei);
         if(serverFactory!=null){
             reg.setServerFactory(serverFactory);
         }
@@ -107,18 +103,19 @@ public class GenericRemoteManager implements RemoteManager {
         return new RemoteRegisteredEvent(reg.getReference());
     }
     
-    @Override
-    public RemoteRegistration<?> registerService(String clazze, Object service,
-        RemoteEndpointInfo hei) throws RemoteException {
-        return registerService(new String[]{clazze}, service, hei);
-    }
-
     
     @Override
     public <S> RemoteRegistration<S> registerService(Class<S> clazze,
-        S service, RemoteEndpointInfo hei) throws RemoteException {
-        // TODO Auto-generated method stub
-        return null;
+        S service, RemoteServiceConfig hei) throws RemoteException {
+        final GenericRemoteRegistration<S> reg = new GenericRemoteRegistration<S>(this, clazze, service, hei);
+        if(serverFactory!=null){
+            reg.setServerFactory(serverFactory);
+        }
+        reg.publish();
+        registeredServices.add(reg);
+        //触发注册完毕事项
+        fireRemoteListeners(createRegisteredEvent(reg));
+        return reg;
     }
 
     
@@ -131,7 +128,7 @@ public class GenericRemoteManager implements RemoteManager {
     
     @Override
     public <S> ServiceReference<S> getServiceReference(Class<S> clazz,
-        RemoteEndpointInfo hei) {
+        RemoteServiceConfig hei) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -186,7 +183,7 @@ public class GenericRemoteManager implements RemoteManager {
      * @param service
      * @return
      */
-    static String checkServiceClass(final String[] clazzes, final Object service) {
+    static Class<?> checkServiceClass(final String clazze, final Object service) {
         final ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 
             @Override
@@ -194,20 +191,19 @@ public class GenericRemoteManager implements RemoteManager {
                 return service.getClass().getClassLoader();
             }
         });
-        for (int i = 0; i < clazzes.length; i++) {
             try {
-                final Class<?> serviceClazz = cl == null ? Class.forName(clazzes[i])
-                    : cl.loadClass(clazzes[i]);
+                final Class<?> serviceClazz = cl == null ? Class.forName(clazze)
+                    : cl.loadClass(clazze);
                 if (!serviceClazz.isInstance(service)) {
-                    return clazzes[i];
+                    throw new IllegalArgumentException("Service=" + clazze+ " is invalid");
                 }
+                return serviceClazz;
             } catch (final ClassNotFoundException e) {
                 // This check is rarely done
-                if (extensiveCheckServiceClass(clazzes[i], service.getClass())) {
-                    return clazzes[i];
+                if (extensiveCheckServiceClass(clazze, service.getClass())) {
+                    throw new IllegalArgumentException("Service=" + clazze+ " is invalid");
                 }
             }
-        }
         return null;
     }
     /**
@@ -245,5 +241,55 @@ public class GenericRemoteManager implements RemoteManager {
             bc.configureBean(bean);
         }
         
+    }
+
+    /**   */
+    public Container getContainer() {
+        return container;
+    }
+
+    void publish(GenericRemoteRegistration<?> registration) {
+        GenericServerFactory factory = registration.getServerFactory();
+        if (factory == null && this.serverFactory != null) {
+            factory = this.serverFactory;
+        }
+        if (factory == null) {
+            factory = new GenericServerFactory();
+        }
+        configureBean(factory);
+        registration.setServerFactory(factory);
+        Server srv = registration.server;
+        try {
+            if (srv == null) {
+                srv = createServer(factory, registration);
+            }
+            registration.server = srv;
+            if (srv != null) {
+                srv.start();
+            }
+        } catch (Exception e) {
+            if (null != srv) {
+                srv.destroy();
+                srv = null;
+            }
+            throw new RemoteException(e);
+        }
+    }
+
+    private Server createServer(GenericServerFactory factory,
+        GenericRemoteRegistration<?> registration) {
+        factory.setContainer(container);
+        factory.setStart(false);
+        factory.setServiceBean(registration.service);
+        factory.setServiceClass(registration.clazze);
+        
+        RemoteServiceConfig config= registration.getServiceConfig();
+        factory.setAddress(config.getAddress());
+        Server server = factory.create();
+        
+        configureBean(server);
+        configureBean(server.getEndpoint());
+        configureBean(server.getEndpoint().getService());
+        return server;
     }
 }

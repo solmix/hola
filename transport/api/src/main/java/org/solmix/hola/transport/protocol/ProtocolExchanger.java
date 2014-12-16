@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.protocol;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.TransporterProvider;
 import org.solmix.hola.transport.channel.Client;
@@ -52,7 +52,7 @@ public class ProtocolExchanger extends AbstractExchanger implements ExchangerPro
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.exchange.Exchanger#bind(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
+     * @see org.solmix.hola.transport.exchange.Exchanger#bind(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.common.config.EndpointInfo)
      */
     @Override
     public ExchangeServer bind(RemoteInfo info,ExchangeHandler handler) throws TransportException {
@@ -63,7 +63,7 @@ public class ProtocolExchanger extends AbstractExchanger implements ExchangerPro
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.exchange.Exchanger#connect(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.core.model.EndpointInfo)
+     * @see org.solmix.hola.transport.exchange.Exchanger#connect(org.solmix.hola.transport.exchange.ExchangeHandler, org.solmix.hola.common.config.EndpointInfo)
      */
     @Override
     public ExchangeClient connect(RemoteInfo info,ExchangeHandler handler) throws TransportException {

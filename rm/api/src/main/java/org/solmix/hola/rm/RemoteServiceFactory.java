@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.model.RemoteServiceInfo;
+import org.solmix.hola.common.config.ServiceConfig;
 import org.solmix.runtime.exchange.Exchange;
 import org.solmix.runtime.exchange.Service;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
@@ -55,7 +55,7 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemoteServiceFactory.class);
 
-    private RemoteServiceInfo<?> remoteServiceInfo;
+    private ServiceConfig<?> serviceConfig;
     
     private final RemotePhasePolicy phasePolicy;
 
@@ -134,7 +134,7 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
    
     protected void createArgument(InterfaceInfo intf, OperationInfo op,
         Method method) {
-      //输入
+        //输入
         final Class<?>[] paramClasses = method.getParameterTypes();
         op.setProperty(METHOD, method);
         MessageInfo inMi=op.createMessage(getInMessageName(op,method), MessageInfo.Type.INPUT);
@@ -302,13 +302,13 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
     }
 
     /**   */
-    public RemoteServiceInfo<?> getRemoteServiceInfo() {
-        return remoteServiceInfo;
+    public ServiceConfig<?> getRemoteServiceInfo() {
+        return serviceConfig;
     }
 
     /**   */
-    public void setRemoteServiceInfo(RemoteServiceInfo<?> remoteServiceInfo) {
-        this.remoteServiceInfo = remoteServiceInfo;
+    public void setRemoteServiceInfo(ServiceConfig<?> remoteServiceInfo) {
+        this.serviceConfig = remoteServiceInfo;
     }
 
     /**

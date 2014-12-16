@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rt;
 
-import org.solmix.hola.core.model.RemoteServiceInfo;
+import org.solmix.hola.common.config.ServiceConfig;
 import org.solmix.runtime.Extension;
 
 
@@ -31,5 +31,5 @@ import org.solmix.runtime.Extension;
 public interface ServiceManager
 {
 
-    ServicePublisher createPublisher(RemoteServiceInfo<?> config);
+    ServicePublisher createPublisher(ServiceConfig<?> config);
 }

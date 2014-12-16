@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.dispatch;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.runtime.Extension;
 
@@ -35,7 +35,7 @@ public class DirectDispatcher implements Dispatcher
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.dispatch.Dispatcher#dispatch(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.transport.dispatch.Dispatcher#dispatch(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.common.config.RemoteInfo)
      */
     @Override
     public ChannelHandler dispatch(ChannelHandler handler, RemoteInfo param) {

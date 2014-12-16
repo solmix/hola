@@ -20,7 +20,7 @@ package org.solmix.hola.discovery.identity;
 
 import java.net.URI;
 
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 
 
 /**

@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.netty;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.AbstractTransporter;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.TransporterProvider;

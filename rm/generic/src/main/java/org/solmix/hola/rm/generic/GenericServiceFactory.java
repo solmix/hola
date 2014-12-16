@@ -18,8 +18,7 @@
  */
 package org.solmix.hola.rm.generic;
 
-import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.support.ReflectServiceFactory;
+import org.solmix.hola.rm.RemoteServiceFactory;
 
 
 /**
@@ -28,19 +27,8 @@ import org.solmix.runtime.exchange.support.ReflectServiceFactory;
  * @version $Id$  2014年11月21日
  */
 
-public class GenericServiceFactory extends ReflectServiceFactory {
+public class GenericServiceFactory extends RemoteServiceFactory {
 
  
-    @Override
-    public Service create() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected void buildService() {
-        // TODO Auto-generated method stub
-        
-    }
 
 }

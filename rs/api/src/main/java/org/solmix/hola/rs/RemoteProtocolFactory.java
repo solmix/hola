@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rs;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.common.config.EndpointInfo;
 import org.solmix.hola.rm.RemoteListener;
 import org.solmix.runtime.Extension;
 

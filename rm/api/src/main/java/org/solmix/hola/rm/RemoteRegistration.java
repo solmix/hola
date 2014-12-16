@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rm;
 
-import org.solmix.hola.core.model.RemoteEndpointInfo;
+import org.solmix.hola.common.config.RemoteServiceConfig;
 
 
 
@@ -41,5 +41,5 @@ public interface RemoteRegistration<S> {
      */
     void unregister();
     
-    RemoteEndpointInfo getEndpointInfo();
+    RemoteServiceConfig getServiceConfig();
 }

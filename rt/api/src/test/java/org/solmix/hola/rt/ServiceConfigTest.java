@@ -26,7 +26,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.common.config.EndpointInfo;
 import org.solmix.hola.rt.config.ApplicationConfig;
 import org.solmix.hola.rt.config.DiscoveryConfig;
 import org.solmix.hola.rt.config.ModuleConfig;
@@ -62,7 +62,7 @@ public class ServiceConfigTest extends Assert
     @Test(expected=IllegalStateException.class)
     public void testInterface() throws Exception{
         try {
-             service.getEndpointInfo();
+             service.getServiceConfig();
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("<hola:service interface"));
             throw e;
@@ -73,7 +73,7 @@ public class ServiceConfigTest extends Assert
     @Test(expected=IllegalStateException.class)
     public void testInterfaceType() throws Exception {
         service.setInterface(DemoServiceImpl.class);
-        service.getEndpointInfo();
+        service.getServiceConfig();
         fail("must throw validation exception!");
     }
     //必选配置ref
@@ -81,7 +81,7 @@ public class ServiceConfigTest extends Assert
     public void testRef() throws Exception{
         try {
             service.setInterface(DemoService.class);
-             service.getEndpointInfo();
+             service.getServiceConfig();
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("<hola:service ref="));
             throw e;
@@ -94,7 +94,7 @@ public class ServiceConfigTest extends Assert
         service.setInterface(DemoService.class);
         service.setRef(new DemoServiceImpl());
         service.setAsync(true);
-       List<EndpointInfo> infos= service.getEndpointInfo();
+       List<EndpointInfo> infos= service.getServiceConfig();
        EndpointInfo info=infos.get(0);
        assertNull(info.getProperty("id"));
        assertEquals(DemoService.class.getName(), info.getString("interface"));
@@ -111,7 +111,7 @@ public class ServiceConfigTest extends Assert
         app.setEnvironment("develop");
         service.setApplication(app);
        
-        List<EndpointInfo> infos= service.getEndpointInfo();
+        List<EndpointInfo> infos= service.getServiceConfig();
         EndpointInfo info=infos.get(0);
         assertEquals("app-1", info.getString("application.name"));
         assertEquals("develop", info.getString("environment"));
@@ -121,7 +121,7 @@ public class ServiceConfigTest extends Assert
         module.setEnvironment("test");
         service.setModule(module);
         
-        EndpointInfo info2=service.getEndpointInfo().get(0);
+        EndpointInfo info2=service.getServiceConfig().get(0);
         assertEquals("module-1", info2.getString("module.name"));
         assertEquals("test", info2.getString("environment"));
         
@@ -131,7 +131,7 @@ public class ServiceConfigTest extends Assert
         discovery.setAddress("localhost:2181");
         service.setDiscovery(discovery);
         
-        EndpointInfo info3=service.getEndpointInfo().get(0);
+        EndpointInfo info3=service.getServiceConfig().get(0);
         assertEquals("zk", info3.getString("discovery.protocol"));
         assertEquals("hola", info3.getString("protocol"));
         assertEquals(Boolean.TRUE, info3.getBoolean("advertise"));
@@ -149,7 +149,7 @@ public class ServiceConfigTest extends Assert
         dises.add(discovery2);
         dises.add(discovery);
         service.setDiscoveries(dises);
-        List<EndpointInfo> dds=service.getEndpointInfo();
+        List<EndpointInfo> dds=service.getServiceConfig();
         assertEquals(2, dds.size());
     }
 

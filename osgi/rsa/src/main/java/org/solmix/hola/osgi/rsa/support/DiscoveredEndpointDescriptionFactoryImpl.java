@@ -24,7 +24,7 @@ import java.util.List;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.common.identity.Namespace;
 import org.solmix.hola.discovery.DiscoveryLocator;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;

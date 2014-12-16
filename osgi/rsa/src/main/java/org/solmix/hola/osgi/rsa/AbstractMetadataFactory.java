@@ -31,7 +31,7 @@ import java.util.TreeMap;
 import org.osgi.framework.Version;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.service.remoteserviceadmin.RemoteConstants;
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 import org.solmix.hola.discovery.ServiceProperties;
 
 /**

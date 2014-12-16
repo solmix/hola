@@ -19,13 +19,10 @@
 
 package org.solmix.hola.rm.generic;
 
-
-import org.solmix.hola.core.model.RemoteEndpointInfo;
-import org.solmix.hola.rm.RemoteException;
+import org.solmix.hola.common.config.RemoteServiceConfig;
 import org.solmix.hola.rm.RemoteReference;
 import org.solmix.hola.rm.RemoteRegistration;
 import org.solmix.runtime.exchange.Server;
-import org.solmix.runtime.exchange.support.DefaultServer;
 
 /**
  * 
@@ -46,28 +43,27 @@ public class GenericRemoteRegistration<S> implements RemoteRegistration<S>,
 
     protected transient Object registrationLock = new Object();
 
+    Server server;
+
+    final Object service;
+
+    final Class<?> clazze;
+
     /** The registration state */
     protected int state = REGISTERED;
 
     private final GenericRemoteManager manager;
 
-    private final RemoteEndpointInfo info;
+    private final RemoteServiceConfig remoteServiceConfig;
 
-    private final Object service;
-
-    private final String[] clazzes;
-    
-    private Server server;
-    
     private GenericServerFactory serverFactory;
-    
 
     public GenericRemoteRegistration(GenericRemoteManager manager,
-        String[] clazzes, Object service, RemoteEndpointInfo info) {
+        Class<?> clazze, Object service, RemoteServiceConfig info) {
         this.manager = manager;
-        this.info = info;
+        this.remoteServiceConfig = info;
         this.service = service;
-        this.clazzes = clazzes;
+        this.clazze = clazze;
     }
 
     @Override
@@ -83,48 +79,20 @@ public class GenericRemoteRegistration<S> implements RemoteRegistration<S>,
     }
 
     @Override
-    public RemoteEndpointInfo getEndpointInfo() {
-        return info;
+    public RemoteServiceConfig getServiceConfig() {
+        return remoteServiceConfig;
     }
-    
-    public GenericServerFactory getServerFactory() {
+
+    GenericServerFactory getServerFactory() {
         return serverFactory;
     }
 
-    
     public void setServerFactory(GenericServerFactory serverFactory) {
         this.serverFactory = serverFactory;
     }
 
     void publish() {
-        String address = info.getAddress();
-        DefaultServer srv = null;
-        try {
-            srv = getServer(address);
-            if (srv != null) {
-                srv.start();
-            }
-        } catch (Exception e) {
-            if (null != server) {
-                server.destroy();
-                server = null;
-            }
-            throw new RemoteException(e);
-        }
-    }
-
-   
-    private DefaultServer getServer(String address) {
-        if(server==null){
-            if(serverFactory==null){
-                serverFactory= new GenericServerFactory();
-            }
-            
-            manager.configureBean(serverFactory);
-            server=serverFactory.create();
-            //TODO
-        }
-        return (DefaultServer)server;
+        manager.publish(this);
     }
 
 }

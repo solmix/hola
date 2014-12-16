@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rt;
 
-import org.solmix.hola.core.model.RemoteServiceInfo;
+import org.solmix.hola.common.config.ServiceConfig;
 
 
 /**
@@ -32,7 +32,7 @@ public interface ServicePublisher
 {
 
 
-    RemoteServiceInfo<?> getService();
+    ServiceConfig<?> getService();
 
     void publish();
 

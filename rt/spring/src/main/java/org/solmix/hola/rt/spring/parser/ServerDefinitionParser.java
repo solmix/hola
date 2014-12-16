@@ -20,7 +20,7 @@ package org.solmix.hola.rt.spring.parser;
 
 import java.util.Map;
 
-import org.solmix.hola.core.model.ServerInfo;
+import org.solmix.hola.common.config.ServerConfig;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -43,7 +43,7 @@ public class ServerDefinitionParser extends AbstractBeanDefinitionParser
     public ServerDefinitionParser()
     {
         super();
-        setBeanClass(ServerInfo.class);
+        setBeanClass(ServerConfig.class);
     }
     @Override
     protected void parseIdAttribute(BeanDefinitionBuilder bean, Element element,

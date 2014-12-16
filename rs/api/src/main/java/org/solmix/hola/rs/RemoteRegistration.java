@@ -21,7 +21,7 @@ package org.solmix.hola.rs;
 
 import java.util.Dictionary;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**

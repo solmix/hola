@@ -26,15 +26,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.ConnectException;
-import org.solmix.hola.core.event.ConnectedEvent;
-import org.solmix.hola.core.event.ConnectingEvent;
-import org.solmix.hola.core.event.DisconnectedEvent;
-import org.solmix.hola.core.event.DisconnectingEvent;
-import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.core.identity.support.DefaultIDFactory;
-import org.solmix.hola.core.security.ConnectSecurityContext;
+import org.solmix.hola.common.ConnectException;
+import org.solmix.hola.common.event.ConnectedEvent;
+import org.solmix.hola.common.event.ConnectingEvent;
+import org.solmix.hola.common.event.DisconnectedEvent;
+import org.solmix.hola.common.event.DisconnectingEvent;
+import org.solmix.hola.common.identity.ID;
+import org.solmix.hola.common.identity.Namespace;
+import org.solmix.hola.common.identity.support.DefaultIDFactory;
+import org.solmix.hola.common.security.ConnectSecurityContext;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceListener;
 import org.solmix.hola.discovery.ServiceInfo;
@@ -247,8 +247,8 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.ConnectContext#connect(org.solmix.hola.core.identity.ID,
-     *      org.solmix.hola.core.security.ConnectSecurityContext)
+     * @see org.solmix.hola.common.ConnectContext#connect(org.solmix.hola.common.identity.ID,
+     *      org.solmix.hola.common.security.ConnectSecurityContext)
      */
     @Override
     public void connect(ID remoteID, ConnectSecurityContext securityContext)
@@ -292,7 +292,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.ConnectContext#getTargetID()
+     * @see org.solmix.hola.common.ConnectContext#getTargetID()
      */
     @Override
     public ID getTargetID() {
@@ -302,7 +302,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.ConnectContext#disconnect()
+     * @see org.solmix.hola.common.ConnectContext#disconnect()
      */
     @Override
     public void disconnect() {
@@ -331,7 +331,7 @@ public class CompositeDiscoveryProvider extends AbstractDiscovery
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.Identifiable#getID()
+     * @see org.solmix.hola.common.identity.Identifiable#getID()
      */
     @Override
     public ID getID() {

@@ -22,6 +22,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.exchange.Service;
 import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.support.DefaultEndpoint;
+import org.solmix.runtime.interceptor.phase.PhasePolicy;
 
 
 /**
@@ -34,7 +35,7 @@ public class GenericEndpoint extends DefaultEndpoint{
 
     private static final long serialVersionUID = 5255996701919292066L;
     public GenericEndpoint(Container container, Service s, EndpointInfo ed,
-        String phasePolicy) {
+        PhasePolicy phasePolicy) {
         super(container, s, ed, phasePolicy);
     }
 

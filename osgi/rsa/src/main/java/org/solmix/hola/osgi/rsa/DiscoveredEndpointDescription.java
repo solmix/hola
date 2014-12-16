@@ -20,7 +20,7 @@
 package org.solmix.hola.osgi.rsa;
 
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.common.identity.Namespace;
 import org.solmix.hola.discovery.identity.ServiceID;
 
 /**

@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.channel.ChannelHandler;
 import org.solmix.hola.transport.channel.Client;
 import org.solmix.hola.transport.channel.Server;
@@ -37,7 +37,7 @@ public abstract class AbstractTransporter implements TransporterProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.TransporterProvider#bind(org.solmix.hola.core.model.RemoteInfo, org.solmix.hola.transport.channel.ChannelHandler[])
+     * @see org.solmix.hola.transport.TransporterProvider#bind(org.solmix.hola.common.config.RemoteInfo, org.solmix.hola.transport.channel.ChannelHandler[])
      */
     @Override
     public Server bind(RemoteInfo info, ChannelHandler... handlers)
@@ -61,7 +61,7 @@ public abstract class AbstractTransporter implements TransporterProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.TransporterProvider#connect(org.solmix.hola.core.model.RemoteInfo, org.solmix.hola.transport.channel.ChannelHandler[])
+     * @see org.solmix.hola.transport.TransporterProvider#connect(org.solmix.hola.common.config.RemoteInfo, org.solmix.hola.transport.channel.ChannelHandler[])
      */
     @Override
     public Client connect(RemoteInfo info, ChannelHandler... handlers)

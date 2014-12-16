@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rs.generic;
 
-import org.solmix.hola.core.model.EndpointInfo;
+import org.solmix.hola.common.config.EndpointInfo;
 import org.solmix.hola.rm.RemoteListener;
 import org.solmix.hola.rs.RemoteProtocol;
 import org.solmix.hola.rs.RemoteProtocolFactory;
@@ -52,7 +52,7 @@ public class HolaRemoteProtocolFactory implements RemoteProtocolFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#createProtocol(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#createProtocol(org.solmix.hola.common.config.RemoteInfo)
      */
     @Override
     public RemoteProtocol createProtocol() {
@@ -62,7 +62,7 @@ public class HolaRemoteProtocolFactory implements RemoteProtocolFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getSupportedIntents(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getSupportedIntents(org.solmix.hola.common.config.RemoteInfo)
      */
     @Override
     public String[] getSupportedIntents(EndpointInfo info) {
@@ -73,7 +73,7 @@ public class HolaRemoteProtocolFactory implements RemoteProtocolFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getSupportedConfigs(org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getSupportedConfigs(org.solmix.hola.common.config.RemoteInfo)
      */
     @Override
     public String[] getSupportedConfigs(EndpointInfo info) {
@@ -84,7 +84,7 @@ public class HolaRemoteProtocolFactory implements RemoteProtocolFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getImportedConfigs(org.solmix.hola.core.model.RemoteInfo, java.lang.String[])
+     * @see org.solmix.hola.rs.generic.RemoteProtocolFactory#getImportedConfigs(org.solmix.hola.common.config.RemoteInfo, java.lang.String[])
      */
     @Override
     public String[] getImportedConfigs(EndpointInfo info,

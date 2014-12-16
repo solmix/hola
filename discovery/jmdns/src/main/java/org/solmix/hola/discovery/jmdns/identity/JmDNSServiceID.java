@@ -20,7 +20,7 @@ package org.solmix.hola.discovery.jmdns.identity;
 
 import java.net.URI;
 
-import org.solmix.hola.core.identity.AbstractNamespace;
+import org.solmix.hola.common.identity.AbstractNamespace;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.support.ServiceIDImpl;
 

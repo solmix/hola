@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rm;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ClassLoaderUtils;
@@ -25,7 +27,9 @@ import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.EndpointInfoFactory;
+import org.solmix.runtime.exchange.PipelineFactoryManager;
 import org.solmix.runtime.exchange.Server;
+import org.solmix.runtime.exchange.TransporterFactoryManager;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
 import org.solmix.runtime.exchange.invoker.BeanInvoker;
 import org.solmix.runtime.exchange.invoker.FactoryInvoker;
@@ -105,11 +109,10 @@ public class RemoteServerFactory extends RemoteEndpointFactory {
                         ep.getService().setInvoker(invoker);
                     }
                 }
-                
-                
-                
             } catch (EndpointException epe) {
                 throw new RemoteException(epe);
+            } catch (IOException e) {
+                throw new RemoteException(e);
             }
             if (serviceBean != null) {
                 Class<?> cls = ClassHelper.getRealClass(getServiceBean());
@@ -199,21 +202,26 @@ public class RemoteServerFactory extends RemoteEndpointFactory {
         this.invoker = invoker;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rm.RemoteEndpointFactory#getEndpointInfoFactory()
-     */
     @Override
     protected EndpointInfoFactory getEndpointInfoFactory() {
+        if (transporterFactory == null) {
+            try {
+                transporterFactory = getContainer().getExtension(
+                    TransporterFactoryManager.class).getFactory(transporterId);
+            } catch (Exception e) {
+                Object pf = getContainer().getExtension(
+                    PipelineFactoryManager.class).getFactory(transporterId);
+                if (pf instanceof EndpointInfoFactory) {
+                    return (EndpointInfoFactory) pf;
+                }
+            }
+        }
+        if (transporterFactory instanceof EndpointInfoFactory) {
+            return (EndpointInfoFactory) transporterFactory;
+        }
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rm.RemoteEndpointFactory#getProtocolTypeFromAddress(java.lang.String)
-     */
     @Override
     protected String getProtocolTypeFromAddress(String address) {
         return null;

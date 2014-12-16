@@ -19,9 +19,9 @@
 
 package org.solmix.hola.rs.generic;
 
-import org.solmix.hola.core.identity.AbstractNamespace;
-import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.core.identity.IDCreateException;
+import org.solmix.hola.common.identity.AbstractNamespace;
+import org.solmix.hola.common.identity.ID;
+import org.solmix.hola.common.identity.IDCreateException;
 import org.solmix.runtime.Extension;
 
 /**
@@ -47,7 +47,7 @@ public class HolaNamespace extends AbstractNamespace
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.Namespace#getScheme()
+     * @see org.solmix.hola.common.identity.Namespace#getScheme()
      */
     @Override
     public String getScheme() {
@@ -57,7 +57,7 @@ public class HolaNamespace extends AbstractNamespace
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.Namespace#createID(java.lang.Object[])
+     * @see org.solmix.hola.common.identity.Namespace#createID(java.lang.Object[])
      */
     @Override
     public ID createID(Object[] parameters) throws IDCreateException {

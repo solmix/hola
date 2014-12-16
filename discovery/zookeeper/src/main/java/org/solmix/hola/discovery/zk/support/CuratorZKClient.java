@@ -35,7 +35,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.WatchedEvent;
-import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.common.config.DiscoveryInfo;
 import org.solmix.hola.discovery.zk.ChildListener;
 import org.solmix.hola.discovery.zk.StateListener;
 import org.solmix.hola.discovery.zk.ZKClient;

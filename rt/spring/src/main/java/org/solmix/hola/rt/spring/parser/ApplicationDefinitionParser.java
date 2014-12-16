@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rt.spring.parser;
 
-import org.solmix.hola.core.model.ApplicationInfo;
+import org.solmix.hola.common.config.ApplicationConfig;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
@@ -39,7 +39,7 @@ implements BeanDefinitionParser
     public ApplicationDefinitionParser()
     {
         super();
-        setBeanClass(ApplicationInfo.class);
+        setBeanClass(ApplicationConfig.class);
     }
     @Override
     protected void parseNameAttribute(Element element, ParserContext ctx,

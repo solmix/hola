@@ -1,2 +1,2 @@
 org.solmix.hola.discovery.jmdns.JmDNSProvider:org.solmix.hola.discovery.DiscoveryProvider:true
-org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace:org.solmix.hola.core.identity.Namespace:true
+org.solmix.hola.discovery.jmdns.identity.JmDNSNamespace:org.solmix.hola.common.identity.Namespace:true

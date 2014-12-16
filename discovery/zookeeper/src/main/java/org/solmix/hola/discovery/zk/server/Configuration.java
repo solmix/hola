@@ -36,7 +36,7 @@ import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 
 
 /**

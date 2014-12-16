@@ -2,7 +2,7 @@ package org.solmix.hola.cluster;
 
 import java.util.List;
 
-import org.solmix.hola.core.identity.Identifiable;
+import org.solmix.hola.common.identity.Identifiable;
 import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteService;
 

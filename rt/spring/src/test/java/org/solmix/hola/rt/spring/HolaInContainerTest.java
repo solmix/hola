@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,21 +16,20 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rt.spring;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
-
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年9月10日
+ * @version 0.0.1 2014年9月10日
  */
 
-public class HolaInContainerTest
-{
+public class HolaInContainerTest {
 
     @Test
     public void test() {

@@ -21,7 +21,7 @@ package org.solmix.hola.discovery.provider;
 
 import java.net.URI;
 
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 import org.solmix.hola.discovery.identity.ServiceType;
 import org.solmix.hola.discovery.support.ServiceIDImpl;
 

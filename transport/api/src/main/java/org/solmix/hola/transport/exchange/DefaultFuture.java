@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.HolaConstants;
+import org.solmix.hola.common.HolaConstants;
 import org.solmix.hola.transport.TimeoutException;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;

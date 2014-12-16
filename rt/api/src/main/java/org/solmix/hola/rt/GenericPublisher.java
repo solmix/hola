@@ -31,11 +31,11 @@ import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.commons.util.SystemPropertyAction;
-import org.solmix.hola.core.model.DiscoveryInfo;
-import org.solmix.hola.core.model.RemoteEndpointInfo;
-import org.solmix.hola.core.model.RemoteServiceInfo;
-import org.solmix.hola.core.model.ServerInfo;
-import org.solmix.hola.core.security.HolaServicePermission;
+import org.solmix.hola.common.config.DiscoveryConfig;
+import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.solmix.hola.common.config.ServiceConfig;
+import org.solmix.hola.common.config.ServerConfig;
+import org.solmix.hola.common.security.HolaServicePermission;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryProvider;
 import org.solmix.hola.rm.RemoteListener;
@@ -59,7 +59,7 @@ public class GenericPublisher implements ServicePublisher {
     private static final HolaServicePermission PUBLISH_PERMISSION = new HolaServicePermission(
         "publishEndpoint");
 
-    protected RemoteServiceInfo<?> service;
+    protected ServiceConfig<?> service;
 
     private final Container container;
 
@@ -73,7 +73,7 @@ public class GenericPublisher implements ServicePublisher {
 
     private final static String CHECK_PUBLISH_SERVICE_PERMISSION = "org.solmix.hola.service.publish.permission";
 
-    public GenericPublisher(RemoteServiceInfo<?> type) {
+    public GenericPublisher(ServiceConfig<?> type) {
         this.service = type;
         Assert.isNotNull(service);
         this.container = type.getContainer();
@@ -82,7 +82,7 @@ public class GenericPublisher implements ServicePublisher {
     }
 
     @Override
-    public RemoteServiceInfo<?> getService() {
+    public ServiceConfig<?> getService() {
         return service;
     }
 
@@ -135,16 +135,16 @@ public class GenericPublisher implements ServicePublisher {
     }
 
     protected void doPublish() {
-        List<ServerInfo> servers = service.getServers();
+        List<ServerConfig> servers = service.getServers();
         if (servers == null || servers.size() == 0) {
-            ServerInfo defaultServer = createDefaultServer(service);
+            ServerConfig defaultServer = createDefaultServer(service);
             if (defaultServer != null) {
                 service.setServer(defaultServer);
             }
         }
         servers = service.getServers();
         if (servers != null)
-            for (ServerInfo server : servers) {
+            for (ServerConfig server : servers) {
                 ClassLoaderHolder loader = null;
                 try {
                     if (container != null) {
@@ -166,7 +166,7 @@ public class GenericPublisher implements ServicePublisher {
     /**
      * 创建默认server
      */
-    protected ServerInfo createDefaultServer(RemoteServiceInfo<?> service) {
+    protected ServerConfig createDefaultServer(ServiceConfig<?> service) {
         // 根据properties文件创建默认server
         ClassLoaderHolder loader = null;
         try {
@@ -185,26 +185,26 @@ public class GenericPublisher implements ServicePublisher {
         return null;
     }
 
-    protected void doPublishPeerServer(ServerInfo server) {
+    protected void doPublishPeerServer(ServerConfig server) {
         String scope = service.getScope();
         if (!StringUtils.isEmpty(scope)) {
             scope = server.getScope();
         }
         // 如果配置为NONE,不发布任何服务.
-        if (!ServerInfo.SCOPE_NONE.equalsIgnoreCase(scope)) {
+        if (!ServerConfig.SCOPE_NONE.equalsIgnoreCase(scope)) {
             // 如果不配置为REMOTE,在本地发布
-            if (!ServerInfo.SCOPE_REMOTE.equalsIgnoreCase(scope)) {
+            if (!ServerConfig.SCOPE_REMOTE.equalsIgnoreCase(scope)) {
                 jvmExport(server);
             }
             // 如果不配置为LOCAL,远程发布
-            if (!ServerInfo.SCOPE_LOCAL.equalsIgnoreCase(scope)) {
+            if (!ServerConfig.SCOPE_LOCAL.equalsIgnoreCase(scope)) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info("Publish service :" + service.getInterfaces());
                 }
                 String protocol = server.getProtocol();
                 RemoteManagerFactory manager = container.getExtensionLoader(
                     RemoteManagerFactory.class).getExtension(protocol);
-                List<DiscoveryInfo> infos = service.getDiscoveries();
+                List<DiscoveryConfig> infos = service.getDiscoveries();
                 if (infos == null || infos.size() == 0) {
                     infos = server.getDiscoveries();
 
@@ -237,8 +237,8 @@ public class GenericPublisher implements ServicePublisher {
         }
     }
 
-    protected RemoteEndpointInfo createEndpointInfo(ServerInfo server,
-        RemoteServiceInfo<?> service) {
+    protected RemoteServiceConfig createEndpointInfo(ServerConfig server,
+        ServiceConfig<?> service) {
         // TODO
         return null;
 
@@ -249,7 +249,7 @@ public class GenericPublisher implements ServicePublisher {
      * 
      * @param server
      */
-    private void jvmExport(ServerInfo server) {
+    private void jvmExport(ServerConfig server) {
         // TODO Auto-generated method stub
 
     }
@@ -285,9 +285,9 @@ public class GenericPublisher implements ServicePublisher {
         return unpublished;
     }
 
-    protected RemoteServiceInfo<?> checkService(RemoteServiceInfo<?> s) {
+    protected ServiceConfig<?> checkService(ServiceConfig<?> s) {
         if (s == null) {
-            throw new IllegalArgumentException("RemoteServiceInfo<?> is null");
+            throw new IllegalArgumentException("ServiceConfig<?> is null");
         }
         if (s.getInterface() == null || s.getInterface().length() == 0) {
             throw new IllegalStateException(
@@ -301,16 +301,16 @@ public class GenericPublisher implements ServicePublisher {
      */
     private class DiscoveryRemoteListener implements RemoteListener {
 
-        private final DiscoveryInfo info;
+        private final DiscoveryConfig info;
 
-        private final ServerInfo serverInfo;
+        private final ServerConfig serverConfig;
 
-        private final RemoteServiceInfo<?> service;
+        private final ServiceConfig<?> service;
 
-        DiscoveryRemoteListener(DiscoveryInfo info, ServerInfo serverInfo,
-            RemoteServiceInfo<?> service) {
+        DiscoveryRemoteListener(DiscoveryConfig info, ServerConfig serverConfig,
+            ServiceConfig<?> service) {
             this.info = info;
-            this.serverInfo = serverInfo;
+            this.serverConfig = serverConfig;
             this.service = service;
         }
 
@@ -353,15 +353,15 @@ public class GenericPublisher implements ServicePublisher {
         }
 
         /*
-         * private RemoteServiceInfo<?> getServiceInfo(RemoteInfo remoteInfo) {
+         * private ServiceConfig<?> getServiceInfo(RemoteInfo remoteInfo) {
          * 
-         * return new RemoteEndpointInfo<Object>(remoteInfo); }
+         * return new RemoteServiceConfig<Object>(remoteInfo); }
          */
     }
 
     private RemoteRegistration<?> registerDiscoverys(
-        RemoteManagerFactory manager, ServerInfo server,
-        List<DiscoveryInfo> infos) throws RemoteException {
+        RemoteManagerFactory manager, ServerConfig server,
+        List<DiscoveryConfig> infos) throws RemoteException {
         List<RemoteListener> listeners = getRemoteListeners(infos, server);
         RemoteManager rm = manager.createManager(service.getContainer());
         if (listeners != null && listeners.size() > 0) {
@@ -377,9 +377,9 @@ public class GenericPublisher implements ServicePublisher {
      * @param infos
      * @return
      */
-    private List<RemoteListener> getRemoteListeners(List<DiscoveryInfo> infos,ServerInfo server) {
+    private List<RemoteListener> getRemoteListeners(List<DiscoveryConfig> infos,ServerConfig server) {
         List<RemoteListener> listeners = new ArrayList<RemoteListener>();
-        for (final DiscoveryInfo info : infos) {
+        for (final DiscoveryConfig info : infos) {
             listeners.add(new DiscoveryRemoteListener(info, server, service));
         }
         return listeners;

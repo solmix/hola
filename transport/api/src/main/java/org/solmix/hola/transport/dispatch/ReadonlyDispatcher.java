@@ -20,7 +20,7 @@ package org.solmix.hola.transport.dispatch;
 
 import java.util.concurrent.ExecutorService;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.ExecutionException;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
@@ -42,7 +42,7 @@ public class ReadonlyDispatcher extends AbstractDispatcher
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.dispatch.Dispatcher#dispatch(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.core.model.RemoteInfo)
+     * @see org.solmix.hola.transport.dispatch.Dispatcher#dispatch(org.solmix.hola.transport.channel.ChannelHandler, org.solmix.hola.common.config.RemoteInfo)
      */
     @Override
     public ChannelHandler dispatch(ChannelHandler handler, RemoteInfo info) {

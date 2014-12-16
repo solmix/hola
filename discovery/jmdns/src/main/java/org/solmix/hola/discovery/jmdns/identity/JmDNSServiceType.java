@@ -19,7 +19,7 @@
 
 package org.solmix.hola.discovery.jmdns.identity;
 
-import org.solmix.hola.core.identity.AbstractNamespace;
+import org.solmix.hola.common.identity.AbstractNamespace;
 import org.solmix.hola.discovery.support.ServiceTypeImpl;
 
 /**

@@ -19,7 +19,7 @@
 
 package org.solmix.hola.discovery.identity;
 
-import org.solmix.hola.core.identity.Namespace;
+import org.solmix.hola.common.identity.Namespace;
 
 /**
  * {@linkp ServiceType} 工厂类

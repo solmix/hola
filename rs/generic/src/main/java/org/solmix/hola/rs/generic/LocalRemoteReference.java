@@ -23,7 +23,7 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
 import org.solmix.commons.util.Reflection;
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.RemoteResponse;
 import org.solmix.hola.rs.identity.RemoteServiceID;

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 
 
 /**

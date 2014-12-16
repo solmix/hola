@@ -26,7 +26,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ClassDescUtils;
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.rs.RemoteRequest;
 import org.solmix.hola.rs.support.RemoteRequestImpl;
 import org.solmix.hola.transport.channel.Channel;

@@ -19,9 +19,9 @@
 
 package org.solmix.hola.discovery.identity;
 
-import org.solmix.hola.core.identity.AbstractNamespace;
-import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.core.internal.DefaultIDFactory;
+import org.solmix.hola.common.identity.AbstractNamespace;
+import org.solmix.hola.common.identity.Namespace;
+import org.solmix.hola.common.internal.DefaultIDFactory;
 import org.solmix.hola.discovery.support.ServiceTypeImpl;
 
 /**
@@ -41,7 +41,7 @@ public class DefaultServiceTypeFactory implements ServiceTypeFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.core.identity.Namespace,
+     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.common.identity.Namespace,
      *      java.lang.String)
      */
     @Override
@@ -52,7 +52,7 @@ public class DefaultServiceTypeFactory implements ServiceTypeFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.core.identity.Namespace,
+     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.common.identity.Namespace,
      *      java.lang.String[])
      */
     @Override
@@ -64,7 +64,7 @@ public class DefaultServiceTypeFactory implements ServiceTypeFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.core.identity.Namespace,
+     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.common.identity.Namespace,
      *      java.lang.String[], java.lang.String[], java.lang.String[],
      *      java.lang.String)
      */
@@ -87,7 +87,7 @@ public class DefaultServiceTypeFactory implements ServiceTypeFactory
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.core.identity.Namespace,
+     * @see org.solmix.hola.discovery.ServiceTypeFactory#create(org.solmix.hola.common.identity.Namespace,
      *      org.solmix.hola.discovery.ServiceType)
      */
     @Override

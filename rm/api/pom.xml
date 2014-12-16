@@ -9,7 +9,7 @@
   <dependencies>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-core</artifactId>
+  		<artifactId>hola-common</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>

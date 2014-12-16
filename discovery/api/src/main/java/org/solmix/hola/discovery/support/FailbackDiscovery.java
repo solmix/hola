@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
-import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.common.config.DiscoveryInfo;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.runtime.Container;

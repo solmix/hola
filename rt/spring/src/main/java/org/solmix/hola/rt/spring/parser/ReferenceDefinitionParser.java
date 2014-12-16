@@ -21,7 +21,7 @@ package org.solmix.hola.rt.spring.parser;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.solmix.hola.core.model.ReferenceInfo;
+import org.solmix.hola.common.config.ReferenceConfig;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
@@ -44,7 +44,7 @@ public class ReferenceDefinitionParser  extends AbstractBeanDefinitionParser
     public ReferenceDefinitionParser()
     {
         super();
-        setBeanClass(ReferenceInfo.class);
+        setBeanClass(ReferenceConfig.class);
     }
     @Override
     protected boolean parseContainerAttribute(Element element, ParserContext ctx,

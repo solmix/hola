@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.discovery.zk.support;
 
-import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.common.config.DiscoveryInfo;
 import org.solmix.hola.discovery.zk.ZKClient;
 import org.solmix.hola.discovery.zk.ZKTransporter;
 
@@ -35,7 +35,7 @@ public class CuratorZKTransporter implements ZKTransporter
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.discovery.zk.ZKTransporter#connect(org.solmix.hola.core.model.DiscoveryInfo)
+     * @see org.solmix.hola.discovery.zk.ZKTransporter#connect(org.solmix.hola.common.config.DiscoveryInfo)
      */
     @Override
     public ZKClient connect(DiscoveryInfo info) {

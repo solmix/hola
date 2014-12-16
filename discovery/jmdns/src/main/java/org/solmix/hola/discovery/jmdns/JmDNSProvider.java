@@ -20,7 +20,7 @@ package org.solmix.hola.discovery.jmdns;
 
 import javax.annotation.Resource;
 
-import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.common.config.DiscoveryInfo;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryException;
 import org.solmix.hola.discovery.DiscoveryProvider;

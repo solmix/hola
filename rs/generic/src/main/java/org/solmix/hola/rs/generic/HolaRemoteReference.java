@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rs.generic;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 

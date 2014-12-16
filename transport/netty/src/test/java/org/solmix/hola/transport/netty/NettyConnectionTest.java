@@ -22,7 +22,7 @@ package org.solmix.hola.transport.netty;
 import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.commons.util.NetUtils;
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.exchange.ExchangeClient;
 import org.solmix.hola.transport.exchange.ExchangeServer;

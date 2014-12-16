@@ -28,9 +28,9 @@ import java.io.ObjectOutput;
 
 import javax.annotation.Resource;
 
-import org.solmix.hola.core.model.RemoteInfo;
-import org.solmix.hola.core.serialize.Serialization;
-import org.solmix.hola.core.serialize.SerializationManager;
+import org.solmix.hola.common.config.RemoteInfo;
+import org.solmix.hola.common.serialize.Serialization;
+import org.solmix.hola.common.serialize.SerializationManager;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.runtime.Extension;
 

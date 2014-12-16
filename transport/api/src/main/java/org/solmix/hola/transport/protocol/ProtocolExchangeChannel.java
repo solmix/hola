@@ -4,8 +4,8 @@ import java.net.InetSocketAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.Channel;
 import org.solmix.hola.transport.channel.ChannelHandler;

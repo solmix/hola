@@ -19,7 +19,7 @@
 
 package org.solmix.hola.transport.exchange;
 
-import org.solmix.hola.core.model.RemoteInfo;
+import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.transport.TransportException;
 import org.solmix.hola.transport.channel.ChannelHandler;
 
@@ -35,7 +35,7 @@ public abstract class AbstractExchanger implements ExchangerProvider
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.transport.exchange.ExchangerProvider#bind(org.solmix.hola.core.model.RemoteInfo,
+     * @see org.solmix.hola.transport.exchange.ExchangerProvider#bind(org.solmix.hola.common.config.RemoteInfo,
      *      org.solmix.hola.transport.channel.ChannelHandler,
      *      org.solmix.hola.transport.exchange.Replier)
      */

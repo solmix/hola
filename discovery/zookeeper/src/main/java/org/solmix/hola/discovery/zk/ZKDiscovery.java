@@ -25,8 +25,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.HolaConstants;
-import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.config.DiscoveryInfo;
 import org.solmix.hola.discovery.DiscoveryException;
 import org.solmix.hola.discovery.ServiceInfo;
 import org.solmix.hola.discovery.identity.ServiceID;

@@ -24,7 +24,7 @@ import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.osgi.service.remoteserviceadmin.ExportReference;
 import org.osgi.service.remoteserviceadmin.ImportReference;
 import org.osgi.service.remoteserviceadmin.RemoteServiceAdminEvent;
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 
 /**
  * 

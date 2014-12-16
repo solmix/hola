@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.discovery.identity;
 
-import org.solmix.hola.core.identity.ID;
+import org.solmix.hola.common.identity.ID;
 
 
 /**

@@ -31,8 +31,8 @@ import org.osgi.framework.Version;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.core.identity.ID;
-import org.solmix.hola.core.identity.support.DefaultIDFactory;
+import org.solmix.hola.common.identity.ID;
+import org.solmix.hola.common.identity.support.DefaultIDFactory;
 import org.solmix.hola.rs.AsyncRemoteServiceProxy;
 
 /**

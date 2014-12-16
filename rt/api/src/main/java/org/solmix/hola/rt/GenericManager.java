@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rt;
 
-import org.solmix.hola.core.model.RemoteServiceInfo;
+import org.solmix.hola.common.config.ServiceConfig;
 
 /**
  * 
@@ -32,10 +32,10 @@ public class GenericManager implements ServiceManager {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.rt.ServiceManager#createPublisher(org.solmix.hola.core.model.RemoteServiceInfo)
+     * @see org.solmix.hola.rt.ServiceManager#createPublisher(org.solmix.hola.common.config.ServiceConfig)
      */
     @Override
-    public ServicePublisher createPublisher(RemoteServiceInfo<?> config) {
+    public ServicePublisher createPublisher(ServiceConfig<?> config) {
         return new GenericPublisher(config);
     }
 

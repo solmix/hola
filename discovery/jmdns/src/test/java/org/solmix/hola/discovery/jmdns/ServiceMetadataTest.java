@@ -24,8 +24,8 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.solmix.hola.core.identity.Namespace;
-import org.solmix.hola.core.identity.support.DefaultIDFactory;
+import org.solmix.hola.common.identity.Namespace;
+import org.solmix.hola.common.identity.support.DefaultIDFactory;
 import org.solmix.hola.discovery.ServiceProperties;
 import org.solmix.hola.discovery.identity.DefaultServiceTypeFactory;
 import org.solmix.hola.discovery.identity.ServiceType;

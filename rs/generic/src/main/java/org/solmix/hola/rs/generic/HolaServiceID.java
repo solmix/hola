@@ -19,8 +19,8 @@
 package org.solmix.hola.rs.generic;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.core.identity.AbstractNamespace;
-import org.solmix.hola.core.identity.BaseID;
+import org.solmix.hola.common.identity.AbstractNamespace;
+import org.solmix.hola.common.identity.BaseID;
 import org.solmix.hola.rs.identity.RemoteServiceID;
 
 
@@ -47,7 +47,7 @@ public class HolaServiceID extends BaseID implements RemoteServiceID
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.BaseID#namespaceCompareTo(org.solmix.hola.core.identity.BaseID)
+     * @see org.solmix.hola.common.identity.BaseID#namespaceCompareTo(org.solmix.hola.common.identity.BaseID)
      */
     @Override
     protected int namespaceCompareTo(BaseID o) {
@@ -62,7 +62,7 @@ public class HolaServiceID extends BaseID implements RemoteServiceID
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.BaseID#namespaceEquals(org.solmix.hola.core.identity.BaseID)
+     * @see org.solmix.hola.common.identity.BaseID#namespaceEquals(org.solmix.hola.common.identity.BaseID)
      */
     @Override
     protected boolean namespaceEquals(BaseID o) {
@@ -78,7 +78,7 @@ public class HolaServiceID extends BaseID implements RemoteServiceID
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.BaseID#namespaceGetName()
+     * @see org.solmix.hola.common.identity.BaseID#namespaceGetName()
      */
     @Override
     protected String namespaceGetName() {
@@ -88,7 +88,7 @@ public class HolaServiceID extends BaseID implements RemoteServiceID
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.hola.core.identity.BaseID#namespaceHashCode()
+     * @see org.solmix.hola.common.identity.BaseID#namespaceHashCode()
      */
     @Override
     protected int namespaceHashCode() {

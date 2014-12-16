@@ -20,7 +20,7 @@ package org.solmix.hola.rt.spring.parser;
 
 import java.util.Map;
 
-import org.solmix.hola.core.model.MonitorInfo;
+import org.solmix.hola.common.config.MonitorConfig;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -42,7 +42,7 @@ public class MonitorDefinitionParser extends AbstractBeanDefinitionParser
     public MonitorDefinitionParser()
     {
         super();
-        setBeanClass(MonitorInfo.class);
+        setBeanClass(MonitorConfig.class);
     }
     @Override
     protected void parseNameAttribute(Element element, ParserContext ctx,

@@ -1,0 +1,2 @@
+org.solmix.hola.rm.generic.HolaProtocolFactory:org.solmix.runtime.exchange.ProtocolFactory:true
+org.solmix.hola.rm.generic.HolaTransporterFactory:org.solmix.runtime.exchange.PipelineFactory:true

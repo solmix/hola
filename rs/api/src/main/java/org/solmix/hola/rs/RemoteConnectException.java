@@ -19,7 +19,7 @@
 
 package org.solmix.hola.rs;
 
-import org.solmix.hola.core.HolaException;
+import org.solmix.hola.common.HolaException;
 
 /**
  * 

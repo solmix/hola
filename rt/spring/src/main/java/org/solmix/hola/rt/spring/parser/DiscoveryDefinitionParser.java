@@ -20,7 +20,7 @@ package org.solmix.hola.rt.spring.parser;
 
 import java.util.Map;
 
-import org.solmix.hola.core.model.DiscoveryInfo;
+import org.solmix.hola.common.config.DiscoveryConfig;
 import org.solmix.runtime.support.spring.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -42,7 +42,7 @@ public class DiscoveryDefinitionParser extends AbstractBeanDefinitionParser
     public DiscoveryDefinitionParser()
     {
         super();
-        setBeanClass(DiscoveryInfo.class);
+        setBeanClass(DiscoveryConfig.class);
     }
     @Override
     protected void parseNameAttribute(Element element, ParserContext ctx,
