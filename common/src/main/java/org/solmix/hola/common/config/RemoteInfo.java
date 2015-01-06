@@ -79,7 +79,7 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
     /**
      * 传输层实现
      */
-    public static final String TRANSPORT = "transport";
+    public static final String TRANSPORT = "transporter";
 
 
     /**
@@ -297,7 +297,7 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
 
   
     /**
-     * @return the transport
+     * @return the transporter
      */
     public String getTransport() {
         return getString(TRANSPORT);
@@ -684,7 +684,7 @@ public class RemoteInfo extends AbstractURIInfo<RemoteInfo>
             return this;
         }
         /**
-         * @param transport the transport to set
+         * @param transporter the transporter to set
          */
         public Builder setTransport(String transport) {
             properties.put(TRANSPORT, transport);

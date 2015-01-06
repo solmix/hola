@@ -21,12 +21,16 @@ package org.solmix.hola.rm;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.hola.common.HolaConstants;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.EndpointInfoFactory;
 import org.solmix.runtime.exchange.ProtocolFactoryManager;
 import org.solmix.runtime.exchange.Service;
+import org.solmix.runtime.exchange.TransporterFactory;
+import org.solmix.runtime.exchange.TransporterFactoryManager;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
 import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.model.NamedID;
@@ -45,14 +49,14 @@ import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
 
     private static final long serialVersionUID = 121982796534012439L;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteEndpointFactory.class);
 
     private Class<?> serviceClass;
 
     private ReflectServiceFactory serviceFactory;
     
     private Serialization serialization;
-    
-   
 
     protected RemoteEndpointFactory(ReflectServiceFactory factory) {
         this.serviceFactory = factory;
@@ -84,9 +88,9 @@ public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
 
         EndpointInfo info = service.getEndpointInfo(getEndpointName());
         if (info != null) {
-            //传输ID不一致
-            if (transporterId != null
-                && !transporterId.equals(info.getTransporterId())) {
+            //传输不一致
+            if (transporter != null
+                && !transporter.equals(info.getTransporter())) {
                 info = null;
             } else {
                 ProtocolFactoryManager pfm = getContainer().getExtension(
@@ -112,8 +116,9 @@ public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
            //创建一个
            if(info==null){
                info=createEndpointInfo(null);
-           }else  if (transporterId != null
-               && !transporterId.equals(info.getTransporterId())) {
+               //传输层变了.
+           }else  if (transporter != null
+               && !transporter.equals(info.getTransporter())) {
                ProtocolInfo ptl = info.getProtocol();
                info = createEndpointInfo(ptl);
            }
@@ -164,26 +169,29 @@ public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
             service.getServiceInfo().addProtocol(ptl);
         }
 
-        if (transporterId == null) {
-            if (transporterId == null && getAddress() != null
+        if (transporter == null) {
+            if (transporter == null && getAddress() != null
                 && getAddress().contains("://")) {
-                transporterId = getProtocolTypeFromAddress(getAddress());
+                transporter = getTransportTypeForAddress(getAddress());
             }
-            if (transporterId == null) {
-                transporterId = HolaConstants.DEFAULT_TRANSPORTER;
+            if (transporter == null) {
+                transporter = HolaConstants.DEFAULT_TRANSPORTER;
             }
         }
-        setTransporterId(transporterId);
+        setTransporter(transporter);
+        if(transporterFactory == null){
+            transporterFactory= getTransporterFactory(transporter);
+        }
 
         EndpointInfoFactory eif = getEndpointInfoFactory();
         EndpointInfo endpointInfo;
         if (eif != null) {
             endpointInfo = eif.createEndpointInfo(getContainer(),
                 service.getServiceInfo(), ptl, (List<?>) null);
-            endpointInfo.setTransporterId(transporterId);
+            endpointInfo.setTransportor(transporter);
         } else {
             endpointInfo = new EndpointInfo(service.getServiceInfo(),
-                transporterId);
+                transporter);
         }
         int count = 1;
         while (service.getEndpointInfo(endpointName) != null) {
@@ -202,13 +210,25 @@ public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
         return endpointInfo;
     }
 
+    protected TransporterFactory getTransporterFactory(String transporter) {
+        TransporterFactory transporterFactory = getContainer().getExtension(
+            TransporterFactoryManager.class).getFactory(transporter);
+        return transporterFactory;
+    }
+
     /**
      * 用于生成EndpointInfo的工厂.
      * 如configObject可以用于子类获取信息
      * 
      * @return
      */
-    protected abstract  EndpointInfoFactory getEndpointInfoFactory() ;
+    protected   EndpointInfoFactory getEndpointInfoFactory(){
+        final TransporterFactory tf = transporterFactory;
+        if(tf instanceof EndpointInfoFactory){
+            return (EndpointInfoFactory)tf;
+        }
+        return null;
+    }
 
     /**
      * 根据配置的服务发布地址,检查使用协议类型.
@@ -216,24 +236,24 @@ public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
      * @param address
      * @return
      */
-    protected abstract String getProtocolTypeFromAddress(String address) ;
+    protected abstract String getTransportTypeForAddress(String address) ;
 
     /**
      * @return
      */
     protected ProtocolInfo createProtocolInfo() {
 
-        String protocol = protocolId;
-        if (protocol == null) {
-            protocol = HolaConstants.DEFAULT_PROTOCOL;
+        String ptl = protocol;
+        if (ptl == null) {
+            ptl = HolaConstants.DEFAULT_PROTOCOL;
         }
         ProtocolFactoryManager pfm = getContainer().getExtension(
             ProtocolFactoryManager.class);
 
-        protocolFactory = pfm.getProtocolFactory(protocol);
+        protocolFactory = pfm.getProtocolFactory(ptl);
 
         ProtocolInfo pi = protocolFactory.createProtocolInfo(
-            serviceFactory.getService(), protocol, getConfigObject());
+            serviceFactory.getService(), ptl, getConfigObject());
         serviceFactory.pulishEvent(ServiceFactoryEvent.BINDING_CREATED, pi);
         return pi;
     }
@@ -243,13 +263,11 @@ public abstract class RemoteEndpointFactory extends AbstractEndpointFactory {
      */
     protected void initializeServiceFactory() {
         Class<?> cls = getServiceClass();
-
         serviceFactory.setServiceClass(cls);
         serviceFactory.setContainer(getContainer());
         if (serialization != null) {
             serviceFactory.setSerialization(serialization);
         }
-        
     }
 
     /**   */

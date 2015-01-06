@@ -16,30 +16,41 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rm.generic;
+package org.solmix.hola.transport;
+
+import java.util.Map;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年12月5日
+ * @version $Id$  2014年12月18日
  */
 
-public class HelloServiceImpl implements HelloService {
+public class RemoteAddress {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rm.generic.HelloService#sayHello()
-     */
-    @Override
-    public String sayHello() {
-        return "hello";
+    private String address;
+    private Map<String,String> attributes;
+    
+    /**   */
+    public String getAddress() {
+        return address;
     }
-
-    @Override
-    public String sayHelloTo(String name) {
-        return new StringBuilder().append("Hello ").append(name).append(" !").toString();
+    
+    /**   */
+    public void setAddress(String address) {
+        this.address = address;
     }
-
+    
+    /**   */
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
+    
+    /**   */
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+    }
+    
+    
 }

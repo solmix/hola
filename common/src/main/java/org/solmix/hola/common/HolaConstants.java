@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class HolaConstants {
 
-    public static final String DEFAULT_TRANSPORTER = "hola";
+    public static final String DEFAULT_TRANSPORTER = "netty";
 
     public static final String DEFAULT_PROTOCOL = "hola";
 

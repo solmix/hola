@@ -21,7 +21,6 @@ package org.solmix.hola.rm;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
-import org.osgi.framework.ServiceReference;
 import org.solmix.hola.common.config.RemoteServiceConfig;
 
 
@@ -33,21 +32,19 @@ import org.solmix.hola.common.config.RemoteServiceConfig;
 
 public interface RemoteManager {
 
-//    RemoteRegistration<?> registerService(String[] clazzes,Object service, RemoteServiceConfig hei) throws RemoteException;
-    
     RemoteRegistration<?> registerService(String clazze,Object service, RemoteServiceConfig hei) throws RemoteException;
     
     <S> RemoteRegistration<S> registerService(Class<S> clazze,S service, RemoteServiceConfig hei) throws RemoteException;
     
-    <S> ServiceReference<S> getServiceReference(Class<S> clazz);
+    <S> RemoteReference<S> getReference(Class<S> clazz);
     
-    <S> ServiceReference<S> getServiceReference(Class<S> clazz,RemoteServiceConfig hei);
+    <S> RemoteReference<S> getReference(Class<S> clazz,RemoteServiceConfig hei);
     
-    <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> clazz, String filter) throws RemoteException;
+    <S> Collection<RemoteReference<S>> getReferences(Class<S> clazz, String filter) throws RemoteException;
     
-    ServiceReference<?> getServiceReference(String clazz);
+    RemoteReference<?> getReference(String clazz);
     
-    <S> S getService(ServiceReference<S> reference);
+    <S> S getService(RemoteReference<S> reference);
     
     void addRemoteListener(RemoteListener listener);
 

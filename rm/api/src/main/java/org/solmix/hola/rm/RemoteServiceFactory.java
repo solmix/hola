@@ -85,8 +85,8 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
      * 
      */
     protected void buildServiceFromClass() {
-        if (LOG.isInfoEnabled()) {
-            LOG.info("create Service from class :"
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Creating service for class :"
                 + getServiceClass().getName());
         }
         if (Proxy.isProxyClass(this.getServiceClass())) {

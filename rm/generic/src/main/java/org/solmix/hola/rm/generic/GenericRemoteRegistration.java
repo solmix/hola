@@ -23,6 +23,7 @@ import org.solmix.hola.common.config.RemoteServiceConfig;
 import org.solmix.hola.rm.RemoteReference;
 import org.solmix.hola.rm.RemoteRegistration;
 import org.solmix.runtime.exchange.Server;
+import org.solmix.runtime.exchange.model.NamedID;
 
 /**
  * 
@@ -51,12 +52,16 @@ public class GenericRemoteRegistration<S> implements RemoteRegistration<S>,
 
     /** The registration state */
     protected int state = REGISTERED;
-
+    
+    protected transient LocalRemoteReference<S> reference;
+    
     private final GenericRemoteManager manager;
 
     private final RemoteServiceConfig remoteServiceConfig;
 
     private GenericServerFactory serverFactory;
+  
+    private NamedID serviceName;
 
     public GenericRemoteRegistration(GenericRemoteManager manager,
         Class<?> clazze, Object service, RemoteServiceConfig info) {
@@ -68,13 +73,19 @@ public class GenericRemoteRegistration<S> implements RemoteRegistration<S>,
 
     @Override
     public RemoteReference<S> getReference() {
-        // TODO Auto-generated method stub
-        return null;
+        if (reference == null) {
+            synchronized (this) {
+                reference = new LocalRemoteReference<S>(this);
+            }
+        }
+        return reference;
     }
 
     @Override
     public void unregister() {
-        // TODO Auto-generated method stub
+        if(manager!=null){
+            manager.unregisterService(this);
+        }
 
     }
 
@@ -94,5 +105,23 @@ public class GenericRemoteRegistration<S> implements RemoteRegistration<S>,
     void publish() {
         manager.publish(this);
     }
+
+    /**
+     * @return
+     */
+    public Object getService() {
+        return service;
+    }
+    
+    /**   */
+    public NamedID getServiceName() {
+        return serviceName;
+    }
+    
+    /**   */
+    public void setServiceName(NamedID serviceName) {
+        this.serviceName = serviceName;
+    }
+    
 
 }

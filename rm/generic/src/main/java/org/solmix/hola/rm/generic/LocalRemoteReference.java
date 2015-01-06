@@ -18,28 +18,38 @@
  */
 package org.solmix.hola.rm.generic;
 
+import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.solmix.hola.rm.RemoteReference;
+
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年12月5日
+ * @version $Id$  2014年12月31日
  */
 
-public class HelloServiceImpl implements HelloService {
+public class LocalRemoteReference<S> implements RemoteReference<S> {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rm.generic.HelloService#sayHello()
-     */
+    private final GenericRemoteRegistration<S> registration;
+    private final Object service;
+    public LocalRemoteReference(GenericRemoteRegistration<S> registration){
+        this.registration=registration;
+        service=registration.getService();
+    }
+   
     @Override
-    public String sayHello() {
-        return "hello";
+    public boolean isActive() {
+        return registration!=null;
     }
 
+   
     @Override
-    public String sayHelloTo(String name) {
-        return new StringBuilder().append("Hello ").append(name).append(" !").toString();
+    public RemoteServiceConfig getServiceConfig() {
+        return registration.getServiceConfig();
+    }
+    
+    public Object getService(){
+        return registration.getService();
     }
 
 }

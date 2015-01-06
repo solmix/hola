@@ -16,12 +16,15 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rm.generic;
+package org.solmix.hola.transport;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.protocol.HolaProtocolFactory;
 import org.solmix.hola.rm.RemoteEndpointInfo;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
@@ -37,29 +40,31 @@ import org.solmix.runtime.exchange.model.ServiceInfo;
 
 
 /**
- * 
+ * 传输工厂类.
  * @author solmix.f@gmail.com
  * @version $Id$  2014年12月10日
  */
 @Extension(name = HolaProtocolFactory.NAME)
-public class HolaTransporterFactory implements PipelineFactory,
+public class HolaTransportFactory implements PipelineFactory,
     EndpointInfoFactory, TransporterFactory {
 
+    public static  Set<String> transports;
     @Override
     public Transporter getTransporter(EndpointInfo ei, Container container) throws IOException {
         TransporterFactory factory;
         String address = ei.getAddress();
-        ProtocolInfo pi = ei.getProtocol();
-        String pid = pi.getProtocolId();
-        if (StringUtils.isEmpty(pid) && address != null) {
-            pid = getProtocolFromAddress(address);
-        }
+        String transport = ei.getTransporter();
+        
         try {
             TransporterFactoryManager tfm = container.getExtension(TransporterFactoryManager.class);
-            factory=tfm.getFactory(pid);
+            if(StringUtils.isEmpty(address)){
+                factory=tfm.getFactory(transport);
+            }else{
+                factory=tfm.getFactoryForUri(address);
+            }
             return factory.getTransporter(ei, container);
         } catch (Exception e) {
-            IOException ex = new IOException("Could not find transporter factory for transport " + pid);
+            IOException ex = new IOException("Could not find transporter factory for transporter " + transport);
             ex.initCause(e);
             throw ex;
         }
@@ -79,6 +84,12 @@ public class HolaTransporterFactory implements PipelineFactory,
     public EndpointInfo createEndpointInfo(Container container,
         ServiceInfo serviceInfo, ProtocolInfo b, List<?> extensions) {
         EndpointInfo info = new RemoteEndpointInfo(serviceInfo, "hola");
+        if(extensions!=null){
+            for(Iterator<?> itr = extensions.iterator(); itr.hasNext();){
+                Object extension = itr.next();
+                info.addExtension(extension);
+            }
+        }
         return info;
     }
 

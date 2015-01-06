@@ -16,42 +16,42 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-
 package org.solmix.hola.rm.generic;
 
-import org.solmix.runtime.Container;
-import org.solmix.runtime.Extension;
-import org.solmix.runtime.exchange.Protocol;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.support.AbstractProtocolFactory;
+import java.io.Serializable;
+
+import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.solmix.hola.rm.RemoteReference;
+
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年12月10日
+ * @version $Id$  2014年12月31日
  */
-@Extension(name = HolaProtocolFactory.NAME)
-public class HolaProtocolFactory extends AbstractProtocolFactory {
 
-    public static final String NAME = "hola";
+public class ProxyRemoteReference<S> implements RemoteReference<S>,
+    Serializable {
 
-    /**
-     * @param container
-     */
-    public HolaProtocolFactory(Container container) {
-        super(container);
+    private static final long serialVersionUID = 7448513598696809288L;
+    private boolean active;
+    
+    @Override
+    public boolean isActive() {
+        return active;
     }
-
+    public void setActive(boolean active){
+        this.active=active;
+    }
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.ProtocolFactory#createProtocol(org.solmix.runtime.exchange.model.ProtocolInfo)
+     * @see org.solmix.hola.rm.RemoteReference#getServiceConfig()
      */
     @Override
-    public Protocol createProtocol(ProtocolInfo info) {
-        HolaProtocol hp = new HolaProtocol(info);
-
-        return hp;
+    public RemoteServiceConfig getServiceConfig() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -36,5 +36,5 @@ public interface RemoteReference<S> {
      */
     boolean isActive();
     
-    RemoteServiceConfig getEndpointInfo();
+    RemoteServiceConfig getServiceConfig();
 }

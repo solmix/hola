@@ -16,46 +16,23 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.rm;
 
-package org.solmix.hola.rm.generic;
-
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.Protocol;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.support.DefaultMessage;
 import org.solmix.runtime.interceptor.support.InterceptorProviderSupport;
+
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年12月10日
+ * @version $Id$  2015年1月5日
  */
 
-public class HolaProtocol extends InterceptorProviderSupport implements
-    Protocol {
+public class RemoteClientProxyFactory extends InterceptorProviderSupport {
 
-    private static final long serialVersionUID = 4846308399740969939L;
-
-    private final ProtocolInfo protocolInfo;
-
-    public HolaProtocol(ProtocolInfo info) {
-        this.protocolInfo = info;
-    }
-
-    @Override
-    public Message createMessage() {
-        return createMessage(new DefaultMessage());
-    }
-
-    @Override
-    public Message createMessage(Message m) {
-        //wrapped message.
-        return m;
-    }
-
-    @Override
-    public ProtocolInfo getBindingInfo() {
-        return protocolInfo;
+    private static final long serialVersionUID = -2122748438240492773L;
+    
+    public RemoteClientProxyFactory(){
+        
     }
 
 }

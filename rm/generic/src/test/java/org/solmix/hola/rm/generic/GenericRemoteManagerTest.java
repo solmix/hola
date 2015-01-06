@@ -20,10 +20,14 @@ package org.solmix.hola.rm.generic;
 
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.solmix.hola.common.config.ServerConfig;
 import org.solmix.hola.rm.RemoteException;
+import org.solmix.hola.rm.RemoteReference;
+import org.solmix.hola.rm.RemoteRegistration;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 
@@ -34,7 +38,7 @@ import org.solmix.runtime.ContainerFactory;
  * @version $Id$  2014年12月5日
  */
 
-public class GenericRemoteManagerTest {
+public class GenericRemoteManagerTest extends Assert {
 
     private Container container;
     /**
@@ -46,14 +50,51 @@ public class GenericRemoteManagerTest {
     }
 
     @Test
-    public void test() {
+    public void testLocalReference() {
         GenericRemoteManager grm = new GenericRemoteManager();
         RemoteServiceConfig rsc = new RemoteServiceConfig();
+        ServerConfig sc = new ServerConfig();
+        sc.setTransporter("local");
+        rsc.setServer(sc);
         rsc.setAddress("hola://localhost:12312");
+        HelloServiceImpl hsimpl= new HelloServiceImpl();
+        RemoteRegistration<HelloService> registration=null;
         try {
-            grm.registerService(HelloService.class, new HelloServiceImpl(), rsc);
+            registration =  grm.registerService(HelloService.class, hsimpl, rsc);
+            HelloService  hs=  grm.getService(registration.getReference());
+            assertNotNull(hs);
+            assertEquals(hsimpl.sayHelloTo("solmix"), hs.sayHelloTo("solmix"));
+//            ServiceReference<HelloService> refer = grm.getServiceReference(HelloService.class);
+//            HelloService hs = grm.getService(refer);
         } catch (RemoteException e) {
             e.printStackTrace();
+        } finally {
+            if (registration != null) {
+                registration.unregister();
+            }
+        }
+    }
+    
+    @Test
+    public void testRemoteReference() {
+        GenericRemoteManager grm = new GenericRemoteManager();
+        RemoteServiceConfig rsc = new RemoteServiceConfig();
+        ServerConfig sc = new ServerConfig();
+        sc.setTransporter("local");
+        rsc.setServer(sc);
+        rsc.setAddress("hola://localhost:12312");
+        HelloServiceImpl hsimpl= new HelloServiceImpl();
+        RemoteRegistration<HelloService> registration=null;
+        try {
+            registration =  grm.registerService(HelloService.class, hsimpl, rsc);
+            RemoteReference<HelloService> refer = grm.getReference(HelloService.class);
+            HelloService hs = grm.getService(refer);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } finally {
+            if (registration != null) {
+                registration.unregister();
+            }
         }
     }
     
