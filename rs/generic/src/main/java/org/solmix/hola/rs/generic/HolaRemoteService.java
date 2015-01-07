@@ -19,10 +19,10 @@
 package org.solmix.hola.rs.generic;
 
 import java.lang.reflect.Method;
+import java.rmi.RemoteException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.solmix.hola.common.config.RemoteInfo;
-import org.solmix.hola.rm.RemoteException;
+import org.solmix.hola.core.model.RemoteInfo;
 import org.solmix.hola.rs.AbstractRemoteService;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRequest;
@@ -39,8 +39,7 @@ import org.solmix.hola.transport.exchange.ExchangeClient;
  * @version 0.0.1  2014年8月21日
  */
 
-public class HolaRemoteService extends AbstractRemoteService
-{
+public class HolaRemoteService extends AbstractRemoteService{
 
     private final String[] clazzs;
     private final HolaRemoteProtocol manager;

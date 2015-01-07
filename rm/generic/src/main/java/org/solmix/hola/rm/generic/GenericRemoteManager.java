@@ -178,12 +178,18 @@ public class GenericRemoteManager implements RemoteManager {
         if (reference instanceof LocalRemoteReference) {
             return (S) ((LocalRemoteReference<?>) reference).getService();
         } else if (reference instanceof ProxyRemoteReference) {
-
+            return getRemoteService((ProxyRemoteReference<S>)reference);
         }
         return null;
     }
 
    
+    protected <S> S  getRemoteService(ProxyRemoteReference<S> reference) {
+        GenericDelegate delegate = new GenericDelegate(reference);
+        delegate.getProxy(reference.get, type);
+        return null;
+    }
+
     @Override
     public void addRemoteListener(RemoteListener listener) {
         synchronized (listeners) {

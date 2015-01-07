@@ -54,7 +54,7 @@ public class HolaProtocol extends InterceptorProviderSupport implements
     }
 
     @Override
-    public ProtocolInfo getBindingInfo() {
+    public ProtocolInfo getProtocolInfo() {
         return protocolInfo;
     }
 

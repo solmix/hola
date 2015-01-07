@@ -19,8 +19,12 @@
 package org.solmix.hola.rm;
 
 import org.solmix.runtime.exchange.Client;
+import org.solmix.runtime.exchange.Endpoint;
+import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.PipelineFactory;
 import org.solmix.runtime.exchange.PipelineFactoryManager;
+import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
+import org.solmix.runtime.exchange.support.DefaultClient;
 import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 import org.solmix.runtime.exchange.support.TransportDetectSupport;
 
@@ -35,14 +39,39 @@ public class RemoteClientFactory extends RemoteEndpointFactory {
 
     private static final long serialVersionUID = -1962206780820114020L;
 
+    public RemoteClientFactory() {
+        super(new ReflectServiceFactory(new RemotePhasePolicy()));
+    }
+    
     public RemoteClientFactory(ReflectServiceFactory factory) {
         super(factory);
     }
     
     public Client create(){
-        
+        getServiceFactory().resetFactory();
+        if (getServiceFactory().getProperties()==null){
+            getServiceFactory().setProperties(properties);
+        }else if(properties!=null){
+            getServiceFactory().getProperties().putAll(properties);
+        }
+        Client client =null;
+        Endpoint endpoint = null;
+        try{
+            endpoint= createEndpoint();
+            getServiceFactory().pulishEvent(ServiceFactoryEvent.PRE_CLIENT_CREATE,endpoint);
+            client = createClient(endpoint);
+            initializeAnnotationInterceptors(endpoint, getServiceClass());
+        }catch(EndpointException e){
+            throw new RemoteException(e);
+        }
+        getServiceFactory().pulishEvent(ServiceFactoryEvent.CLIENT_CREATED,client,endpoint);
+        return client;
     }
     
+    protected Client createClient(Endpoint endpoint) {
+        return new DefaultClient(getContainer(),endpoint,getPipelineSelector());
+    }
+
     @Override
     protected String getTransportTypeForAddress(String address) {
         PipelineFactoryManager plm = getContainer().getExtension(PipelineFactoryManager.class);

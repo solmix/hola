@@ -43,7 +43,6 @@ import org.solmix.runtime.exchange.model.ServiceInfo;
 import org.solmix.runtime.exchange.support.DefaultService;
 import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 import org.solmix.runtime.interceptor.Fault;
-import org.solmix.runtime.interceptor.phase.PhasePolicy;
 
 /**
  * 
@@ -57,11 +56,10 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
 
     private ServiceConfig<?> serviceConfig;
     
-    private final RemotePhasePolicy phasePolicy;
-
     public RemoteServiceFactory(){
-        phasePolicy=new RemotePhasePolicy();
+       setPhasePolicy(new RemotePhasePolicy());
     }
+    
     @Override
     protected void buildService() {
         if (getRemoteServiceInfo() != null) {
@@ -81,9 +79,6 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
 
     }
 
-    /**
-     * 
-     */
     protected void buildServiceFromClass() {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Creating service for class :"
@@ -129,9 +124,14 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
         op.setProperty(METHOD_ANNOTATIONS, annotations);
         op.setProperty(METHOD_PARAM_ANNOTATIONS, parAnnotations);
         createArgument(intf,op,method);
+        bindOperation(op, method);
     }
 
-   
+    protected void bindOperation(OperationInfo op, Method method) {
+        // TODO Auto-generated method stub
+        
+    }
+
     protected void createArgument(InterfaceInfo intf, OperationInfo op,
         Method method) {
         //输入
@@ -311,14 +311,5 @@ public class RemoteServiceFactory extends ReflectServiceFactory {
         this.serviceConfig = remoteServiceInfo;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.runtime.exchange.support.ReflectServiceFactory#getPhasePolicy()
-     */
-    @Override
-    protected PhasePolicy getPhasePolicy() {
-        return phasePolicy;
-    }
 
 }
