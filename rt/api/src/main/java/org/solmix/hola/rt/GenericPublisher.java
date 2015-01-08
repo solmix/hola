@@ -38,12 +38,12 @@ import org.solmix.hola.common.config.ServerConfig;
 import org.solmix.hola.common.security.HolaServicePermission;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryProvider;
-import org.solmix.hola.rm.RemoteListener;
-import org.solmix.hola.rm.RemoteManager;
-import org.solmix.hola.rm.RemoteManagerFactory;
-import org.solmix.hola.rm.RemoteReference;
-import org.solmix.hola.rm.RemoteRegistration;
-import org.solmix.hola.rm.event.RemoteEvent;
+import org.solmix.hola.rpc.RemoteListener;
+import org.solmix.hola.rpc.RemoteManager;
+import org.solmix.hola.rpc.RemoteManagerFactory;
+import org.solmix.hola.rpc.RemoteReference;
+import org.solmix.hola.rpc.RemoteRegistration;
+import org.solmix.hola.rpc.event.RemoteEvent;
 import org.solmix.runtime.Container;
 
 /**
