@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.solmix.commons.annotation.ThreadSafe;
-import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.Constants;
 
 
 /**
@@ -134,7 +134,7 @@ public abstract class ExtensionInfo<T> implements Serializable
         Object value = properties.get(key);
         if (value != null)
             return value;
-        return properties.get(HolaConstants.DEFAULT_KEY_PREFIX + key);
+        return properties.get(Constants.DEFAULT_KEY_PREFIX + key);
     }
     public Boolean getBoolean(String key){
         Object value = getProperty(key);

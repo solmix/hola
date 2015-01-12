@@ -55,7 +55,7 @@ public class HolaRemoteRegistration<S> implements RemoteRegistration<S>,
     
     protected transient LocalRemoteReference<S> reference;
     
-    private final HolaRemoteManager manager;
+    private final HolaRpcManager manager;
 
     private final RemoteServiceConfig remoteServiceConfig;
 
@@ -63,7 +63,7 @@ public class HolaRemoteRegistration<S> implements RemoteRegistration<S>,
   
     private NamedID serviceName;
 
-    public HolaRemoteRegistration(HolaRemoteManager manager,
+    public HolaRemoteRegistration(HolaRpcManager manager,
         Class<?> clazze, Object service, RemoteServiceConfig info) {
         this.manager = manager;
         this.remoteServiceConfig = info;

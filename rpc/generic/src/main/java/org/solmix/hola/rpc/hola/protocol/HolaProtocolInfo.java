@@ -16,42 +16,22 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.rpc.hola.protocol;
 
-package org.solmix.hola.protocol;
-
-import org.solmix.runtime.Container;
-import org.solmix.runtime.Extension;
-import org.solmix.runtime.exchange.Protocol;
 import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.support.AbstractProtocolFactory;
+import org.solmix.runtime.exchange.model.ServiceInfo;
+
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年12月10日
+ * @version $Id$  2015年1月12日
  */
-@Extension(name = HolaProtocolFactory.NAME)
-public class HolaProtocolFactory extends AbstractProtocolFactory {
 
-    public static final String NAME = "hola";
+public class HolaProtocolInfo extends ProtocolInfo {
 
-    /**
-     * @param container
-     */
-    public HolaProtocolFactory(Container container) {
-        super(container);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.runtime.exchange.ProtocolFactory#createProtocol(org.solmix.runtime.exchange.model.ProtocolInfo)
-     */
-    @Override
-    public Protocol createProtocol(ProtocolInfo info) {
-        HolaProtocol hp = new HolaProtocol(info);
-
-        return hp;
+    public HolaProtocolInfo(ServiceInfo service, String protocolId) {
+        super(service, protocolId);
     }
 
 }

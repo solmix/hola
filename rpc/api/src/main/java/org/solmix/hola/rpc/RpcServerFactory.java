@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
-import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.Constants;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.Server;
@@ -201,7 +201,7 @@ public class RpcServerFactory extends RpcEndpointFactory {
 
     @Override
     protected String getTransportTypeForAddress(String address) {
-        return HolaConstants.DEFAULT_TRANSPORTER;
+        return Constants.DEFAULT_TRANSPORTER;
     }
 
 }

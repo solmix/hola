@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.protocol;
+package org.solmix.hola.rpc.hola.protocol;
 
 import org.solmix.runtime.exchange.Message;
 import org.solmix.runtime.exchange.Protocol;
@@ -36,9 +36,9 @@ public class HolaProtocol extends InterceptorProviderSupport implements
 
     private static final long serialVersionUID = 4846308399740969939L;
 
-    private final ProtocolInfo protocolInfo;
+    private final HolaProtocolInfo protocolInfo;
 
-    public HolaProtocol(ProtocolInfo info) {
+    public HolaProtocol(HolaProtocolInfo info) {
         this.protocolInfo = info;
     }
 

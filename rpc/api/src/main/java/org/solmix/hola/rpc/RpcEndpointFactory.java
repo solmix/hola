@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.Constants;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.EndpointInfoFactory;
@@ -175,7 +175,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
                 transporter = getTransportTypeForAddress(getAddress());
             }
             if (transporter == null) {
-                transporter = HolaConstants.DEFAULT_TRANSPORTER;
+                transporter = Constants.DEFAULT_TRANSPORTER;
             }
         }
         setTransporter(transporter);
@@ -245,7 +245,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
 
         String ptl = protocol;
         if (ptl == null) {
-            ptl = HolaConstants.DEFAULT_PROTOCOL;
+            ptl = Constants.DEFAULT_PROTOCOL;
         }
         ProtocolFactoryManager pfm = getContainer().getExtension(
             ProtocolFactoryManager.class);
@@ -254,7 +254,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
 
         ProtocolInfo pi = protocolFactory.createProtocolInfo(
             serviceFactory.getService(), ptl, getConfigObject());
-        serviceFactory.pulishEvent(ServiceFactoryEvent.BINDING_CREATED, pi);
+        serviceFactory.pulishEvent(ServiceFactoryEvent.PROTOCOL_CREATED, pi);
         return pi;
     }
 

@@ -19,6 +19,10 @@
 package org.solmix.hola.rpc.hola;
 
 import org.solmix.hola.rpc.RpcServiceFactory;
+import org.solmix.runtime.exchange.Endpoint;
+import org.solmix.runtime.exchange.EndpointException;
+import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
+import org.solmix.runtime.exchange.model.EndpointInfo;
 
 
 
@@ -30,6 +34,11 @@ import org.solmix.hola.rpc.RpcServiceFactory;
 
 public class HolaServiceFactory extends RpcServiceFactory {
 
- 
+    @Override
+    public Endpoint createEndpoint(EndpointInfo info) throws EndpointException  {
+        Endpoint ep= new HolaEndpoint(getContainer(), getService(), info);
+        pulishEvent(ServiceFactoryEvent.ENDPOINT_CREATED,info,ep);
+        return ep;
+    }
 
 }

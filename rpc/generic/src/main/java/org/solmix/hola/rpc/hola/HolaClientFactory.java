@@ -30,5 +30,8 @@ import org.solmix.hola.rpc.RpcClientFactory;
 public class HolaClientFactory extends RpcClientFactory {
 
     private static final long serialVersionUID = -1834261674493961692L;
-
+    
+    public HolaClientFactory(){
+        super(new HolaServiceFactory());
+    }
 }

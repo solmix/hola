@@ -31,11 +31,11 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.common.config.RemoteServiceConfig;
-import org.solmix.hola.rpc.RpcException;
 import org.solmix.hola.rpc.RemoteListener;
-import org.solmix.hola.rpc.RpcManager;
 import org.solmix.hola.rpc.RemoteReference;
 import org.solmix.hola.rpc.RemoteRegistration;
+import org.solmix.hola.rpc.RpcException;
+import org.solmix.hola.rpc.RpcManager;
 import org.solmix.hola.rpc.event.RemoteEvent;
 import org.solmix.hola.rpc.event.RemoteRegisteredEvent;
 import org.solmix.hola.rpc.event.RemoteUnregisteredEvent;
@@ -53,9 +53,9 @@ import org.solmix.runtime.exchange.model.ServiceInfo;
  * @version $Id$  2014年11月19日
  */
 
-public class HolaRemoteManager implements RpcManager {
+public class HolaRpcManager implements RpcManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HolaRemoteManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HolaRpcManager.class);
     
     protected final List<RemoteListener> listeners = new ArrayList<RemoteListener>();
 
@@ -65,11 +65,11 @@ public class HolaRemoteManager implements RpcManager {
     
     private HolaServerFactory serverFactory;
     
-    public HolaRemoteManager(){
+    public HolaRpcManager(){
         this(ContainerFactory.getThreadDefaultContainer());
     }
     
-    public HolaRemoteManager(Container container){
+    public HolaRpcManager(Container container){
         this.container=container;
     }
     
@@ -185,8 +185,8 @@ public class HolaRemoteManager implements RpcManager {
 
    
     protected <S> S  getRemoteService(ProxyRemoteReference<S> reference) {
-        HolaDelegate delegate = new HolaDelegate(reference);
-        delegate.getProxy(reference.get, type);
+//        HolaDelegate delegate = new HolaDelegate(reference);
+//        delegate.getProxy(reference.get, type);
         return null;
     }
 
@@ -313,7 +313,7 @@ public class HolaRemoteManager implements RpcManager {
         if (LOG.isTraceEnabled()) {
             StringBuilder sb = new StringBuilder();
             sb.append("Registered service :");
-                sb.append(si.getName()).append(",");
+            sb.append(si.getName()).append(",");
             LOG.trace(sb.toString());
         }
     }

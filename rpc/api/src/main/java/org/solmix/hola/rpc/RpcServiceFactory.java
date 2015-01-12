@@ -61,7 +61,7 @@ public class RpcServiceFactory extends ReflectServiceFactory {
     }
     
     @Override
-    protected void buildService() {
+    protected void buildServiceModel() {
         if (getRemoteServiceInfo() != null) {
             buildServiceFromInfo();
         } else if (getServiceClass() != null) {

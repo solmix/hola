@@ -22,7 +22,7 @@ package org.solmix.hola.common.serialize;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.Constants;
 import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.common.serialize.hola.HolaSerialization;
 import org.solmix.hola.common.serialize.java.JavaSerialization;
@@ -58,7 +58,7 @@ public class SerializationManagerImpl implements SerializationManager
     @Override
     public  Serialization getSerialization(RemoteInfo info) {
         return container.getExtensionLoader(Serialization.class).getExtension(
-            info.getSerial(HolaConstants.DEFAULT_SERIALIZATION));
+            info.getSerial(Constants.DEFAULT_SERIALIZATION));
     }
 
     @Override

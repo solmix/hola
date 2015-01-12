@@ -18,10 +18,15 @@
  */
 package org.solmix.hola.rpc.hola;
 
+import java.util.concurrent.Executor;
+
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.common.config.ReferenceConfig;
+import org.solmix.hola.rpc.ClientProxy;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.bean.BeanConfigurer;
+import org.solmix.runtime.exchange.Client;
+import org.solmix.runtime.exchange.Service;
 import org.solmix.runtime.exchange.model.NamedID;
 
 
@@ -35,6 +40,7 @@ public class HolaDelegate implements RemoteDelegate {
 
     private final Container container;
     private final NamedID serviceName;
+    private Executor executor;
     /**
      * @param reference 
      */
@@ -55,12 +61,25 @@ public class HolaDelegate implements RemoteDelegate {
        proxyFactory.setServiceName(serviceName);
        configureObject(proxyFactory);
        configureObject(clientFactory);
+       if(name==null){
+           
+       }
        serviceFactory.setEndpointName(name);
         if (config != null) {
             clientFactory.setAddress(config.getUrl());
         }
         Object proxy = proxyFactory.create();
-        return null;
+        Service service = serviceFactory.getService();
+        configureObject(service);
+        
+        Client c = ClientProxy.getClient(proxy);
+        if (executor != null) {
+            c.getEndpoint().setExecutor(executor);
+            c.setExecutor(executor);
+        }
+        c.getEndpoint();
+        
+        return type.cast(proxy);
     }
     private void configureObject(Object instance) {
         configureObject(null, instance);
@@ -81,6 +100,15 @@ public class HolaDelegate implements RemoteDelegate {
 
     public Container getContainer() {
         return container;
+    }
+
+    /**   */
+    public Executor getExecutor() {
+        return executor;
+    }
+    /**   */
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
     }
 
 

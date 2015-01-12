@@ -18,11 +18,12 @@
  */
 package org.solmix.hola.rpc.hola;
 
+import org.solmix.hola.rpc.RpcPhasePolicy;
 import org.solmix.runtime.Container;
+import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.Service;
 import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.support.DefaultEndpoint;
-import org.solmix.runtime.interceptor.phase.PhasePolicy;
 
 
 /**
@@ -34,12 +35,9 @@ import org.solmix.runtime.interceptor.phase.PhasePolicy;
 public class HolaEndpoint extends DefaultEndpoint{
 
     private static final long serialVersionUID = 5255996701919292066L;
-    public HolaEndpoint(Container container, Service s, EndpointInfo ed,
-        PhasePolicy phasePolicy) {
-        super(container, s, ed, phasePolicy);
+    public HolaEndpoint(Container container, Service s, EndpointInfo ed) throws EndpointException {
+        super(container, s, ed, new RpcPhasePolicy());
+        
     }
-
-    
-   
 
 }

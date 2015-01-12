@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * @version 0.0.1 2014年7月8日
  */
 
-public class HolaConstants {
+public class Constants {
 
     public static final String DEFAULT_TRANSPORTER = "netty";
 

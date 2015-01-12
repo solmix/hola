@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.protocol.HolaProtocolFactory;
 import org.solmix.hola.rpc.RpcEndpointInfo;
+import org.solmix.hola.rpc.hola.protocol.HolaProtocolFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.exchange.EndpointInfoFactory;

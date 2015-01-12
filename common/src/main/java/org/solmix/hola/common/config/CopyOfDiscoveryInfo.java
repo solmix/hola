@@ -26,7 +26,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.annotation.ThreadSafe;
-import org.solmix.hola.common.HolaConstants;
+import org.solmix.hola.common.Constants;
 
 
 /**
@@ -101,7 +101,7 @@ public class CopyOfDiscoveryInfo extends AbstractURIInfo<CopyOfDiscoveryInfo>
        sb.append(getAddress());
        String backup= getString("backup", null);
        if(backup!=null&&backup.length()>0){
-         String[] backs=  HolaConstants.SPLIT_COMMA_PATTERN.split(backup);
+         String[] backs=  Constants.SPLIT_COMMA_PATTERN.split(backup);
          for(String back:backs){
              sb.append(",");
              sb.append(back);

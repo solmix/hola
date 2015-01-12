@@ -1,2 +1,2 @@
-org.solmix.hola.protocol.HolaProtocolFactory:org.solmix.runtime.exchange.ProtocolFactory:true
+org.solmix.hola.rpc.hola.protocol.HolaProtocolFactory:org.solmix.runtime.exchange.ProtocolFactory:true
 org.solmix.hola.transport.local.LocalTransportFactory:org.solmix.runtime.exchange.TransporterFactory:true

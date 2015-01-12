@@ -186,6 +186,8 @@ public class LocalPipeline extends AbstractPipeline {
                 public void run() {                            
                     DefaultExchange ex = new DefaultExchange();
                     ex.put(Container.class, transporter.getContainer());
+                    //设置返回的Message,message的interceptor在transporter.getProcessor().process(inMsg)中
+                    //由ChainInitiationProcessor初始化.
                     ex.setIn(inMsg);
                     inMsg.setExchange(ex);
                     ex.put(IN_EXCHANGE, exchange);

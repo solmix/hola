@@ -28,7 +28,7 @@ import org.solmix.hola.common.config.ServerConfig;
 import org.solmix.hola.rpc.RpcException;
 import org.solmix.hola.rpc.RemoteReference;
 import org.solmix.hola.rpc.RemoteRegistration;
-import org.solmix.hola.rpc.hola.HolaRemoteManager;
+import org.solmix.hola.rpc.hola.HolaRpcManager;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 
@@ -52,7 +52,7 @@ public class GenericRemoteManagerTest extends Assert {
 
     @Test
     public void testLocalReference() {
-        HolaRemoteManager grm = new HolaRemoteManager();
+        HolaRpcManager grm = new HolaRpcManager();
         RemoteServiceConfig rsc = new RemoteServiceConfig();
         ServerConfig sc = new ServerConfig();
         sc.setTransporter("local");
@@ -78,7 +78,7 @@ public class GenericRemoteManagerTest extends Assert {
     
     @Test
     public void testRemoteReference() {
-        HolaRemoteManager grm = new HolaRemoteManager();
+        HolaRpcManager grm = new HolaRpcManager();
         RemoteServiceConfig rsc = new RemoteServiceConfig();
         ServerConfig sc = new ServerConfig();
         sc.setTransporter("local");
