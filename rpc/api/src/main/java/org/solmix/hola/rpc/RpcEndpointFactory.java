@@ -24,6 +24,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.common.Constants;
+import org.solmix.runtime.exchange.DataFormat;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.EndpointInfoFactory;
@@ -36,7 +37,6 @@ import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.model.NamedID;
 import org.solmix.runtime.exchange.model.ProtocolInfo;
 import org.solmix.runtime.exchange.model.ServiceInfo;
-import org.solmix.runtime.exchange.serialize.Serialization;
 import org.solmix.runtime.exchange.support.AbstractEndpointFactory;
 import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 
@@ -56,7 +56,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
 
     private ReflectServiceFactory serviceFactory;
     
-    private Serialization serialization;
+    private DataFormat dataFormat;
 
     protected RpcEndpointFactory(ReflectServiceFactory factory) {
         this.serviceFactory = factory;
@@ -265,8 +265,8 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
         Class<?> cls = getServiceClass();
         serviceFactory.setServiceClass(cls);
         serviceFactory.setContainer(getContainer());
-        if (serialization != null) {
-            serviceFactory.setSerialization(serialization);
+        if (dataFormat != null) {
+            serviceFactory.setDataFormat(dataFormat);
         }
     }
 
@@ -295,13 +295,13 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
 
     
     /**   */
-    public Serialization getSerialization() {
-        return serialization;
+    public DataFormat getDataFormat() {
+        return dataFormat;
     }
 
     
     /**   */
-    public void setSerialization(Serialization serialization) {
-        this.serialization = serialization;
+    public void setDataFormat(DataFormat dataFormat) {
+        this.dataFormat = dataFormat;
     }
 }

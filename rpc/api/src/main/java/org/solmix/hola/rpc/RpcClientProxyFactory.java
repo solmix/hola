@@ -30,9 +30,9 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.bean.BeanConfigurer;
 import org.solmix.runtime.exchange.Client;
+import org.solmix.runtime.exchange.DataFormat;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
 import org.solmix.runtime.exchange.model.NamedID;
-import org.solmix.runtime.exchange.serialize.Serialization;
 import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 import org.solmix.runtime.interceptor.support.InterceptorProviderSupport;
 
@@ -49,7 +49,7 @@ public class RpcClientProxyFactory extends InterceptorProviderSupport {
     private final RpcClientFactory rpcClientFactory;
     private Map<String, Object> properties;
     private Container container;
-    private Serialization serialization;
+    private DataFormat dataFormat;
 
     public RpcClientProxyFactory() {
         this(new RpcClientFactory());
@@ -82,8 +82,8 @@ public class RpcClientProxyFactory extends InterceptorProviderSupport {
                 rpcClientFactory.setContainer(container);
             }
            
-            if(serialization!=null){
-                rpcClientFactory.setSerialization(serialization);
+            if(dataFormat!=null){
+                rpcClientFactory.setDataFormat(dataFormat);
             }
             Client c = rpcClientFactory.create();
             if(getInInterceptors()!=null){
