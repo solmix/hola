@@ -19,12 +19,12 @@
 
 package org.solmix.hola.rpc.dataformat;
 
-import org.solmix.runtime.exchange.DataFormat;
-import org.solmix.runtime.exchange.ObjectReader;
-import org.solmix.runtime.exchange.ObjectWriter;
 import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.serialize.ObjectInput;
-import org.solmix.runtime.exchange.serialize.ObjectOutput;
+import org.solmix.runtime.exchange.dataformat.DataFormat;
+import org.solmix.runtime.exchange.dataformat.ObjectInput;
+import org.solmix.runtime.exchange.dataformat.ObjectOutput;
+import org.solmix.runtime.exchange.dataformat.ObjectReader;
+import org.solmix.runtime.exchange.dataformat.ObjectWriter;
 import org.solmix.runtime.interceptor.support.InterceptorProviderSupport;
 
 /**

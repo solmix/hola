@@ -30,7 +30,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.bean.BeanConfigurer;
 import org.solmix.runtime.exchange.Client;
-import org.solmix.runtime.exchange.DataFormat;
+import org.solmix.runtime.exchange.dataformat.DataFormat;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
 import org.solmix.runtime.exchange.model.NamedID;
 import org.solmix.runtime.exchange.support.ReflectServiceFactory;

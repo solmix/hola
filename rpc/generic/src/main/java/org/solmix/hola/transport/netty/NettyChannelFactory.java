@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 The Solmix Project
+ * Copyright (c) 2015 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,36 +16,26 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rpc.hola.protocol;
+package org.solmix.hola.transport.netty;
 
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.SerializationInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月12日
+ * @version $Id$  2015年1月15日
  */
 
-public class HolaProtocolInfo extends ProtocolInfo {
+public class NettyChannelFactory extends ChannelInitializer<Channel> {
 
-    private SerializationInfo serializationInfo;
-    public HolaProtocolInfo(ServiceInfo service, String protocolId) {
-        super(service, protocolId);
-    }
     
-    /**   */
-    public SerializationInfo getSerializationInfo() {
-        return serializationInfo;
+    @Override
+    protected void initChannel(Channel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast(new NettyClientHandler());
     }
-    
-    /**   */
-    public void setSerializationInfo(SerializationInfo serializationInfo) {
-        this.serializationInfo = serializationInfo;
-    }
-    
-  
 
 }

@@ -19,6 +19,10 @@
 
 package org.solmix.hola.rpc.hola.protocol;
 
+import java.util.Map;
+
+import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.solmix.hola.rpc.hola.interceptor.ObjectOutputInterceptor;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.exchange.Protocol;
@@ -53,16 +57,23 @@ public class HolaProtocolFactory extends AbstractProtocolFactory {
     @Override
     public Protocol createProtocol(ProtocolInfo info) {
         HolaProtocol hp = null;
+        HolaProtocolInfo hpi = null;
         if (info instanceof HolaProtocolInfo) {
-            hp = new HolaProtocol((HolaProtocolInfo) info);
+            hpi=(HolaProtocolInfo) info;
+            hp = new HolaProtocol(hpi);
         } else {
             throw new IllegalStateException(
                 "Can't create HolaProtocol,protocolInfo is not a HolaProtocolInfo");
         }
 
         hp.getOutInterceptors().add(new AttachmentOutInterceptor());
+        hp.getOutInterceptors().add(new ObjectOutputInterceptor(hpi.getSerializationInfo(), getContainer()));
 
+        hp.getOutFaultInterceptors().add(new ObjectOutputInterceptor(hpi.getSerializationInfo(), getContainer()));
+        
+        
         hp.getInInterceptors().add(new AttachmentInInterceptor());
+        
 
         return hp;
     }
@@ -71,7 +82,13 @@ public class HolaProtocolFactory extends AbstractProtocolFactory {
     public ProtocolInfo createProtocolInfo(ServiceInfo info, String protocol,
         Object configObject) {
         HolaProtocolInfo pi = new HolaProtocolInfo(info, protocol);
-
+        if(configObject instanceof RemoteServiceConfig){
+            
+        }else if(configObject instanceof RemoteServiceConfig){
+            
+        }else if (configObject instanceof Map<?,?>){
+            
+        }
         return pi;
     }
 }

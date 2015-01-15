@@ -107,10 +107,10 @@ public class HolaTransportFactory implements PipelineFactory,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.PipelineFactory#getpPipeline(org.solmix.runtime.exchange.model.EndpointInfo, java.lang.String, org.solmix.runtime.Container)
+     * @see org.solmix.runtime.exchange.PipelineFactory#getPipeline(org.solmix.runtime.exchange.model.EndpointInfo, java.lang.String, org.solmix.runtime.Container)
      */
     @Override
-    public Pipeline getpPipeline(EndpointInfo info, String address, Container c) {
+    public Pipeline getPipeline(EndpointInfo info, String address, Container c) {
         // TODO Auto-generated method stub
         return null;
     }

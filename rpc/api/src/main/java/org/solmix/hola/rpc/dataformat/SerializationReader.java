@@ -18,9 +18,9 @@
  */
 package org.solmix.hola.rpc.dataformat;
 
-import org.solmix.runtime.exchange.ObjectReader;
+import org.solmix.runtime.exchange.dataformat.ObjectInput;
+import org.solmix.runtime.exchange.dataformat.ObjectReader;
 import org.solmix.runtime.exchange.model.ArgumentInfo;
-import org.solmix.runtime.exchange.serialize.ObjectInput;
 import org.solmix.runtime.interceptor.Fault;
 
 

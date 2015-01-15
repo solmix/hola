@@ -84,7 +84,7 @@ public class LocalTransportFactory implements TransporterFactory,
     }
 
     @Override
-    public Pipeline getpPipeline(EndpointInfo info, String address, Container c)
+    public Pipeline getPipeline(EndpointInfo info, String address, Container c)
         throws IOException {
         return new LocalPipeline(this, (LocalTransporter) getTransporter(info,
             c));

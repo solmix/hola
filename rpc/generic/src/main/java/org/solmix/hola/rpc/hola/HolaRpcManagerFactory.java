@@ -31,7 +31,7 @@ import org.solmix.runtime.Container;
  * @version $Id$  2014年11月19日
  */
 
-public class HolaRemoteManagerFactory implements RpcManagerFactory {
+public class HolaRpcManagerFactory implements RpcManagerFactory {
 
     @Resource
     private Container container;
