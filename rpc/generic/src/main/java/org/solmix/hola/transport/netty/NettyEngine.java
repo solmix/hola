@@ -18,24 +18,17 @@
  */
 package org.solmix.hola.transport.netty;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月15日
+ * @version $Id$  2015年1月18日
  */
 
-public class NettyChannelFactory extends ChannelInitializer<Channel> {
+public interface NettyEngine {
 
-    
-    @Override
-    protected void initChannel(Channel ch) throws Exception {
-        ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new NettyClientHandler());
-    }
+    void start();
 
+    void shutdown();
 }

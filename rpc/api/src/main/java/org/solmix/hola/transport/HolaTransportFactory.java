@@ -19,13 +19,10 @@
 package org.solmix.hola.transport;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.rpc.RpcEndpointInfo;
-import org.solmix.hola.rpc.hola.protocol.HolaProtocolFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.exchange.EndpointInfoFactory;
@@ -44,7 +41,7 @@ import org.solmix.runtime.exchange.model.ServiceInfo;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年12月10日
  */
-@Extension(name = HolaProtocolFactory.NAME)
+@Extension(name ="hola")
 public class HolaTransportFactory implements PipelineFactory,
     EndpointInfoFactory, TransporterFactory {
 
@@ -82,14 +79,14 @@ public class HolaTransportFactory implements PipelineFactory,
      */
     @Override
     public EndpointInfo createEndpointInfo(Container container,
-        ServiceInfo serviceInfo, ProtocolInfo b, List<?> extensions) {
+        ServiceInfo serviceInfo, ProtocolInfo b, Object extensions) {
         EndpointInfo info = new RpcEndpointInfo(serviceInfo, "hola");
-        if(extensions!=null){
-            for(Iterator<?> itr = extensions.iterator(); itr.hasNext();){
-                Object extension = itr.next();
-                info.addExtension(extension);
-            }
-        }
+//        if(extensions!=null){
+//            for(Iterator<?> itr = extensions.iterator(); itr.hasNext();){
+//                Object extension = itr.next();
+//                info.addExtension(extension);
+//            }
+//        }
         return info;
     }
 

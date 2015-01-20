@@ -16,21 +16,34 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport;
 
-import java.util.Collection;
+package org.solmix.hola.rpc.protocol;
 
+import org.solmix.runtime.exchange.model.ProtocolInfo;
+import org.solmix.runtime.exchange.model.SerializationInfo;
+import org.solmix.runtime.exchange.model.ServiceInfo;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月18日
+ * @version $Id$ 2015年1月19日
  */
 
-public interface TransporterRegistry {
+public class RpcProtocolInfo extends ProtocolInfo {
 
-    void add(AbstractTCPTransporter transporter);
-    void remove(String path);
-    AbstractTCPTransporter getTransporterForPath(String path);
-    Collection<AbstractTCPTransporter> getTransporters();
+    private SerializationInfo serializationInfo;
+
+    public RpcProtocolInfo(ServiceInfo service, String protocolId) {
+        super(service, protocolId);
+    }
+
+    /**   */
+    public SerializationInfo getSerializationInfo() {
+        return serializationInfo;
+    }
+
+    /**   */
+    public void setSerializationInfo(SerializationInfo serializationInfo) {
+        this.serializationInfo = serializationInfo;
+    }
 }

@@ -18,8 +18,7 @@
  */
 package org.solmix.hola.rpc.hola.protocol;
 
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.SerializationInfo;
+import org.solmix.hola.rpc.protocol.RpcProtocolInfo;
 import org.solmix.runtime.exchange.model.ServiceInfo;
 
 
@@ -29,23 +28,9 @@ import org.solmix.runtime.exchange.model.ServiceInfo;
  * @version $Id$  2015年1月12日
  */
 
-public class HolaProtocolInfo extends ProtocolInfo {
-
-    private SerializationInfo serializationInfo;
+public class HolaProtocolInfo extends RpcProtocolInfo {
+   
     public HolaProtocolInfo(ServiceInfo service, String protocolId) {
         super(service, protocolId);
     }
-    
-    /**   */
-    public SerializationInfo getSerializationInfo() {
-        return serializationInfo;
-    }
-    
-    /**   */
-    public void setSerializationInfo(SerializationInfo serializationInfo) {
-        this.serializationInfo = serializationInfo;
-    }
-    
-  
-
 }

@@ -19,7 +19,6 @@
 
 package org.solmix.hola.rpc;
 
-import org.solmix.hola.common.config.RemoteServiceConfig;
 
 /**
  * 
@@ -29,12 +28,9 @@ import org.solmix.hola.common.config.RemoteServiceConfig;
 
 public interface RemoteReference<S> {
 
-    /**
-     * 该服务引用是否有效
-     * 
-     * @return
-     */
-    boolean isActive();
-    
-    RemoteServiceConfig getServiceConfig();
+    public Object getProperty(String key);
+
+    public String[] getPropertyKeys();
+
+    public RpcManager getRpcManager();
 }

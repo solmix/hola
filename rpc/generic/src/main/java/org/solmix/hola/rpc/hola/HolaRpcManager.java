@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,7 +76,7 @@ public class HolaRpcManager implements RpcManager {
     
     @Override
     public RemoteRegistration<?> registerService(String clazze,
-        Object service, RemoteServiceConfig hei) throws RpcException {
+        Object service,Dictionary<String, ?> properties) throws RpcException {
         Assert.isNotNull(service, "register service is null");
         if (clazze==null ) {
             throw new IllegalArgumentException( "Service classe is not null.");
@@ -88,7 +89,7 @@ public class HolaRpcManager implements RpcManager {
         if(LOG.isInfoEnabled()){
             LOG.info("Registering service :"+clz);
         }
-        final HolaRemoteRegistration<Object> reg = new HolaRemoteRegistration<Object>(this, clz, service, hei);
+        final HolaRemoteRegistration<Object> reg = new HolaRemoteRegistration<Object>(this, clz, service, properties);
         if(serverFactory!=null){
             reg.setServerFactory(serverFactory);
         }
@@ -101,11 +102,11 @@ public class HolaRpcManager implements RpcManager {
     
     @Override
     public <S> RemoteRegistration<S> registerService(Class<S> clazze,
-        S service, RemoteServiceConfig hei) throws RpcException {
+        S service,Dictionary<String, ?> properties) throws RpcException {
         if(LOG.isInfoEnabled()){
             LOG.info("Registering service :"+clazze);
         }
-        final HolaRemoteRegistration<S> reg = new HolaRemoteRegistration<S>(this, clazze, service, hei);
+        final HolaRemoteRegistration<S> reg = new HolaRemoteRegistration<S>(this, clazze, service, properties);
         if(serverFactory!=null){
             reg.setServerFactory(serverFactory);
         }
@@ -152,8 +153,7 @@ public class HolaRpcManager implements RpcManager {
     }
     
     @Override
-    public <S> RemoteReference<S> getReference(Class<S> clazz,
-        RemoteServiceConfig hei) {
+    public <S> RemoteReference<S> getReference(Class<S> clazz,Dictionary<String, ?> properties) {
         // TODO Auto-generated method stub
         return null;
     }

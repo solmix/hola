@@ -21,6 +21,7 @@ package org.solmix.hola.transport.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -29,21 +30,32 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.transport.TransportClientInfo;
 import org.solmix.runtime.Container;
+import org.solmix.runtime.exchange.ClientCallback;
+import org.solmix.runtime.exchange.Exchange;
 import org.solmix.runtime.exchange.Message;
+import org.solmix.runtime.exchange.Processor;
 import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.support.AbstractPipeline;
+import org.solmix.runtime.exchange.support.DefaultMessage;
+import org.solmix.runtime.interceptor.phase.PhaseInterceptorChain;
 import org.solmix.runtime.io.AbstractWrappedOutputStream;
+import org.solmix.runtime.threadpool.ThreadPool;
+import org.solmix.runtime.threadpool.ThreadPoolManager;
 
 /**
  * 
@@ -173,7 +185,6 @@ public class NettyPipeline extends AbstractPipeline {
         }
         return null;
     }
-
     /**
      * 
      * @author solmix.f@gmail.com
@@ -188,6 +199,7 @@ public class NettyPipeline extends AbstractPipeline {
         private final TransportClientInfo config;
 
         ByteBuf outBuffer;
+        ByteBuf inBuffer;
 
         OutputStream outputStream;
 
@@ -312,7 +324,7 @@ public class NettyPipeline extends AbstractPipeline {
         }
 
         protected void connect() {
-            bootstrap.handler(new NettyChannelFactory());
+            bootstrap.handler(new NettyClientChannelFactory());
             ChannelFuture connFuture = bootstrap.connect(new InetSocketAddress(
                 url.getHost(), url.getPort() != -1 ? url.getPort() : 1314));
             connFuture.addListener(new ChannelFutureListener() {
@@ -328,6 +340,13 @@ public class NettyPipeline extends AbstractPipeline {
 
                 }
             });
+            ResponseCallBack callBack = new ResponseCallBack() {
+                @Override
+                public void responseReceived(ByteBuf response) {
+                    setInBuffer(response);
+                }
+            };
+            outMessage.put(ResponseCallBack.class, callBack);
         }
 
         protected synchronized void setException(Throwable ex) {
@@ -335,7 +354,7 @@ public class NettyPipeline extends AbstractPipeline {
             if (isAsync) {
                 // got a response, need to start the response processing now
                 try {
-                    handleResponseOnWorkqueue(false, true);
+                    handleResponseInThreadpool(false, true);
                     isAsync = false; // don't trigger another start on next
                                      // block. :-)
                 } catch (Exception ex2) {
@@ -343,6 +362,73 @@ public class NettyPipeline extends AbstractPipeline {
                 }
             }
             notifyAll();
+        }
+
+        protected void handleResponseInThreadpool(boolean allowCurrentThead, boolean forePool) throws IOException {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        handleResponseSync();
+                    }catch (Throwable e) {
+                        PhaseInterceptorChain pic =   ((PhaseInterceptorChain)outMessage.getInterceptorChain());
+                        pic.abort();
+                        outMessage.setContent(Exception.class, e);
+                        pic.handleException(outMessage);
+                        Processor p = pic.getFaultProcessor();
+                        if(p==null){
+                            p = outMessage.getExchange().get(Processor.class);
+                        }
+                        p.process(outMessage);
+                    }
+                }
+            };
+            TransportClientInfo tci = getConfig(outMessage);
+            boolean exceptionSet = outMessage.getContent(Exception.class) != null;
+            if(!exceptionSet){
+                try{
+                Executor ex = outMessage.getExchange().get(Executor.class);
+                if(forePool&&ex!=null){
+                    final Executor ex2 = ex;
+                    final Runnable origRunnable = runnable;
+                    runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            outMessage.getExchange().put(Executor.class.getName() 
+                                                         + ".EXECUTOR_USED", Boolean.TRUE);
+                            ex2.execute(origRunnable);
+                        }
+                    };
+                }
+                if(forePool || ex == null){
+                    ThreadPoolManager tpm =  outMessage.getExchange().get(Container.class).getExtension(ThreadPoolManager.class);
+                    ThreadPool tp= tpm.getThreadPool("netty-pipeline");
+                    if(tp==null){
+                        tp = tpm.getDefaultThreadPool();
+                    }
+                    long timeout = 1000;
+                    if(tci!=null){
+                        timeout=tci.getAsyncExecuteTimeout();
+                    }
+                    if(timeout>0){
+                        tp.execute(runnable, timeout);
+                    }else{
+                        tp.execute(runnable);
+                    }
+                }else{
+                    outMessage.getExchange().put(Executor.class.getName() 
+                        + ".EXECUTOR_USED", Boolean.TRUE);
+                    ex.execute(runnable);
+                }
+            }catch (RejectedExecutionException rex) {
+                if (allowCurrentThead) {
+                    throw rex;
+                }
+                LOG.trace("EXECUTOR_FULL");
+                handleResponseSync();
+            }
+        }
+            
         }
 
         protected synchronized void setChannel(Channel ch) {
@@ -363,11 +449,85 @@ public class NettyPipeline extends AbstractPipeline {
 
         }
         /**
+         * @throws IOException 
          * 
          */
-        protected void handleResponseSync() {
-            // TODO Auto-generated method stub
-            
+        protected void handleResponseSync() throws IOException {
+            Exchange exchange = outMessage.getExchange();
+            Message inMessage = new DefaultMessage();
+            inMessage.setExchange(exchange);
+            InputStream in = null;
+            if(!isOneWay(outMessage)){
+                in = getInputStream();
+                if(in==null){
+                    ClientCallback cc = exchange.get(ClientCallback.class);
+                    if(cc!=null){
+                        closeInputStream();
+                    }
+                }
+            }else{
+                outMessage.removeContent(OutputStream.class);
+                outMessage.removeContent(ByteBuf.class);
+            }
+            if(in==null){
+                in = new ByteArrayInputStream(new byte[] {});
+            }
+            inMessage.setContent(InputStream.class, in);
+            getProcessor().process(inMessage);
+        }
+
+        private void closeInputStream() throws IOException {
+           getInputBuffer().clear();
+        }
+
+        private InputStream getInputStream() throws IOException {
+               return new ByteBufInputStream(getInputBuffer());
+        }
+
+        protected ByteBuf getInputBuffer() throws IOException {
+            while (inBuffer == null) {
+                if (exception == null) { //already have an exception, skip waiting
+                    try {
+                        wait(config.getReceiveTimeout());
+                    } catch (InterruptedException e) {
+                        throw new IOException(e);
+                    }
+                }
+                if (inBuffer == null) {
+
+                    if (exception != null) {
+                        if (exception instanceof IOException) {
+                            throw (IOException)exception;
+                        }
+                        if (exception instanceof RuntimeException) {
+                            throw (RuntimeException)exception;
+                        }
+                        throw new IOException(exception);
+                    }
+
+                    throw new SocketTimeoutException("Read Timeout");
+                }
+            }
+            return inBuffer;
+        }
+        
+        protected synchronized void setInBuffer(ByteBuf in){
+                inBuffer = in;
+                if (isAsync) {
+                    //got a response, need to start the response processing now
+                    try {
+                        handleResponseInThreadpool(false, true);
+                        isAsync = false; // don't trigger another start on next block. :-)
+                    } catch (Exception ex) {
+                        //ignore, we'll try again on the next consume;
+                    }
+                }
+                notifyAll();
+            }
+
+        private boolean isOneWay(Message msg) {
+            Exchange ex = msg.getExchange();
+            return ex!=null&&ex.isOneWay();
         }
 
         protected void handleResponseAsync() {

@@ -16,19 +16,19 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rpc;
 
-import org.solmix.hola.common.config.RemoteServiceConfig;
-
-
+import java.util.Dictionary;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2014年11月19日
+ * @version $Id$ 2014年11月19日
  */
 
 public interface RemoteRegistration<S> {
+
     /**
      * 返回服务引用
      * 
@@ -36,10 +36,10 @@ public interface RemoteRegistration<S> {
      */
     RemoteReference<S> getReference();
 
+    public void setProperties(Dictionary<String, ?> properties);
+
     /**
      * 注销服务
      */
     void unregister();
-    
-    RemoteServiceConfig getServiceConfig();
 }

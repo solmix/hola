@@ -19,16 +19,13 @@
 
 package org.solmix.hola.rpc.hola.protocol;
 
-import java.util.Map;
-
-import org.solmix.hola.common.config.RemoteServiceConfig;
 import org.solmix.hola.rpc.hola.interceptor.ObjectOutputInterceptor;
+import org.solmix.hola.rpc.protocol.RpcProtocolFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.exchange.Protocol;
 import org.solmix.runtime.exchange.model.ProtocolInfo;
 import org.solmix.runtime.exchange.model.ServiceInfo;
-import org.solmix.runtime.exchange.support.AbstractProtocolFactory;
 import org.solmix.runtime.interceptor.support.AttachmentInInterceptor;
 import org.solmix.runtime.interceptor.support.AttachmentOutInterceptor;
 
@@ -38,7 +35,7 @@ import org.solmix.runtime.interceptor.support.AttachmentOutInterceptor;
  * @version $Id$ 2014年12月10日
  */
 @Extension(name = HolaProtocolFactory.NAME)
-public class HolaProtocolFactory extends AbstractProtocolFactory {
+public class HolaProtocolFactory extends RpcProtocolFactory {
 
     public static final String NAME = "hola";
 
@@ -82,13 +79,7 @@ public class HolaProtocolFactory extends AbstractProtocolFactory {
     public ProtocolInfo createProtocolInfo(ServiceInfo info, String protocol,
         Object configObject) {
         HolaProtocolInfo pi = new HolaProtocolInfo(info, protocol);
-        if(configObject instanceof RemoteServiceConfig){
-            
-        }else if(configObject instanceof RemoteServiceConfig){
-            
-        }else if (configObject instanceof Map<?,?>){
-            
-        }
+        setProperties(pi,configObject);
         return pi;
     }
 }

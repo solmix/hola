@@ -128,8 +128,7 @@ public class RpcServiceFactory extends ReflectServiceFactory {
     }
 
     protected void bindOperation(OperationInfo op, Method method) {
-        // TODO Auto-generated method stub
-        
+       getOperationDispatcher().bind(method, op);
     }
 
     protected void createArgument(InterfaceInfo intf, OperationInfo op,
@@ -159,7 +158,7 @@ public class RpcServiceFactory extends ReflectServiceFactory {
         boolean hasOut = hasOutMessage(method);
         if (hasOut) {
             MessageInfo outMi=op.createMessage(getOutMessageName(op,method), MessageInfo.Type.OUTPUT);
-            op.setInput(outMi.getName().getName(), outMi);
+            op.setOutput(outMi.getName().getName(), outMi);
             final Class<?> returnType = method.getReturnType();
             if (!returnType.isAssignableFrom(void.class)) {
                 final NamedID q = getOutArgumentName(op, method, -1);

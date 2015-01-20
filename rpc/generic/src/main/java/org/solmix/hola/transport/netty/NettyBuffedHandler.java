@@ -16,21 +16,31 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport;
 
-import java.util.Collection;
+package org.solmix.hola.transport.netty;
 
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月18日
+ * @version $Id$ 2015年1月18日
  */
 
-public interface TransporterRegistry {
+public class NettyBuffedHandler {
 
-    void add(AbstractTCPTransporter transporter);
-    void remove(String path);
-    AbstractTCPTransporter getTransporterForPath(String path);
-    Collection<AbstractTCPTransporter> getTransporters();
+    private final NettyTransporter transporter;
+
+    public NettyBuffedHandler(NettyTransporter transporter) {
+        this.transporter = transporter;
+    }
+
+    public void handle( ByteBuf request, ByteBuf response)
+        throws IOException {
+            transporter.doService(request, response);
+
+    }
+
 }

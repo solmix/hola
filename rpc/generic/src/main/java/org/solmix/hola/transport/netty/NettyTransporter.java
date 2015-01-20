@@ -16,67 +16,137 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.transport.netty;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.ClassLoaderUtils;
+import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
+import org.solmix.hola.transport.AbstractTCPTransporter;
+import org.solmix.hola.transport.TransportServerInfo;
+import org.solmix.hola.transport.TransporterRegistry;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.Pipeline;
+import org.solmix.runtime.ContainerFactory;
+import org.solmix.runtime.exchange.Processor;
 import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.support.AbstractTransporter;
-
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月15日
+ * @version $Id$ 2015年1月15日
  */
 
-public class NettyTransporter extends AbstractTransporter {
+public class NettyTransporter extends AbstractTCPTransporter {
 
-    /**
-     * @param address
-     * @param endpointInfo
-     * @param container 
-     */
-    public NettyTransporter(String address, EndpointInfo endpointInfo,
-        Container container) {
-        super(address, endpointInfo, container);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyTransporter.class);
+
+    private boolean configFinalized;
+
+    protected NettyServerEngineFactory serverEngineFactory;
+
+    private NettyServerEngine engine;
+
+    private final URI serverUrl;
+
+    public NettyTransporter(NettyServerEngineFactory factory,
+        EndpointInfo endpointInfo, Container container,
+        TransporterRegistry registry) throws IOException {
+        super(getAddressValue(endpointInfo, true).getAddress(), endpointInfo,
+            container, registry);
+        this.serverEngineFactory = factory;
+        serverUrl = getURI(endpointInfo);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.runtime.exchange.Transporter#shutdown()
-     */
+    private URI getURI(EndpointInfo endpointInfo) throws IOException  {
+        try {
+            return new URI(endpointInfo.getAddress());
+        } catch (URISyntaxException e) {
+            LOG.error("Not a valid endpoint address",e);
+            throw new IOException(e.getMessage());
+        }
+    }
+
     @Override
-    public void shutdown() {
-        // TODO Auto-generated method stub
+    public void finalizeConfig() {
+        assert !configFinalized;
 
+        try {
+            retrieveEngine();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+        configFinalized = true;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.runtime.exchange.Transporter#getBackPipeline(org.solmix.runtime.exchange.Message)
-     */
+    protected void retrieveEngine() throws IOException {
+
+        engine = serverEngineFactory.retrieveEngine(serverUrl.getHost(),
+            serverUrl.getPort());
+        if (engine == null) {
+            engine = serverEngineFactory.createEngine(serverUrl.getHost(),
+                serverUrl.getPort());
+        }
+        TransportServerInfo tsi= endpointInfo.getExtension(TransportServerInfo.class);
+        engine.setTransportServerInfo(tsi);
+
+        assert engine != null;
+    }
+
     @Override
-    public Pipeline getBackPipeline(Message msg) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+    protected void activate(Processor p) {
+        super.activate(p);
+        engine.setNettyBuffedHandler(new NettyBuffedHandler(this));
+        engine.start();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.runtime.exchange.support.AbstractTransporter#getLogger()
-     */
+
+    @Override
+    protected void deactivate(Processor p) {
+        super.deactivate(p);
+        engine.shutdown();
+    }
+
     @Override
     protected Logger getLogger() {
-        // TODO Auto-generated method stub
-        return null;
+        return LOG;
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.runtime.exchange.Transporter#getDefaultPort()
+     */
+    @Override
+    public int getDefaultPort() {
+        return 1314;
+    }
+
+    public void doService(ByteBuf request, ByteBuf response) {
+       Container orig = ContainerFactory.getAndSetThreadDefaultContainer(container);
+       ClassLoaderHolder origLoader = null;
+      
+       try {
+           ClassLoader loader = container.getExtension(ClassLoader.class);
+           if (loader != null) {
+               origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
+           }
+           invoke(request, response);
+       } finally {
+           if (orig != container) {
+               ContainerFactory.setThreadDefaultContainer(orig);
+           }
+           if (origLoader != null) {
+               origLoader.reset();
+           }
+       }
+    }
+
 
 }

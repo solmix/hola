@@ -26,11 +26,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.annotation.Resource;
 
+import org.solmix.commons.util.StringUtils;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.bean.ConfiguredBeanProvider;
-import org.solmix.runtime.bean.ConfiguredBeanProvider.BeanLoaderListener;
 import org.solmix.runtime.exchange.dataformat.Serialization;
 import org.solmix.runtime.exchange.dataformat.SerializationManager;
+import org.solmix.runtime.extension.ExtensionLoader;
 
 /**
  * 
@@ -40,6 +40,8 @@ import org.solmix.runtime.exchange.dataformat.SerializationManager;
 
 public class DefaultSerializationManager implements SerializationManager {
 
+    public static final String DEFAULT_SERIALIZATION = "java";
+
     private Container container;
 
     private final Map<String, Serialization> nameSerials;
@@ -47,8 +49,6 @@ public class DefaultSerializationManager implements SerializationManager {
     private final Map<Byte, Serialization> idSerials;
 
     private final Set<String> failed = new CopyOnWriteArraySet<String>();
-
-    private final Set<String> loaded = new CopyOnWriteArraySet<String>();
 
     public DefaultSerializationManager() {
         this(null);
@@ -75,6 +75,9 @@ public class DefaultSerializationManager implements SerializationManager {
 
     @Override
     public Serialization getSerializationByName(String extendsionName) {
+        if (StringUtils.isEmpty(extendsionName)) {
+            extendsionName = DEFAULT_SERIALIZATION;
+        }
         Serialization s = nameSerials.get(extendsionName);
         if (s == null && !failed.contains(extendsionName)) {
             s = loadSerialization(extendsionName);
@@ -87,10 +90,6 @@ public class DefaultSerializationManager implements SerializationManager {
         return s;
     }
 
-    /**
-     * @param extendsionName
-     * @return
-     */
     private Serialization loadSerialization(String extendsionName) {
         loadAll();
         return nameSerials.get(extendsionName);
@@ -102,27 +101,14 @@ public class DefaultSerializationManager implements SerializationManager {
     }
 
     private void loadAll() {
-        ConfiguredBeanProvider provider = container.getExtension(ConfiguredBeanProvider.class);
-        provider.loadBeansOfType(Serialization.class,
-            new BeanLoaderListener<Serialization>() {
-
-                @Override
-                public boolean loadBean(String name,
-                    Class<? extends Serialization> type) {
-                    loaded.add(name);
-                    return nameSerials.containsKey(type);
-                }
-
-                @Override
-                public boolean beanLoaded(String name, Serialization bean) {
-                    if (!loaded.contains(name)) {
-                        nameSerials.put(name, bean);
-                        idSerials.put(bean.getContentTypeId(), bean);
-                    }
-                    return nameSerials.containsKey(name);
-                }
-
-            });
+        ExtensionLoader<Serialization> loader = container.getExtensionLoader(Serialization.class);
+        if (loader != null) {
+            for (String name : loader.getLoadedExtensions()) {
+                Serialization bean = loader.getExtension(name);
+                nameSerials.put(name, bean);
+                idSerials.put(bean.getContentTypeId(), bean);
+            }
+        }
     }
 
     public Container getContainer() {

@@ -39,6 +39,8 @@ public class TransportClientInfo extends InfoPropertiesSupport {
 
     private int receiveTimeout;
 
+    private final long asyncExecuteTimeout = -1;
+
     /**   */
     public int getConnectionTimeout() {
         return connectionTimeout;
@@ -87,6 +89,13 @@ public class TransportClientInfo extends InfoPropertiesSupport {
     /**   */
     public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
+    }
+
+    /**
+     * @return
+     */
+    public long getAsyncExecuteTimeout() {
+        return asyncExecuteTimeout;
     }
 
 }

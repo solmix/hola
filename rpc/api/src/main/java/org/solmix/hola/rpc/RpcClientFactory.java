@@ -21,6 +21,7 @@ package org.solmix.hola.rpc;
 import org.solmix.runtime.exchange.Client;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
+import org.solmix.runtime.exchange.EndpointInfoFactory;
 import org.solmix.runtime.exchange.PipelineFactory;
 import org.solmix.runtime.exchange.PipelineFactoryManager;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
@@ -81,5 +82,8 @@ public class RpcClientFactory extends RpcEndpointFactory {
         }
         return null;
     }
-
+    @Override
+    protected EndpointInfoFactory defaultEndpointInfoFactory() {
+        return new RpcEndpointInfoFactory(false);
+    }
 }

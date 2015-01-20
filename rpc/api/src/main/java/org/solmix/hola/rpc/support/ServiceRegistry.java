@@ -16,21 +16,25 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport;
+package org.solmix.hola.rpc.support;
 
-import java.util.Collection;
+import org.solmix.hola.rpc.RemoteRegistration;
+import org.solmix.hola.rpc.RpcManager;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月18日
+ * @version $Id$  2015年1月20日
  */
 
-public interface TransporterRegistry {
+public class ServiceRegistry {
 
-    void add(AbstractTCPTransporter transporter);
-    void remove(String path);
-    AbstractTCPTransporter getTransporterForPath(String path);
-    Collection<AbstractTCPTransporter> getTransporters();
+    void addServiceRegistration(RpcManager manager,RemoteRegistration<?> regitration){
+        
+    }
+    
+    void removeServiceRegistration(RpcManager manager,RemoteRegistration<?> regitration){
+        
+    }
 }

@@ -31,7 +31,10 @@ public class ClientConfig extends AbstractReferenceConfig {
     private static final long serialVersionUID = -2030026232826658223L;
 
     private Boolean isDefault;
-
+    /**
+     * 序列化方法
+     */
+    private String serial;
     @Override
     public void setTimeout(Integer timeout) {
         super.setTimeout(timeout);
@@ -50,4 +53,16 @@ public class ClientConfig extends AbstractReferenceConfig {
     public void setDefault(Boolean isDefault) {
         this.isDefault = isDefault;
     }
+
+    
+    /**   */
+    public String getSerial() {
+        return serial;
+    }
+    
+    /**   */
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+    
 }

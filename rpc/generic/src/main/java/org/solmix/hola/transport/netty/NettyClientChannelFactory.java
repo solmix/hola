@@ -16,21 +16,26 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport;
+package org.solmix.hola.transport.netty;
 
-import java.util.Collection;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月18日
+ * @version $Id$  2015年1月15日
  */
 
-public interface TransporterRegistry {
+public class NettyClientChannelFactory extends ChannelInitializer<Channel> {
 
-    void add(AbstractTCPTransporter transporter);
-    void remove(String path);
-    AbstractTCPTransporter getTransporterForPath(String path);
-    Collection<AbstractTCPTransporter> getTransporters();
+    
+    @Override
+    protected void initChannel(Channel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast(new NettyClientHandler());
+    }
+
 }

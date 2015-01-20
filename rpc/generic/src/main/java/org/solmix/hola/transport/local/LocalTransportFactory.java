@@ -22,7 +22,6 @@ package org.solmix.hola.transport.local;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,14 +121,14 @@ public class LocalTransportFactory implements TransporterFactory,
 
     @Override
     public EndpointInfo createEndpointInfo(Container container,
-        ServiceInfo serviceInfo, ProtocolInfo b, List<?> extensions) {
+        ServiceInfo serviceInfo, ProtocolInfo b, Object config) {
         EndpointInfo info = new RpcEndpointInfo(serviceInfo, "hola");
-        if (extensions != null) {
+        /*if (extensions != null) {
             for (Iterator<?> itr = extensions.iterator(); itr.hasNext();) {
                 Object extension = itr.next();
                 info.addExtension(extension);
             }
-        }
+        }*/
         return info;
     }
 

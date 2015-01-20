@@ -20,8 +20,7 @@ package org.solmix.hola.rpc;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-
-import org.solmix.hola.common.config.RemoteServiceConfig;
+import java.util.Dictionary;
 
 
 /**
@@ -32,13 +31,13 @@ import org.solmix.hola.common.config.RemoteServiceConfig;
 
 public interface RpcManager {
 
-    RemoteRegistration<?> registerService(String clazze,Object service, RemoteServiceConfig hei) throws RemoteException;
+    RemoteRegistration<?> registerService(String clazze,Object service, Dictionary<String, ?> properties) throws RemoteException;
     
-    <S> RemoteRegistration<S> registerService(Class<S> clazze,S service, RemoteServiceConfig hei) throws RemoteException;
+    <S> RemoteRegistration<S> registerService(Class<S> clazze,S service, Dictionary<String, ?> properties) throws RemoteException;
     
     <S> RemoteReference<S> getReference(Class<S> clazz);
     
-    <S> RemoteReference<S> getReference(Class<S> clazz,RemoteServiceConfig hei);
+    <S> RemoteReference<S> getReference(Class<S> clazz,Dictionary<String, ?> properties);
     
     <S> Collection<RemoteReference<S>> getReferences(Class<S> clazz, String filter) throws RemoteException;
     

@@ -1,1 +1,2 @@
 org.solmix.hola.rpc.dataformat.DefaultSerializationManager:org.solmix.runtime.exchange.dataformat.SerializationManager:true
+org.solmix.hola.rpc.dataformat.java.JavaSerialization:org.solmix.runtime.exchange.dataformat.Serialization:true

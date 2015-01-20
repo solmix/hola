@@ -16,21 +16,34 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport;
 
-import java.util.Collection;
+package org.solmix.hola.transport.netty;
 
+import io.netty.channel.Channel;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月18日
+ * @version $Id$ 2015年1月19日
  */
 
-public interface TransporterRegistry {
+public class ThreadLocalChannel {
 
-    void add(AbstractTCPTransporter transporter);
-    void remove(String path);
-    AbstractTCPTransporter getTransporterForPath(String path);
-    Collection<AbstractTCPTransporter> getTransporters();
+    public static final ThreadLocal<Channel> CHANNEL_THREAD_LOCAL = new ThreadLocal<Channel>();
+
+    private ThreadLocalChannel() {
+        // Utils class
+    }
+
+    public static void set(Channel channel) {
+        CHANNEL_THREAD_LOCAL.set(channel);
+    }
+
+    public static void unset() {
+        CHANNEL_THREAD_LOCAL.remove();
+    }
+
+    public static Channel get() {
+        return CHANNEL_THREAD_LOCAL.get();
+    }
 }

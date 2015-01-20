@@ -18,19 +18,17 @@
  */
 package org.solmix.hola.transport;
 
-import java.util.Collection;
+import io.netty.buffer.ByteBuf;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月18日
+ * @version $Id$  2015年1月16日
  */
 
-public interface TransporterRegistry {
+public interface ByteBufAware {
+    
+    ByteBuf getByteBuf();
 
-    void add(AbstractTCPTransporter transporter);
-    void remove(String path);
-    AbstractTCPTransporter getTransporterForPath(String path);
-    Collection<AbstractTCPTransporter> getTransporters();
 }

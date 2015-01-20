@@ -19,6 +19,8 @@
 
 package org.solmix.hola.rpc.hola;
 
+import java.util.Dictionary;
+
 import org.solmix.hola.common.config.RemoteServiceConfig;
 import org.solmix.hola.rpc.RemoteReference;
 import org.solmix.hola.rpc.RemoteRegistration;
@@ -57,7 +59,7 @@ public class HolaRemoteRegistration<S> implements RemoteRegistration<S>,
     
     private final HolaRpcManager manager;
 
-    private final RemoteServiceConfig remoteServiceConfig;
+    private final Dictionary<String, ?> properties ;
 
     private HolaServerFactory serverFactory;
   

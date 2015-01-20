@@ -187,7 +187,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
         EndpointInfo endpointInfo;
         if (eif != null) {
             endpointInfo = eif.createEndpointInfo(getContainer(),
-                service.getServiceInfo(), ptl, (List<?>) null);
+                service.getServiceInfo(), ptl,  getConfigObject());
             endpointInfo.setTransportor(transporter);
         } else {
             endpointInfo = new EndpointInfo(service.getServiceInfo(),
@@ -227,6 +227,10 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
         if(tf instanceof EndpointInfoFactory){
             return (EndpointInfoFactory)tf;
         }
+        return defaultEndpointInfoFactory();
+    }
+
+    protected EndpointInfoFactory defaultEndpointInfoFactory() {
         return null;
     }
 
@@ -243,7 +247,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
      */
     protected ProtocolInfo createProtocolInfo() {
 
-        String ptl = protocol;
+        String ptl = getProtocol();
         if (ptl == null) {
             ptl = Constants.DEFAULT_PROTOCOL;
         }
