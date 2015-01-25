@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.hola.common.config.ServiceConfig;
 import org.solmix.runtime.exchange.Exchange;
 import org.solmix.runtime.exchange.Service;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
@@ -54,17 +53,13 @@ public class RpcServiceFactory extends ReflectServiceFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(RpcServiceFactory.class);
 
-    private ServiceConfig<?> serviceConfig;
-    
     public RpcServiceFactory(){
        setPhasePolicy(new RpcPhasePolicy());
     }
     
     @Override
     protected void buildServiceModel() {
-        if (getRemoteServiceInfo() != null) {
-            buildServiceFromInfo();
-        } else if (getServiceClass() != null) {
+         if (getServiceClass() != null) {
             buildServiceFromClass();
         } else {
             throw new IllegalStateException("service class is null");
@@ -299,16 +294,5 @@ public class RpcServiceFactory extends ReflectServiceFactory {
         }
         return false;
     }
-
-    /**   */
-    public ServiceConfig<?> getRemoteServiceInfo() {
-        return serviceConfig;
-    }
-
-    /**   */
-    public void setRemoteServiceInfo(ServiceConfig<?> remoteServiceInfo) {
-        this.serviceConfig = remoteServiceInfo;
-    }
-
 
 }

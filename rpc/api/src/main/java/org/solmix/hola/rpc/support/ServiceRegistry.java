@@ -16,25 +16,82 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rpc.support;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.solmix.hola.rpc.RemoteListener;
 import org.solmix.hola.rpc.RemoteRegistration;
 import org.solmix.hola.rpc.RpcManager;
-
+import org.solmix.hola.rpc.event.RemoteEvent;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月20日
+ * @version $Id$ 2015年1月20日
  */
 
 public class ServiceRegistry {
 
-    void addServiceRegistration(RpcManager manager,RemoteRegistration<?> regitration){
-        
+    protected final Map<String, RemoteRegistration<?>> services = new ConcurrentHashMap<String, RemoteRegistration<?>>();
+    protected final List<RemoteListener> listeners = new ArrayList<RemoteListener>(4);
+
+    private final RpcManager rpcManager;
+
+    public ServiceRegistry(RpcManager manager) {
+        rpcManager = manager;
+    }
+
+    public void addServiceRegistration(String serviceKey,
+        RemoteRegistration<?> regitration) {
+
+    }
+
+    public void removeServiceRegistration(String serviceKey,
+        RemoteRegistration<?> regitration) {
+
     }
     
-    void removeServiceRegistration(RpcManager manager,RemoteRegistration<?> regitration){
+    public RpcManager getRpcManager(){
+        return rpcManager;
+    }
+
+    public void publishServiceEvent(RemoteEvent event) {
+        List<RemoteListener> entries;
+        synchronized (listeners) {
+            entries = new ArrayList<RemoteListener>(listeners);
+        }
+        for (RemoteListener listener : entries) {
+            listener.onHandle(event);
+        }
+        
+    }
+
+
+    public void addRemoteListener(RemoteListener listener) {
+        synchronized (listeners) {
+            listeners.add(listener);
+      }
+    }
+    
+    public void removeRemoteListener(RemoteListener listener) {
+        synchronized (listeners) {
+            listeners.remove(listener);
+      }
+    }
+    
+    public Object getService(RemoteReferenceImpl<?> reference) {
+       return reference.getRegistration().getService();
+    }
+
+    /**
+     * 
+     */
+    public void destroy() {
         
     }
 }

@@ -1,6 +1,0 @@
-org.solmix.hola.common.identity.support.ExtensionIDFactory:org.solmix.hola.common.identity.IDFactory:true
-org.solmix.hola.common.serialize.java.JavaSerialization:org.solmix.hola.common.serialize.Serialization
-org.solmix.hola.common.serialize.SerializationManagerImpl:org.solmix.hola.common.serialize.SerializationManager:true
-org.solmix.hola.common.executor.PooledExecutorProvider:org.solmix.hola.common.executor.ExecutorProvider:true
-org.solmix.hola.common.executor.LimitedExecutorProvider:org.solmix.hola.common.executor.ExecutorProvider:true
-org.solmix.hola.common.executor.FixedExecutorProvider:org.solmix.hola.common.executor.ExecutorProvider:true

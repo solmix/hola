@@ -30,6 +30,8 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
+import java.util.Map;
+
 import org.solmix.hola.transport.TransportServerInfo;
 
 /**
@@ -44,13 +46,13 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
 
     private final ChannelGroup allChannels = new DefaultChannelGroup( GlobalEventExecutor.INSTANCE);;
 
-    private final NettyBuffedHandler handler;
+    private final Map<String,NettyMessageHandler> handlerMap;
     private final TransportServerInfo info;
 
     public NettyServerChannelFactory(TransportServerInfo info,
-        NettyBuffedHandler handler) {
+        Map<String,NettyMessageHandler> handlerMap) {
         applicationExecutor = new DefaultEventExecutorGroup(info.getThreadPoolSize());
-        this.handler = handler;
+        this.handlerMap = handlerMap;
         this.info=info;
     }
 
@@ -61,8 +63,8 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
 
     }
 
-    public NettyBuffedHandler getNettyBuffedHandler() {
-        return handler;
+    public NettyMessageHandler getNettyBuffedHandler(String path) {
+        return handlerMap.get(path);
     }
 
     public ChannelGroup getAllChannels() {
@@ -73,6 +75,9 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
         allChannels.close();
     }
     
+    public int getBufferSize(){
+       return info.getBufferSize();
+    }
     public ByteBuf getResponeBuffer(){
         return Unpooled.buffer(info.getBufferSize());
     }

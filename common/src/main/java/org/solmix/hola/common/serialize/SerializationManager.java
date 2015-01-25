@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.common.serialize;
 
-import org.solmix.hola.common.config.RemoteInfo;
+import org.solmix.hola.rt.config.RemoteInfo;
 
 
 /**

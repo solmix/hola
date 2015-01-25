@@ -44,6 +44,7 @@ import java.util.concurrent.RejectedExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.transport.TransportClientInfo;
+import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.exchange.ClientCallback;
 import org.solmix.runtime.exchange.Exchange;
@@ -322,9 +323,15 @@ public class NettyPipeline extends AbstractPipeline {
             return channel;
 
         }
+        protected Codec getCodec(String codec){
+          return  container.getExtensionLoader(Codec.class).getExtension(codec);
+        }
 
         protected void connect() {
-            bootstrap.handler(new NettyClientChannelFactory());
+            TransportClientInfo tci = endpointInfo.getExtension(TransportClientInfo.class);
+            String codec =tci.getCodec();
+            int bufferSize = tci.getBufferSize();
+            bootstrap.handler(new NettyClientChannelFactory(getCodec(codec),bufferSize));
             ChannelFuture connFuture = bootstrap.connect(new InetSocketAddress(
                 url.getHost(), url.getPort() != -1 ? url.getPort() : 1314));
             connFuture.addListener(new ChannelFutureListener() {

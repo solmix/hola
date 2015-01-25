@@ -20,7 +20,6 @@
 package org.solmix.hola.transport;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
@@ -40,7 +39,6 @@ import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.support.AbstractPipeline;
 import org.solmix.runtime.exchange.support.AbstractTransporter;
 import org.solmix.runtime.exchange.support.DefaultExchange;
-import org.solmix.runtime.exchange.support.DefaultMessage;
 import org.solmix.runtime.interceptor.Fault;
 import org.solmix.runtime.io.AbstractWrappedOutputStream;
 
@@ -123,12 +121,11 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
 
     }
 
-    protected void invoke(ByteBuf request, ByteBuf response) {
-        Message inMsg = new DefaultMessage();
+    protected void invoke(Message inMsg, Message outMsg) {
         Exchange ex = new DefaultExchange();
         inMsg.setExchange(ex);
         ex.setIn(inMsg);
-        setupExchange(inMsg, request, response);
+        ex.setOut(outMsg);
         inMsg.put(Transporter.class, this);
         try {
             processor.process(inMsg);
@@ -151,13 +148,6 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
 
     }
 
-    protected void setupExchange(Message inMsg, ByteBuf request,
-        ByteBuf response) {
-        inMsg.setContent(InputStream.class, new ByteBufInputStream(request));
-        inMsg.setContent(ByteBuf.class, request);
-        inMsg.put(REQUEST_BYTEBUF, request);
-        inMsg.put(RESPONSE_BYTEBUF, response);
-    }
 
     /**
      * {@inheritDoc}
@@ -235,6 +225,18 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
             OutputStream os = getOutputStream();
             if (os != null) {
                 wrappedStream = os;
+            }
+        }
+        @Override
+        public void close() throws IOException {
+            if (!written && wrappedStream == null) {
+                OutputStream os = getOutputStream();
+                if (os != null) {
+                    wrappedStream = os;
+                }
+            }
+            if (wrappedStream != null) {
+                wrappedStream.close();
             }
         }
 

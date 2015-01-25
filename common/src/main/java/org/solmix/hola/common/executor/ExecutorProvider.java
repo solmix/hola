@@ -20,7 +20,7 @@ package org.solmix.hola.common.executor;
 
 import java.util.concurrent.Executor;
 
-import org.solmix.hola.common.config.RemoteInfo;
+import org.solmix.hola.rt.config.RemoteInfo;
 import org.solmix.runtime.Extension;
 
 

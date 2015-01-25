@@ -18,7 +18,8 @@
  */
 package org.solmix.hola.rpc.hola;
 
-import org.solmix.hola.common.config.ReferenceConfig;
+import java.util.Dictionary;
+
 import org.solmix.runtime.exchange.model.NamedID;
 
 
@@ -31,7 +32,7 @@ import org.solmix.runtime.exchange.model.NamedID;
 
 public interface RemoteDelegate {
     
-    <T> T getProxy(NamedID id,Class<T> type,ReferenceConfig config);
+    <T> T getProxy(NamedID id,Class<T> type,Dictionary<String, ?> config);
     
     <T> RemoteService<T> createService(NamedID id,Class<T> type);
 

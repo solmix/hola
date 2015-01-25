@@ -40,6 +40,19 @@ public class TransportClientInfo extends InfoPropertiesSupport {
     private int receiveTimeout;
 
     private final long asyncExecuteTimeout = -1;
+    
+    private String codec;
+    
+    /**   */
+    public String getCodec() {
+        return codec;
+    }
+
+    
+    /**   */
+    public void setCodec(String codec) {
+        this.codec = codec;
+    }
 
     /**   */
     public int getConnectionTimeout() {

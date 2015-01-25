@@ -35,6 +35,11 @@ public interface RpcManager {
     
     <S> RemoteRegistration<S> registerService(Class<S> clazze,S service, Dictionary<String, ?> properties) throws RemoteException;
     
+    
+    /**
+     * @param clazz 带有注解的class
+     * @return
+     */
     <S> RemoteReference<S> getReference(Class<S> clazz);
     
     <S> RemoteReference<S> getReference(Class<S> clazz,Dictionary<String, ?> properties);
@@ -48,4 +53,6 @@ public interface RpcManager {
     void addRemoteListener(RemoteListener listener);
 
     void removeRemoteListener(RemoteListener listener);
+    
+    void destroy();
 }

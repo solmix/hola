@@ -27,8 +27,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.solmix.hola.transport.TransportServerInfo;
+import org.solmix.runtime.interceptor.Fault;
 
 /**
  * 
@@ -38,8 +43,6 @@ import org.solmix.hola.transport.TransportServerInfo;
 
 public class NettyServerEngine implements NettyEngine {
 
-
-    private NettyBuffedHandler handler;
 
     private volatile Channel channel;
 
@@ -55,6 +58,10 @@ public class NettyServerEngine implements NettyEngine {
 
     private final int port;
 
+    private final List<String> registedPaths = new CopyOnWriteArrayList<String>();
+
+    private final Map<String, NettyMessageHandler> handlerMap = new ConcurrentHashMap<String, NettyMessageHandler>();
+
     public NettyServerEngine(String host, int port) {
         this.host = host;
         this.port = port;
@@ -69,6 +76,51 @@ public class NettyServerEngine implements NettyEngine {
             info.getPort()).toString();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.transport.netty.NettyEngine#addHandler(java.lang.String,
+     *      org.solmix.hola.transport.netty.NettyMessageHandler)
+     */
+    @Override
+    public void addHandler(String path, NettyMessageHandler handler) {
+        checkRegistedPath(path);
+        if (channel == null) {
+            channel = startChannel();
+        }
+        handlerMap.put(path, handler);
+        registedPaths.add(path);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.transport.netty.NettyEngine#removeHandler(java.lang.String)
+     */
+    @Override
+    public void removeHandler(String path) {
+        handlerMap.remove(path);
+        registedPaths.remove(path);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.solmix.hola.transport.netty.NettyEngine#getHandler(java.lang.String)
+     */
+    @Override
+    public NettyMessageHandler getHandler(String path) {
+        return handlerMap.get(path);
+    }
+
+    protected void checkRegistedPath(String path) {
+        for (String registedPath : registedPaths) {
+            if (path.equals(registedPath)) {
+                throw new Fault("path already in use");
+            }
+        }
+    }
+
     protected Channel startChannel() {
         final ServerBootstrap bootstrap = new ServerBootstrap();
         bossGroup = new NioEventLoopGroup();
@@ -76,7 +128,7 @@ public class NettyServerEngine implements NettyEngine {
         bootstrap.group(bossGroup, workerGroup).channel(
             NioServerSocketChannel.class).option(ChannelOption.SO_REUSEADDR,
             true);
-        channelFactory = new NettyServerChannelFactory(info, handler);
+        channelFactory = new NettyServerChannelFactory(info, handlerMap);
         bootstrap.childHandler(channelFactory);
         InetSocketAddress address = null;
         if (info.getHost() == null) {
@@ -99,26 +151,11 @@ public class NettyServerEngine implements NettyEngine {
         this.info = transportServerInfo;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.netty.NettyEngine#start()
-     */
-    @Override
-    public void start() {
-        assert handler != null;
-        if (channel == null) {
-            channel = startChannel();
-        }
-    }
-
-    public void setNettyBuffedHandler(NettyBuffedHandler handler) {
-        this.handler = handler;
-    }
 
     @Override
     public void shutdown() {
-        handler = null;
+        handlerMap.clear();
+        registedPaths.clear();
         if (channelFactory != null) {
             channelFactory.shutdown();
         }
@@ -136,4 +173,5 @@ public class NettyServerEngine implements NettyEngine {
     public void finalizeConfig() {
 
     }
+
 }

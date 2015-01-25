@@ -19,11 +19,7 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +30,7 @@ import org.solmix.hola.transport.TransportServerInfo;
 import org.solmix.hola.transport.TransporterRegistry;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
+import org.solmix.runtime.exchange.Message;
 import org.solmix.runtime.exchange.Processor;
 import org.solmix.runtime.exchange.model.EndpointInfo;
 
@@ -53,7 +50,7 @@ public class NettyTransporter extends AbstractTCPTransporter {
 
     private NettyServerEngine engine;
 
-    private final URI serverUrl;
+    private final TransportServerInfo serverInfo;
 
     public NettyTransporter(NettyServerEngineFactory factory,
         EndpointInfo endpointInfo, Container container,
@@ -61,17 +58,9 @@ public class NettyTransporter extends AbstractTCPTransporter {
         super(getAddressValue(endpointInfo, true).getAddress(), endpointInfo,
             container, registry);
         this.serverEngineFactory = factory;
-        serverUrl = getURI(endpointInfo);
+        serverInfo =  endpointInfo.getExtension(TransportServerInfo.class);
     }
 
-    private URI getURI(EndpointInfo endpointInfo) throws IOException  {
-        try {
-            return new URI(endpointInfo.getAddress());
-        } catch (URISyntaxException e) {
-            LOG.error("Not a valid endpoint address",e);
-            throw new IOException(e.getMessage());
-        }
-    }
 
     @Override
     public void finalizeConfig() {
@@ -87,11 +76,11 @@ public class NettyTransporter extends AbstractTCPTransporter {
 
     protected void retrieveEngine() throws IOException {
 
-        engine = serverEngineFactory.retrieveEngine(serverUrl.getHost(),
-            serverUrl.getPort());
+        engine = serverEngineFactory.retrieveEngine(serverInfo.getHost(),
+            serverInfo.getPort());
         if (engine == null) {
-            engine = serverEngineFactory.createEngine(serverUrl.getHost(),
-                serverUrl.getPort());
+            engine = serverEngineFactory.createEngine(serverInfo.getHost(),
+                serverInfo.getPort());
         }
         TransportServerInfo tsi= endpointInfo.getExtension(TransportServerInfo.class);
         engine.setTransportServerInfo(tsi);
@@ -102,8 +91,7 @@ public class NettyTransporter extends AbstractTCPTransporter {
     @Override
     protected void activate(Processor p) {
         super.activate(p);
-        engine.setNettyBuffedHandler(new NettyBuffedHandler(this));
-        engine.start();
+        engine.addHandler(serverInfo.getPath(), new NettyMessageHandler(this));
     }
 
 
@@ -125,10 +113,10 @@ public class NettyTransporter extends AbstractTCPTransporter {
      */
     @Override
     public int getDefaultPort() {
-        return 1314;
+        return 5715;
     }
 
-    public void doService(ByteBuf request, ByteBuf response) {
+    public void doService(Message request, Message response) {
        Container orig = ContainerFactory.getAndSetThreadDefaultContainer(container);
        ClassLoaderHolder origLoader = null;
       

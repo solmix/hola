@@ -19,7 +19,6 @@
 
 package org.solmix.hola.rpc;
 
-import java.util.Dictionary;
 
 /**
  * 
@@ -36,7 +35,8 @@ public interface RemoteRegistration<S> {
      */
     RemoteReference<S> getReference();
 
-    public void setProperties(Dictionary<String, ?> properties);
+    // change service not support
+    // void setProperties(Dictionary<String, ?> properties);
 
     /**
      * 注销服务

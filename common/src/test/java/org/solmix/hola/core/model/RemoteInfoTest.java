@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.solmix.hola.common.config.ExecutorInfo;
-import org.solmix.hola.common.config.RemoteInfo;
+import org.solmix.hola.rt.config.ExecutorInfo;
+import org.solmix.hola.rt.config.RemoteInfo;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Containers;
 import org.solmix.runtime.monitor.MonitorInfo;

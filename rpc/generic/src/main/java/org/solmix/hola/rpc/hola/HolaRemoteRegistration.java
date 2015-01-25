@@ -21,79 +21,48 @@ package org.solmix.hola.rpc.hola;
 
 import java.util.Dictionary;
 
-import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.solmix.commons.collections.DataTypeMap;
+import org.solmix.hola.common.Params;
+import org.solmix.hola.common.ParamsUtils;
 import org.solmix.hola.rpc.RemoteReference;
-import org.solmix.hola.rpc.RemoteRegistration;
+import org.solmix.hola.rpc.RpcException;
+import org.solmix.hola.rpc.event.RemoteRegisteredEvent;
+import org.solmix.hola.rpc.support.RemoteReferenceImpl;
+import org.solmix.hola.rpc.support.RemoteRegistrationImpl;
+import org.solmix.hola.rpc.support.ServiceProperties;
+import org.solmix.hola.rpc.support.ServiceRegistry;
 import org.solmix.runtime.exchange.Server;
 import org.solmix.runtime.exchange.model.NamedID;
 
 /**
- * 
+ * 端口号必选在注册前指定,如果没有显式配置,则随机取一个放入.
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年11月20日
  */
 
-public class HolaRemoteRegistration<S> implements RemoteRegistration<S>,
-    java.io.Serializable {
-
-    public static final int REGISTERED = 0x00;
-
-    public static final int UNREGISTERING = 0x01;
-
-    public static final int UNREGISTERED = 0x02;
+public class HolaRemoteRegistration<S> extends RemoteRegistrationImpl<S>
+    implements java.io.Serializable {
 
     private static final long serialVersionUID = 1656647471796485503L;
-
-    protected transient Object registrationLock = new Object();
+    private static final Logger LOG = LoggerFactory.getLogger(HolaRemoteRegistration.class);
 
     Server server;
 
-    final Object service;
-
-    final Class<?> clazze;
-
-    /** The registration state */
-    protected int state = REGISTERED;
-    
-    protected transient LocalRemoteReference<S> reference;
-    
-    private final HolaRpcManager manager;
-
-    private final Dictionary<String, ?> properties ;
-
     private HolaServerFactory serverFactory;
-  
+
     private NamedID serviceName;
 
     public HolaRemoteRegistration(HolaRpcManager manager,
-        Class<?> clazze, Object service, RemoteServiceConfig info) {
-        this.manager = manager;
-        this.remoteServiceConfig = info;
-        this.service = service;
-        this.clazze = clazze;
-    }
-
-    @Override
-    public RemoteReference<S> getReference() {
-        if (reference == null) {
-            synchronized (this) {
-                reference = new LocalRemoteReference<S>(this);
-            }
-        }
-        return reference;
+        ServiceRegistry registry, Class<?> clazze, S service) {
+        super(manager, registry, clazze, service);
     }
 
     @Override
     public void unregister() {
-        if(manager!=null){
-            manager.unregisterService(this);
-        }
+        super.unregister();
 
-    }
-
-    @Override
-    public RemoteServiceConfig getServiceConfig() {
-        return remoteServiceConfig;
     }
 
     HolaServerFactory getServerFactory() {
@@ -104,26 +73,106 @@ public class HolaRemoteRegistration<S> implements RemoteRegistration<S>,
         this.serverFactory = serverFactory;
     }
 
-    void publish() {
-        manager.publish(this);
-    }
-
-    /**
-     * @return
-     */
-    public Object getService() {
-        return service;
+    @Override
+    public void register(Dictionary<String, ?> props) {
+        final RemoteReferenceImpl<S> ref;
+        synchronized (registry) {
+            synchronized (registrationLock) {
+                ref = reference;
+                this.properties = createProperties(props);
+            }
+            setupServer(properties);
+            serviceKey = createServiceKey(properties);
+            properties.set(Params.SERVICE_ID_KEY, serviceKey);
+            properties.set(RemoteReference.ReferenceType.class.getName(), RemoteReference.ReferenceType.LOCAL,true);
+            properties.setReadOnly();
+            registry.addServiceRegistration(serviceKey, this);
+        }
+        if (LOG.isTraceEnabled()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Registered service :").append(getServiceKey());
+            LOG.trace(sb.toString());
+        }
+        registry.publishServiceEvent(new RemoteRegisteredEvent(ref));
     }
     
+    @Override
+    protected ServiceProperties createProperties(Dictionary<String, ?> props) {
+        assert Thread.holdsLock(registrationLock);
+        ServiceProperties sp = new ServiceProperties(props);
+        return sp;
+    }
+
+    private void setupServer(ServiceProperties properties) {
+        try {
+            if (server == null) {
+                if (serverFactory == null) {
+                    serverFactory = new HolaServerFactory();
+                }
+                HolaRpcManager hm = (HolaRpcManager) getManager();
+                hm.configureBean(serverFactory);
+                server = createServer();
+            }
+            if (server != null) {
+                server.start();
+            }
+        } catch (Exception e) {
+            if (server != null) {
+                server.destroy();
+            }
+            throw new RpcException(e);
+        }
+    }
+
+    @Override
+    protected String createServiceKey(ServiceProperties props) {
+      NamedID serviceID =  server.getEndpoint().getService().getServiceInfo().getName();
+      DataTypeMap dt = new DataTypeMap(props);
+      return HolaRpcManager.serviceKey(dt.getString(Params.GROUP_KEY),
+          serviceID.toString(),
+          dt.getString(Params.VERSION_KEY),
+          dt.getInteger(Params.PORT_KEY));
+    }
+    
+    public HolaRpcManager getRpcManager(){
+        return (HolaRpcManager)getManager();
+    }
+    private Server createServer() {
+        serverFactory.setContainer(getRpcManager().getContainer());
+        serverFactory.setStart(false);
+        serverFactory.setServiceBean(service);
+        serverFactory.setServiceClass(clazze);
+        //放入配置参数
+        serverFactory.setConfigObject(properties);
+        setFactoryProperties(serverFactory,new DataTypeMap(properties));
+        
+        Server server = serverFactory.create();
+        configureBean(server);
+        configureBean(server.getEndpoint());
+        configureBean(server.getEndpoint().getService());
+        return server;
+    }
+    
+    private void setFactoryProperties(HolaServerFactory factory, DataTypeMap dic) {
+        factory.setAddress(ParamsUtils.getAddress(dic));
+        factory.setTransporter(dic.getString(Params.TRANSPORTER_KEY,
+            Params.DEFAULT_RPC_TRANSPORTER));
+        factory.setProtocol(dic.getString(Params.PROTOCOL_KEY,
+            Params.DEFAULT_PROTOCOL));
+    }
+
+    private void configureBean(Object instance){
+        getRpcManager().configureBean(instance);
+    }
+
     /**   */
     public NamedID getServiceName() {
         return serviceName;
     }
-    
+
     /**   */
     public void setServiceName(NamedID serviceName) {
         this.serviceName = serviceName;
     }
-    
 
 }

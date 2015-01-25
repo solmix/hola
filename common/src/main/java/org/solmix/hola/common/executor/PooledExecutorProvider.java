@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.common.Constants;
-import org.solmix.hola.common.config.RemoteInfo;
+import org.solmix.hola.rt.config.RemoteInfo;
 import org.solmix.runtime.Extension;
 
 /**

@@ -18,7 +18,6 @@
  */
 package org.solmix.hola.rpc;
 
-import org.solmix.hola.common.config.RemoteServiceConfig;
 import org.solmix.runtime.exchange.model.EndpointInfo;
 import org.solmix.runtime.exchange.model.ServiceInfo;
 
@@ -30,21 +29,9 @@ import org.solmix.runtime.exchange.model.ServiceInfo;
  */
 
 public class RpcEndpointInfo extends EndpointInfo {
-
-    private RemoteServiceConfig config;
-
+    
     public RpcEndpointInfo(ServiceInfo service,String transporter){
         super(service,transporter);
-    }
-    /**   */
-    public RemoteServiceConfig getConfig() {
-        return config;
-    }
-
-    
-    /**   */
-    public void setConfig(RemoteServiceConfig config) {
-        this.config = config;
     }
     
 }

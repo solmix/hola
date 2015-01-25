@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.solmix.hola.common.Constants;
-import org.solmix.hola.common.config.RemoteInfo;
 import org.solmix.hola.common.serialize.hola.HolaSerialization;
 import org.solmix.hola.common.serialize.java.JavaSerialization;
+import org.solmix.hola.rt.config.RemoteInfo;
 import org.solmix.runtime.Container;
 
 /**

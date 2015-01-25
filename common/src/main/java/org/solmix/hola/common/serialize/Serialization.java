@@ -24,7 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 
-import org.solmix.hola.common.config.RemoteInfo;
+import org.solmix.hola.rt.config.RemoteInfo;
 import org.solmix.runtime.Extension;
 
 

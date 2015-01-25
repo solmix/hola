@@ -19,11 +19,16 @@
 
 package org.solmix.hola.rpc.support;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
+import org.solmix.hola.rpc.RemoteListener;
 import org.solmix.hola.rpc.RemoteReference;
 import org.solmix.hola.rpc.RemoteRegistration;
 import org.solmix.hola.rpc.RpcManager;
+import org.solmix.hola.rpc.event.RemoteRegisteredEvent;
+import org.solmix.hola.rpc.event.RemoteUnregisteredEvent;
 
 /**
  * 
@@ -31,7 +36,7 @@ import org.solmix.hola.rpc.RpcManager;
  * @version $Id$ 2015年1月20日
  */
 
-public  class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
+public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
 
     public static final int REGISTERED = 0x00;
 
@@ -41,66 +46,119 @@ public  class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
 
     protected transient Object registrationLock = new Object();
 
-    protected final Object service;
+    protected final S service;
 
     protected final Class<?> clazze;
-    private int state;
-    private RemoteReferenceImpl<S> reference;
+
+    protected int state;
+
+    protected RemoteReferenceImpl<S> reference;
+
     private final RpcManager manager;
 
-    public RemoteRegistrationImpl(RpcManager manager,Class<?> clazze, Object service) {
+    protected final ServiceRegistry registry;
+
+    protected ServiceProperties properties;
+
+    protected final List<RemoteListener> listeners = new ArrayList<RemoteListener>(
+        4);
+
+    protected String serviceKey;
+
+    public RemoteRegistrationImpl(RpcManager manager, ServiceRegistry registry,
+        Class<?> clazze, S service) {
         this.clazze = clazze;
         this.service = service;
-        this.manager=manager;
+        this.manager = manager;
+        this.registry = registry;
         synchronized (registrationLock) {
             this.state = REGISTERED;
-            reference=new RemoteReferenceImpl<S>(this);
+            reference = new RemoteReferenceImpl<S>(this);
         }
     }
-    
-    void register(Dictionary<String, ?> props){
-        
+
+    public void register(Dictionary<String, ?> props) {
+        final RemoteReferenceImpl<S> ref;
+        synchronized (registry) {
+            synchronized (registrationLock) {
+                ref = reference;
+                this.properties = createProperties(props);
+            }
+            serviceKey = createServiceKey(properties);
+            registry.addServiceRegistration(serviceKey, this);
+        }
+        registry.publishServiceEvent(new RemoteRegisteredEvent(ref));
     }
 
-    @Override
-    public void setProperties(Dictionary<String, ?> properties) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rpc.RemoteRegistration#getReference()
-     */
-    @Override
-    public RemoteReference<S> getReference() {
-        // TODO Auto-generated method stub
+    protected String createServiceKey(ServiceProperties props) {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.rpc.RemoteRegistration#unregister()
-     */
+    protected ServiceProperties createProperties(Dictionary<String, ?> props) {
+        assert Thread.holdsLock(registrationLock);
+        ServiceProperties sp = new ServiceProperties(props);
+        sp.setReadOnly();
+        return sp;
+    }
+
+    public String getServiceKey() {
+        return serviceKey;
+    }
+    public S getServiceObject(){
+        return service;
+    }
+    public Class<?> getClazze(){
+        return clazze;
+    }
+
+    @Override
+    public RemoteReference<S> getReference() {
+        return getReferenceImpl();
+    }
+
+    public RemoteReferenceImpl<S> getReferenceImpl() {
+        synchronized (registrationLock) {
+            if (reference == null) {
+                throw new IllegalStateException("Service already nuregistered.");
+            }
+            return reference;
+        }
+    }
+
     @Override
     public void unregister() {
-        // TODO Auto-generated method stub
-        
+        final RemoteReferenceImpl<S> ref;
+        synchronized (registry) {
+            synchronized (registrationLock) {
+                if (state != REGISTERED) {
+                    throw new IllegalStateException(
+                        "Service already unregistered.");
+                }
+                registry.removeServiceRegistration(serviceKey, this);
+                state = UNREGISTERING;
+                ref = reference;
+            }
+        }
+        registry.publishServiceEvent(new RemoteUnregisteredEvent(ref));
+        synchronized (registrationLock) {
+            state = UNREGISTERED;
+        }
+
     }
 
     public Object getProperty(String key) {
-        // TODO Auto-generated method stub
-        return null;
+        synchronized (registrationLock) {
+            return properties.getProperty(key);
+        }
     }
 
     /**
      * @return
      */
     public String[] getPropertyKeys() {
-        // TODO Auto-generated method stub
-        return null;
+        synchronized (registrationLock) {
+            return properties.getPropertyKeys();
+        }
     }
 
     /**
@@ -108,11 +166,14 @@ public  class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
      */
     public RpcManager getManager() {
         synchronized (registrationLock) {
-            if(reference==null){
+            if (reference == null) {
                 return null;
             }
             return manager;
         }
     }
 
+    public Object getService() {
+        return service;
+    }
 }

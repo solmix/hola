@@ -37,6 +37,8 @@ public class TransportServerInfo extends InfoPropertiesSupport{
     private int writeTimeout;
     private boolean waiteSuccess;
     
+    private String path;
+    
     /**   */
     public int getThreadPoolSize() {
         return threadPoolSize;
@@ -101,6 +103,18 @@ public class TransportServerInfo extends InfoPropertiesSupport{
     /**   */
     public void setWaiteSuccess(boolean waiteSuccess) {
         this.waiteSuccess = waiteSuccess;
+    }
+
+    
+    /**   */
+    public String getPath() {
+        return path;
+    }
+
+    
+    /**   */
+    public void setPath(String path) {
+        this.path = path;
     }
     
     

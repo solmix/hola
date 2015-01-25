@@ -31,7 +31,8 @@ import org.solmix.hola.rpc.RpcManager;
 public class RemoteReferenceImpl<S> implements RemoteReference<S> {
 
     private final RemoteRegistrationImpl<S> registration;
-
+    private volatile boolean available = true;
+    private volatile boolean destroyed = false;
     RemoteReferenceImpl(RemoteRegistrationImpl<S> registration) {
         this.registration = registration;
     }
@@ -51,5 +52,29 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S> {
     public RpcManager getRpcManager() {
         return registration.getManager();
     }
+    
+    RemoteRegistrationImpl<S> getRegistration(){
+        return registration;
+    }
+    @Override
+    public boolean isAvailable() {
+        return available;
+    }
+    
+    protected void setAvailable(boolean available) {
+        this.available = available;
+    }
 
+    @Override
+    public void destroy() {
+        if (isDestroyed()) {
+            return;
+        }
+        destroyed = true;
+        setAvailable(false);
+    }
+    
+    public boolean isDestroyed() {
+        return destroyed;
+    }
 }

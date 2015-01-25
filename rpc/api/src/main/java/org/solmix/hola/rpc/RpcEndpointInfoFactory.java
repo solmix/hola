@@ -19,7 +19,8 @@
 package org.solmix.hola.rpc;
 
 import org.solmix.commons.collections.DataTypeMap;
-import org.solmix.hola.common.config.Param;
+import org.solmix.hola.common.Params;
+import org.solmix.hola.rpc.support.ServiceProperties;
 import org.solmix.hola.transport.TransportClientInfo;
 import org.solmix.hola.transport.TransportServerInfo;
 import org.solmix.runtime.Container;
@@ -44,8 +45,8 @@ public class RpcEndpointInfoFactory implements EndpointInfoFactory {
     @Override
     public EndpointInfo createEndpointInfo(Container container,
         ServiceInfo serviceInfo, ProtocolInfo b, Object configObject) {
-        if(configObject instanceof DataTypeMap){
-            DataTypeMap config = (DataTypeMap)configObject;
+        if(configObject instanceof ServiceProperties){
+            DataTypeMap config = new DataTypeMap((ServiceProperties)configObject);
             RpcEndpointInfo rei = new RpcEndpointInfo(serviceInfo, getTransporter(config));
             setupTransporterInfo(rei,config);
             return rei;
@@ -59,17 +60,17 @@ public class RpcEndpointInfoFactory implements EndpointInfoFactory {
     protected void setupTransporterInfo(RpcEndpointInfo rei, DataTypeMap config) {
         if(server){
             TransportServerInfo tsi = new TransportServerInfo();
-            tsi.setBufferSize(config.getInt(Param.BUFFER_KEY, Param.DEFAULT_BUFFER_SIZE));
-            tsi.setHost(config.getString(Param.HOST_KEY));
-            tsi.setPort(config.getInt(Param.PORT_KEY));
-            tsi.setThreadPoolSize(config.getInt(Param.THREADS_KEY, Param.DEFAULT_THREADS));
-            tsi.setWaiteSuccess(config.getBoolean(Param.WAIT_KEY, Param.DEFAULT_WAIT));
+            tsi.setBufferSize(config.getInt(Params.BUFFER_KEY, Params.DEFAULT_BUFFER_SIZE));
+            tsi.setHost(config.getString(Params.HOST_KEY));
+            tsi.setPort(config.getInt(Params.PORT_KEY));
+            tsi.setThreadPoolSize(config.getInt(Params.THREADS_KEY, Params.DEFAULT_THREADS));
+            tsi.setWaiteSuccess(config.getBoolean(Params.WAIT_KEY, Params.DEFAULT_WAIT));
             rei.addExtension(tsi);
         }else{
             TransportClientInfo tci = new TransportClientInfo();
-            tci.setBufferSize(config.getInt(Param.BUFFER_KEY, Param.DEFAULT_BUFFER_SIZE));
-            tci.setReceiveTimeout(config.getInt(Param.TIMEOUT_KEY, Param.DEFAULT_RECEIVE_TIMEOUT));
-            tci.setConnectionTimeout(config.getInt(Param.CONNECT_TIMEOUT_KEY, Param.DEFAULT_CONNECT_TIMEOUT));
+            tci.setBufferSize(config.getInt(Params.BUFFER_KEY, Params.DEFAULT_BUFFER_SIZE));
+            tci.setReceiveTimeout(config.getInt(Params.TIMEOUT_KEY, Params.DEFAULT_RECEIVE_TIMEOUT));
+            tci.setConnectionTimeout(config.getInt(Params.CONNECT_TIMEOUT_KEY, Params.DEFAULT_CONNECT_TIMEOUT));
             rei.addExtension(tci);
         }
         
@@ -77,7 +78,7 @@ public class RpcEndpointInfoFactory implements EndpointInfoFactory {
 
 
     protected String getTransporter(DataTypeMap config) {
-        return config.getString(Param.TRANSPORTER_KEY, Param.DEFAULT_RPC_TRANSPORTER);
+        return config.getString(Params.TRANSPORTER_KEY, Params.DEFAULT_RPC_TRANSPORTER);
     }
 
 }

@@ -20,9 +20,8 @@
 package org.solmix.hola.rpc.protocol;
 
 import org.solmix.commons.collections.DataTypeMap;
-import org.solmix.hola.common.config.Param;
-import org.solmix.hola.common.config.ReferenceConfig;
-import org.solmix.hola.common.config.RemoteServiceConfig;
+import org.solmix.hola.common.Params;
+import org.solmix.hola.rpc.support.ServiceProperties;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.exchange.model.SerializationInfo;
 import org.solmix.runtime.exchange.model.ServiceInfo;
@@ -41,12 +40,8 @@ public abstract class RpcProtocolFactory extends AbstractProtocolFactory {
     }
 
     protected void setProperties(RpcProtocolInfo pi, Object configObject) {
-        if (configObject instanceof RemoteServiceConfig) {
-            setServiceProperties(pi,(RemoteServiceConfig)configObject);
-        } else if (configObject instanceof ReferenceConfig) {
-            setReferenceProperties(pi,(ReferenceConfig)configObject);
-        } else if (configObject instanceof DataTypeMap) {
-            setMapProperties(pi,(DataTypeMap)configObject);
+         if (configObject instanceof ServiceProperties) {
+            setMapProperties(pi,new DataTypeMap((ServiceProperties)configObject));
         } else {
             throw new IllegalArgumentException(
                 "Unsuport protocol configure object "
@@ -56,22 +51,10 @@ public abstract class RpcProtocolFactory extends AbstractProtocolFactory {
     }
     
     protected void setMapProperties(RpcProtocolInfo pi,DataTypeMap map) {
-        String  serialObject = map.getString(Param.SERIALIZATION_KEY, Param.DEFAULT_RPC_SERIALIZATION);
+        String  serialObject = map.getString(Params.SERIALIZATION_KEY, Params.DEFAULT_RPC_SERIALIZATION);
         if(serialObject!=null){
             pi.setSerializationInfo(new SerializationInfo(serialObject));
         }
-    }
-
-    protected void setReferenceProperties(RpcProtocolInfo pi,
-        ReferenceConfig rc) {
-        String serialization = rc.getClient().getSerial();
-        pi.setSerializationInfo(new SerializationInfo(serialization));
-    }
-
-    protected void setServiceProperties(RpcProtocolInfo pi,
-        RemoteServiceConfig sc) {
-        String serialization = sc.getServer().getSerial();
-        pi.setSerializationInfo(new SerializationInfo(serialization));
     }
 
     public RpcProtocolInfo createRpcProtocolInfo(ServiceInfo info,

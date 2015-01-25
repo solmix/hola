@@ -18,10 +18,11 @@
  */
 package org.solmix.hola.rpc.hola;
 
+import java.util.Dictionary;
 import java.util.concurrent.Executor;
 
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.common.config.ReferenceConfig;
+import org.solmix.hola.common.ParamsUtils;
 import org.solmix.hola.rpc.ClientProxy;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.bean.BeanConfigurer;
@@ -50,7 +51,7 @@ public class HolaDelegate implements RemoteDelegate {
     }
 
     @Override
-    public <T> T getProxy(NamedID name,Class<T> type,ReferenceConfig config) {
+    public <T> T getProxy(NamedID name,Class<T> type,Dictionary<String,?> config) {
        Assert.isNotNull(name);
        HolaClientProxyFactory proxyFactory = new HolaClientProxyFactory();
        HolaClientFactory clientFactory=(HolaClientFactory)  proxyFactory.getClientFactory();
@@ -66,7 +67,7 @@ public class HolaDelegate implements RemoteDelegate {
        }
        serviceFactory.setEndpointName(name);
         if (config != null) {
-            clientFactory.setAddress(config.getUrl());
+            clientFactory.setAddress(ParamsUtils.getAddress(config));
         }
         Object proxy = proxyFactory.create();
         Service service = serviceFactory.getService();

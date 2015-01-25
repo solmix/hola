@@ -28,7 +28,13 @@ package org.solmix.hola.transport.netty;
 
 public interface NettyEngine {
 
-    void start();
+    void addHandler(String path, NettyMessageHandler handler);
+
+    
+    void removeHandler(String path);
+
+    
+    NettyMessageHandler getHandler(String path);
 
     void shutdown();
 }

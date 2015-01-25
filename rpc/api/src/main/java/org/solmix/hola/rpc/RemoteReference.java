@@ -28,9 +28,23 @@ package org.solmix.hola.rpc;
 
 public interface RemoteReference<S> {
 
+    public enum ReferenceType{
+        LOCAL,REMOTE
+    }
     public Object getProperty(String key);
 
     public String[] getPropertyKeys();
+    /**
+     * is available.
+     * 
+     * @return available.
+     */
+    boolean isAvailable();
+
+    /**
+     * destroy.
+     */
+    void destroy();
 
     public RpcManager getRpcManager();
 }

@@ -28,6 +28,10 @@ import io.netty.channel.group.ChannelGroup;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.hola.transport.AbstractTCPTransporter;
+import org.solmix.runtime.exchange.Message;
+import org.solmix.runtime.exchange.MessageUtils;
+import org.solmix.runtime.exchange.support.DefaultMessage;
 import org.solmix.runtime.interceptor.Fault;
 
 /**
@@ -43,14 +47,17 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
     private final ChannelGroup allChannels;
 
     private final NettyServerChannelFactory channelFactory;
+
     private final int timeout;
+
     private final boolean waitSucess;
 
-    public NettyServerHandler(NettyServerChannelFactory factory,int timeout,boolean waitSucess) {
+    public NettyServerHandler(NettyServerChannelFactory factory, int timeout,
+        boolean waitSucess) {
         allChannels = factory.getAllChannels();
         this.channelFactory = factory;
-        this.timeout=timeout;
-        this.waitSucess= waitSucess;
+        this.timeout = timeout;
+        this.waitSucess = waitSucess;
     }
 
     @Override
@@ -60,23 +67,37 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
         }
         allChannels.add(ctx.channel());
     }
+
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof ByteBuf) {
-            ByteBuf request = (ByteBuf)msg;
-            NettyBuffedHandler handler = channelFactory.getNettyBuffedHandler();
+    public void channelRead(ChannelHandlerContext ctx, Object msg)
+        throws Exception {
+        if (msg instanceof Message) {
+            Message inMsg = (Message) msg;
+            NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(MessageUtils.getString(
+                inMsg, Message.PATH_INFO));
+
+            ByteBuf response = ctx.alloc().buffer(
+                channelFactory.getBufferSize());
+            Message outMsg = createResponseMessage(response);
             ThreadLocalChannel.set(ctx.channel());
-            ByteBuf response = channelFactory.getResponeBuffer();
-            handler.handle( request, response);
-            ThreadLocalChannel.unset();
-            handleResponse(ctx,response);
-            
+            try {
+                handler.handle(inMsg, outMsg);
+            } finally {
+                ThreadLocalChannel.unset();
+            }
+            handleResponse(ctx, response);
+
         } else {
             super.channelRead(ctx, msg);
         }
     }
-    
-    
+
+    private Message createResponseMessage(ByteBuf response) {
+        DefaultMessage msg = new DefaultMessage();
+        msg.put(AbstractTCPTransporter.RESPONSE_BYTEBUF, response);
+        return msg;
+    }
+
     private void handleResponse(ChannelHandlerContext ctx, ByteBuf response) {
         boolean success = true;
         try {
@@ -89,29 +110,34 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
                 throw cause;
             }
         } catch (Throwable e) {
-            throw new Fault("Failed to write response to "+ctx.channel().remoteAddress());
+            throw new Fault("Failed to write response to "
+                + ctx.channel().remoteAddress());
         }
-        if(success){
-            throw new Fault("Failed to write response to "+ctx.channel().remoteAddress()+" time out ("+timeout+"ms) limit ");
+        if (success) {
+            throw new Fault("Failed to write response to "
+                + ctx.channel().remoteAddress() + " time out (" + timeout
+                + "ms) limit ");
         }
-        
+
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush();
     }
+
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if(LOG.isTraceEnabled()){
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+        throws Exception {
+        if (LOG.isTraceEnabled()) {
             LOG.trace("Netty exception on netty handler");
         }
         ThreadLocalChannel.unset();
         Channel ch = ctx.channel();
-        if(cause instanceof IllegalArgumentException){
+        if (cause instanceof IllegalArgumentException) {
             ch.close();
-        }else{
-            if(ch.isActive()){
+        } else {
+            if (ch.isActive()) {
                 sendError(cause);
             }
         }
@@ -120,6 +146,6 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
 
     protected void sendError(Throwable cause) {
         // TODO Auto-generated method stub
-        
+
     }
 }

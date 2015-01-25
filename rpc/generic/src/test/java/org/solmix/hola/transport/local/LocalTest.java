@@ -18,6 +18,7 @@
  */
 package org.solmix.hola.transport.local;
 
+import java.awt.List;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,7 @@ import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.exchange.Exchange;
 import org.solmix.runtime.exchange.ExchangeException;
 import org.solmix.runtime.exchange.Message;
+import org.solmix.runtime.exchange.MessageList;
 import org.solmix.runtime.exchange.Pipeline;
 import org.solmix.runtime.exchange.Processor;
 import org.solmix.runtime.exchange.Transporter;
@@ -60,7 +62,7 @@ public class LocalTest extends Assert {
         test(false,1000);
     }
     
-//    @Test
+    @Test
     public void testResponseCode() throws IOException{
         LocalTransportFactory ltf = new LocalTransportFactory();
         
@@ -106,8 +108,14 @@ public class LocalTest extends Assert {
         
         ResponseProcessor rp = new ResponseProcessor();
         pl.setProcessor(rp);
-        
+
+        StringBuilder builder = new StringBuilder();
+        for (int x = 0; x < length; x++) {
+            builder.append("hello");
+        }
         DefaultMessage dm = new DefaultMessage();
+        MessageList ml =new MessageList(builder.toString());
+        dm.setContent(List.class, ml);
         if(direct)
             dm.put(LocalPipeline.DIRECT_DISPATCH, Boolean.TRUE);
         dm.put(Transporter.class, trans);
@@ -119,10 +127,6 @@ public class LocalTest extends Assert {
         
         OutputStream out = dm.getContent(OutputStream.class);
         
-        StringBuilder builder = new StringBuilder();
-        for (int x = 0; x < length; x++) {
-            builder.append("hello");
-        }
         out.write(builder.toString().getBytes());
         out.close();
         //传输管道关闭,数据传输完毕.
