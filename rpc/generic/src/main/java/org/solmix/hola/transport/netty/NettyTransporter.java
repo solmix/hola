@@ -51,6 +51,7 @@ public class NettyTransporter extends AbstractTCPTransporter {
     private NettyServerEngine engine;
 
     private final TransportServerInfo serverInfo;
+    private final String serverPath;
 
     public NettyTransporter(NettyServerEngineFactory factory,
         EndpointInfo endpointInfo, Container container,
@@ -59,6 +60,7 @@ public class NettyTransporter extends AbstractTCPTransporter {
             container, registry);
         this.serverEngineFactory = factory;
         serverInfo =  endpointInfo.getExtension(TransportServerInfo.class);
+        serverPath= serverInfo.getPath();
     }
 
 
@@ -91,14 +93,14 @@ public class NettyTransporter extends AbstractTCPTransporter {
     @Override
     protected void activate(Processor p) {
         super.activate(p);
-        engine.addHandler(serverInfo.getPath(), new NettyMessageHandler(this));
+        engine.addHandler(serverPath, new NettyMessageHandler(this));
     }
 
 
     @Override
     protected void deactivate(Processor p) {
         super.deactivate(p);
-        engine.shutdown();
+        engine.removeHandler(serverPath);
     }
 
     @Override

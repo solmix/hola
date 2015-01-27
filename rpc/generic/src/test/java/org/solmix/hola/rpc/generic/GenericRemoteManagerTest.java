@@ -56,9 +56,10 @@ public class GenericRemoteManagerTest extends Assert {
         Hashtable<String, Object> dic = new Hashtable<String, Object>();
         dic.put(Params.TRANSPORTER_KEY, "netty");
         dic.put(Params.HOST_KEY, "127.0.0.1");
-        dic.put(Params.PORT_KEY, new Integer(12313));
+        dic.put(Params.PORT_KEY, 12313);
         dic.put(Params.PROTOCOL_KEY, "hola");
         dic.put(Params.SERIALIZATION_KEY, "java");
+        dic.put(Params.PATH_KEY, HelloService.class.getName());
         HelloServiceImpl hsimpl= new HelloServiceImpl();
         RemoteRegistration<HelloService> registration=null;
         try {
@@ -68,6 +69,12 @@ public class GenericRemoteManagerTest extends Assert {
             assertEquals(hsimpl.sayHelloTo("solmix"), hs.sayHelloTo("solmix"));
 //            ServiceReference<HelloService> refer = grm.getServiceReference(HelloService.class);
 //            HelloService hs = grm.getService(refer);
+/*           try {
+            Thread.currentThread().sleep(10000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
         } catch (RpcException e) {
             e.printStackTrace();
         } finally {

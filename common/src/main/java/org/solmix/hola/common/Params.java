@@ -76,6 +76,10 @@ public final class Params {
     public static final String GROUP_KEY = "group";
     
     public static final String VERSION_KEY = "version";
+
+    public static final String PATH_KEY = "path";
+    
+    public static final String PIPELINES="pipelines";
     private Params() {
 
     }

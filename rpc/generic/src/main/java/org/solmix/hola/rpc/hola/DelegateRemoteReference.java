@@ -67,7 +67,7 @@ public class DelegateRemoteReference<S> implements RemoteReference<S>,
         if(delegate==null){
             
         }
-        return delegate.getProxy(name, clazz, properties);
+        return delegate.getProxy(null, clazz, properties);
     }
 
     /**

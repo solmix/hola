@@ -19,10 +19,12 @@
 package org.solmix.hola.rpc.hola;
 
 import org.solmix.hola.rpc.RpcServiceFactory;
+import org.solmix.hola.rpc.hola.protocol.HolaProtocolFactory;
 import org.solmix.runtime.exchange.Endpoint;
 import org.solmix.runtime.exchange.EndpointException;
 import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
 import org.solmix.runtime.exchange.model.EndpointInfo;
+import org.solmix.runtime.exchange.model.NamedIDPolicy;
 
 
 
@@ -34,6 +36,10 @@ import org.solmix.runtime.exchange.model.EndpointInfo;
 
 public class HolaServiceFactory extends RpcServiceFactory {
 
+    public HolaServiceFactory(){
+        super();
+        setNamedIDPolicy(new NamedIDPolicy(this,HolaProtocolFactory.NAME));
+    }
     @Override
     public Endpoint createEndpoint(EndpointInfo info) throws EndpointException  {
         Endpoint ep= new HolaEndpoint(getContainer(), getService(), info);

@@ -21,12 +21,17 @@ package org.solmix.hola.rpc.hola;
 import java.util.Dictionary;
 import java.util.concurrent.Executor;
 
+import org.solmix.commons.collections.DataTypeMap;
 import org.solmix.commons.util.Assert;
+import org.solmix.hola.common.Params;
 import org.solmix.hola.common.ParamsUtils;
 import org.solmix.hola.rpc.ClientProxy;
+import org.solmix.hola.rpc.support.ServiceProperties;
+import org.solmix.hola.transport.support.RpcPipelineSelector;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.bean.BeanConfigurer;
 import org.solmix.runtime.exchange.Client;
+import org.solmix.runtime.exchange.PipelineSelector;
 import org.solmix.runtime.exchange.Service;
 import org.solmix.runtime.exchange.model.NamedID;
 
@@ -53,8 +58,13 @@ public class HolaDelegate implements RemoteDelegate {
     @Override
     public <T> T getProxy(NamedID name,Class<T> type,Dictionary<String,?> config) {
        Assert.isNotNull(name);
-       HolaClientProxyFactory proxyFactory = new HolaClientProxyFactory();
-       HolaClientFactory clientFactory=(HolaClientFactory)  proxyFactory.getClientFactory();
+       ServiceProperties dic = new ServiceProperties(config);
+       DataTypeMap typeMap = new DataTypeMap(dic);
+       PipelineSelector selector = getSelector(typeMap);
+       HolaClientFactory clientFactory = new HolaClientFactory();
+       clientFactory.setPipelineSelector(selector);
+       clientFactory.setConfigObject(dic);
+       HolaClientProxyFactory proxyFactory = new HolaClientProxyFactory(clientFactory);
        HolaServiceFactory serviceFactory= (HolaServiceFactory)  proxyFactory.getServiceFactory();
        
        proxyFactory.setContainer(container);
@@ -82,6 +92,17 @@ public class HolaDelegate implements RemoteDelegate {
         
         return type.cast(proxy);
     }
+    
+    protected PipelineSelector getSelector(DataTypeMap dic) {
+        boolean sharedConnect=false;
+       int pipelines= dic.getInt(Params.PIPELINES,0);
+       if(pipelines==0){
+           sharedConnect=true;
+           pipelines=1;
+       }
+        return new RpcPipelineSelector(sharedConnect,pipelines);
+    }
+
     private void configureObject(Object instance) {
         configureObject(null, instance);
     }

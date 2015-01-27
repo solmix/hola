@@ -66,6 +66,8 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
             LOG.trace("open new channel {}", ctx.channel());
         }
         allChannels.add(ctx.channel());
+        //启动心跳定时器
+        //TODO
     }
 
     @Override

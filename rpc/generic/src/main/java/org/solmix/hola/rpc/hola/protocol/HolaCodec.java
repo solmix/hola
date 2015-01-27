@@ -132,7 +132,7 @@ public class HolaCodec extends TransportCodec implements Codec {
         // 前导符
         Bytes.short2bytes(HEADER, header);
         // 序列化
-        byte serial = MessageUtils.getByte(outMsg, Message.SERIALIZATON_ID);
+        byte serial = MessageUtils.getByte(outMsg, Serialization.SERIALIZATION_ID);
         // request
         if (MessageUtils.getBoolean(outMsg, Message.REQUEST_MESSAGE)) {
             header[2] = (byte) (FLAG_REQUEST | serial);
@@ -193,6 +193,7 @@ public class HolaCodec extends TransportCodec implements Codec {
         inMsg.setContent(ByteBuf.class, buffer);
         byte flag = header[2], serial = (byte) (flag & SERIALIZATION_MASK);
         SerializationManager sm =container.getExtension(SerializationManager.class);
+        inMsg.put(Serialization.SERIALIZATION_ID, serial);
         Serialization serializaton= sm.getSerializationById(serial);
         long id = Bytes.bytes2long(header, 4);
         inMsg.setId(id);

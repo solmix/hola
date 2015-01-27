@@ -65,6 +65,7 @@ public class RpcEndpointInfoFactory implements EndpointInfoFactory {
             tsi.setPort(config.getInt(Params.PORT_KEY));
             tsi.setThreadPoolSize(config.getInt(Params.THREADS_KEY, Params.DEFAULT_THREADS));
             tsi.setWaiteSuccess(config.getBoolean(Params.WAIT_KEY, Params.DEFAULT_WAIT));
+            tsi.setPath(config.getString(Params.PATH_KEY));
             rei.addExtension(tsi);
         }else{
             TransportClientInfo tci = new TransportClientInfo();

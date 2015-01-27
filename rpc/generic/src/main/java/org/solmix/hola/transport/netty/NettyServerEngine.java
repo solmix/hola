@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.transport.TransportServerInfo;
 import org.solmix.runtime.interceptor.Fault;
 
@@ -123,7 +124,7 @@ public class NettyServerEngine implements NettyEngine {
 
     protected Channel startChannel() {
         final ServerBootstrap bootstrap = new ServerBootstrap();
-        bossGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup( 0,new NamedThreadFactory("Netty-Server-Boss", true));
         workerGroup = new NioEventLoopGroup();
         bootstrap.group(bossGroup, workerGroup).channel(
             NioServerSocketChannel.class).option(ChannelOption.SO_REUSEADDR,

@@ -145,7 +145,6 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
                         + Thread.currentThread());
             }
         }
-
     }
 
 
