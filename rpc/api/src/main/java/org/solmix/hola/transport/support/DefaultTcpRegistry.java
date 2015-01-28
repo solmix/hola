@@ -37,11 +37,6 @@ public class DefaultTcpRegistry implements TransporterRegistry {
 
     private final ConcurrentMap<String, AbstractTCPTransporter> transporters = new ConcurrentHashMap<String, AbstractTCPTransporter>();
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.transport.TransporterRegistry#add(org.solmix.hola.transport.AbstractTCPTransporter)
-     */
     @Override
     public void add(AbstractTCPTransporter transporter) {
         String path = getRealPath(transporter.getAddress());
