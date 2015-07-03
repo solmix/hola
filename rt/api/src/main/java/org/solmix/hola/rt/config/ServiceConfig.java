@@ -192,7 +192,6 @@ public class ServiceConfig<T> extends AbstractServiceConfig implements Container
         
     }
     
-    @Override
     public Container getContainer() {
         return container;
     }
