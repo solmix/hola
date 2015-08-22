@@ -21,12 +21,12 @@ package org.solmix.hola.transport.support;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.solmix.runtime.exchange.Endpoint;
-import org.solmix.runtime.exchange.Exchange;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.MessageUtils;
-import org.solmix.runtime.exchange.Pipeline;
-import org.solmix.runtime.exchange.PipelineSelector;
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.Exchange;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.MessageUtils;
+import org.solmix.exchange.Pipeline;
+import org.solmix.exchange.PipelineSelector;
 
 
 /**

@@ -33,12 +33,12 @@ import org.solmix.commons.io.Bytes;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.hola.transport.codec.TransportCodec;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.MessageUtils;
-import org.solmix.runtime.exchange.dataformat.ObjectInput;
-import org.solmix.runtime.exchange.dataformat.Serialization;
-import org.solmix.runtime.exchange.dataformat.SerializationManager;
-import org.solmix.runtime.exchange.support.DefaultMessage;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.MessageUtils;
+import org.solmix.exchange.dataformat.ObjectInput;
+import org.solmix.exchange.dataformat.Serialization;
+import org.solmix.exchange.dataformat.SerializationManager;
+import org.solmix.exchange.support.DefaultMessage;
 
 /**
  * 

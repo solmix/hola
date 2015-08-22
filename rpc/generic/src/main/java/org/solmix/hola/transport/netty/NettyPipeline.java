@@ -46,13 +46,13 @@ import org.slf4j.LoggerFactory;
 import org.solmix.hola.transport.TransportClientInfo;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.ClientCallback;
-import org.solmix.runtime.exchange.Exchange;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.Processor;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.support.AbstractPipeline;
-import org.solmix.runtime.exchange.support.DefaultMessage;
+import org.solmix.exchange.ClientCallback;
+import org.solmix.exchange.Exchange;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.Processor;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.support.AbstractPipeline;
+import org.solmix.exchange.support.DefaultMessage;
 import org.solmix.runtime.interceptor.phase.PhaseInterceptorChain;
 import org.solmix.runtime.io.AbstractWrappedOutputStream;
 import org.solmix.runtime.threadpool.ThreadPool;
@@ -94,7 +94,7 @@ public class NettyPipeline extends AbstractPipeline {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.Pipeline#prepare(org.solmix.runtime.exchange.Message)
+     * @see org.solmix.exchange.Pipeline#prepare(org.solmix.exchange.Message)
      */
     @Override
     public void prepare(Message message) throws IOException {
@@ -173,7 +173,7 @@ public class NettyPipeline extends AbstractPipeline {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.support.AbstractPipeline#getLogger()
+     * @see org.solmix.exchange.support.AbstractPipeline#getLogger()
      */
     @Override
     protected Logger getLogger() {

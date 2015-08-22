@@ -29,15 +29,15 @@ import org.junit.Test;
 import org.solmix.hola.rpc.RpcEndpointInfo;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
-import org.solmix.runtime.exchange.Exchange;
-import org.solmix.runtime.exchange.ExchangeException;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.MessageList;
-import org.solmix.runtime.exchange.Pipeline;
-import org.solmix.runtime.exchange.Processor;
-import org.solmix.runtime.exchange.Transporter;
-import org.solmix.runtime.exchange.support.DefaultExchange;
-import org.solmix.runtime.exchange.support.DefaultMessage;
+import org.solmix.exchange.Exchange;
+import org.solmix.exchange.ExchangeException;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.MessageList;
+import org.solmix.exchange.Pipeline;
+import org.solmix.exchange.Processor;
+import org.solmix.exchange.Transporter;
+import org.solmix.exchange.support.DefaultExchange;
+import org.solmix.exchange.support.DefaultMessage;
 
 
 /**

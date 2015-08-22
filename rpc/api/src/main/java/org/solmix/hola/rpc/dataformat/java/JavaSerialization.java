@@ -24,12 +24,12 @@ import java.io.OutputStream;
 
 import javax.annotation.Resource;
 
+import org.solmix.exchange.data.ObjectInput;
+import org.solmix.exchange.data.ObjectOutput;
+import org.solmix.exchange.data.Serialization;
+import org.solmix.exchange.model.SerializationInfo;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
-import org.solmix.runtime.exchange.dataformat.ObjectInput;
-import org.solmix.runtime.exchange.dataformat.ObjectOutput;
-import org.solmix.runtime.exchange.dataformat.Serialization;
-import org.solmix.runtime.exchange.model.SerializationInfo;
 
 
 /**

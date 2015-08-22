@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.dataformat.ObjectInput;
-import org.solmix.runtime.exchange.dataformat.Serialization;
-import org.solmix.runtime.exchange.dataformat.SerializationManager;
-import org.solmix.runtime.exchange.model.SerializationInfo;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.dataformat.ObjectInput;
+import org.solmix.exchange.dataformat.Serialization;
+import org.solmix.exchange.dataformat.SerializationManager;
+import org.solmix.exchange.model.SerializationInfo;
 import org.solmix.runtime.interceptor.Fault;
 import org.solmix.runtime.interceptor.phase.Phase;
 import org.solmix.runtime.interceptor.phase.PhaseInterceptorSupport;

@@ -18,7 +18,8 @@
  */
 package org.solmix.hola.common.event;
 
-import org.solmix.hola.common.identity.ID;
+import org.solmix.runtime.identity.ID;
+
 
 
 /**

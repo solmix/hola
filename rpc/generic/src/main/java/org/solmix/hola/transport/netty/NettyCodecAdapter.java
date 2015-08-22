@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.solmix.hola.transport.codec.Codec;
-import org.solmix.runtime.exchange.Message;
+import org.solmix.exchange.Message;
 
 /**
  * 

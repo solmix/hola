@@ -25,16 +25,16 @@ import java.util.Map;
 
 import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
+import org.solmix.exchange.Client;
+import org.solmix.exchange.data.DataProcessor;
+import org.solmix.exchange.event.ServiceFactoryEvent;
+import org.solmix.exchange.interceptor.support.InterceptorProviderSupport;
+import org.solmix.exchange.model.NamedID;
+import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.hola.rpc.proxy.ProxyHelper;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.bean.BeanConfigurer;
-import org.solmix.runtime.exchange.Client;
-import org.solmix.runtime.exchange.dataformat.DataFormat;
-import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
-import org.solmix.runtime.exchange.model.NamedID;
-import org.solmix.runtime.exchange.support.ReflectServiceFactory;
-import org.solmix.runtime.interceptor.support.InterceptorProviderSupport;
 
 /**
  * 
@@ -49,7 +49,7 @@ public class RpcClientProxyFactory extends InterceptorProviderSupport {
     private final RpcClientFactory rpcClientFactory;
     private Map<String, Object> properties;
     private Container container;
-    private DataFormat dataFormat;
+    private DataProcessor dataProcessor;
 
     public RpcClientProxyFactory() {
         this(new RpcClientFactory());
@@ -82,8 +82,8 @@ public class RpcClientProxyFactory extends InterceptorProviderSupport {
                 rpcClientFactory.setContainer(container);
             }
            
-            if(dataFormat!=null){
-                rpcClientFactory.setDataFormat(dataFormat);
+            if(dataProcessor!=null){
+                rpcClientFactory.setDataProcessor(dataProcessor);
             }
             Client c = rpcClientFactory.create();
             if(getInInterceptors()!=null){

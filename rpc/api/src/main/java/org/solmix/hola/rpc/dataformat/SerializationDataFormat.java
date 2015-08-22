@@ -19,13 +19,13 @@
 
 package org.solmix.hola.rpc.dataformat;
 
-import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.dataformat.DataFormat;
-import org.solmix.runtime.exchange.dataformat.ObjectInput;
-import org.solmix.runtime.exchange.dataformat.ObjectOutput;
-import org.solmix.runtime.exchange.dataformat.ObjectReader;
-import org.solmix.runtime.exchange.dataformat.ObjectWriter;
-import org.solmix.runtime.interceptor.support.InterceptorProviderSupport;
+import org.solmix.exchange.Service;
+import org.solmix.exchange.data.DataProcessor;
+import org.solmix.exchange.data.ObjectInput;
+import org.solmix.exchange.data.ObjectOutput;
+import org.solmix.exchange.data.ObjectReader;
+import org.solmix.exchange.data.ObjectWriter;
+import org.solmix.exchange.interceptor.support.InterceptorProviderSupport;
 
 /**
  * 
@@ -34,7 +34,7 @@ import org.solmix.runtime.interceptor.support.InterceptorProviderSupport;
  */
 
 public class SerializationDataFormat extends InterceptorProviderSupport
-    implements DataFormat {
+    implements DataProcessor {
 
     private static final long serialVersionUID = -7151041361258209941L;
 

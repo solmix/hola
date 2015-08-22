@@ -29,17 +29,17 @@ import java.net.ServerSocket;
 
 import org.slf4j.Logger;
 import org.solmix.commons.util.NetUtils;
+import org.solmix.exchange.Exchange;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.Pipeline;
+import org.solmix.exchange.Processor;
+import org.solmix.exchange.Transporter;
+import org.solmix.exchange.interceptor.Fault;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.support.AbstractPipeline;
+import org.solmix.exchange.support.AbstractTransporter;
+import org.solmix.exchange.support.DefaultExchange;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.Exchange;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.Pipeline;
-import org.solmix.runtime.exchange.Processor;
-import org.solmix.runtime.exchange.Transporter;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.support.AbstractPipeline;
-import org.solmix.runtime.exchange.support.AbstractTransporter;
-import org.solmix.runtime.exchange.support.DefaultExchange;
-import org.solmix.runtime.interceptor.Fault;
 import org.solmix.runtime.io.AbstractWrappedOutputStream;
 
 /**
@@ -109,7 +109,7 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.Transporter#shutdown()
+     * @see org.solmix.exchange.Transporter#shutdown()
      */
     @Override
     public void shutdown() {
@@ -151,7 +151,7 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.Transporter#getBackPipeline(org.solmix.runtime.exchange.Message)
+     * @see org.solmix.exchange.Transporter#getBackPipeline(org.solmix.exchange.Message)
      */
     @Override
     public Pipeline getBackPipeline(Message msg) throws IOException {

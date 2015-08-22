@@ -30,11 +30,11 @@ import org.solmix.hola.rpc.ClientProxy;
 import org.solmix.hola.rpc.RpcCallback;
 import org.solmix.hola.rpc.RpcException;
 import org.solmix.hola.rpc.RpcResponse;
-import org.solmix.runtime.exchange.Client;
-import org.solmix.runtime.exchange.ClientCallback;
-import org.solmix.runtime.exchange.Endpoint;
-import org.solmix.runtime.exchange.invoker.OperationDispatcher;
-import org.solmix.runtime.exchange.model.OperationInfo;
+import org.solmix.exchange.Client;
+import org.solmix.exchange.ClientCallback;
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.invoker.OperationDispatcher;
+import org.solmix.exchange.model.OperationInfo;
 import org.solmix.runtime.interceptor.Fault;
 
 /**

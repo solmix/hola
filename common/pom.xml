@@ -35,6 +35,11 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.solmix.common</groupId>
+			<artifactId>solmix-common-exchange</artifactId>
+			<version>0.6.1-SNAPSHOT</version>
+		</dependency>
   </dependencies>
   <build>
 		<plugins>

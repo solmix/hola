@@ -21,8 +21,8 @@ package org.solmix.hola.common.event;
 
 import java.util.EventObject;
 
-import org.solmix.hola.common.identity.ID;
 import org.solmix.runtime.event.Event;
+import org.solmix.runtime.identity.ID;
 
 /**
  * 

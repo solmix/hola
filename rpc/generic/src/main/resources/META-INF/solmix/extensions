@@ -1,4 +1,4 @@
-org.solmix.hola.rpc.hola.protocol.HolaProtocolFactory:org.solmix.runtime.exchange.ProtocolFactory:true
-org.solmix.hola.transport.local.LocalTransportFactory:org.solmix.runtime.exchange.TransporterFactory:true
-org.solmix.hola.transport.netty.NettyTransportFactory:org.solmix.runtime.exchange.TransporterFactory:true
+org.solmix.hola.rpc.hola.protocol.HolaProtocolFactory:org.solmix.exchange.ProtocolFactory:true
+org.solmix.hola.transport.local.LocalTransportFactory:org.solmix.exchange.TransporterFactory:true
+org.solmix.hola.transport.netty.NettyTransportFactory:org.solmix.exchange.TransporterFactory:true
 org.solmix.hola.transport.netty.NettyServerEngineFactory::true

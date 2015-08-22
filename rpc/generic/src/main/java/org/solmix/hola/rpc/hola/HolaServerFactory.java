@@ -23,7 +23,7 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 
 import org.solmix.hola.rpc.RpcServerFactory;
-import org.solmix.runtime.exchange.Server;
+import org.solmix.exchange.Server;
 import org.solmix.runtime.resource.ResourceInjector;
 import org.solmix.runtime.resource.ResourceManager;
 import org.solmix.runtime.resource.ResourceManagerImpl;

@@ -19,10 +19,10 @@
 
 package org.solmix.hola.common;
 
-import org.solmix.hola.common.identity.ID;
-import org.solmix.hola.common.identity.Identifiable;
-import org.solmix.hola.common.identity.Namespace;
 import org.solmix.hola.common.security.ConnectSecurityContext;
+import org.solmix.runtime.identity.ID;
+import org.solmix.runtime.identity.Identifiable;
+import org.solmix.runtime.identity.Namespace;
 
 /**
  * 

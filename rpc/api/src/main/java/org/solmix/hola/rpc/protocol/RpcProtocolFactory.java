@@ -20,12 +20,12 @@
 package org.solmix.hola.rpc.protocol;
 
 import org.solmix.commons.collections.DataTypeMap;
+import org.solmix.exchange.model.SerializationInfo;
+import org.solmix.exchange.model.ServiceInfo;
+import org.solmix.exchange.support.AbstractProtocolFactory;
 import org.solmix.hola.common.Params;
 import org.solmix.hola.rpc.support.ServiceProperties;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.model.SerializationInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
-import org.solmix.runtime.exchange.support.AbstractProtocolFactory;
 
 /**
  * 

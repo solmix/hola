@@ -23,7 +23,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import org.solmix.runtime.exchange.Message;
+import org.solmix.exchange.Message;
+
 
 /**
  * 

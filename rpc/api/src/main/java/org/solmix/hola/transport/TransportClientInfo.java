@@ -19,7 +19,7 @@
 
 package org.solmix.hola.transport;
 
-import org.solmix.runtime.exchange.model.InfoPropertiesSupport;
+import org.solmix.exchange.model.InfoPropertiesSupport;
 
 /**
  * 

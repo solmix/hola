@@ -22,8 +22,8 @@ package org.solmix.hola.rpc.hola.interceptor;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.dataformat.ObjectOutput;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.dataformat.ObjectOutput;
 import org.solmix.runtime.interceptor.Fault;
 import org.solmix.runtime.interceptor.phase.Phase;
 import org.solmix.runtime.interceptor.phase.PhaseInterceptorSupport;

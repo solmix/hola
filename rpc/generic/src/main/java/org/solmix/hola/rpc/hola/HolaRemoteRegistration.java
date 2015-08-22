@@ -33,8 +33,8 @@ import org.solmix.hola.rpc.support.RemoteReferenceImpl;
 import org.solmix.hola.rpc.support.RemoteRegistrationImpl;
 import org.solmix.hola.rpc.support.ServiceProperties;
 import org.solmix.hola.rpc.support.ServiceRegistry;
-import org.solmix.runtime.exchange.Server;
-import org.solmix.runtime.exchange.model.NamedID;
+import org.solmix.exchange.Server;
+import org.solmix.exchange.model.NamedID;
 
 /**
  * 端口号必选在注册前指定,如果没有显式配置,则随机取一个放入.

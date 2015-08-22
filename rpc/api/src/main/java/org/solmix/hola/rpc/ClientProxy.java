@@ -25,11 +25,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import org.solmix.runtime.exchange.Client;
-import org.solmix.runtime.exchange.Endpoint;
-import org.solmix.runtime.exchange.invoker.OperationDispatcher;
-import org.solmix.runtime.exchange.model.OperationInfo;
-import org.solmix.runtime.interceptor.Fault;
+import org.solmix.exchange.Client;
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.interceptor.Fault;
+import org.solmix.exchange.invoker.OperationDispatcher;
+import org.solmix.exchange.model.OperationInfo;
+
 
 
 /**

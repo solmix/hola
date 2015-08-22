@@ -29,19 +29,19 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.runtime.exchange.Exchange;
-import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
-import org.solmix.runtime.exchange.model.ArgumentInfo;
-import org.solmix.runtime.exchange.model.FaultInfo;
-import org.solmix.runtime.exchange.model.InterfaceInfo;
-import org.solmix.runtime.exchange.model.MessageInfo;
-import org.solmix.runtime.exchange.model.NamedID;
-import org.solmix.runtime.exchange.model.OperationInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
-import org.solmix.runtime.exchange.support.DefaultService;
-import org.solmix.runtime.exchange.support.ReflectServiceFactory;
-import org.solmix.runtime.interceptor.Fault;
+import org.solmix.exchange.Exchange;
+import org.solmix.exchange.Service;
+import org.solmix.exchange.event.ServiceFactoryEvent;
+import org.solmix.exchange.interceptor.Fault;
+import org.solmix.exchange.model.ArgumentInfo;
+import org.solmix.exchange.model.FaultInfo;
+import org.solmix.exchange.model.InterfaceInfo;
+import org.solmix.exchange.model.MessageInfo;
+import org.solmix.exchange.model.NamedID;
+import org.solmix.exchange.model.OperationInfo;
+import org.solmix.exchange.model.ServiceInfo;
+import org.solmix.exchange.support.DefaultService;
+import org.solmix.exchange.support.ReflectServiceFactory;
 
 /**
  * 

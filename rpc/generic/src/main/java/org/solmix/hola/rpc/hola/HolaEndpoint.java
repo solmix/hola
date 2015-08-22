@@ -20,10 +20,10 @@ package org.solmix.hola.rpc.hola;
 
 import org.solmix.hola.rpc.RpcPhasePolicy;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.EndpointException;
-import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.support.DefaultEndpoint;
+import org.solmix.exchange.EndpointException;
+import org.solmix.exchange.Service;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.support.DefaultEndpoint;
 
 
 /**

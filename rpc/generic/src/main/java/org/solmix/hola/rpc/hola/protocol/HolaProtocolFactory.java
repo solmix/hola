@@ -23,9 +23,9 @@ import org.solmix.hola.rpc.hola.interceptor.ObjectOutputInterceptor;
 import org.solmix.hola.rpc.protocol.RpcProtocolFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
-import org.solmix.runtime.exchange.Protocol;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
+import org.solmix.exchange.Protocol;
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.ServiceInfo;
 import org.solmix.runtime.interceptor.support.AttachmentInInterceptor;
 import org.solmix.runtime.interceptor.support.AttachmentOutInterceptor;
 
@@ -49,7 +49,7 @@ public class HolaProtocolFactory extends RpcProtocolFactory {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.ProtocolFactory#createProtocol(org.solmix.runtime.exchange.model.ProtocolInfo)
+     * @see org.solmix.exchange.ProtocolFactory#createProtocol(org.solmix.exchange.model.ProtocolInfo)
      */
     @Override
     public Protocol createProtocol(ProtocolInfo info) {

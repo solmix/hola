@@ -36,12 +36,12 @@ import org.solmix.runtime.ContainerEvent;
 import org.solmix.runtime.ContainerListener;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.bean.BeanConfigurer;
-import org.solmix.runtime.exchange.Pipeline;
-import org.solmix.runtime.exchange.PipelineFactory;
-import org.solmix.runtime.exchange.Transporter;
-import org.solmix.runtime.exchange.TransporterFactory;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.support.TransportDetectSupport;
+import org.solmix.exchange.Pipeline;
+import org.solmix.exchange.PipelineFactory;
+import org.solmix.exchange.Transporter;
+import org.solmix.exchange.TransporterFactory;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.support.TransportDetectSupport;
 
 /**
  * 
@@ -159,7 +159,7 @@ public class NettyTransportFactory implements PipelineFactory,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.support.TransportDetectSupport#getTransportTypes()
+     * @see org.solmix.exchange.support.TransportDetectSupport#getTransportTypes()
      */
     @Override
     public List<String> getTransportTypes() {

@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.solmix.runtime.exchange.Message;
+import org.solmix.exchange.Message;
 import org.solmix.runtime.io.AbstractWrappedOutputStream;
 
 /**

@@ -23,7 +23,8 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 
-import org.solmix.runtime.exchange.dataformat.ObjectOutput;
+import org.solmix.exchange.data.ObjectOutput;
+
 
 
 /**
@@ -80,7 +81,7 @@ public class JavaObjectOutput implements ObjectOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.DataOutput#writeUTF(java.lang.String)
+     * @see org.solmix.exchange.data.DataOutput#writeUTF(java.lang.String)
      */
     @Override
     public void writeUTF(String v) throws IOException {
@@ -95,7 +96,7 @@ public class JavaObjectOutput implements ObjectOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.DataOutput#writeBytes(byte[])
+     * @see org.solmix.exchange.data.DataOutput#writeBytes(byte[])
      */
     @Override
     public void writeBytes(byte[] v) throws IOException {
@@ -109,7 +110,7 @@ public class JavaObjectOutput implements ObjectOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.DataOutput#writeBytes(byte[], int, int)
+     * @see org.solmix.exchange.data.DataOutput#writeBytes(byte[], int, int)
      */
     @Override
     public void writeBytes(byte[] v, int off, int len) throws IOException {
@@ -125,7 +126,7 @@ public class JavaObjectOutput implements ObjectOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.DataOutput#flushBuffer()
+     * @see org.solmix.exchange.data.DataOutput#flushBuffer()
      */
     @Override
     public void flushBuffer() throws IOException {
@@ -135,7 +136,7 @@ public class JavaObjectOutput implements ObjectOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.ObjectOutput#writeObject(java.lang.Object)
+     * @see org.solmix.exchange.data.ObjectOutput#writeObject(java.lang.Object)
      */
     @Override
     public void writeObject(Object obj) throws IOException {

@@ -9,11 +9,6 @@
   <artifactId>hola-discovery-api</artifactId>
   <dependencies>
   	<dependency>
-  		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-core</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
   		<groupId>org.solmix.common</groupId>
   		<artifactId>solmix-common-runtime</artifactId>
   		<version>0.6.1-SNAPSHOT</version>
@@ -42,6 +37,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.solmix.hola</groupId>
+			<artifactId>hola-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
   </dependencies>
   <build>

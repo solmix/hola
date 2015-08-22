@@ -30,10 +30,10 @@ import org.solmix.hola.rpc.support.ServiceProperties;
 import org.solmix.hola.transport.support.RpcPipelineSelector;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.bean.BeanConfigurer;
-import org.solmix.runtime.exchange.Client;
-import org.solmix.runtime.exchange.PipelineSelector;
-import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.model.NamedID;
+import org.solmix.exchange.Client;
+import org.solmix.exchange.PipelineSelector;
+import org.solmix.exchange.Service;
+import org.solmix.exchange.model.NamedID;
 
 
 /**

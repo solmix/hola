@@ -18,8 +18,8 @@
  */
 package org.solmix.hola.rpc.hola.interceptor;
 
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.dataformat.ObjectInput;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.dataformat.ObjectInput;
 import org.solmix.runtime.interceptor.Fault;
 import org.solmix.runtime.interceptor.phase.Phase;
 import org.solmix.runtime.interceptor.phase.PhaseInterceptorSupport;
@@ -45,7 +45,7 @@ public class ObjectInputEndingInterceptor extends
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.interceptor.Interceptor#handleMessage(org.solmix.runtime.exchange.Message)
+     * @see org.solmix.runtime.interceptor.Interceptor#handleMessage(org.solmix.exchange.Message)
      */
     @Override
     public void handleMessage(Message message) throws Fault {

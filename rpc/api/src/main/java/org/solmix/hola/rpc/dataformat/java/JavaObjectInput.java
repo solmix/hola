@@ -27,7 +27,8 @@ import java.io.ObjectStreamClass;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.Type;
 
-import org.solmix.runtime.exchange.dataformat.ObjectInput;
+import org.solmix.exchange.data.ObjectInput;
+
 
 /**
  * 
@@ -88,7 +89,7 @@ public class JavaObjectInput implements ObjectInput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.DataInput#readUTF()
+     * @see org.solmix.exchange.data.DataInput#readUTF()
      */
     @Override
     public String readUTF() throws IOException {
@@ -102,7 +103,7 @@ public class JavaObjectInput implements ObjectInput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.DataInput#readBytes()
+     * @see org.solmix.exchange.data.DataInput#readBytes()
      */
     @Override
     public byte[] readBytes() throws IOException {
@@ -122,7 +123,7 @@ public class JavaObjectInput implements ObjectInput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.ObjectInput#readObject()
+     * @see org.solmix.exchange.data.ObjectInput#readObject()
      */
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
@@ -136,7 +137,7 @@ public class JavaObjectInput implements ObjectInput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.ObjectInput#readObject(java.lang.Class)
+     * @see org.solmix.exchange.data.ObjectInput#readObject(java.lang.Class)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -148,7 +149,7 @@ public class JavaObjectInput implements ObjectInput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.dataformat.ObjectInput#readObject(java.lang.Class,
+     * @see org.solmix.exchange.data.ObjectInput#readObject(java.lang.Class,
      *      java.lang.reflect.Type)
      */
     @SuppressWarnings("unchecked")

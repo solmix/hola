@@ -18,7 +18,8 @@
  */
 package org.solmix.hola.common;
 
-import org.solmix.hola.common.identity.Identifiable;
+import org.solmix.runtime.identity.Identifiable;
+
 
 
 /**

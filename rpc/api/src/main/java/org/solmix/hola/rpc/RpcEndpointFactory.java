@@ -23,22 +23,22 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.EndpointException;
+import org.solmix.exchange.EndpointInfoFactory;
+import org.solmix.exchange.ProtocolFactoryManager;
+import org.solmix.exchange.Service;
+import org.solmix.exchange.TransporterFactory;
+import org.solmix.exchange.TransporterFactoryManager;
+import org.solmix.exchange.data.DataProcessor;
+import org.solmix.exchange.event.ServiceFactoryEvent;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.model.NamedID;
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.ServiceInfo;
+import org.solmix.exchange.support.AbstractEndpointFactory;
+import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.hola.common.Constants;
-import org.solmix.runtime.exchange.Endpoint;
-import org.solmix.runtime.exchange.EndpointException;
-import org.solmix.runtime.exchange.EndpointInfoFactory;
-import org.solmix.runtime.exchange.ProtocolFactoryManager;
-import org.solmix.runtime.exchange.Service;
-import org.solmix.runtime.exchange.TransporterFactory;
-import org.solmix.runtime.exchange.TransporterFactoryManager;
-import org.solmix.runtime.exchange.dataformat.DataFormat;
-import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.model.NamedID;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
-import org.solmix.runtime.exchange.support.AbstractEndpointFactory;
-import org.solmix.runtime.exchange.support.ReflectServiceFactory;
 
 /**
  * 
@@ -56,7 +56,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
 
     private ReflectServiceFactory serviceFactory;
     
-    private DataFormat dataFormat;
+    private DataProcessor dataProcessor;
 
     protected RpcEndpointFactory(ReflectServiceFactory factory) {
         this.serviceFactory = factory;
@@ -178,7 +178,7 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
                 transporter = Constants.DEFAULT_TRANSPORTER;
             }
         }
-        setTransporter(transporter);
+//        setTransporter(transporter);
         if(transporterFactory == null){
             transporterFactory= getTransporterFactory(transporter);
         }
@@ -269,8 +269,8 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
         Class<?> cls = getServiceClass();
         serviceFactory.setServiceClass(cls);
         serviceFactory.setContainer(getContainer());
-        if (dataFormat != null) {
-            serviceFactory.setDataFormat(dataFormat);
+        if (dataProcessor != null) {
+            serviceFactory.setDataProcessor(dataProcessor);
         }
     }
 
@@ -299,13 +299,13 @@ public abstract class RpcEndpointFactory extends AbstractEndpointFactory {
 
     
     /**   */
-    public DataFormat getDataFormat() {
-        return dataFormat;
+    public DataProcessor getDataProcessor() {
+        return dataProcessor;
     }
 
     
     /**   */
-    public void setDataFormat(DataFormat dataFormat) {
-        this.dataFormat = dataFormat;
+    public void setDataProcessor(DataProcessor dataProcessor) {
+        this.dataProcessor = dataProcessor;
     }
 }

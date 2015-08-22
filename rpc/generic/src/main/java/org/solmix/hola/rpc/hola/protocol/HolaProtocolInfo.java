@@ -19,7 +19,7 @@
 package org.solmix.hola.rpc.hola.protocol;
 
 import org.solmix.hola.rpc.protocol.RpcProtocolInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
+import org.solmix.exchange.model.ServiceInfo;
 
 
 /**

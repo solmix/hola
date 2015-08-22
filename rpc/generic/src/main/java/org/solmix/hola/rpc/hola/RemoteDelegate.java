@@ -20,7 +20,7 @@ package org.solmix.hola.rpc.hola;
 
 import java.util.Dictionary;
 
-import org.solmix.runtime.exchange.model.NamedID;
+import org.solmix.exchange.model.NamedID;
 
 
 /**

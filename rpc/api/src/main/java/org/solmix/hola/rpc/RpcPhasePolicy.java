@@ -22,8 +22,8 @@ package org.solmix.hola.rpc;
 import java.util.SortedSet;
 
 import org.solmix.commons.collections.SortedArraySet;
-import org.solmix.runtime.interceptor.phase.Phase;
-import org.solmix.runtime.interceptor.phase.PhasePolicy;
+import org.solmix.exchange.interceptor.phase.Phase;
+import org.solmix.exchange.interceptor.phase.PhasePolicy;
 
 /**
  * 

@@ -21,7 +21,7 @@ package org.solmix.hola.transport.netty;
 
 import java.io.IOException;
 
-import org.solmix.runtime.exchange.Message;
+import org.solmix.exchange.Message;
 
 /**
  * 

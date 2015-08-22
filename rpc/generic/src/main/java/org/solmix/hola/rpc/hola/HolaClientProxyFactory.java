@@ -23,7 +23,7 @@ import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.hola.rpc.ClientProxy;
 import org.solmix.hola.rpc.RpcClientFactory;
 import org.solmix.hola.rpc.RpcClientProxyFactory;
-import org.solmix.runtime.exchange.Client;
+import org.solmix.exchange.Client;
 
 
 /**

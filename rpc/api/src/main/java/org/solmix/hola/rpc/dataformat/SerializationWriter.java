@@ -18,9 +18,9 @@
  */
 package org.solmix.hola.rpc.dataformat;
 
-import org.solmix.runtime.exchange.dataformat.ObjectOutput;
-import org.solmix.runtime.exchange.dataformat.ObjectWriter;
-import org.solmix.runtime.exchange.model.ArgumentInfo;
+import org.solmix.exchange.data.ObjectOutput;
+import org.solmix.exchange.data.ObjectWriter;
+import org.solmix.exchange.model.ArgumentInfo;
 
 
 /**

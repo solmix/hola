@@ -18,7 +18,10 @@
  */
 package org.solmix.hola.common;
 
-import org.solmix.runtime.exchange.Endpoint;
+import org.solmix.exchange.Endpoint;
+
+
+
 
 
 /**

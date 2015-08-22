@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.runtime.exchange.model.InfoPropertiesSupport;
+import org.solmix.exchange.model.InfoPropertiesSupport;
 
 /**
  * 

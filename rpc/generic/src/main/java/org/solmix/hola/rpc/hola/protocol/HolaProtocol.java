@@ -19,10 +19,10 @@
 
 package org.solmix.hola.rpc.hola.protocol;
 
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.Protocol;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.support.DefaultMessage;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.Protocol;
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.support.DefaultMessage;
 import org.solmix.runtime.interceptor.support.InterceptorProviderSupport;
 
 /**

@@ -19,9 +19,10 @@
 
 package org.solmix.hola.rpc.protocol;
 
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.SerializationInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.SerializationInfo;
+import org.solmix.exchange.model.ServiceInfo;
+
 
 /**
  * 

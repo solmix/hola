@@ -29,9 +29,9 @@ import io.netty.channel.group.ChannelGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.transport.AbstractTCPTransporter;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.MessageUtils;
-import org.solmix.runtime.exchange.support.DefaultMessage;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.MessageUtils;
+import org.solmix.exchange.support.DefaultMessage;
 import org.solmix.runtime.interceptor.Fault;
 
 /**

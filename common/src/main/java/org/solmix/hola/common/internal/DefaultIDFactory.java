@@ -23,15 +23,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.solmix.hola.common.identity.ID;
-import org.solmix.hola.common.identity.IDCreateException;
-import org.solmix.hola.common.identity.IDFactory;
-import org.solmix.hola.common.identity.Namespace;
-import org.solmix.hola.common.identity.support.GUID;
-import org.solmix.hola.common.identity.support.GUIDNamespace;
-import org.solmix.hola.common.identity.support.LongNamespace;
-import org.solmix.hola.common.identity.support.StringNamespace;
-import org.solmix.hola.common.identity.support.URINamespace;
+import org.solmix.runtime.identity.ID;
+import org.solmix.runtime.identity.IDCreateException;
+import org.solmix.runtime.identity.IIDFactory;
+import org.solmix.runtime.identity.Namespace;
+import org.solmix.runtime.identity.support.GUID;
+import org.solmix.runtime.identity.support.GUIDNamespace;
+import org.solmix.runtime.identity.support.LongNamespace;
+import org.solmix.runtime.identity.support.StringNamespace;
+import org.solmix.runtime.identity.support.URINamespace;
 
 /**
  * 
@@ -39,10 +39,10 @@ import org.solmix.hola.common.identity.support.URINamespace;
  * @version 0.0.1 2014年4月4日
  */
 
-public class DefaultIDFactory implements IDFactory
+public class DefaultIDFactory implements IIDFactory
 {
 
-    protected static IDFactory instance = null;
+    protected static IIDFactory instance = null;
 
     private static Hashtable<String, Namespace> namespaces = new Hashtable<String, Namespace>();
     static {
@@ -53,7 +53,7 @@ public class DefaultIDFactory implements IDFactory
         addNamespace0(new URINamespace());
     }
 
-    public synchronized static IDFactory getDefault() {
+    public synchronized static IIDFactory getDefault() {
         return instance;
     }
 

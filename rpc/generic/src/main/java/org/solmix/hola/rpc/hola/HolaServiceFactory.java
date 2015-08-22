@@ -20,11 +20,11 @@ package org.solmix.hola.rpc.hola;
 
 import org.solmix.hola.rpc.RpcServiceFactory;
 import org.solmix.hola.rpc.hola.protocol.HolaProtocolFactory;
-import org.solmix.runtime.exchange.Endpoint;
-import org.solmix.runtime.exchange.EndpointException;
-import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.model.NamedIDPolicy;
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.EndpointException;
+import org.solmix.exchange.event.ServiceFactoryEvent;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.model.NamedIDPolicy;
 
 
 

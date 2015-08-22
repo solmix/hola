@@ -18,16 +18,16 @@
  */
 package org.solmix.hola.rpc;
 
-import org.solmix.runtime.exchange.Client;
-import org.solmix.runtime.exchange.Endpoint;
-import org.solmix.runtime.exchange.EndpointException;
-import org.solmix.runtime.exchange.EndpointInfoFactory;
-import org.solmix.runtime.exchange.PipelineFactory;
-import org.solmix.runtime.exchange.PipelineFactoryManager;
-import org.solmix.runtime.exchange.event.ServiceFactoryEvent;
-import org.solmix.runtime.exchange.support.DefaultClient;
-import org.solmix.runtime.exchange.support.ReflectServiceFactory;
-import org.solmix.runtime.exchange.support.TransportDetectSupport;
+import org.solmix.exchange.Client;
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.EndpointException;
+import org.solmix.exchange.EndpointInfoFactory;
+import org.solmix.exchange.PipelineFactory;
+import org.solmix.exchange.PipelineFactoryManager;
+import org.solmix.exchange.event.ServiceFactoryEvent;
+import org.solmix.exchange.support.DefaultClient;
+import org.solmix.exchange.support.ReflectServiceFactory;
+import org.solmix.exchange.support.TransportDetectSupport;
 
 
 /**

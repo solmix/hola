@@ -25,15 +25,15 @@ import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.rpc.RpcEndpointInfo;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
-import org.solmix.runtime.exchange.EndpointInfoFactory;
-import org.solmix.runtime.exchange.Pipeline;
-import org.solmix.runtime.exchange.PipelineFactory;
-import org.solmix.runtime.exchange.Transporter;
-import org.solmix.runtime.exchange.TransporterFactory;
-import org.solmix.runtime.exchange.TransporterFactoryManager;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
+import org.solmix.exchange.EndpointInfoFactory;
+import org.solmix.exchange.Pipeline;
+import org.solmix.exchange.PipelineFactory;
+import org.solmix.exchange.Transporter;
+import org.solmix.exchange.TransporterFactory;
+import org.solmix.exchange.TransporterFactoryManager;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.ServiceInfo;
 
 
 /**
@@ -75,7 +75,7 @@ public class HolaTransportFactory implements PipelineFactory,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.EndpointInfoFactory#createEndpointInfo(org.solmix.runtime.Container, org.solmix.runtime.exchange.model.ServiceInfo, org.solmix.runtime.exchange.model.ProtocolInfo, java.util.List)
+     * @see org.solmix.exchange.EndpointInfoFactory#createEndpointInfo(org.solmix.runtime.Container, org.solmix.exchange.model.ServiceInfo, org.solmix.exchange.model.ProtocolInfo, java.util.List)
      */
     @Override
     public EndpointInfo createEndpointInfo(Container container,
@@ -93,7 +93,7 @@ public class HolaTransportFactory implements PipelineFactory,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.PipelineFactory#getPipeline(org.solmix.runtime.exchange.model.EndpointInfo, org.solmix.runtime.Container)
+     * @see org.solmix.exchange.PipelineFactory#getPipeline(org.solmix.exchange.model.EndpointInfo, org.solmix.runtime.Container)
      */
     @Override
     public Pipeline getPipeline(EndpointInfo info, Container c) {
@@ -104,7 +104,7 @@ public class HolaTransportFactory implements PipelineFactory,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.PipelineFactory#getPipeline(org.solmix.runtime.exchange.model.EndpointInfo, java.lang.String, org.solmix.runtime.Container)
+     * @see org.solmix.exchange.PipelineFactory#getPipeline(org.solmix.exchange.model.EndpointInfo, java.lang.String, org.solmix.runtime.Container)
      */
     @Override
     public Pipeline getPipeline(EndpointInfo info, String address, Container c) {

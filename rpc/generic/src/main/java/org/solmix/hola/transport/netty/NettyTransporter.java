@@ -30,9 +30,9 @@ import org.solmix.hola.transport.TransportServerInfo;
 import org.solmix.hola.transport.TransporterRegistry;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.Processor;
-import org.solmix.runtime.exchange.model.EndpointInfo;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.Processor;
+import org.solmix.exchange.model.EndpointInfo;
 
 /**
  * 
@@ -111,7 +111,7 @@ public class NettyTransporter extends AbstractTCPTransporter {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.Transporter#getDefaultPort()
+     * @see org.solmix.exchange.Transporter#getDefaultPort()
      */
     @Override
     public int getDefaultPort() {

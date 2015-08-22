@@ -19,15 +19,15 @@
 package org.solmix.hola.rpc;
 
 import org.solmix.commons.collections.DataTypeMap;
+import org.solmix.exchange.EndpointInfoFactory;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.ServiceInfo;
 import org.solmix.hola.common.Params;
 import org.solmix.hola.rpc.support.ServiceProperties;
 import org.solmix.hola.transport.TransportClientInfo;
 import org.solmix.hola.transport.TransportServerInfo;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.EndpointInfoFactory;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
 
 
 /**

@@ -35,16 +35,16 @@ import org.solmix.hola.rpc.RpcEndpointInfo;
 import org.solmix.hola.transport.RemoteAddress;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
-import org.solmix.runtime.exchange.EndpointInfoFactory;
-import org.solmix.runtime.exchange.Message;
-import org.solmix.runtime.exchange.Pipeline;
-import org.solmix.runtime.exchange.PipelineFactory;
-import org.solmix.runtime.exchange.Transporter;
-import org.solmix.runtime.exchange.TransporterFactory;
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.model.ProtocolInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
-import org.solmix.runtime.exchange.support.TransportDetectSupport;
+import org.solmix.exchange.EndpointInfoFactory;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.Pipeline;
+import org.solmix.exchange.PipelineFactory;
+import org.solmix.exchange.Transporter;
+import org.solmix.exchange.TransporterFactory;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.ServiceInfo;
+import org.solmix.exchange.support.TransportDetectSupport;
 import org.solmix.runtime.threadpool.ThreadPoolManager;
 
 /**
@@ -170,7 +170,7 @@ public class LocalTransportFactory implements TransporterFactory,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.support.TransportDetectSupport#getUriPrefixes()
+     * @see org.solmix.exchange.support.TransportDetectSupport#getUriPrefixes()
      */
     @Override
     public Set<String> getUriPrefixes() {
@@ -180,7 +180,7 @@ public class LocalTransportFactory implements TransporterFactory,
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.runtime.exchange.support.TransportDetectSupport#getTransportTypes()
+     * @see org.solmix.exchange.support.TransportDetectSupport#getTransportTypes()
      */
     @Override
     public List<String> getTransportTypes() {

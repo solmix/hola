@@ -27,9 +27,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.annotation.Resource;
 
 import org.solmix.commons.util.StringUtils;
+import org.solmix.exchange.data.Serialization;
+import org.solmix.exchange.data.SerializationManager;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.exchange.dataformat.Serialization;
-import org.solmix.runtime.exchange.dataformat.SerializationManager;
 import org.solmix.runtime.extension.ExtensionLoader;
 
 /**

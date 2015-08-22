@@ -18,8 +18,9 @@
  */
 package org.solmix.hola.rpc;
 
-import org.solmix.runtime.exchange.model.EndpointInfo;
-import org.solmix.runtime.exchange.model.ServiceInfo;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.exchange.model.ServiceInfo;
+
 
 
 /**

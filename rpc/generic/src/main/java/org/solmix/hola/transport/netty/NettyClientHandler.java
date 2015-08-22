@@ -31,7 +31,7 @@ import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import org.solmix.runtime.exchange.Message;
+import org.solmix.exchange.Message;
 
 /**
  * 
