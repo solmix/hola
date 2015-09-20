@@ -18,10 +18,12 @@
  */
 package org.solmix.hola.discovery.identity;
 
-import org.solmix.hola.common.identity.ID;
+import org.solmix.runtime.identity.ID;
+
 
 
 /**
+ * 一类服务的标示
  * 
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年4月5日

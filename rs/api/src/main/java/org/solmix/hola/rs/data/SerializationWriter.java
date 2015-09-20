@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 The Solmix Project
+ * Copyright (c) 2015 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,35 +16,41 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.rs.data;
 
-package org.solmix.hola.rs;
+import org.solmix.exchange.data.ObjectOutput;
+import org.solmix.exchange.data.ObjectWriter;
+import org.solmix.exchange.model.ArgumentInfo;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年11月19日
+ * @version $Id$  2015年1月13日
  */
 
-public interface RemoteReference<S> {
+public class SerializationWriter implements ObjectWriter<ObjectOutput> {
 
-    public enum ReferenceType{
-        LOCAL,REMOTE
+    
+    @Override
+    public void setProperty(String prop, Object value) {
+        // TODO Auto-generated method stub
+        
     }
-    public Object getProperty(String key);
 
-    public String[] getPropertyKeys();
-    /**
-     * is available.
-     * 
-     * @return available.
-     */
-    boolean isAvailable();
+    
+    @Override
+    public void write(Object obj, ObjectOutput output) {
+        // TODO Auto-generated method stub
+        
+    }
 
-    /**
-     * destroy.
-     */
-    void destroy();
+    
+    @Override
+    public void write(Object obj, ArgumentInfo ai, ObjectOutput output) {
+        // TODO Auto-generated method stub
+        
+    }
 
-    public RemoteServiceFactory getRemoteServiceManager();
+
 }

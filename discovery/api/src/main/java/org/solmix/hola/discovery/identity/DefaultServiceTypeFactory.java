@@ -19,10 +19,9 @@
 
 package org.solmix.hola.discovery.identity;
 
-import org.solmix.hola.common.identity.AbstractNamespace;
-import org.solmix.hola.common.identity.Namespace;
-import org.solmix.hola.common.internal.DefaultIDFactory;
-import org.solmix.hola.discovery.support.ServiceTypeImpl;
+import org.solmix.runtime.identity.AbstractNamespace;
+import org.solmix.runtime.identity.Namespace;
+
 
 /**
  * 

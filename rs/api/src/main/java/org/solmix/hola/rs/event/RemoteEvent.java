@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -25,6 +25,7 @@ import java.util.EventObject;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.solmix.hola.rs.RemoteReference;
+import org.solmix.runtime.event.Event;
 
 /**
  * 
@@ -32,12 +33,8 @@ import org.solmix.hola.rs.RemoteReference;
  * @version 0.0.1 2014年4月29日
  */
 
-public class RemoteEvent extends EventObject
-{
+public class RemoteEvent extends EventObject implements Event {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 6307503964324620448L;
 
     private final RemoteReference<?> reference;
@@ -85,8 +82,7 @@ public class RemoteEvent extends EventObject
      */
     public final static int UNREGISTERED = 0x00000004;
 
-    public RemoteEvent(int type, RemoteReference<?> reference)
-    {
+    public RemoteEvent(int type, RemoteReference<?> reference) {
         super(reference);
         this.reference = reference;
         this.type = type;

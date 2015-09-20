@@ -20,10 +20,10 @@ package org.solmix.hola.discovery.identity;
 
 import java.net.URI;
 
-import org.solmix.hola.common.identity.AbstractNamespace;
-import org.solmix.hola.common.identity.ID;
-import org.solmix.hola.common.identity.IDCreateException;
-import org.solmix.hola.discovery.support.ServiceIDImpl;
+import org.solmix.runtime.identity.AbstractNamespace;
+import org.solmix.runtime.identity.ID;
+import org.solmix.runtime.identity.IDCreateException;
+
 
 
 /**

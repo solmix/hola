@@ -21,9 +21,11 @@ package org.solmix.hola.discovery;
 
 import java.util.concurrent.Future;
 
-import org.solmix.hola.common.identity.Namespace;
+import org.osgi.framework.ServiceListener;
 import org.solmix.hola.discovery.identity.ServiceID;
 import org.solmix.hola.discovery.identity.ServiceType;
+import org.solmix.hola.discovery.model.ServiceInfo;
+import org.solmix.runtime.identity.Namespace;
 
 /**
  * 服务定位

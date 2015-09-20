@@ -1,1 +1,3 @@
-org.solmix.hola.rs.proxy.JDKRemoteProxyFactory:org.solmix.hola.rs.RemoteProxyFactory:true
+#
+org.solmix.hola.rs.support.DefaultRemoteServiceManager:org.solmix.hola.rs.RemoteServiceManager:true
+

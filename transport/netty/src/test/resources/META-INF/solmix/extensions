@@ -1,1 +1,0 @@
-org.solmix.hola.transport.netty.NoHeartbeatNettyTransporter:org.solmix.hola.transport.TransporterProvider:true

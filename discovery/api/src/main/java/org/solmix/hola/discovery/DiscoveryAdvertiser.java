@@ -18,7 +18,9 @@
  */
 package org.solmix.hola.discovery;
 
-import org.solmix.hola.common.identity.Namespace;
+import org.solmix.hola.discovery.model.ServiceInfo;
+import org.solmix.runtime.identity.Namespace;
+
 
 
 /**

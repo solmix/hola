@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,46 +16,45 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rs.event;
 
 import java.util.EventObject;
-
 
 /**
  * 
  */
 
-public abstract class RemoteRequestEvent  extends EventObject
-{
-    /**
-     * 
-     */
+public abstract class RemoteRequestEvent extends EventObject {
+
     private static final long serialVersionUID = -2415013195949875344L;
-    
+
     private final int type;
+
     public final static int START = 0x00000001;
+
     public final static int COMPLETE = 0x00000002;
+
     private final long requestId;
+
     /**
      * @param source
      */
-    public RemoteRequestEvent(Object source,int type,long requestId)
-    {
+    public RemoteRequestEvent(Object source, int type, long requestId) {
         super(source);
-        this.type=type;
-        this.requestId=requestId;
+        this.type = type;
+        this.requestId = requestId;
     }
 
-    public long getRequestId(){
+    public long getRequestId() {
         return requestId;
     }
 
-    
     /**
      * @return the type
      */
     public int getType() {
         return type;
     }
-    
+
 }

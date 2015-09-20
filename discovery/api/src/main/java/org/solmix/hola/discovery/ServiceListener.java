@@ -19,7 +19,9 @@
 
 package org.solmix.hola.discovery;
 
-import org.solmix.hola.discovery.event.ServiceEvent;
+import org.osgi.framework.ServiceEvent;
+
+
 
 /**
  * 

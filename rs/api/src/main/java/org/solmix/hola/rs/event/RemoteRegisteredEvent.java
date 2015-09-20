@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,32 +16,27 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rs.event;
 
 import org.solmix.hola.rs.RemoteReference;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年7月13日
+ * @version 0.0.1 2014年7月13日
  */
 
-public class RemoteRegisteredEvent extends RemoteEvent
-{
+public class RemoteRegisteredEvent extends RemoteEvent {
+
+    private static final long serialVersionUID = 1563950423719120225L;
 
     /**
      * @param type
      * @param reference
      */
-    public RemoteRegisteredEvent(
-        RemoteReference<?> reference)
-    {
+    public RemoteRegisteredEvent(RemoteReference<?> reference) {
         super(REGISTERED, reference);
     }
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1563950423719120225L;
 
 }

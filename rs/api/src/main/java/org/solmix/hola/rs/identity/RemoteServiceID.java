@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2015 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -18,21 +18,56 @@
  */
 package org.solmix.hola.rs.identity;
 
-import org.solmix.hola.common.identity.ID;
+import org.solmix.runtime.identity.BaseID;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年4月29日
+ * @version $Id$  2015年9月17日
  */
 
-public interface RemoteServiceID extends ID
+public class RemoteServiceID extends BaseID
 {
-    /**
-     * 在服务提供者中的相对ID
-     * 
-     * @return 相对于服务提供者中的ID
-     */
-    String getUrl();
+
+    private static final long serialVersionUID = -5170752509147784456L;
+
+    private final String name;
+
+    private final String serviceNamespace;
+
+    private final String version;
+    
+    public RemoteServiceID(String serviceNamespace,String name,String version){
+        this.name=name;
+        this.serviceNamespace=serviceNamespace;
+        this.version=version;
+    }
+    
+    @Override
+    protected int namespaceCompareTo(BaseID o) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    protected boolean namespaceEquals(BaseID o) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    protected String namespaceGetName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    protected int namespaceHashCode() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

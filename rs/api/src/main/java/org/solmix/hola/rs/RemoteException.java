@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 The Solmix Project
+ * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -19,32 +19,31 @@
 
 package org.solmix.hola.rs;
 
+import org.solmix.hola.common.HolaRuntimeException;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年11月19日
+ * @version 0.0.1 2014年8月19日
  */
 
-public interface RemoteReference<S> {
-
-    public enum ReferenceType{
-        LOCAL,REMOTE
+public class RemoteException extends HolaRuntimeException {
+    
+    private static final long serialVersionUID = 8551806789868609191L;
+    
+    /**
+     * @param string
+     * @param e
+     */
+    public RemoteException(String msg, Throwable e) {
+        super(msg, e);
     }
-    public Object getProperty(String key);
-
-    public String[] getPropertyKeys();
-    /**
-     * is available.
-     * 
-     * @return available.
-     */
-    boolean isAvailable();
 
     /**
-     * destroy.
+     * @param e 
      */
-    void destroy();
+    public RemoteException(Throwable e) {
+      super(e);
+    }
 
-    public RemoteServiceFactory getRemoteServiceManager();
 }

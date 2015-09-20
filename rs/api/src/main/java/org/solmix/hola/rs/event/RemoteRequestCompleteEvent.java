@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,38 +16,39 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.event;
 
+package org.solmix.hola.rs.event;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年5月1日
+ * @version 0.0.1 2014年5月1日
  * @param <T>
  */
 
-public class RemoteRequestCompleteEvent<T> extends RemoteRequestEvent
-{
+public class RemoteRequestCompleteEvent<T> extends RemoteRequestEvent {
 
     private final T response;
+
     private final Throwable exception;
+
     /**
      * @param source
      * @param type
      * @param requestId
      */
-    public RemoteRequestCompleteEvent(Object source,  long requestId,T response,Throwable exception)
-    {
-        super(source,RemoteRequestEvent.COMPLETE, requestId);
-        this.response=response;
-        this.exception=exception;
+    public RemoteRequestCompleteEvent(Object source, long requestId,
+        T response, Throwable exception) {
+        super(source, RemoteRequestEvent.COMPLETE, requestId);
+        this.response = response;
+        this.exception = exception;
     }
 
     /**
      * 
      */
     private static final long serialVersionUID = -3729061673293976413L;
-    
+
     /**
      * @return the response
      */
@@ -55,15 +56,15 @@ public class RemoteRequestCompleteEvent<T> extends RemoteRequestEvent
         return response;
     }
 
-    
     /**
      * @return the exception
      */
     public Throwable getException() {
         return exception;
     }
-    public boolean hadException(){
-        return exception!=null;
+
+    public boolean hadException() {
+        return exception != null;
     }
 
 }

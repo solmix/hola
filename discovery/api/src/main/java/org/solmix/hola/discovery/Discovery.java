@@ -21,12 +21,13 @@ package org.solmix.hola.discovery;
 import org.solmix.runtime.adapter.Adaptable;
 
 
+
 /**
  * 
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年5月4日
  */
 
-public interface Discovery extends DiscoveryAdvertiser,DiscoveryLocator,Adaptable,java.io.Closeable
+public interface Discovery extends DiscoveryAdvertiser,DiscoveryLocator,Adaptable
 {
 }

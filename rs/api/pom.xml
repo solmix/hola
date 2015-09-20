@@ -3,25 +3,19 @@
   <parent>
     <groupId>org.solmix.hola</groupId>
     <artifactId>hola</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.6.1-SNAPSHOT</version>
   </parent>
   <artifactId>hola-rs-api</artifactId>
-  <name>Hola :: RemoteService :: API</name>
   <dependencies>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-core</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<artifactId>hola-common</artifactId>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.solmix.common</groupId>
-  		<artifactId>solmix-common-runtime</artifactId>
-  		<scope>provided</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.osgi</groupId>
-  		<artifactId>org.osgi.compendium</artifactId>
-  		<scope>provided</scope>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-transports-api</artifactId>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -33,38 +27,10 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.solmix.hola</groupId>
+			<artifactId>hola-transports-netty</artifactId>
+			<version>${project.version}</version>
+		</dependency>
   </dependencies>
-   <build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Category>solmix</Bundle-Category>
-						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
-						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
-						<Bundle-Activator>org.solmix.hola.rs.internal.Activator</Bundle-Activator>
-						<_failok>false</_failok>
-						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<properties>
-		<solmix.osgi.export.pkg>
-		org.solmix.hola.rs.identity*,
-		org.solmix.hola.rs.event*,
-		org.solmix.hola.rs.support*,
-		org.solmix.hola.rs,
-		org.osgi.service.remoteserviceadmin
-		</solmix.osgi.export.pkg>
-		<solmix.osgi.import.pkg>
-			org.springframework*;resolution:=optional;version="${spring.version}",*
-		</solmix.osgi.import.pkg>
-	</properties>
-	<packaging>bundle</packaging>
 </project>

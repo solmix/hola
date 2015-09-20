@@ -1,3 +1,3 @@
-org.solmix.hola.rs.generic.HolaRemoteProtocolFactory:org.solmix.hola.rs.RemoteProtocolFactory:true
-org.solmix.hola.rs.generic.HolaCodec:org.solmix.hola.transport.codec.Codec:true
-org.solmix.hola.rs.generic.HolaNamespace:org.solmix.hola.common.identity.Namespace:true
+#
+org.solmix.hola.rs.generic.HolaRemoteServiceFactory:org.solmix.hola.rs.RemoteServiceFactory:true
+org.solmix.hola.rs.generic.codec.HolaCodec:org.solmix.hola.transport.codec.Codec:true:true

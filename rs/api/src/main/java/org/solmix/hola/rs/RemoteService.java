@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Solmix Project
+ * Copyright 2015 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,24 +16,23 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-
 package org.solmix.hola.rs;
 
 import java.util.concurrent.Future;
 
-import org.solmix.hola.rm.RemoteException;
+import org.solmix.hola.rs.call.RemoteRequest;
+import org.solmix.hola.rs.call.RemoteRequestListener;
+
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年4月29日
+ * @version $Id$  2015年9月16日
  */
 
 public interface RemoteService
 {
-
-	
-	String[] getInterfaces();
+    String[] getInterfaces();
     /**
      * 同步调用远程方法，返回调用结果
      * 
@@ -42,13 +41,13 @@ public interface RemoteService
      */
     Object sync(RemoteRequest call) throws RemoteException;
 
-//    /**
-//     * 异步调用远程方法
-//     * 
-//     * @param call
-//     * @return
-//     */
-//    void async(RemoteRequest call,RemoteRequestListener listener);
+    /**
+     * 异步调用远程方法
+     * 
+     * @param call
+     * @return
+     */
+   void async(RemoteRequest call,RemoteRequestListener listener);
     
     /**
      * 立即返回调用结果

@@ -1,5 +1,5 @@
-/*
- * Copyright 2013 The Solmix Project
+/**
+ * Copyright (c) 2014 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -19,30 +19,14 @@
 
 package org.solmix.hola.rs;
 
-import java.util.Dictionary;
-
-import org.solmix.hola.common.config.RemoteInfo;
-import org.solmix.hola.rs.identity.RemoteServiceID;
 
 /**
- * 远程服务注册返回结果,在调用
- * {@link RemoteProtocol#registerRemoteService(String[], Object, Dictionary)}
- * 后返回,稍后可以通过该结果注销服务.
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1 2014年4月29日
+ * @version $Id$ 2014年11月19日
  */
 
-public interface RemoteRegistration<S>
-{
-
-    /**
-     * 返回非空服务ID
-     * @return
-     */
-    RemoteServiceID getID();
-
-    RemoteInfo getRemoteInfo();
+public interface RemoteRegistration<S> {
 
     /**
      * 返回服务引用

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 The Solmix Project
+ * Copyright (c) 2015 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,34 +17,34 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.rs;
+package org.solmix.hola.rs.protocol;
+
+import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.SerializationInfo;
+import org.solmix.exchange.model.ServiceInfo;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2014年11月19日
+ * @version $Id$ 2015年1月19日
  */
 
-public interface RemoteReference<S> {
+public class RpcProtocolInfo extends ProtocolInfo {
 
-    public enum ReferenceType{
-        LOCAL,REMOTE
+    private SerializationInfo serializationInfo;
+
+    public RpcProtocolInfo(ServiceInfo service, String protocolId) {
+        super(service, protocolId);
     }
-    public Object getProperty(String key);
 
-    public String[] getPropertyKeys();
-    /**
-     * is available.
-     * 
-     * @return available.
-     */
-    boolean isAvailable();
+    /**   */
+    public SerializationInfo getSerializationInfo() {
+        return serializationInfo;
+    }
 
-    /**
-     * destroy.
-     */
-    void destroy();
-
-    public RemoteServiceFactory getRemoteServiceManager();
+    /**   */
+    public void setSerializationInfo(SerializationInfo serializationInfo) {
+        this.serializationInfo = serializationInfo;
+    }
 }

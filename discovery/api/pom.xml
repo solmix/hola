@@ -3,78 +3,14 @@
   <parent>
     <groupId>org.solmix.hola</groupId>
     <artifactId>hola</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
+    <version>0.6.1-SNAPSHOT</version>
   </parent>
   <artifactId>hola-discovery-api</artifactId>
   <dependencies>
   	<dependency>
-  		<groupId>org.solmix.common</groupId>
-  		<artifactId>solmix-common-runtime</artifactId>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-common</artifactId>
   		<version>0.6.1-SNAPSHOT</version>
   	</dependency>
-  	<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.solmix.hola</groupId>
-			<artifactId>hola-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
   </dependencies>
-  <build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Category>solmix</Bundle-Category>
-						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
-						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
-						<Bundle-Activator>org.solmix.hola.discovery.internal.Activator</Bundle-Activator>
-						<_failok>false</_failok>
-						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<properties>
-		<solmix.osgi.export.pkg>
-		org.solmix.hola.discovery.event*,
-		org.solmix.hola.discovery.identity*,
-		org.solmix.hola.discovery.support*,
-		org.solmix.hola.discovery
-		</solmix.osgi.export.pkg>
-		<solmix.osgi.import.pkg>
-			org.springframework*;resolution:=optional;version="${spring.version}",*
-		</solmix.osgi.import.pkg>
-	</properties>
-	<packaging>bundle</packaging>
-	<name>Hola :: Discovery :: API</name>
 </project>

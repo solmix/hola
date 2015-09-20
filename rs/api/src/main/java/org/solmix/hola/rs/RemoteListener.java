@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,6 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rs;
 
 import java.util.EventListener;
@@ -26,11 +27,11 @@ import org.solmix.hola.rs.event.RemoteEvent;
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年4月29日
+ * @version 0.0.1 2014年4月29日
  */
 
-public interface RemoteListener extends EventListener
-{
+public interface RemoteListener extends EventListener {
+
     void onHandle(final RemoteEvent event);
 
 }
