@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerEvent;
@@ -79,17 +80,17 @@ public class NettyServerEngineFactory implements ContainerListener {
 
     }
     public synchronized NettyServerEngine retrieveEngine(int port) {
-        return retrieveEngine(null, port);
+        return retrieveEngine(null,null, port);
     }
-    public synchronized NettyServerEngine retrieveEngine(String host, int port) {
+    public synchronized NettyServerEngine retrieveEngine(String protocol,String host, int port) {
         String serverKey = getServerKey(host, port);
         return engines.get(serverKey);
     }
 
     public synchronized NettyServerEngine createEngine( int port) {
-        return createEngine(null, port);
+        return createEngine(null,null, port);
     }
-    public synchronized NettyServerEngine createEngine(String host, int port) {
+    public synchronized NettyServerEngine createEngine(String protocol,String host, int port) {
         String serverKey = getServerKey(host, port);
         NettyServerEngine engine=engines.get(serverKey);
         if(engine==null){
@@ -111,6 +112,7 @@ public class NettyServerEngineFactory implements ContainerListener {
         }
         return builder.append(port).toString();
     }
+    
     public static synchronized void destroy(int port) {
         destroy(null, port);
     }
@@ -125,6 +127,68 @@ public class NettyServerEngineFactory implements ContainerListener {
             } catch (Exception e) {
                //IGNORE
             }
+        }
+    }
+    static class ServerKey{
+        private String protocol;
+        private String host;
+        private int port;
+        
+        ServerKey(String protocol,int port){
+            this(protocol,null,port);
+        }
+        ServerKey(int port){
+            this(null,null,port);
+        }
+        ServerKey(String protocol,String host,int port){
+            this.protocol=protocol;
+            if(host==null){
+                host="localhost";
+            }
+            if(NetUtils.isLocalHost(host)){
+                host=NetUtils.LOCALHOST;
+            }
+            this.host=host;
+            this.port=port;
+        }
+        
+        @Override
+        public boolean equals(Object o){
+            if (o == this) {
+                return true;
+            }
+            if (o == null || !(o instanceof ServerKey)) {
+                return false;
+            }
+            ServerKey other = (ServerKey) o;
+            if (port==other.port) {
+                if(protocol!=null){
+                    if(protocol.equals(other.protocol)){
+                        return host.equals(other.host);
+                    }
+                }else{
+                   if(other.protocol!=null){
+                       return false;
+                   }else{
+                       return host.equals(other.host);
+                   }
+                }
+            }
+            return false;
+        }
+        @Override
+        public String toString(){
+            StringBuilder sb = new StringBuilder();
+            if(protocol!=null){
+                sb.append(protocol).append("://");
+            }
+            if(host!=null){
+                sb.append(host);
+            }else{
+                sb.append("localhost");
+            }
+            sb.append(":").append(port);
+            return sb.toString();
         }
     }
 }

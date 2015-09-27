@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2015 The Solmix Project
+/*
+ * Copyright 2015 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -19,43 +19,55 @@
 
 package org.solmix.hola.rs.support;
 
+import java.util.Dictionary;
+
+import org.solmix.exchange.Client;
+import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteServiceFactory;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2015年1月20日
+ * @version $Id$ 2015年9月20日
  */
 
-public class RemoteReferenceImpl<S> implements RemoteReference<S> {
+public class RemoteReferenceImpl<S> implements RemoteReference<S>
+{
 
-    private final RemoteRegistrationImpl<S> registration;
-    private volatile boolean available = true;
+    protected ServiceProperties properties;
+
+    private Class<S> clazz;
+    private volatile boolean available;
     private volatile boolean destroyed = false;
-    RemoteReferenceImpl(RemoteRegistrationImpl<S> registration) {
-        this.registration = registration;
+    private RemoteServiceFactory factory;
+
+    private Client client;
+    public RemoteReferenceImpl(Class<S> clazz, Dictionary<String, ?> properties,RemoteServiceFactory factory)
+    {
+        this.clazz = clazz;
+        this.properties = createProperties(properties);
+        this.factory=factory;
+        //还未创建远程连接，不可用
+        this.available=false;
     }
 
     @Override
     public Object getProperty(String key) {
-        return registration.getProperty(key);
+        return properties.get(key);
+    }
+
+    protected ServiceProperties createProperties(Dictionary<String, ?> props) {
+        ServiceProperties sp = new ServiceProperties(props);
+        sp.setReadOnly();
+        return sp;
     }
 
     @Override
     public String[] getPropertyKeys() {
-        return registration.getPropertyKeys();
+        return properties.getPropertyKeys();
     }
 
-    
-    @Override
-    public RemoteServiceFactory getRemoteServiceManager() {
-        return registration.getManager();
-    }
-    
-    RemoteRegistrationImpl<S> getRegistration(){
-        return registration;
-    }
     @Override
     public boolean isAvailable() {
         return available;
@@ -76,5 +88,25 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S> {
     
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+
+    @Override
+    public RemoteServiceFactory getRemoteServiceFactory() {
+        return factory;
+    }
+
+    @Override
+    public Class<S> getServiceClass() {
+        return clazz;
+    }
+
+    public void setClient(Client client){
+        this.client=client;
+    }
+
+    @Override
+    public org.solmix.hola.rs.RemoteReference.ReferenceType getReferenceType() {
+        return ReferenceType.REMOTE;
     }
 }

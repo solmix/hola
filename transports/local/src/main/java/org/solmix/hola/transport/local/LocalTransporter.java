@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.concurrent.Executor;
 
 import org.slf4j.Logger;
@@ -205,11 +204,5 @@ public class LocalTransporter extends AbstractTransporter {
                 }
             }
         }
-    }
-
-   
-    @Override
-    public int getDefaultPort() {
-        throw new UnsupportedAddressTypeException();
     }
 }

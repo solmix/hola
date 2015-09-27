@@ -27,8 +27,9 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.common.Constants;
+import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteServiceFactory;
 import org.solmix.hola.rs.RemoteServiceManager;
 import org.solmix.runtime.Container;
@@ -43,6 +44,7 @@ import org.solmix.runtime.ContainerFactory;
 public class HolaRemoteServiceFactoryTest extends Assert
 {
 
+    public static final int PORT =  3333/*NetUtils.getAvailablePort()*/;
     @Test
     public void test() throws RemoteException {
         RemoteServiceManager rm = container.getExtension(RemoteServiceManager.class);
@@ -50,13 +52,24 @@ public class HolaRemoteServiceFactoryTest extends Assert
         RemoteServiceFactory rsf = rm.getRemoteServiceFactory("hola");
         assertNotNull(rsf);
         HelloServiceImpl hs = new HelloServiceImpl();
-        rsf.register(HelloService.class, hs, mockConfig());
+        RemoteRegistration<HelloService> reg=  rsf.register(HelloService.class, hs, mockConfig());
+        HelloService hello=rsf.getService(reg.getReference());
+        assertSame(hs, hello);
+        Dictionary<String, Object> properties=mockConfig();
+        properties.put(Constants.HOST_KEY, Constants.LOCALHOST_VALUE);
+        RemoteReference<HelloService> reference=rsf.getReference(HelloService.class, properties);
+        assertNotNull(reference);
+        HelloService remote = rsf.getService(reference);
+        assertNotNull(remote);
+        remote.say("testuser");
+        
 
     }
-    private Dictionary<String, ?> mockConfig(){
+    private Dictionary<String, Object> mockConfig(){
         Hashtable<String, Object> table = new Hashtable<String, Object>();
         table.put(Constants.PATH_KEY, "/hola");
-        table.put(Constants.PORT_KEY, NetUtils.getAvailablePort());
+        table.put(Constants.PORT_KEY,PORT);
+        table.put(Constants.RECEIVE_TIMEOUT_KEY,1000*60);
         return table;
     }
 

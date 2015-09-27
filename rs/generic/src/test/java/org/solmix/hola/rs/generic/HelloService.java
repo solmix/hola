@@ -27,6 +27,6 @@ package org.solmix.hola.rs.generic;
 
 public interface HelloService
 {
-    String say();
+    String say(String user);
 
 }

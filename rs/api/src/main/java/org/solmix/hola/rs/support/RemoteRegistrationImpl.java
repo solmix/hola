@@ -52,11 +52,11 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
 
     protected final S service;
 
-    protected final Class<?> clazze;
+    protected final Class<S> clazze;
 
     protected int state;
 
-    protected RemoteReferenceImpl<S> reference;
+    protected RemoteReferenceHolder<S> reference;
 
     private final RemoteServiceFactory manager;
 
@@ -71,19 +71,19 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
     private Server server;
 
     public RemoteRegistrationImpl(RemoteServiceFactory manager, ServiceRegistry registry,
-        Class<?> clazze, S service) {
+        Class<S> clazze, S service) {
         this.clazze = clazze;
         this.service = service;
         this.manager = manager;
         this.registry = registry;
         synchronized (registrationLock) {
             this.state = REGISTERED;
-            reference = new RemoteReferenceImpl<S>(this);
+            reference = new RemoteReferenceHolder<S>(this);
         }
     }
 
     public void register(Dictionary<String, ?> props,RemoteServiceInfo info) {
-        final RemoteReferenceImpl<S> ref;
+        final RemoteReferenceHolder<S> ref;
         synchronized (registry) {
             synchronized (registrationLock) {
                 ref = reference;
@@ -112,7 +112,7 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
     public S getServiceObject(){
         return service;
     }
-    public Class<?> getClazze(){
+    public Class<S> getClazze(){
         return clazze;
     }
 
@@ -121,7 +121,7 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
         return getReferenceImpl();
     }
 
-    public RemoteReferenceImpl<S> getReferenceImpl() {
+    public RemoteReferenceHolder<S> getReferenceImpl() {
         synchronized (registrationLock) {
             if (reference == null) {
                 throw new IllegalStateException("Service already nuregistered.");
@@ -132,7 +132,7 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
 
     @Override
     public void unregister() {
-        final RemoteReferenceImpl<S> ref;
+        final RemoteReferenceHolder<S> ref;
         synchronized (registry) {
             synchronized (registrationLock) {
                 if (state != REGISTERED) {

@@ -25,14 +25,13 @@ import java.util.Enumeration;
 import org.solmix.exchange.Client;
 import org.solmix.exchange.Endpoint;
 import org.solmix.exchange.EndpointException;
-import org.solmix.exchange.EndpointInfoFactory;
 import org.solmix.exchange.PipelineFactory;
 import org.solmix.exchange.PipelineFactoryManager;
 import org.solmix.exchange.event.ServiceFactoryEvent;
 import org.solmix.exchange.support.DefaultClient;
 import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.exchange.support.TypeDetectSupport;
-import org.solmix.hola.common.model.RemoteInfoFactory;
+import org.solmix.hola.rs.interceptor.RemoteOutInterceptor;
 
 
 
@@ -47,11 +46,12 @@ public class ClientFactory extends EndpointFactory {
     private static final long serialVersionUID = -1962206780820114020L;
 
     public ClientFactory() {
-        super(new ReflectServiceFactory(new RemotePhasePolicy()));
+        this(new ReflectServiceFactory(new RemotePhasePolicy()));
     }
     
     public ClientFactory(ReflectServiceFactory factory) {
         super(factory);
+        getOutInterceptors().add(new RemoteOutInterceptor());
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -61,10 +61,10 @@ public class ClientFactory extends EndpointFactory {
             getServiceFactory().setProperties(properties);
         }else if(properties!=null){
             Enumeration<String> keys=properties.keys();
+            Dictionary dic= getServiceFactory().getProperties();
             while(keys.hasMoreElements()){
                 String key = keys.nextElement();
                 Object value = properties.get(key);
-                Dictionary dic= getServiceFactory().getProperties();
                 dic.put(key, value);
             }
         }
@@ -95,8 +95,5 @@ public class ClientFactory extends EndpointFactory {
         }
         return null;
     }
-    @Override
-    protected EndpointInfoFactory defaultEndpointInfoFactory() {
-        return new RemoteInfoFactory(false);
-    }
+   
 }

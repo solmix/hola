@@ -16,37 +16,37 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.generic.codec;
+package org.solmix.hola.transport;
 
-import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
-
-import org.solmix.exchange.Message;
-import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
-import org.solmix.hola.transport.codec.Codec;
-import org.solmix.runtime.Extension;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月18日
+ * @version $Id$  2015年9月22日
  */
-@Extension(name=HolaRemoteServiceFactory.PROVIDER_ID)
-public class HolaCodec implements Codec
+
+public class TransporterCreateException extends TransportException
 {
+    private static final long serialVersionUID = 8551806789868609191L;
 
-    @Override
-    public void encode(ByteBuf buffer, Message outMsg) throws IOException {
-        // TODO Auto-generated method stub
-
+    public TransporterCreateException(String msg)
+    {
+        super(msg);
     }
 
-    @Override
-    public Object decode(ByteBuf buffer) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+    public TransporterCreateException(String msg, Throwable e)
+    {
+        super(msg, e);
+    }
+
+    /**
+     * @param e
+     */
+    public TransporterCreateException(Throwable e)
+    {
+        super(e);
     }
 
 }

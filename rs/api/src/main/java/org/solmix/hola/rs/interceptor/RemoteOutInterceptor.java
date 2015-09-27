@@ -16,37 +16,42 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.generic.codec;
+package org.solmix.hola.rs.interceptor;
 
-import io.netty.buffer.ByteBuf;
-
-import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 import org.solmix.exchange.Message;
-import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
-import org.solmix.hola.transport.codec.Codec;
-import org.solmix.runtime.Extension;
+import org.solmix.exchange.interceptor.Fault;
+import org.solmix.exchange.interceptor.phase.Phase;
+import org.solmix.exchange.interceptor.phase.PhaseInterceptorSupport;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月18日
+ * @version $Id$  2015年9月24日
  */
-@Extension(name=HolaRemoteServiceFactory.PROVIDER_ID)
-public class HolaCodec implements Codec
+
+public class RemoteOutInterceptor extends PhaseInterceptorSupport<Message>
 {
 
-    @Override
-    public void encode(ByteBuf buffer, Message outMsg) throws IOException {
-        // TODO Auto-generated method stub
-
+    /**
+     * @param phase
+     */
+    public RemoteOutInterceptor()
+    {
+        super(Phase.WRITE);
     }
 
     @Override
-    public Object decode(ByteBuf buffer) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+    public void handleMessage(Message message) throws Fault {
+        OutputStream out=  message.getContent(OutputStream.class);
+       Object o= message.getContent(List.class);
+        if(out!=null){
+            System.out.println(o);
+        }
+        
     }
 
 }

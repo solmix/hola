@@ -78,7 +78,7 @@ public class NettyServerEngineTest extends Assert
     public void testAddHandler() throws Exception {
         String urlStr = "http://localhost:" + PORT1 + "/test";
         NettyServerEngine nse = factory.createEngine(PORT1);
-        nse.setTransportServerInfo(new NettyConfiguration());
+        nse.setNettyConfiguration(new NettyConfiguration());
         nse.addHandler(urlStr, new TestHandler("hello"));
     }
     

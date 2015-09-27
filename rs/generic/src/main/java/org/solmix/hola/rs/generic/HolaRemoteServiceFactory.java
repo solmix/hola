@@ -19,23 +19,23 @@
 
 package org.solmix.hola.rs.generic;
 
-import java.rmi.RemoteException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Server;
-import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.hola.common.Constants;
-import org.solmix.hola.common.model.ConfigSupportedReference;
-import org.solmix.hola.common.model.RemoteServiceInfo;
+import org.solmix.hola.rs.RemoteException;
+import org.solmix.hola.rs.RemoteProxy;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.event.RemoteRegisteredEvent;
+import org.solmix.hola.rs.generic.exchange.HolaProxyFactory;
 import org.solmix.hola.rs.generic.exchange.HolaServerFactory;
 import org.solmix.hola.rs.support.AbstractRemoteServiceFactory;
+import org.solmix.hola.rs.support.RemoteReferenceImpl;
 import org.solmix.hola.rs.support.RemoteRegistrationImpl;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
@@ -47,9 +47,10 @@ import org.solmix.runtime.Extension;
  */
 @Extension(name="hola")
 @SuppressWarnings({"unchecked","rawtypes"})
-public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory implements ConfigSupportedReference,ContainerAware
+public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory implements ContainerAware
 {
     public static final String PROVIDER_ID = "hola";
+    public static final int PORT = 5715;
     private static final Logger LOG = LoggerFactory.getLogger(HolaRemoteServiceFactory.class);
     
     @Override
@@ -64,6 +65,14 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
             }
         }
         properties.put(Constants.CODEC_KEY, PROVIDER_ID);
+        //设置默认port
+        if(properties.get(Constants.PORT_KEY)==null){
+            properties.put(Constants.PORT_KEY, PORT);
+        }
+        //设置默认protocol
+        if(properties.get(Constants.PROTOCOL_KEY)==null){
+            properties.put(Constants.PROTOCOL_KEY, PROVIDER_ID);
+        }
         HolaServerFactory factory = new HolaServerFactory();
         factory.setContainer(container);
         factory.setProperties(properties);
@@ -76,48 +85,52 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
         return reg;
     }
     
-    protected <S> void doRegister(Class<S> clazz, S service, RemoteServiceInfo info) throws RemoteException {
+    @Override
+    protected <S> S doGetRemoteService(RemoteReference<S> reference) throws RemoteException {
+        RemoteReferenceImpl<S> ref=null;
+        if(reference instanceof RemoteReferenceImpl){
+            ref=(RemoteReferenceImpl<S>)reference;
+        }
+        if(ref==null){
+            throw new RemoteException("Unsupport RemoteReference type:"+reference.getClass().getName());
+        }
+        HolaProxyFactory factory= new HolaProxyFactory();
+        factory.setContainer(container);
+        factory.setServiceClass(reference.getServiceClass());
+        Hashtable<String, Object> copyed = new Hashtable<String, Object>();
+        for(String key:reference.getPropertyKeys()){
+            copyed.put(key, reference.getProperty(key));
+        }
         
+        if(copyed.get(Constants.CODEC_KEY)!=null){
+            if(!PROVIDER_ID.equals(copyed.get(Constants.CODEC_KEY))){
+                LOG.warn("Hola protocol need hola codec");
+            }
+        }
+        copyed.put(Constants.CODEC_KEY, PROVIDER_ID);
+        //设置默认port
+        if(copyed.get(Constants.PORT_KEY)==null){
+            copyed.put(Constants.PORT_KEY, PORT);
+        }
+        //设置默认protocol
+        if(copyed.get(Constants.PROTOCOL_KEY)==null){
+            copyed.put(Constants.PROTOCOL_KEY, PROVIDER_ID);
+        }
+        factory.setProperties(copyed);
+        Object obj = factory.create();
+        ref.setClient(RemoteProxy.getClient(obj));
+        return (S) obj;
     }
 
     @Override
     public RemoteService getRemoteService(RemoteReference<?> reference) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public RemoteServiceInfo prepare(Dictionary<String, ?> properties) {
-        // TODO Auto-generated method stub
-        return null;
+    public <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties) {
+        return new RemoteReferenceImpl(clazz,properties,this);
     }
-
-    @Override
-    public String[] getSupportedIntents(EndpointInfo info) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String[] getSupportedConfigs(EndpointInfo info) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public <S> RemoteReference<S> getReference(Class<S> clazz, RemoteServiceInfo info) {
-//        RemoteReferenceImpl<S> reference = new RemoteReferenceImpl<S>();
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.common.model.ConfigSupportedReference#getSupportedConfigClass()
-     */
-    @Override
-    public Class<?> getSupportedConfigClass() {
-        return null;
-    }
+   
 
 }

@@ -68,6 +68,7 @@ public class ServerFactory extends EndpointFactory {
     /**
      * @return
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Server create() {
         ClassLoaderHolder loader = null;
         try {
@@ -82,10 +83,10 @@ public class ServerFactory extends EndpointFactory {
                     getServiceFactory().setProperties(getProperties());
                 } else if (getProperties() != null) {
                     Enumeration<String> keys=properties.keys();
+                    Dictionary dic= getServiceFactory().getProperties();
                     while(keys.hasMoreElements()){
                         String key = keys.nextElement();
                         Object value = properties.get(key);
-                        Dictionary dic= getServiceFactory().getProperties();
                         dic.put(key, value);
                     }
                 }

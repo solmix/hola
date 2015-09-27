@@ -22,7 +22,6 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Dictionary;
 
-import org.solmix.hola.common.model.RemoteServiceInfo;
 import org.solmix.runtime.Extension;
 
 
@@ -61,5 +60,5 @@ public interface RemoteServiceFactory {
     
     void destroy();
     /**根据supportedConfigs由实现类来选择需要的参数*/
-    RemoteServiceInfo prepare(Dictionary<String, ?> properties);
+//    RemoteServiceInfo prepare(Dictionary<String, ?> properties);
 }

@@ -22,6 +22,7 @@ package org.solmix.hola.transport.netty;
 import java.io.IOException;
 
 import org.solmix.exchange.Message;
+import org.solmix.exchange.Protocol;
 
 /**
  * 
@@ -48,7 +49,15 @@ public class NettyMessageHandler {
     public void handle( Message inMsg, Message outMsg)
         throws IOException {
             transporter.doService(inMsg, outMsg);
+    }
 
+    
+    public NettyTransporter getTransporter() {
+        return transporter;
+    }
+    
+    public Protocol getProtocol(){
+        return this.transporter.getProtocol();
     }
 
 }

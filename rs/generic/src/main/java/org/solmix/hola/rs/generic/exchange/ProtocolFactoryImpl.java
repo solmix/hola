@@ -41,7 +41,7 @@ public class ProtocolFactoryImpl extends AbstractProtocolFactory
 
     @Override
     public Protocol createProtocol(ProtocolInfo info) {
-        return null;
+        return new HolaProtocol(info,container);
     }
     
     @Override

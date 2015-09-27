@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.solmix.hola.transport.AbstractTCPTransporter;
+import org.solmix.hola.transport.AbstractRemoteTransporter;
 import org.solmix.hola.transport.TransporterRegistry;
 
 /**
@@ -35,12 +35,12 @@ import org.solmix.hola.transport.TransporterRegistry;
 
 public class DefaultTcpRegistry implements TransporterRegistry {
 
-    private final ConcurrentMap<String, AbstractTCPTransporter> transporters = new ConcurrentHashMap<String, AbstractTCPTransporter>();
+    private final ConcurrentMap<String, AbstractRemoteTransporter> transporters = new ConcurrentHashMap<String, AbstractRemoteTransporter>();
 
     @Override
-    public void add(AbstractTCPTransporter transporter) {
+    public void add(AbstractRemoteTransporter transporter) {
         String path = getRealPath(transporter.getAddress());
-        AbstractTCPTransporter t = transporters.putIfAbsent(path, transporter);
+        AbstractRemoteTransporter t = transporters.putIfAbsent(path, transporter);
         if (t != null && t != transporter) {
             throw new RuntimeException("Already a Transporter on " + path);
         }
@@ -70,13 +70,13 @@ public class DefaultTcpRegistry implements TransporterRegistry {
     }
 
     @Override
-    public AbstractTCPTransporter getTransporterForPath(String path) {
+    public AbstractRemoteTransporter getTransporterForPath(String path) {
         path = getRealPath(path);
         return transporters.get(path);
     }
 
     @Override
-    public Collection<AbstractTCPTransporter> getTransporters() {
+    public Collection<AbstractRemoteTransporter> getTransporters() {
         return Collections.unmodifiableCollection(transporters.values());
     }
 

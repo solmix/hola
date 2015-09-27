@@ -21,6 +21,7 @@ package org.solmix.hola.transport.netty;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.concurrent.DefaultExecutorServiceFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.exchange.support.TypeDetectSupport;
 import org.solmix.hola.common.Constants;
 import org.solmix.hola.common.model.ConfigSupportedReference;
-import org.solmix.hola.transport.AbstractTCPTransporter;
+import org.solmix.hola.transport.AbstractRemoteTransporter;
 import org.solmix.hola.transport.TransporterRegistry;
 import org.solmix.hola.transport.support.DefaultTcpRegistry;
 import org.solmix.runtime.Container;
@@ -74,7 +75,7 @@ public class NettyTransportFactory implements PipelineFactory,
             throw new IllegalArgumentException("EndpointInfo cannot be null");
         }
         synchronized (registry) {
-            AbstractTCPTransporter t = registry.getTransporterForPath(ei.getAddress());
+            AbstractRemoteTransporter t = registry.getTransporterForPath(ei.getAddress());
             if (t == null) {
                 NettyServerEngineFactory factory = container.getExtension(NettyServerEngineFactory.class);
                 t = new NettyTransporter(factory,ei, container,registry);
@@ -108,7 +109,7 @@ public class NettyTransportFactory implements PipelineFactory,
     }
 
     @Override
-    public Pipeline getPipeline(EndpointInfo info, String address, Container c)
+    public Pipeline getPipeline(EndpointInfo info, String address, Container container)
         throws IOException {
         if (!address.equals(info.getAddress())) {
             info.setAddress(address);
@@ -118,25 +119,26 @@ public class NettyTransportFactory implements PipelineFactory,
             address = address.substring(8);
         }
         info.setAddress(address);
-        NettyPipeline np = createPipeline(c, info);
-        String addr = np.getAddress();
+        NettyPipeline pipeline = createPipeline(container, info);
+        String addr = pipeline.getAddress();
         if (addr != null && addr.indexOf('?') != -1) {
             addr = addr.substring(0, addr.indexOf('?'));
         }
-        configure(c, np, np.getBeanName(), addr);
-        return np;
+        configure(container, pipeline, pipeline.getBeanName(), addr);
+        return pipeline;
     }
 
     private NettyPipeline createPipeline(Container c, EndpointInfo info) {
         EventLoopGroup eventLoopGroup = c.getExtension(EventLoopGroup.class);
         if (eventLoopGroup == null) {
-            final EventLoopGroup group = new NioEventLoopGroup();
+            final EventLoopGroup group = new NioEventLoopGroup(2,new DefaultExecutorServiceFactory("Netty-client"));
             c.setExtension(group, EventLoopGroup.class);
             registerContainerListener(c, group);
         }
         return new NettyPipeline(c, info);
     }
 
+    /**Container关闭的时候关闭*/
     private void registerContainerListener(Container c,
         final EventLoopGroup group) {
         c.addListener(new ContainerListener() {

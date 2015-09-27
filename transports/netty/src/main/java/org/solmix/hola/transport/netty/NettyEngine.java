@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.transport.netty;
 
+import org.solmix.exchange.Protocol;
+
 
 
 /**
@@ -27,6 +29,13 @@ package org.solmix.hola.transport.netty;
  */
 
 public interface NettyEngine {
+    
+    /**
+     * 启动服务接收指定协议输入。
+     * 
+     * @param protocol
+     */
+    void start(Protocol protocol);
 
     void addHandler(String path, NettyMessageHandler handler);
 

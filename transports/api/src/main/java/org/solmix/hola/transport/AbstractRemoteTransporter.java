@@ -48,7 +48,7 @@ import org.solmix.runtime.io.AbstractWrappedOutputStream;
  * @version $Id$ 2015年1月18日
  */
 
-public abstract class AbstractTCPTransporter extends AbstractTransporter {
+public abstract class AbstractRemoteTransporter extends AbstractTransporter {
 
     private TransporterRegistry registry;
 
@@ -56,7 +56,7 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
 
     public static final String RESPONSE_BYTEBUF = "RESPONSE.BYTEBUF";
 
-    public AbstractTCPTransporter(String address, EndpointInfo endpointInfo,
+    public AbstractRemoteTransporter(String address, EndpointInfo endpointInfo,
         Container container, TransporterRegistry registry) {
         super(address, endpointInfo, container);
         this.registry = registry;
@@ -106,11 +106,7 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
     public void finalizeConfig() {
         
     }
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.exchange.Transporter#shutdown()
-     */
+ 
     @Override
     public void shutdown() {
         synchronized (this) {
@@ -147,12 +143,6 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.exchange.Transporter#getBackPipeline(org.solmix.exchange.Message)
-     */
     @Override
     public Pipeline getBackPipeline(Message msg) throws IOException {
         ByteBuf res = (ByteBuf) msg.get(RESPONSE_BYTEBUF);
@@ -203,7 +193,7 @@ public abstract class AbstractTCPTransporter extends AbstractTransporter {
 
         @Override
         protected Logger getLogger() {
-            return AbstractTCPTransporter.this.getLogger();
+            return AbstractRemoteTransporter.this.getLogger();
         }
 
     }

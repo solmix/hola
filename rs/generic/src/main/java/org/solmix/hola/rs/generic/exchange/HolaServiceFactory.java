@@ -19,10 +19,14 @@
 
 package org.solmix.hola.rs.generic.exchange;
 
+import org.solmix.exchange.data.DataProcessor;
+import org.solmix.exchange.event.ServiceFactoryEvent;
 import org.solmix.exchange.model.NamedIDPolicy;
 import org.solmix.exchange.model.ServiceInfo;
 import org.solmix.exchange.support.DefaultService;
 import org.solmix.exchange.support.ReflectServiceFactory;
+import org.solmix.hola.rs.RemotePhasePolicy;
+import org.solmix.hola.rs.data.SerializationDataProcessor;
 
 /**
  * 
@@ -38,14 +42,29 @@ public class HolaServiceFactory extends ReflectServiceFactory
     {
         NamedIDPolicy policy = new NamedIDPolicy(this, ProtocolFactoryImpl.PROTOCOL_ID);
         setNamedIDPolicy(policy);
+        setPhasePolicy(new RemotePhasePolicy());
     }
 
     @Override
     protected void buildServiceModel() {
         super.buildServiceModel();
 
+        getProperties();
         ServiceInfo serviceInfo = new ServiceInfo();
         DefaultService service = new DefaultService(serviceInfo);
         setService(service);
+        setServiceProperties();
+        
+        serviceInfo.setName(getServiceName());
+        
+        initializeDataProcessors();
+        
+        pulishEvent(ServiceFactoryEvent.SERVER_CREATED,getService());
+        createInterface(serviceInfo);
+    }
+
+    @Override
+    protected DataProcessor defaultDataProcessor() {
+        return new SerializationDataProcessor();
     }
 }

@@ -148,8 +148,7 @@ public class NettyPipeline extends AbstractPipeline {
         if (defaultEndpointURI == null && createOnDemand) {
 
             if (endpointInfo.getAddress() == null) {
-                throw new URISyntaxException("<null>",
-                    "Invalid address. Endpoint address cannot be null.", 0);
+                throw new URISyntaxException("<null>", "Invalid address. Endpoint address cannot be null.", 0);
             }
             defaultEndpointURI = new URI(endpointInfo.getAddress());
             defaultEndpointURIString = defaultEndpointURI.toString();
@@ -183,6 +182,7 @@ public class NettyPipeline extends AbstractPipeline {
         private final NettyConfiguration config;
 
         ByteBuf outBuffer;
+        
         ByteBuf inBuffer;
 
         OutputStream outputStream;
@@ -231,7 +231,7 @@ public class NettyPipeline extends AbstractPipeline {
                     + url + ": " + e.getMessage(), e, IOException.class);
             } catch (RuntimeException e) {
                 throw mapException(e.getClass().getSimpleName() + " invoking "
-                    + url + ": " + e.getMessage(), e, RuntimeException.class);
+                    + url , e, RuntimeException.class);
             }
         }
 
@@ -271,6 +271,7 @@ public class NettyPipeline extends AbstractPipeline {
                         }
                     };
                     ChannelFuture channelFuture = getChannel().write(outMessage);
+//                    ChannelFuture channelFuture = getChannel().write(outputStream);
                     channelFuture.addListener(listener);
                     outputStream.close();
                 }
@@ -282,7 +283,7 @@ public class NettyPipeline extends AbstractPipeline {
                 if (exception == null) { //already have an exception, skip waiting
                     try {
                         // connection timeout
-                        wait(config.getConnectionTimeout());
+                        wait(config.getConnectTimeout());
                     } catch (InterruptedException e) {
                         throw new IOException(e);
                     }
@@ -314,7 +315,8 @@ public class NettyPipeline extends AbstractPipeline {
             NettyConfiguration tci = endpointInfo.getExtension(NettyConfiguration.class);
             String codec =tci.getCodec();
             int bufferSize = tci.getBufferSize();
-            bootstrap.handler(new NettyClientChannelFactory(getCodec(codec),bufferSize));
+//            bootstrap.handler(new NettyClientChannelFactory(getCodec(codec),bufferSize));
+            bootstrap.handler(new NettyClientHandler());
             ChannelFuture connFuture = bootstrap.connect(new InetSocketAddress(
                 url.getHost(), url.getPort() != -1 ? url.getPort() : 1314));
             connFuture.addListener(new ChannelFutureListener() {
@@ -473,7 +475,7 @@ public class NettyPipeline extends AbstractPipeline {
                return new ByteBufInputStream(getInputBuffer());
         }
 
-        protected ByteBuf getInputBuffer() throws IOException {
+        protected synchronized ByteBuf getInputBuffer() throws IOException {
             while (inBuffer == null) {
                 if (exception == null) { //already have an exception, skip waiting
                     try {

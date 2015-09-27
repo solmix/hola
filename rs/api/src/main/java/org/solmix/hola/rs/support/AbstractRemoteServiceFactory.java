@@ -19,7 +19,6 @@
 
 package org.solmix.hola.rs.support;
 
-import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -29,9 +28,10 @@ import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.common.model.RemoteServiceInfo;
+import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteReference.ReferenceType;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteServiceFactory;
 import org.solmix.runtime.Container;
@@ -90,13 +90,6 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
         return null;
     }
 
-    @Override
-    public <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties) {
-        RemoteServiceInfo info = prepare(properties);
-        return getReference(clazz, info);
-    }
-
-    public abstract <S> RemoteReference<S> getReference(Class<S> clazz, RemoteServiceInfo info);
 
     @Override
     public <S> Collection<RemoteReference<S>> getReferences(Class<S> clazz, String filter) throws RemoteException {
@@ -104,12 +97,19 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <S> S getService(RemoteReference<S> reference) {
-        // TODO Auto-generated method stub
+        Assert.assertNotNull(reference,"RemoteReference");
+        ReferenceType type = reference.getReferenceType();
+        if(type==ReferenceType.LOCAL){
+           return (S) registry.getService((RemoteReferenceHolder<S>)reference);
+        }else if(type==ReferenceType.REMOTE){
+            return doGetRemoteService(reference);
+        }
         return null;
     }
-
+    protected abstract <S> S doGetRemoteService(RemoteReference<S> reference) throws RemoteException ;
     @Override
     public void addRemoteListener(RemoteListener listener) {
         registry.addRemoteListener(listener);

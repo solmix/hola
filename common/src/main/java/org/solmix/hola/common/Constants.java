@@ -30,6 +30,25 @@ import java.util.regex.Pattern;
 public class Constants
 {
 
+    /**
+     * 构成Address的元素
+     */
+    public static final String ADDRESS_KEY = "address";
+    public static final String GROUP_KEY = "group";
+
+   
+    public static final String PROTOCOL_KEY = "protocol";
+    public static final String HOST_KEY = "host";
+    public static final String PORT_KEY = "port";
+    public static final String PATH_KEY = "path";
+    public static final String USER_KEY = "user";
+    public static final String PASSWORD_KEY = "password";
+  
+    
+    /***==========================================================
+     * 
+     =============================================================*/
+
     public static final String DEFAULT_TRANSPORTER = "netty";
 
     public static final String DEFAULT_PROTOCOL = "hola";
@@ -129,11 +148,9 @@ public class Constants
 
     public static final String DEFAULT_RPC_TRANSPORTER = "netty";
 
-    public static final String PROTOCOL_KEY = "protocol";
+   
 
-    public static final String BUFFER_KEY = "buffer";
-
-    public static final String HOST_KEY = "host";
+    public static final String BUFFER_KEY = "bufferSize";
 
     public static final String ANYHOST_KEY = "anyhost";
 
@@ -142,9 +159,7 @@ public class Constants
     public static final String LOCALHOST_KEY = "localhost";
 
     public static final String LOCALHOST_VALUE = "127.0.0.1";
-
-    public static final String PORT_KEY = "port";
-
+ 
     public static final String THREADS_KEY = "threads";
 
     public static final int DEFAULT_THREADS = 200;
@@ -168,9 +183,6 @@ public class Constants
 
     public static final String SERVICE_ID_KEY = "remote.service.id";
 
-    public static final String GROUP_KEY = "group";
-
-    public static final String PATH_KEY = "path";
 
     public static final String PIPELINES = "pipelines";
 }

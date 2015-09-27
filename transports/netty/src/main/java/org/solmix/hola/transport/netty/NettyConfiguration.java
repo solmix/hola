@@ -34,9 +34,9 @@ public class NettyConfiguration
 
     private int chunkThreshold;
 
-    private int connectionTimeout;
+    private int connectTimeout;
 
-    private int receiveTimeout;
+    private int receiveTimeout= Constants.DEFAULT_TIMEOUT;
 
     private final long asyncExecuteTimeout = -1;
 
@@ -44,11 +44,11 @@ public class NettyConfiguration
 
     private int threadPoolSize = 5;
 
-    private String host;
-
-    private int port;
-
-    private String path;
+//    private String host;
+//
+//    private int port;
+//
+//    private String path;
 
     private int bufferSize = Constants.DEFAULT_BUFFER_SIZE;
 
@@ -66,14 +66,14 @@ public class NettyConfiguration
         this.codec = codec;
     }
 
-    /**   */
-    public int getConnectionTimeout() {
-        return connectionTimeout;
+    
+    public int getConnectTimeout() {
+        return connectTimeout;
     }
 
-    /**   */
-    public void setConnectionTimeout(int connectionTimeout) {
-        this.connectionTimeout = connectionTimeout;
+    
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
     }
 
     /**   */
@@ -132,36 +132,36 @@ public class NettyConfiguration
     public void setThreadPoolSize(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
     }
-
-    
-    public String getHost() {
-        return host;
-    }
-
-    
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    
-    public int getPort() {
-        return port;
-    }
-
-    
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    
-    public String getPath() {
-        return path;
-    }
-
-    
-    public void setPath(String path) {
-        this.path = path;
-    }
+//
+//    
+//    public String getHost() {
+//        return host;
+//    }
+//
+//    
+//    public void setHost(String host) {
+//        this.host = host;
+//    }
+//
+//    
+//    public int getPort() {
+//        return port;
+//    }
+//
+//    
+//    public void setPort(int port) {
+//        this.port = port;
+//    }
+//
+//    
+//    public String getPath() {
+//        return path;
+//    }
+//
+//    
+//    public void setPath(String path) {
+//        this.path = path;
+//    }
 
     
     public int getWriteTimeout() {

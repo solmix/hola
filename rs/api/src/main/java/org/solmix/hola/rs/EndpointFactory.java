@@ -47,6 +47,7 @@ import org.solmix.exchange.support.AbstractEndpointFactory;
 import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.hola.common.Constants;
 import org.solmix.hola.common.model.ConfigSupportedReference;
+import org.solmix.hola.common.util.ServicePropertiesUtils;
 
 /**
  * 
@@ -215,18 +216,26 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
             count++;
         }
         endpointInfo.setName(endpointName);
-        endpointInfo.setAddress(getAddress());
         endpointInfo.setProtocol(ptl);
 
         service.getServiceInfo().addEndpoint(endpointInfo);
         //根据transporerFactry的supportConfigs创建configedBean并加入
         //XXX
-       if(transporterFactory instanceof ConfigSupportedReference){
-           makeConfigAsEndpointInfoExtension((ConfigSupportedReference)transporterFactory,endpointInfo,getProperties());
-       }
-        serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINTINFO_CREATED,
-            endpointInfo);
+        makeupConfigReference(endpointInfo,transporterFactory,protocolFactory);
+        
+       endpointInfo.setAddress(getAddress());
+        serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINTINFO_CREATED, endpointInfo);
         return endpointInfo;
+    }
+    
+    protected void makeupConfigReference(EndpointInfo endpointInfo,Object... factorys){
+        if(factorys!=null&&factorys.length>0){
+            for(Object factory:factorys){
+                if(factory instanceof ConfigSupportedReference){
+                    makeConfigAsEndpointInfoExtension((ConfigSupportedReference)factory,endpointInfo,getProperties());
+                }
+            } 
+        }
     }
 
     /**把ConfigSupportedReference的配置放入extension中*/
@@ -241,7 +250,10 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
                 Object bean = Reflection.newInstance(clazz);
                 Map<String,Object> copyed = new HashMap<String,Object>();
                 for(String key:supported){
-                    copyed.put(key, properties.get(key));
+                    Object value = properties.get(key);
+                    if(value!=null){
+                        copyed.put(key, properties.get(key));
+                    }
                 }
                 DataUtils.setProperties(copyed, bean, false);
                 endpointInfo.addExtension(bean);
@@ -347,5 +359,14 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
     /**   */
     public void setDataProcessor(DataProcessor dataProcessor) {
         this.dataProcessor = dataProcessor;
+    }
+    
+    @Override
+    public String getAddress() {
+        //通过配置设置address
+        if(address==null&&getProperties()!=null){
+           address=ServicePropertiesUtils.toAddress(getProperties());
+        }
+        return address;
     }
 }

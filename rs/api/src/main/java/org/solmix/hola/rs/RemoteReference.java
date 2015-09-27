@@ -31,6 +31,8 @@ public interface RemoteReference<S> {
     public enum ReferenceType{
         LOCAL,REMOTE
     }
+    
+    public ReferenceType getReferenceType();
     public Object getProperty(String key);
 
     public String[] getPropertyKeys();
@@ -45,6 +47,7 @@ public interface RemoteReference<S> {
      * destroy.
      */
     void destroy();
+    Class<S> getServiceClass();
 
-    public RemoteServiceFactory getRemoteServiceManager();
+    public RemoteServiceFactory getRemoteServiceFactory();
 }

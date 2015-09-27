@@ -16,37 +16,24 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.generic.codec;
+package org.solmix.hola.rs.generic.exchange;
 
-import io.netty.buffer.ByteBuf;
-
-import java.io.IOException;
-
-import org.solmix.exchange.Message;
-import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
-import org.solmix.hola.transport.codec.Codec;
-import org.solmix.runtime.Extension;
+import org.solmix.hola.rs.RemoteProxyFactory;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月18日
+ * @version $Id$  2015年9月20日
  */
-@Extension(name=HolaRemoteServiceFactory.PROVIDER_ID)
-public class HolaCodec implements Codec
+
+public class HolaProxyFactory extends RemoteProxyFactory
 {
 
-    @Override
-    public void encode(ByteBuf buffer, Message outMsg) throws IOException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Object decode(ByteBuf buffer) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+    private static final long serialVersionUID = 3803764200870322433L;
+    
+    public HolaProxyFactory(){
+        super(new HolaClientFactory());
     }
 
 }

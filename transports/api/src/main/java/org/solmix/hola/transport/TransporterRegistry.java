@@ -29,8 +29,8 @@ import java.util.Collection;
 
 public interface TransporterRegistry {
 
-    void add(AbstractTCPTransporter transporter);
+    void add(AbstractRemoteTransporter transporter);
     void remove(String path);
-    AbstractTCPTransporter getTransporterForPath(String path);
-    Collection<AbstractTCPTransporter> getTransporters();
+    AbstractRemoteTransporter getTransporterForPath(String path);
+    Collection<AbstractRemoteTransporter> getTransporters();
 }

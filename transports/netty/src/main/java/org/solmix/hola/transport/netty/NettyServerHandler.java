@@ -30,9 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.MessageUtils;
+import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.support.DefaultMessage;
-import org.solmix.hola.transport.AbstractTCPTransporter;
+import org.solmix.hola.transport.AbstractRemoteTransporter;
 
 /**
  * 
@@ -48,16 +49,16 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
 
     private final NettyServerChannelFactory channelFactory;
 
-    private final int timeout;
+    
+    private final Protocol  protocol;
+    
+    private NettyConfiguration info;
 
-    private final boolean waitSucess;
-
-    public NettyServerHandler(NettyServerChannelFactory factory, int timeout,
-        boolean waitSucess) {
+    public NettyServerHandler(NettyServerChannelFactory factory, NettyConfiguration info,Protocol protocol) {
         allChannels = factory.getAllChannels();
         this.channelFactory = factory;
-        this.timeout = timeout;
-        this.waitSucess = waitSucess;
+        this.info = info;
+        this.protocol=protocol;
     }
 
     @Override
@@ -96,7 +97,7 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
 
     private Message createResponseMessage(ByteBuf response) {
         DefaultMessage msg = new DefaultMessage();
-        msg.put(AbstractTCPTransporter.RESPONSE_BYTEBUF, response);
+        msg.put(AbstractRemoteTransporter.RESPONSE_BYTEBUF, response);
         return msg;
     }
 
@@ -104,8 +105,8 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
         boolean success = true;
         try {
             ChannelFuture future = ctx.write(response);
-            if (waitSucess) {
-                success = future.await(timeout);
+            if (info.isWaiteSuccess()) {
+                success = future.await(info.getWriteTimeout());
             }
             Throwable cause = future.cause();
             if (cause != null) {
@@ -117,7 +118,7 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
         }
         if (success) {
             throw new Fault("Failed to write response to "
-                + ctx.channel().remoteAddress() + " time out (" + timeout
+                + ctx.channel().remoteAddress() + " time out (" + info.getWriteTimeout()
                 + "ms) limit ");
         }
 

@@ -83,7 +83,7 @@ public class ServiceRegistry {
       }
     }
     
-    public Object getService(RemoteReferenceImpl<?> reference) {
+    public Object getService(RemoteReferenceHolder<?> reference) {
        return reference.getRegistration().getService();
     }
 

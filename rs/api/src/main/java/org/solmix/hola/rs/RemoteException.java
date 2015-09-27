@@ -27,23 +27,27 @@ import org.solmix.hola.common.HolaRuntimeException;
  * @version 0.0.1 2014年8月19日
  */
 
-public class RemoteException extends HolaRuntimeException {
-    
+public class RemoteException extends HolaRuntimeException
+{
+
     private static final long serialVersionUID = 8551806789868609191L;
-    
-    /**
-     * @param string
-     * @param e
-     */
-    public RemoteException(String msg, Throwable e) {
+
+    public RemoteException(String msg)
+    {
+        super(msg);
+    }
+
+    public RemoteException(String msg, Throwable e)
+    {
         super(msg, e);
     }
 
     /**
-     * @param e 
+     * @param e
      */
-    public RemoteException(Throwable e) {
-      super(e);
+    public RemoteException(Throwable e)
+    {
+        super(e);
     }
 
 }

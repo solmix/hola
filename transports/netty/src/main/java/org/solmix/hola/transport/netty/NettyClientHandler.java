@@ -21,6 +21,7 @@ package org.solmix.hola.transport.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
@@ -85,13 +86,17 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
                 }
             }
             if (bb != null) {
+                bb.writeBytes("hello".getBytes());
+                System.out.println("--"+ByteBufUtil.hexDump(bb)+"--");
                 sendedQueue.put(m);
+//                super.write(ctx, msg, promise);
                 ctx.writeAndFlush(bb);
             } else {
                 throw new IOException(
                     "write a message without bytebuf out ByteBufOutputStream");
             }
         } else {
+            
             super.write(ctx, msg, promise);
         }
     }

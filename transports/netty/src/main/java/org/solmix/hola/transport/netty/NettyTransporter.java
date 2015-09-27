@@ -20,15 +20,16 @@
 package org.solmix.hola.transport.netty;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.commons.util.ClassLoaderUtils;
-import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.Processor;
 import org.solmix.exchange.model.EndpointInfo;
-import org.solmix.hola.transport.AbstractTCPTransporter;
+import org.solmix.hola.transport.AbstractRemoteTransporter;
+import org.solmix.hola.transport.TransporterCreateException;
 import org.solmix.hola.transport.TransporterRegistry;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
@@ -39,7 +40,8 @@ import org.solmix.runtime.ContainerFactory;
  * @version $Id$ 2015年1月15日
  */
 
-public class NettyTransporter extends AbstractTCPTransporter {
+public class NettyTransporter extends AbstractRemoteTransporter
+{
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyTransporter.class);
 
@@ -50,18 +52,39 @@ public class NettyTransporter extends AbstractTCPTransporter {
     private NettyServerEngine engine;
 
     private final NettyConfiguration serverInfo;
-    private final String serverPath;
 
-    public NettyTransporter(NettyServerEngineFactory factory,
-        EndpointInfo endpointInfo, Container container,
-        TransporterRegistry registry) throws IOException {
-        super(getAddressValue(endpointInfo, true).getAddress(), endpointInfo,
-            container, registry);
+    protected URI defaultEndpointURI;
+
+    private String serverPath;
+
+    public NettyTransporter(NettyServerEngineFactory factory, EndpointInfo endpointInfo, Container container, TransporterRegistry registry)
+        throws IOException
+    {
+        super(getAddressValue(endpointInfo, true).getAddress(), endpointInfo, container, registry);
         this.serverEngineFactory = factory;
-        serverInfo =  endpointInfo.getExtension(NettyConfiguration.class);
-        serverPath= serverInfo.getPath();
+        serverInfo = endpointInfo.getExtension(NettyConfiguration.class);
+        try {
+            defaultEndpointURI = getURI();
+        } catch (URISyntaxException e) {
+            throw new TransporterCreateException(e);
+        }
+        serverPath = defaultEndpointURI.getPath();
     }
 
+    protected URI getURI() throws URISyntaxException {
+        return getURI(true);
+    }
+
+    protected synchronized URI getURI(boolean createOnDemand) throws URISyntaxException {
+        if (defaultEndpointURI == null && createOnDemand) {
+
+            if (endpointInfo.getAddress() == null) {
+                throw new URISyntaxException("<null>", "Invalid address. Endpoint address cannot be null.", 0);
+            }
+            defaultEndpointURI = new URI(endpointInfo.getAddress());
+        }
+        return defaultEndpointURI;
+    }
 
     @Override
     public void finalizeConfig() {
@@ -75,15 +98,12 @@ public class NettyTransporter extends AbstractTCPTransporter {
         configFinalized = true;
     }
 
-    protected void retrieveEngine() throws IOException {
-
-        engine = serverEngineFactory.retrieveEngine(serverInfo.getHost(),
-            serverInfo.getPort());
+    protected void retrieveEngine() throws IOException, URISyntaxException {
+        engine = serverEngineFactory.retrieveEngine(defaultEndpointURI.getScheme(),defaultEndpointURI.getHost(), defaultEndpointURI.getPort());
         if (engine == null) {
-            engine = serverEngineFactory.createEngine(serverInfo.getHost(),
-                serverInfo.getPort());
+            engine = serverEngineFactory.createEngine(defaultEndpointURI.getScheme(),defaultEndpointURI.getHost(), defaultEndpointURI.getPort());
         }
-        engine.setTransportServerInfo(serverInfo);
+        engine.setNettyConfiguration(serverInfo);
 
         assert engine != null;
     }
@@ -91,9 +111,9 @@ public class NettyTransporter extends AbstractTCPTransporter {
     @Override
     protected void activate(Processor p) {
         super.activate(p);
+        engine.start(protocol);
         engine.addHandler(serverPath, new NettyMessageHandler(this));
     }
-
 
     @Override
     protected void deactivate(Processor p) {
@@ -106,30 +126,15 @@ public class NettyTransporter extends AbstractTCPTransporter {
         return LOG;
     }
 
-    @Override
-    public int getDefaultPort() {
-        return 5715;
-    }
-
     public void doService(Message request, Message response) {
-       Container orig = ContainerFactory.getAndSetThreadDefaultContainer(container);
-       ClassLoaderHolder origLoader = null;
-      
-       try {
-           ClassLoader loader = container.getExtension(ClassLoader.class);
-           if (loader != null) {
-               origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
-           }
-           invoke(request, response);
-       } finally {
-           if (orig != container) {
-               ContainerFactory.setThreadDefaultContainer(orig);
-           }
-           if (origLoader != null) {
-               origLoader.reset();
-           }
-       }
+        Container orig = ContainerFactory.getAndSetThreadDefaultContainer(container);
+        try {
+            invoke(request, response);
+        } finally {
+            if (orig != container) {
+                ContainerFactory.setThreadDefaultContainer(orig);
+            }
+        }
     }
-
 
 }

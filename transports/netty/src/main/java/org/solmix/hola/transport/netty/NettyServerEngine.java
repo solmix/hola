@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
@@ -64,28 +65,25 @@ public class NettyServerEngine implements NettyEngine {
     private final Map<String, NettyMessageHandler> handlerMap = new ConcurrentHashMap<String, NettyMessageHandler>();
 
     private Container container;
+    private Protocol protocol;
 
     public NettyServerEngine(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
-    public String getServerKey() {
-        String host = null;
-        if (info.getHost() == null) {
-            host = "localhost";
+    @Override
+    public synchronized void start(Protocol protocol) {
+        if(channel!=null){
+            return;
+        }else{
+            channel = startChannel(protocol);
         }
-        return new StringBuilder().append(host).append(":").append(
-            info.getPort()).toString();
     }
-
-   
     @Override
     public void addHandler(String path, NettyMessageHandler handler) {
+        assert channel!=null;
         checkRegistedPath(path);
-        if (channel == null) {
-            channel = startChannel();
-        }
         handlerMap.put(path, handler);
         registedPaths.add(path);
     }
@@ -113,18 +111,20 @@ public class NettyServerEngine implements NettyEngine {
         return  container.getExtensionLoader(Codec.class).getExtension(codec);
       }
 
-    protected Channel startChannel() {
+    protected Channel startChannel(Protocol protocol) {
+        this.protocol=protocol;
+        
         final ServerBootstrap bootstrap = new ServerBootstrap();
-        bossGroup = new NioEventLoopGroup( 0,new DefaultExecutorServiceFactory("Netty-Server-Boss"));
-        workerGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup( 2,new DefaultExecutorServiceFactory("Netty-Server-Parent"));
+        workerGroup = new NioEventLoopGroup( 2,new DefaultExecutorServiceFactory("Netty-Server-child"));
         bootstrap.group(bossGroup, workerGroup).channel(
             NioServerSocketChannel.class).option(ChannelOption.SO_REUSEADDR,
-            true);
-        channelFactory = new NettyServerChannelFactory(info, handlerMap,getCodec(info.getCodec()));
+            true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, info.getConnectTimeout());
+        channelFactory = new NettyServerChannelFactory(info, handlerMap,protocol);
         
         bootstrap.childHandler(channelFactory);
         InetSocketAddress address = null;
-        if (info.getHost() == null) {
+        if (host == null) {
             address = new InetSocketAddress(port);
         } else {
             address = new InetSocketAddress(host, port);
@@ -145,13 +145,13 @@ public class NettyServerEngine implements NettyEngine {
      * 
      * @param transportServerInfo
      */
-    public void setTransportServerInfo(NettyConfiguration transportServerInfo) {
+    public void setNettyConfiguration(NettyConfiguration transportServerInfo) {
         this.info = transportServerInfo;
     }
 
 
     @Override
-    public void shutdown() {
+    public synchronized void shutdown() {
         handlerMap.clear();
         registedPaths.clear();
         if (channelFactory != null) {
