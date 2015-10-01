@@ -33,15 +33,16 @@ import org.solmix.exchange.interceptor.phase.PhaseInterceptorSupport;
  * @version $Id$  2015年9月24日
  */
 
-public class RemoteOutInterceptor extends PhaseInterceptorSupport<Message>
+public class DataOutInterceptor extends PhaseInterceptorSupport<Message>
 {
 
     /**
      * @param phase
      */
-    public RemoteOutInterceptor()
+    public DataOutInterceptor()
     {
-        super(Phase.WRITE);
+        super(Phase.ENCODE);
+        addAfter(SerializationOutInterceptor.class.getName());
     }
 
     @Override

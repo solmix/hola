@@ -16,26 +16,16 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.common.model;
-
-import java.util.Dictionary;
-
+package org.solmix.hola.rs.generic.exchange;
 
 
 /**
- * 配置引用情况
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月16日
+ * @version $Id$  2015年9月28日
  */
 
-public interface ConfigSupportedReference
+public class ProtocolConfiguration
 {
-
-    String[] getSupportedIntents(Dictionary<String, ?> info);
-
-    String[] getSupportedConfigs(Dictionary<String, ?> info);
-    
-    Class<?> getSupportedConfigClass();
 
 }

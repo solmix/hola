@@ -25,8 +25,8 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.transport.identity.ServerKeyID;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerEvent;
 import org.solmix.runtime.ContainerListener;
@@ -42,7 +42,7 @@ public class NettyServerEngineFactory implements ContainerListener {
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerEngineFactory.class);
     private Container container;
 
-    private static ConcurrentHashMap<String, NettyServerEngine> engines = new ConcurrentHashMap<String, NettyServerEngine>();
+    private static ConcurrentHashMap<ServerKeyID, NettyServerEngine> engines = new ConcurrentHashMap<ServerKeyID, NettyServerEngine>();
 
     public NettyServerEngineFactory() {
 
@@ -83,7 +83,7 @@ public class NettyServerEngineFactory implements ContainerListener {
         return retrieveEngine(null,null, port);
     }
     public synchronized NettyServerEngine retrieveEngine(String protocol,String host, int port) {
-        String serverKey = getServerKey(host, port);
+        ServerKeyID serverKey = new ServerKeyID(protocol,host, port);
         return engines.get(serverKey);
     }
 
@@ -91,7 +91,7 @@ public class NettyServerEngineFactory implements ContainerListener {
         return createEngine(null,null, port);
     }
     public synchronized NettyServerEngine createEngine(String protocol,String host, int port) {
-        String serverKey = getServerKey(host, port);
+        ServerKeyID serverKey = new ServerKeyID(protocol,host, port);
         NettyServerEngine engine=engines.get(serverKey);
         if(engine==null){
             engine = new NettyServerEngine(host,port);
@@ -114,11 +114,11 @@ public class NettyServerEngineFactory implements ContainerListener {
     }
     
     public static synchronized void destroy(int port) {
-        destroy(null, port);
+        destroy(null,null, port);
     }
     
-    public static synchronized void destroy(String host, int port) {
-        String serverKey = getServerKey(host, port);
+    public static synchronized void destroy(String protocol,String host, int port) {
+        ServerKeyID serverKey = new ServerKeyID(protocol,host, port);
         NettyServerEngine ref = engines.remove(serverKey);
         if (ref != null) {
             LOG.debug("Stop netty server engine on:{}", serverKey);
@@ -129,66 +129,5 @@ public class NettyServerEngineFactory implements ContainerListener {
             }
         }
     }
-    static class ServerKey{
-        private String protocol;
-        private String host;
-        private int port;
-        
-        ServerKey(String protocol,int port){
-            this(protocol,null,port);
-        }
-        ServerKey(int port){
-            this(null,null,port);
-        }
-        ServerKey(String protocol,String host,int port){
-            this.protocol=protocol;
-            if(host==null){
-                host="localhost";
-            }
-            if(NetUtils.isLocalHost(host)){
-                host=NetUtils.LOCALHOST;
-            }
-            this.host=host;
-            this.port=port;
-        }
-        
-        @Override
-        public boolean equals(Object o){
-            if (o == this) {
-                return true;
-            }
-            if (o == null || !(o instanceof ServerKey)) {
-                return false;
-            }
-            ServerKey other = (ServerKey) o;
-            if (port==other.port) {
-                if(protocol!=null){
-                    if(protocol.equals(other.protocol)){
-                        return host.equals(other.host);
-                    }
-                }else{
-                   if(other.protocol!=null){
-                       return false;
-                   }else{
-                       return host.equals(other.host);
-                   }
-                }
-            }
-            return false;
-        }
-        @Override
-        public String toString(){
-            StringBuilder sb = new StringBuilder();
-            if(protocol!=null){
-                sb.append(protocol).append("://");
-            }
-            if(host!=null){
-                sb.append(host);
-            }else{
-                sb.append("localhost");
-            }
-            sb.append(":").append(port);
-            return sb.toString();
-        }
-    }
+   
 }

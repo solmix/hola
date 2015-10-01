@@ -20,10 +20,9 @@ package org.solmix.hola.rs.generic.exchange;
 
 import org.solmix.exchange.Message;
 import org.solmix.exchange.Protocol;
+import org.solmix.exchange.data.SerializationManager;
 import org.solmix.exchange.model.ProtocolInfo;
 import org.solmix.exchange.support.AbstractProtocol;
-import org.solmix.exchange.support.DefaultMessage;
-import org.solmix.hola.rs.Decodeable;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.runtime.Container;
 
@@ -40,20 +39,25 @@ public class HolaProtocol extends AbstractProtocol implements Protocol
     private static final long serialVersionUID = -1687881624306758836L;
 
     private ProtocolInfo protocolInfo;
+
+    private SerializationManager serializationManager;
     public HolaProtocol(ProtocolInfo protocolInfo,Container container){
         super(container);
         this.protocolInfo=protocolInfo;
     }
     @Override
     public Message createMessage() {
-        return createMessage(new DefaultMessage());
+        return new HolaMessage();
     }
 
     @Override
     public Message createMessage(Message m) {
-        if(m instanceof Decodeable&&((Decodeable)m).isDecoded()){
+        //允许decode
+        if(m instanceof HolaMessage&&!((HolaMessage)m).isDecoded()){
             try {
-                ((Decodeable)m).decode();
+                HolaMessage hm = (HolaMessage)m;
+                hm.setSerializationManager(this.getSerializationManager());
+                hm.decode();
             } catch (Exception e) {
                throw new RemoteException("Error decode message",e);
             }
@@ -64,6 +68,14 @@ public class HolaProtocol extends AbstractProtocol implements Protocol
     @Override
     public ProtocolInfo getProtocolInfo() {
         return protocolInfo;
+    }
+   
+    public void setSerializationManager(SerializationManager sm) {
+        this.serializationManager=sm;
+    }
+    
+    public SerializationManager getSerializationManager() {
+        return serializationManager;
     }
 
 }

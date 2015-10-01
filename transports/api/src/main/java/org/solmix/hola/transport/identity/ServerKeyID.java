@@ -18,7 +18,9 @@
  */
 package org.solmix.hola.transport.identity;
 
+import org.solmix.commons.util.NetUtils;
 import org.solmix.runtime.identity.BaseID;
+import org.solmix.runtime.identity.IDFactory;
 
 
 /**
@@ -32,14 +34,23 @@ public class ServerKeyID extends BaseID
 
     private static final long serialVersionUID = -3557032805902095380L;
 
-    private String protocol;
-    private String host;
-    private int port;
+    private final String protocol;
+    private final String host;
+    private final int port;
    
+    public ServerKeyID(String protocol, String host, int port) {
+        this((ServerKeyNamespace) IDFactory.getDefault().getNamespaceByName(ServerKeyNamespace.NAME), protocol,host, port);
+    }
     public ServerKeyID(ServerKeyNamespace ns, String protocol, String host, Integer port)
     {
         super(ns);
         this.protocol=protocol;
+        if(host==null){
+            host="localhost";
+        }
+        if(NetUtils.isLocalHost(host)){
+            host=NetUtils.LOCALHOST;
+        }
         this.host=host;
         this.port=port;
     }
@@ -116,9 +127,25 @@ public class ServerKeyID extends BaseID
     protected int namespaceHashCode() {
         int iTotal=17,iConstant=37;
         iTotal = iTotal * iConstant + port;
-        iTotal = iTotal * iConstant + protocol==null?0:protocol.hashCode();
-        iTotal = iTotal * iConstant + host==null?0:host.hashCode();
+        iTotal = iTotal * iConstant + (protocol==null?0:protocol.hashCode());
+        iTotal = iTotal * iConstant + (host==null?0:host.hashCode());
         return iTotal;
+    }
+
+
+    
+    public String getProtocol() {
+        return protocol;
+    }
+
+    
+    public String getHost() {
+        return host;
+    }
+
+    
+    public int getPort() {
+        return port;
     }
 
 }

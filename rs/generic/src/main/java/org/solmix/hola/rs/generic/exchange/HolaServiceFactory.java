@@ -61,10 +61,13 @@ public class HolaServiceFactory extends ReflectServiceFactory
         
         pulishEvent(ServiceFactoryEvent.SERVER_CREATED,getService());
         createInterface(serviceInfo);
+        
     }
 
     @Override
     protected DataProcessor defaultDataProcessor() {
-        return new SerializationDataProcessor();
+        SerializationDataProcessor dp= new SerializationDataProcessor();
+        return dp;
     }
+  
 }

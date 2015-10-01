@@ -25,7 +25,7 @@ import java.util.Hashtable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Server;
-import org.solmix.hola.common.Constants;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteProxy;
 import org.solmix.hola.rs.RemoteReference;
@@ -59,19 +59,19 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
         if(properties==null){
             properties= new Hashtable<String, Object>();
         }
-        if(properties.get(Constants.CODEC_KEY)!=null){
-            if(!PROVIDER_ID.equals(properties.get(Constants.CODEC_KEY))){
+        if(properties.get(HOLA.CODEC_KEY)!=null){
+            if(!PROVIDER_ID.equals(properties.get(HOLA.CODEC_KEY))){
                 LOG.warn("Hola protocol need hola codec");
             }
         }
-        properties.put(Constants.CODEC_KEY, PROVIDER_ID);
+        properties.put(HOLA.CODEC_KEY, PROVIDER_ID);
         //设置默认port
-        if(properties.get(Constants.PORT_KEY)==null){
-            properties.put(Constants.PORT_KEY, PORT);
+        if(properties.get(HOLA.PORT_KEY)==null){
+            properties.put(HOLA.PORT_KEY, PORT);
         }
         //设置默认protocol
-        if(properties.get(Constants.PROTOCOL_KEY)==null){
-            properties.put(Constants.PROTOCOL_KEY, PROVIDER_ID);
+        if(properties.get(HOLA.PROTOCOL_KEY)==null){
+            properties.put(HOLA.PROTOCOL_KEY, PROVIDER_ID);
         }
         HolaServerFactory factory = new HolaServerFactory();
         factory.setContainer(container);
@@ -102,19 +102,19 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
             copyed.put(key, reference.getProperty(key));
         }
         
-        if(copyed.get(Constants.CODEC_KEY)!=null){
-            if(!PROVIDER_ID.equals(copyed.get(Constants.CODEC_KEY))){
+        if(copyed.get(HOLA.CODEC_KEY)!=null){
+            if(!PROVIDER_ID.equals(copyed.get(HOLA.CODEC_KEY))){
                 LOG.warn("Hola protocol need hola codec");
             }
         }
-        copyed.put(Constants.CODEC_KEY, PROVIDER_ID);
+        copyed.put(HOLA.CODEC_KEY, PROVIDER_ID);
         //设置默认port
-        if(copyed.get(Constants.PORT_KEY)==null){
-            copyed.put(Constants.PORT_KEY, PORT);
+        if(copyed.get(HOLA.PORT_KEY)==null){
+            copyed.put(HOLA.PORT_KEY, PORT);
         }
         //设置默认protocol
-        if(copyed.get(Constants.PROTOCOL_KEY)==null){
-            copyed.put(Constants.PROTOCOL_KEY, PROVIDER_ID);
+        if(copyed.get(HOLA.PROTOCOL_KEY)==null){
+            copyed.put(HOLA.PROTOCOL_KEY, PROVIDER_ID);
         }
         factory.setProperties(copyed);
         Object obj = factory.create();

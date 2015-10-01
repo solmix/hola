@@ -33,9 +33,14 @@ public class ServerKeyNamespace extends AbstractNamespace
 {
     private static final long serialVersionUID = 4277332295215582783L;
 
+    public static final String NAME =ServerKeyID.class.getName();
+    
+    public ServerKeyNamespace() {
+        super(NAME, "Server Key Namespace");
+    }
     @Override
     public String getScheme() {
-        return ServerKeyID.class.getName();
+        return NAME;
     }
     @Override
     public ID createID(Object[] parameters) throws IDCreateException {

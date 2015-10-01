@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
-import org.solmix.hola.common.Constants;
+import org.solmix.hola.common.HOLA;
 
 
 /**
@@ -55,21 +55,21 @@ public class ServicePropertiesUtils
         if(properties==null){
             return null;
         }
-        String address =(String)properties.get(Constants.ADDRESS_KEY);
+        String address =(String)properties.get(HOLA.ADDRESS_KEY);
         if(!StringUtils.isEmpty(address)){
             return address;
         }
         StringBuilder buf = new StringBuilder();
-        String protocol =(String) properties.get(Constants.PROTOCOL_KEY);
+        String protocol =(String) properties.get(HOLA.PROTOCOL_KEY);
         if(!StringUtils.isEmpty(protocol)){
             buf.append(protocol);
             buf.append("://");
         }
         if(appendUser){
-            String user =(String) properties.get(Constants.USER_KEY);
+            String user =(String) properties.get(HOLA.USER_KEY);
             if(!StringUtils.isEmpty(user)){
                 buf.append(user);
-                String password =(String) properties.get(Constants.PASSWORD_KEY);
+                String password =(String) properties.get(HOLA.PASSWORD_KEY);
                 if(!StringUtils.isEmpty(user)){
                     buf.append(":");
                     buf.append(password);
@@ -77,22 +77,22 @@ public class ServicePropertiesUtils
                 buf.append("@");
             }
         }
-        String host=(String) properties.get(Constants.HOST_KEY);
+        String host=(String) properties.get(HOLA.HOST_KEY);
         if(StringUtils.isEmpty(host)){
-            host=Constants.LOCALHOST_VALUE;
+            host=HOLA.LOCALHOST_VALUE;
         }
         if (useIP) {
               host = NetUtils.getIpByHost(host);
         }
         if(!StringUtils.isEmpty(host)){
             buf.append(host);
-            String port=String.valueOf(properties.get(Constants.PORT_KEY));
+            String port=String.valueOf(properties.get(HOLA.PORT_KEY));
             if (port!=null&&Integer.valueOf(port.toString()) > 0) {
                   buf.append(":");
                   buf.append(port);
             }
         }
-        String path=(String) properties.get(Constants.PATH_KEY);
+        String path=(String) properties.get(HOLA.PATH_KEY);
         if(!StringUtils.isEmpty(path)){
             if(!path.startsWith("/")){
                 buf.append("/");
@@ -100,8 +100,8 @@ public class ServicePropertiesUtils
             buf.append(path);
         }
         if (appendParameter) {
-            buildQueryString(buf, true, properties, new String[] { Constants.ADDRESS_KEY, Constants.PROTOCOL_KEY, Constants.HOST_KEY,
-                Constants.PORT_KEY, Constants.PATH_KEY, Constants.USER_KEY, Constants.PASSWORD_KEY });
+            buildQueryString(buf, true, properties, new String[] { HOLA.ADDRESS_KEY, HOLA.PROTOCOL_KEY, HOLA.HOST_KEY,
+                HOLA.PORT_KEY, HOLA.PATH_KEY, HOLA.USER_KEY, HOLA.PASSWORD_KEY });
         }
         return buf.toString();
     }
@@ -203,12 +203,12 @@ public class ServicePropertiesUtils
         }
         if (address.length() > 0)
             host = address;
-        parameters.put(Constants.PROTOCOL_KEY, protocol);
-        parameters.put(Constants.USER_KEY, username);
-        parameters.put(Constants.PASSWORD_KEY, password);
-        parameters.put(Constants.HOST_KEY, host);
-        parameters.put(Constants.PORT_KEY, port);
-        parameters.put(Constants.PATH_KEY, path);
+        parameters.put(HOLA.PROTOCOL_KEY, protocol);
+        parameters.put(HOLA.USER_KEY, username);
+        parameters.put(HOLA.PASSWORD_KEY, password);
+        parameters.put(HOLA.HOST_KEY, host);
+        parameters.put(HOLA.PORT_KEY, port);
+        parameters.put(HOLA.PATH_KEY, path);
         return parameters;
     }
 

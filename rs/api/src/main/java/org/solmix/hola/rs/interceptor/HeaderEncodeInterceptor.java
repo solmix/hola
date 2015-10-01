@@ -33,9 +33,6 @@ import org.solmix.exchange.interceptor.phase.PhaseInterceptorSupport;
 public class HeaderEncodeInterceptor extends PhaseInterceptorSupport<Message>
 {
 
-    /**
-     * @param phase
-     */
     public HeaderEncodeInterceptor()
     {
         super(Phase.PRE_PROTOCOL_FRONTEND);
@@ -44,15 +41,20 @@ public class HeaderEncodeInterceptor extends PhaseInterceptorSupport<Message>
    
     @Override
     public void handleMessage(Message message) throws Fault {
-        // TODO Auto-generated method stub
+       if(isRequest(message)){
+           
+       }else{
+           
+       }
+        
+        message.getInterceptorChain().add(new HeaderEncodeEndingInterceptor());
         
     }
+    
+    
     public static class HeaderEncodeEndingInterceptor extends
     PhaseInterceptorSupport<Message> {
 
-        /**
-         * @param phase
-         */
         public HeaderEncodeEndingInterceptor()
         {
             super(Phase.PRE_PROTOCOL_ENDING);
@@ -61,8 +63,6 @@ public class HeaderEncodeInterceptor extends PhaseInterceptorSupport<Message>
       
         @Override
         public void handleMessage(Message message) throws Fault {
-            // TODO Auto-generated method stub
-            
         }
         
     }

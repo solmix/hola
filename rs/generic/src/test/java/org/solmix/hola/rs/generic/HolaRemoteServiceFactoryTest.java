@@ -27,7 +27,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.solmix.hola.common.Constants;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteServiceFactory;
@@ -56,7 +56,7 @@ public class HolaRemoteServiceFactoryTest extends Assert
         HelloService hello=rsf.getService(reg.getReference());
         assertSame(hs, hello);
         Dictionary<String, Object> properties=mockConfig();
-        properties.put(Constants.HOST_KEY, Constants.LOCALHOST_VALUE);
+        properties.put(HOLA.HOST_KEY, HOLA.LOCALHOST_VALUE);
         RemoteReference<HelloService> reference=rsf.getReference(HelloService.class, properties);
         assertNotNull(reference);
         HelloService remote = rsf.getService(reference);
@@ -67,9 +67,9 @@ public class HolaRemoteServiceFactoryTest extends Assert
     }
     private Dictionary<String, Object> mockConfig(){
         Hashtable<String, Object> table = new Hashtable<String, Object>();
-        table.put(Constants.PATH_KEY, "/hola");
-        table.put(Constants.PORT_KEY,PORT);
-        table.put(Constants.RECEIVE_TIMEOUT_KEY,1000*60);
+        table.put(HOLA.PATH_KEY, "/hola");
+        table.put(HOLA.PORT_KEY,PORT);
+        table.put(HOLA.RECEIVE_TIMEOUT_KEY,1000*60);
         return table;
     }
 

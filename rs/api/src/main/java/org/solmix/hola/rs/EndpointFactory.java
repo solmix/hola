@@ -45,7 +45,7 @@ import org.solmix.exchange.model.ProtocolInfo;
 import org.solmix.exchange.model.ServiceInfo;
 import org.solmix.exchange.support.AbstractEndpointFactory;
 import org.solmix.exchange.support.ReflectServiceFactory;
-import org.solmix.hola.common.Constants;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
 import org.solmix.hola.common.util.ServicePropertiesUtils;
 
@@ -191,7 +191,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
                 transporter = getTransportTypeForAddress(getAddress());
             }
             if (transporter == null) {
-                transporter = Constants.DEFAULT_TRANSPORTER;
+                transporter = HOLA.DEFAULT_TRANSPORTER;
             }
         }
 //        setTransporter(transporter);
@@ -221,7 +221,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         service.getServiceInfo().addEndpoint(endpointInfo);
         //根据transporerFactry的supportConfigs创建configedBean并加入
         //XXX
-        makeupConfigReference(endpointInfo,transporterFactory,protocolFactory);
+        makeupConfigReference(endpointInfo,transporterFactory);
         
        endpointInfo.setAddress(getAddress());
         serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINTINFO_CREATED, endpointInfo);
@@ -243,7 +243,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         ConfigSupportedReference config, 
         EndpointInfo endpointInfo,
         Dictionary<String, ?> properties) {
-        String[] supported = config.getSupportedConfigs(endpointInfo);
+        String[] supported = config.getSupportedConfigs(properties);
         Class<?> clazz = config.getSupportedConfigClass();
         if(!ArrayUtils.isEmptyArray(supported)&&clazz!=null){
             try {
@@ -301,7 +301,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
 
         String ptl = getProtocol();
         if (ptl == null) {
-            ptl = Constants.DEFAULT_PROTOCOL;
+            ptl = HOLA.DEFAULT_PROTOCOL;
         }
         ProtocolFactoryManager pfm = getContainer().getExtension(
             ProtocolFactoryManager.class);

@@ -16,26 +16,28 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.common.model;
+package org.solmix.hola.rs.generic.exchange;
 
-import java.util.Dictionary;
-
+import org.solmix.hola.rs.RemoteMessage;
 
 
 /**
- * 配置引用情况
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月16日
+ * @version $Id$  2015年9月29日
  */
 
-public interface ConfigSupportedReference
+public class HolaMessage extends RemoteMessage 
 {
-
-    String[] getSupportedIntents(Dictionary<String, ?> info);
-
-    String[] getSupportedConfigs(Dictionary<String, ?> info);
+    private static final long serialVersionUID = 3996983377716646392L;
+   
     
-    Class<?> getSupportedConfigClass();
+    public HolaMessage(){
+        super();
+    }
+
+ 
+    
+  
 
 }

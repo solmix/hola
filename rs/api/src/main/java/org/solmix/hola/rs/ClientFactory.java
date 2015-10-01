@@ -31,7 +31,6 @@ import org.solmix.exchange.event.ServiceFactoryEvent;
 import org.solmix.exchange.support.DefaultClient;
 import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.exchange.support.TypeDetectSupport;
-import org.solmix.hola.rs.interceptor.RemoteOutInterceptor;
 
 
 
@@ -51,7 +50,6 @@ public class ClientFactory extends EndpointFactory {
     
     public ClientFactory(ReflectServiceFactory factory) {
         super(factory);
-        getOutInterceptors().add(new RemoteOutInterceptor());
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })

@@ -25,7 +25,7 @@ import org.solmix.exchange.EndpointInfoFactory;
 import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.exchange.model.ProtocolInfo;
 import org.solmix.exchange.model.ServiceInfo;
-import org.solmix.hola.common.Constants;
+import org.solmix.hola.common.HOLA;
 import org.solmix.runtime.Container;
 
 
@@ -59,18 +59,18 @@ public class RemoteInfoFactory implements EndpointInfoFactory {
     protected void setupTransporterInfo(RemoteServiceInfo rei, DataTypeMap config) {
         /*if(server){
             TransportServerInfo tsi = new TransportServerInfo();
-            tsi.setBufferSize(config.getInt(Constants.BUFFER_KEY, Constants.DEFAULT_BUFFER_SIZE));
-            tsi.setHost(config.getString(Constants.HOST_KEY));
-            tsi.setPort(config.getInt(Constants.PORT_KEY));
-            tsi.setThreadPoolSize(config.getInt(Constants.THREADS_KEY, Constants.DEFAULT_THREADS));
-            tsi.setWaiteSuccess(config.getBoolean(Constants.WAIT_KEY, Constants.DEFAULT_WAIT));
-            tsi.setPath(config.getString(Constants.PATH_KEY));
+            tsi.setBufferSize(config.getInt(HOLA.BUFFER_KEY, HOLA.DEFAULT_BUFFER_SIZE));
+            tsi.setHost(config.getString(HOLA.HOST_KEY));
+            tsi.setPort(config.getInt(HOLA.PORT_KEY));
+            tsi.setThreadPoolSize(config.getInt(HOLA.THREADS_KEY, HOLA.DEFAULT_THREADS));
+            tsi.setWaiteSuccess(config.getBoolean(HOLA.WAIT_KEY, HOLA.DEFAULT_WAIT));
+            tsi.setPath(config.getString(HOLA.PATH_KEY));
             rei.addExtension(tsi);
         }else{
             TransportClientInfo tci = new TransportClientInfo();
-            tci.setBufferSize(config.getInt(Constants.BUFFER_KEY, Constants.DEFAULT_BUFFER_SIZE));
-            tci.setReceiveTimeout(config.getInt(Constants.TIMEOUT_KEY, Constants.DEFAULT_RECEIVE_TIMEOUT));
-            tci.setConnectionTimeout(config.getInt(Constants.CONNECT_TIMEOUT_KEY, Constants.DEFAULT_CONNECT_TIMEOUT));
+            tci.setBufferSize(config.getInt(HOLA.BUFFER_KEY, HOLA.DEFAULT_BUFFER_SIZE));
+            tci.setReceiveTimeout(config.getInt(HOLA.TIMEOUT_KEY, HOLA.DEFAULT_RECEIVE_TIMEOUT));
+            tci.setConnectionTimeout(config.getInt(HOLA.CONNECT_TIMEOUT_KEY, HOLA.DEFAULT_CONNECT_TIMEOUT));
             rei.addExtension(tci);
         }*/
         
@@ -78,7 +78,7 @@ public class RemoteInfoFactory implements EndpointInfoFactory {
 
 
     protected String getTransporter(DataTypeMap config) {
-        return config.getString(Constants.TRANSPORTER_KEY, Constants.DEFAULT_RPC_TRANSPORTER);
+        return config.getString(HOLA.TRANSPORTER_KEY, HOLA.DEFAULT_RPC_TRANSPORTER);
     }
 
 }

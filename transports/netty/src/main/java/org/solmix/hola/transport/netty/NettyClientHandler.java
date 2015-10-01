@@ -78,22 +78,20 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
         if (msg instanceof Message) {
             Message m = (Message) msg;
 
-            ByteBuf bb = m.getContent(ByteBuf.class);
-            if (bb == null) {
+            ByteBuf buffer = m.getContent(ByteBuf.class);
+            if (buffer == null) {
                 OutputStream out = m.getContent(OutputStream.class);
                 if (out instanceof ByteBufOutputStream) {
-                    bb = ((ByteBufOutputStream) out).buffer();
+                    buffer = ((ByteBufOutputStream) out).buffer();
                 }
             }
-            if (bb != null) {
-                bb.writeBytes("hello".getBytes());
-                System.out.println("--"+ByteBufUtil.hexDump(bb)+"--");
+            if (buffer != null) {
+                System.out.println("--"+ByteBufUtil.hexDump(buffer)+"--");
                 sendedQueue.put(m);
 //                super.write(ctx, msg, promise);
-                ctx.writeAndFlush(bb);
+                ctx.writeAndFlush(buffer);
             } else {
-                throw new IOException(
-                    "write a message without bytebuf out ByteBufOutputStream");
+                throw new IOException("write a message without bytebuf out ByteBufOutputStream");
             }
         } else {
             

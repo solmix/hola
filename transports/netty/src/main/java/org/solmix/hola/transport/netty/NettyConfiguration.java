@@ -19,7 +19,7 @@
 
 package org.solmix.hola.transport.netty;
 
-import org.solmix.hola.common.Constants;
+import org.solmix.hola.common.HOLA;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class NettyConfiguration
 
     private int connectTimeout;
 
-    private int receiveTimeout= Constants.DEFAULT_TIMEOUT;
+    private int receiveTimeout= HOLA.DEFAULT_TIMEOUT;
 
     private final long asyncExecuteTimeout = -1;
 
@@ -50,9 +50,9 @@ public class NettyConfiguration
 //
 //    private String path;
 
-    private int bufferSize = Constants.DEFAULT_BUFFER_SIZE;
+    private int bufferSize = HOLA.DEFAULT_BUFFER_SIZE;
 
-    private int writeTimeout = Constants.DEFAULT_TIMEOUT;
+    private int writeTimeout = HOLA.DEFAULT_TIMEOUT;
 
     private boolean waiteSuccess;
 

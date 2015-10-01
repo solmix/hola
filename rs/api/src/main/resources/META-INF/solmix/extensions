@@ -1,3 +1,5 @@
 #
 org.solmix.hola.rs.support.DefaultRemoteServiceManager:org.solmix.hola.rs.RemoteServiceManager:true
+org.solmix.hola.rs.data.DefaultSerializationManager:org.solmix.exchange.data.SerializationManager:true
+org.solmix.hola.rs.data.java.JavaSerialization:org.solmix.exchange.data.Serialization:true
 

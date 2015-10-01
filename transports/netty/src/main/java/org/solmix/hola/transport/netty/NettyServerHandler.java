@@ -20,11 +20,14 @@
 package org.solmix.hola.transport.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
+
+import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +51,6 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
     private final ChannelGroup allChannels;
 
     private final NettyServerChannelFactory channelFactory;
-
     
     private final Protocol  protocol;
     
@@ -72,27 +74,27 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)
-        throws Exception {
-        if (msg instanceof Message) {
-            Message inMsg = (Message) msg;
-            NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(MessageUtils.getString(
-                inMsg, Message.PATH_INFO));
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        Message original = protocol.createMessage();
+        ByteBuf buffer = (ByteBuf) msg;
+        ByteBufInputStream input = new ByteBufInputStream(buffer);
+        original.setContent(InputStream.class, input);
+        original.setContent(ByteBuf.class, buffer);
+        //根据协议初始化
+        final Message inMsg = protocol.createMessage(original);
+        NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(MessageUtils.getString(inMsg, Message.PATH_INFO));
 
-            ByteBuf response = ctx.alloc().buffer(
-                channelFactory.getBufferSize());
-            Message outMsg = createResponseMessage(response);
-            ThreadLocalChannel.set(ctx.channel());
-            try {
-                handler.handle(inMsg, outMsg);
-            } finally {
-                ThreadLocalChannel.unset();
-            }
-            handleResponse(ctx, response);
-
-        } else {
-            super.channelRead(ctx, msg);
+        ByteBuf response = ctx.alloc().buffer(info.getBufferSize());
+        
+        Message outMsg = createResponseMessage(response);
+        ThreadLocalChannel.set(ctx.channel());
+        try {
+            handler.handle(inMsg, outMsg);
+        } finally {
+            ThreadLocalChannel.unset();
         }
+        handleResponse(ctx, response);
+
     }
 
     private Message createResponseMessage(ByteBuf response) {
@@ -133,7 +135,7 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
         throws Exception {
         if (LOG.isTraceEnabled()) {
-            LOG.trace("Netty exception on netty handler");
+            LOG.trace("Netty exception on netty handler",cause);
         }
         ThreadLocalChannel.unset();
         Channel ch = ctx.channel();

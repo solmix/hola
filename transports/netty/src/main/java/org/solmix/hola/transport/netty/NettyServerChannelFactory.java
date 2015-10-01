@@ -19,8 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -75,12 +73,12 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
     public void shutdown() {
         allChannels.close();
     }
-    
+/*    
     public int getBufferSize(){
        return info.getBufferSize();
     }
     public ByteBuf getResponeBuffer(){
         return Unpooled.buffer(info.getBufferSize());
     }
-
+*/
 }

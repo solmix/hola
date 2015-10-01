@@ -25,6 +25,7 @@ import io.netty.util.concurrent.DefaultExecutorServiceFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,7 @@ import org.solmix.exchange.Transporter;
 import org.solmix.exchange.TransporterFactory;
 import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.exchange.support.TypeDetectSupport;
-import org.solmix.hola.common.Constants;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
 import org.solmix.hola.transport.AbstractRemoteTransporter;
 import org.solmix.hola.transport.TransporterRegistry;
@@ -173,15 +174,15 @@ public class NettyTransportFactory implements PipelineFactory,
 
   
     @Override
-    public String[] getSupportedIntents(EndpointInfo info) {
+    public String[] getSupportedIntents(Dictionary<String, ?> info) {
         return ObjectUtils.EMPTY_STRING_ARRAY;
     }
 
   
     @Override
-    public String[] getSupportedConfigs(EndpointInfo info) {
-        return new String[] { Constants.CONNECT_TIMEOUT_KEY, Constants.RECEIVE_TIMEOUT_KEY, Constants.TIMEOUT_KEY, Constants.HOST_KEY,
-            Constants.PORT_KEY, Constants.PATH_KEY, Constants.BUFFER_KEY ,Constants.CODEC_KEY};
+    public String[] getSupportedConfigs(Dictionary<String, ?> info) {
+        return new String[] { HOLA.CONNECT_TIMEOUT_KEY, HOLA.RECEIVE_TIMEOUT_KEY, HOLA.TIMEOUT_KEY, HOLA.HOST_KEY,
+            HOLA.PORT_KEY, HOLA.PATH_KEY, HOLA.BUFFER_KEY ,HOLA.CODEC_KEY};
     }
 
   
