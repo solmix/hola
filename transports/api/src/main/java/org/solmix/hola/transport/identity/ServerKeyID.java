@@ -24,7 +24,8 @@ import org.solmix.runtime.identity.IDFactory;
 
 
 /**
- * 
+ * protocol://host:port<br>
+ * 标示唯一的服务器
  * @author solmix.f@gmail.com
  * @version $Id$  2015年9月28日
  */

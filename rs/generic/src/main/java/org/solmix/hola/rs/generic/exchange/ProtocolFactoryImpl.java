@@ -33,6 +33,7 @@ import org.solmix.hola.common.model.ConfigSupportedReference;
 import org.solmix.hola.rs.ProtocolFactorySupport;
 import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
 import org.solmix.hola.rs.generic.interceptor.HolaOutInterceptor;
+import org.solmix.hola.rs.interceptor.InBindingInterceptor;
 import org.solmix.hola.rs.interceptor.SerializationOutInterceptor;
 import org.solmix.runtime.Extension;
 
@@ -59,6 +60,7 @@ public class ProtocolFactoryImpl extends ProtocolFactorySupport implements Confi
         soi.setSerializationManager(sm);
         protocol.setSerializationManager(sm);
         protocol.getOutInterceptors().add(soi);
+        protocol.getInInterceptors().add(new InBindingInterceptor());
         return protocol;
     }
     
@@ -71,6 +73,7 @@ public class ProtocolFactoryImpl extends ProtocolFactorySupport implements Confi
         if (si != null && si.getSerialization() == null) {
             si.setSerialization(HOLA.DEFAULT_SERIALIZATION);
         }
+        
         return ptlInfo;
     }
 

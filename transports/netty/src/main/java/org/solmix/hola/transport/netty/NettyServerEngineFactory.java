@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.transport.RemoteAddress;
 import org.solmix.hola.transport.identity.ServerKeyID;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerEvent;
@@ -79,22 +80,17 @@ public class NettyServerEngineFactory implements ContainerListener {
         }
 
     }
-    public synchronized NettyServerEngine retrieveEngine(int port) {
-        return retrieveEngine(null,null, port);
-    }
-    public synchronized NettyServerEngine retrieveEngine(String protocol,String host, int port) {
-        ServerKeyID serverKey = new ServerKeyID(protocol,host, port);
+  
+    public synchronized NettyServerEngine retrieveEngine(RemoteAddress remoteAddress) {
+        ServerKeyID serverKey = remoteAddress.getServerKey();
         return engines.get(serverKey);
     }
 
-    public synchronized NettyServerEngine createEngine( int port) {
-        return createEngine(null,null, port);
-    }
-    public synchronized NettyServerEngine createEngine(String protocol,String host, int port) {
-        ServerKeyID serverKey = new ServerKeyID(protocol,host, port);
+    public synchronized NettyServerEngine createEngine(RemoteAddress remoteAddress) {
+        ServerKeyID serverKey = remoteAddress.getServerKey();
         NettyServerEngine engine=engines.get(serverKey);
         if(engine==null){
-            engine = new NettyServerEngine(host,port);
+            engine = new NettyServerEngine(remoteAddress.getHost(),remoteAddress.getPort());
             engine.setContainer(container);
             engine.finalizeConfig();
             NettyServerEngine e = engines.putIfAbsent(serverKey, engine);

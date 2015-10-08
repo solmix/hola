@@ -44,12 +44,6 @@ public class NettyConfiguration
 
     private int threadPoolSize = 5;
 
-//    private String host;
-//
-//    private int port;
-//
-//    private String path;
-
     private int bufferSize = HOLA.DEFAULT_BUFFER_SIZE;
 
     private int writeTimeout = HOLA.DEFAULT_TIMEOUT;
@@ -132,37 +126,6 @@ public class NettyConfiguration
     public void setThreadPoolSize(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
     }
-//
-//    
-//    public String getHost() {
-//        return host;
-//    }
-//
-//    
-//    public void setHost(String host) {
-//        this.host = host;
-//    }
-//
-//    
-//    public int getPort() {
-//        return port;
-//    }
-//
-//    
-//    public void setPort(int port) {
-//        this.port = port;
-//    }
-//
-//    
-//    public String getPath() {
-//        return path;
-//    }
-//
-//    
-//    public void setPath(String path) {
-//        this.path = path;
-//    }
-
     
     public int getWriteTimeout() {
         return writeTimeout;

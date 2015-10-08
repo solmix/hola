@@ -18,53 +18,40 @@
  */
 package org.solmix.hola.rs.interceptor;
 
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.Exchange;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.phase.Phase;
 import org.solmix.exchange.interceptor.phase.PhaseInterceptorSupport;
+import org.solmix.exchange.model.NamedID;
+import org.solmix.exchange.model.OperationInfo;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月25日
+ * @version $Id$  2015年10月5日
  */
 
-public class HeaderEncodeInterceptor extends PhaseInterceptorSupport<Message>
+public class InBindingInterceptor extends PhaseInterceptorSupport<Message>
 {
 
-    public HeaderEncodeInterceptor()
+    /**
+     * @param phase
+     */
+    public InBindingInterceptor()
     {
-        super(Phase.PRE_PROTOCOL_FRONTEND);
+        super(Phase.PRE_PROTOCOL);
     }
 
-   
     @Override
     public void handleMessage(Message message) throws Fault {
-       if(isRequest(message)){
-           
-       }else{
-           
-       }
-        
-        message.getInterceptorChain().add(new HeaderEncodeEndingInterceptor());
-        
-    }
-    
-    
-    public static class HeaderEncodeEndingInterceptor extends
-    PhaseInterceptorSupport<Message> {
-
-        public HeaderEncodeEndingInterceptor()
-        {
-            super(Phase.PRE_PROTOCOL_ENDING);
-        }
-
-      
-        @Override
-        public void handleMessage(Message message) throws Fault {
-        }
-        
+        Exchange exchange = message.getExchange();
+        Endpoint ed = exchange.getEndpoint();
+        NamedID opName = (NamedID) message.get(Message.OPERATION);
+        OperationInfo oi = ed.getEndpointInfo().getService().getInterface().getOperation(opName);
+        exchange.put(OperationInfo.class, oi);
     }
 
 }

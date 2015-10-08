@@ -160,9 +160,12 @@ public class HOLA
 
     public static final int MIN_BUFFER_SIZE = 1 * 1024;
 
- 
+    /**
+     * 已接收数据报文不够，还需接收更多的数据，true/false
+     */
+    public static final String NEED_MORE_DATA = "need.more.data";
 
-    public static final String KEY_DATALENGTH = "data.length";
+    public static final String DATALENGTH_KEY = "data.length";
 
     public static final int DEFAULT_PALYLOAD = 8 * 1024 * 1024;
 

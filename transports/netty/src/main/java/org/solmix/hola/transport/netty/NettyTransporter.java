@@ -20,16 +20,16 @@
 package org.solmix.hola.transport.netty;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.Processor;
 import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.hola.transport.AbstractRemoteTransporter;
-import org.solmix.hola.transport.TransporterCreateException;
+import org.solmix.hola.transport.RemoteAddress;
 import org.solmix.hola.transport.TransporterRegistry;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
@@ -53,7 +53,7 @@ public class NettyTransporter extends AbstractRemoteTransporter
 
     private final NettyConfiguration serverInfo;
 
-    protected URI defaultEndpointURI;
+    protected RemoteAddress remoteAddress;
 
     private String serverPath;
 
@@ -63,27 +63,10 @@ public class NettyTransporter extends AbstractRemoteTransporter
         super(getAddressValue(endpointInfo, true).getAddress(), endpointInfo, container, registry);
         this.serverEngineFactory = factory;
         serverInfo = endpointInfo.getExtension(NettyConfiguration.class);
-        try {
-            defaultEndpointURI = getURI();
-        } catch (URISyntaxException e) {
-            throw new TransporterCreateException(e);
-        }
-        serverPath = defaultEndpointURI.getPath();
-    }
-
-    protected URI getURI() throws URISyntaxException {
-        return getURI(true);
-    }
-
-    protected synchronized URI getURI(boolean createOnDemand) throws URISyntaxException {
-        if (defaultEndpointURI == null && createOnDemand) {
-
-            if (endpointInfo.getAddress() == null) {
-                throw new URISyntaxException("<null>", "Invalid address. Endpoint address cannot be null.", 0);
-            }
-            defaultEndpointURI = new URI(endpointInfo.getAddress());
-        }
-        return defaultEndpointURI;
+        remoteAddress = endpointInfo.getExtension(RemoteAddress.class);
+        Assert.assertNotNull(remoteAddress);
+       
+        serverPath = remoteAddress.getPath();
     }
 
     @Override
@@ -99,9 +82,9 @@ public class NettyTransporter extends AbstractRemoteTransporter
     }
 
     protected void retrieveEngine() throws IOException, URISyntaxException {
-        engine = serverEngineFactory.retrieveEngine(defaultEndpointURI.getScheme(),defaultEndpointURI.getHost(), defaultEndpointURI.getPort());
+        engine = serverEngineFactory.retrieveEngine(remoteAddress);
         if (engine == null) {
-            engine = serverEngineFactory.createEngine(defaultEndpointURI.getScheme(),defaultEndpointURI.getHost(), defaultEndpointURI.getPort());
+            engine = serverEngineFactory.createEngine(remoteAddress);
         }
         engine.setNettyConfiguration(serverInfo);
 

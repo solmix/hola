@@ -24,8 +24,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.Map;
@@ -40,7 +38,7 @@ import org.solmix.exchange.Protocol;
 
 public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
 
-    private final EventExecutorGroup applicationExecutor;
+//    private final EventExecutorGroup applicationExecutor;
 
     private final ChannelGroup allChannels = new DefaultChannelGroup( GlobalEventExecutor.INSTANCE);;
 
@@ -49,7 +47,7 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
     private final Protocol  protocol;
     public NettyServerChannelFactory(NettyConfiguration info,
         Map<String,NettyMessageHandler> handlerMap,Protocol protocol) {
-        applicationExecutor = new DefaultEventExecutorGroup(info.getThreadPoolSize());
+//        applicationExecutor = new DefaultEventExecutorGroup(info.getThreadPoolSize());
         this.handlerMap = handlerMap;
         this.info=info;
         this.protocol=protocol;
@@ -58,7 +56,8 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline cp = ch.pipeline();
-        cp.addLast(applicationExecutor, new NettyServerHandler(this,info,protocol));
+       /* cp.addLast(applicationExecutor, new NettyServerHandler(this,info,protocol));*/
+        cp.addLast( new NettyServerHandler(this,info,protocol));
 
     }
 

@@ -22,6 +22,7 @@ import org.solmix.exchange.Message;
 import org.solmix.exchange.Protocol;
 import org.solmix.exchange.data.SerializationManager;
 import org.solmix.exchange.model.ProtocolInfo;
+import org.solmix.exchange.model.SerializationInfo;
 import org.solmix.exchange.support.AbstractProtocol;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.runtime.Container;
@@ -45,6 +46,7 @@ public class HolaProtocol extends AbstractProtocol implements Protocol
         super(container);
         this.protocolInfo=protocolInfo;
     }
+    
     @Override
     public Message createMessage() {
         return new HolaMessage();
@@ -53,10 +55,11 @@ public class HolaProtocol extends AbstractProtocol implements Protocol
     @Override
     public Message createMessage(Message m) {
         //允许decode
-        if(m instanceof HolaMessage&&!((HolaMessage)m).isDecoded()){
+        if (m instanceof HolaMessage && !((HolaMessage) m).isDecoded()) {
             try {
                 HolaMessage hm = (HolaMessage)m;
                 hm.setSerializationManager(this.getSerializationManager());
+                hm.setSerializationInfo( protocolInfo.getExtension(SerializationInfo.class));
                 hm.decode();
             } catch (Exception e) {
                throw new RemoteException("Error decode message",e);

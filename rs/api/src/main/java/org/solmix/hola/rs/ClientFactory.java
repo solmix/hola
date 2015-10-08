@@ -28,7 +28,6 @@ import org.solmix.exchange.EndpointException;
 import org.solmix.exchange.PipelineFactory;
 import org.solmix.exchange.PipelineFactoryManager;
 import org.solmix.exchange.event.ServiceFactoryEvent;
-import org.solmix.exchange.support.DefaultClient;
 import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.exchange.support.TypeDetectSupport;
 
@@ -81,7 +80,7 @@ public class ClientFactory extends EndpointFactory {
     }
     
     protected Client createClient(Endpoint endpoint) {
-        return new DefaultClient(getContainer(),endpoint,getPipelineSelector());
+        return new RemoteClient(getContainer(),endpoint,getPipelineSelector());
     }
 
     @Override

@@ -48,6 +48,7 @@ import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
 import org.solmix.hola.common.util.ServicePropertiesUtils;
+import org.solmix.hola.transport.RemoteAddress;
 
 /**
  * 
@@ -132,8 +133,6 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
                ProtocolInfo ptl = info.getProtocol();
                info = createEndpointInfo(ptl);
            }
-        }else if(getAddress()!=null){
-            info.setAddress(getAddress());
         }
         
         Endpoint ep = service.getEndpoints().get(info.getName());
@@ -186,48 +185,49 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         }
 
         if (transporter == null) {
-            if (transporter == null && getAddress() != null
-                && getAddress().contains("://")) {
+            if (transporter == null && getAddress() != null && getAddress().contains("://")) {
                 transporter = getTransportTypeForAddress(getAddress());
             }
             if (transporter == null) {
                 transporter = HOLA.DEFAULT_TRANSPORTER;
             }
         }
-//        setTransporter(transporter);
-        if(transporterFactory == null){
-            transporterFactory= getTransporterFactory(transporter);
+        if (transporterFactory == null) {
+            transporterFactory = getTransporterFactory(transporter);
         }
 
         EndpointInfoFactory eif = getEndpointInfoFactory();
         EndpointInfo endpointInfo;
         if (eif != null) {
-            endpointInfo = eif.createEndpointInfo(getContainer(),
-                service.getServiceInfo(), ptl,  getProperties());
+            endpointInfo = eif.createEndpointInfo(getContainer(), service.getServiceInfo(), ptl, getProperties());
             endpointInfo.setTransportor(transporter);
         } else {
-            endpointInfo = new EndpointInfo(service.getServiceInfo(),
-                transporter);
+            endpointInfo = new EndpointInfo(service.getServiceInfo(), transporter);
         }
         int count = 1;
         while (service.getEndpointInfo(endpointName) != null) {
-            endpointName = new NamedID(endpointName.getServiceNamespace(),
-                endpointName.getName() + count);
+            endpointName = new NamedID(endpointName.getServiceNamespace(), endpointName.getName() + count);
             count++;
         }
         endpointInfo.setName(endpointName);
         endpointInfo.setProtocol(ptl);
 
         service.getServiceInfo().addEndpoint(endpointInfo);
-        //根据transporerFactry的supportConfigs创建configedBean并加入
-        //XXX
-        makeupConfigReference(endpointInfo,transporterFactory);
-        
-       endpointInfo.setAddress(getAddress());
+        // 根据transporerFactry的supportConfigs创建configedBean并加入
+        // XXX
+        makeupConfigReference(endpointInfo, transporterFactory);
+
+        RemoteAddress ra  = new RemoteAddress(getProperties());
+        if(getAddress()==null){
+            setAddress(ra.getAddress());
+        }
+        endpointInfo.setAddress(getAddress());
+        endpointInfo.addExtension(ra);
         serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINTINFO_CREATED, endpointInfo);
         return endpointInfo;
     }
-    
+  
+
     protected void makeupConfigReference(EndpointInfo endpointInfo,Object... factorys){
         if(factorys!=null&&factorys.length>0){
             for(Object factory:factorys){

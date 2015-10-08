@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.exchange.Message;
+import org.solmix.hola.common.HOLA;
+import org.solmix.hola.transport.RemoteAddress;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.cm.Configurer;
 
@@ -49,6 +51,8 @@ public class NettyServerEngineTest extends Assert
     private IMocksControl control;
 
     private NettyServerEngineFactory factory;
+    
+    private RemoteAddress remoteAddress;
 
     @Before
     public void setUp() throws Exception {
@@ -63,21 +67,21 @@ public class NettyServerEngineTest extends Assert
 
         factory = new NettyServerEngineFactory();
         factory.setContainer(container);
-
+        remoteAddress=new RemoteAddress("hola",HOLA.LOCALHOST_VALUE,PORT1);
     }
     
 
     @Test
     public void testEngineRetrieval() throws Exception {
-        NettyServerEngine engine =  factory.createEngine(PORT1);
-        assertTrue(engine == factory.retrieveEngine( PORT1));
+        NettyServerEngine engine =  factory.createEngine(remoteAddress);
+        assertTrue(engine == factory.retrieveEngine( remoteAddress));
         NettyServerEngineFactory.destroy(PORT1);
     }
     
     @Test
     public void testAddHandler() throws Exception {
         String urlStr = "http://localhost:" + PORT1 + "/test";
-        NettyServerEngine nse = factory.createEngine(PORT1);
+        NettyServerEngine nse = factory.createEngine(remoteAddress);
         nse.setNettyConfiguration(new NettyConfiguration());
         nse.addHandler(urlStr, new TestHandler("hello"));
     }

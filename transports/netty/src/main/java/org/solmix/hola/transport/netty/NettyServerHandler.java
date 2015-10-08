@@ -21,12 +21,14 @@ package org.solmix.hola.transport.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.support.DefaultMessage;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.AbstractRemoteTransporter;
 
 /**
@@ -55,6 +58,8 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
     private final Protocol  protocol;
     
     private NettyConfiguration info;
+    
+    private ByteBuf buffer=Unpooled.EMPTY_BUFFER;
 
     public NettyServerHandler(NettyServerChannelFactory factory, NettyConfiguration info,Protocol protocol) {
         allChannels = factory.getAllChannels();
@@ -75,13 +80,62 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ByteBuf input = (ByteBuf) msg;
+        if(input.readableBytes()<=0){
+            return;
+        }
+        ByteBuf message ;
+        if(buffer.isReadable()){
+            buffer.writeBytes(input);
+            message=buffer;
+        }else{
+            message=input;
+        }
+        
         Message original = protocol.createMessage();
-        ByteBuf buffer = (ByteBuf) msg;
-        ByteBufInputStream input = new ByteBufInputStream(buffer);
-        original.setContent(InputStream.class, input);
-        original.setContent(ByteBuf.class, buffer);
+        ByteBufInputStream inStream = new ByteBufInputStream(message);
+        original.setContent(InputStream.class, inStream);
+        original.setContent(ByteBuf.class, message);
+        int readerIndex;
         //根据协议初始化
-        final Message inMsg = protocol.createMessage(original);
+        Message inMsg =null;
+        try{
+            do{
+                readerIndex=buffer.readerIndex();
+                try{
+                    //根据协议初始化
+                     inMsg = protocol.createMessage(original);
+                }catch(Exception e){
+                    buffer = Unpooled.EMPTY_BUFFER;
+                    throw e;
+                }
+                //数据报文不够
+                if(MessageUtils.getBoolean(inMsg, HOLA.NEED_MORE_DATA, false)){
+                    buffer.readerIndex(readerIndex);
+                    break;
+                }else{
+                    if (readerIndex == message.readerIndex()) {
+                        buffer = Unpooled.EMPTY_BUFFER;
+                        throw new IOException("Decode without read data.");
+                    }
+                    if(inMsg!=null){
+                        handleMessage(ctx,inMsg);
+                    }
+                }
+                
+            }while(message.isReadable());
+        }finally{
+            if(message.isReadable()){
+                buffer.discardReadBytes();
+                buffer=message;
+            }else{
+                buffer = Unpooled.EMPTY_BUFFER;
+            }
+        }
+    }
+    
+    private void handleMessage(ChannelHandlerContext ctx,Message inMsg) throws IOException{
+        
         NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(MessageUtils.getString(inMsg, Message.PATH_INFO));
 
         ByteBuf response = ctx.alloc().buffer(info.getBufferSize());
@@ -94,7 +148,6 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
             ThreadLocalChannel.unset();
         }
         handleResponse(ctx, response);
-
     }
 
     private Message createResponseMessage(ByteBuf response) {

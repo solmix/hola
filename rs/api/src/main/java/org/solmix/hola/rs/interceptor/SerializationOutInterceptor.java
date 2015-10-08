@@ -38,6 +38,7 @@ import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.phase.Phase;
 import org.solmix.exchange.interceptor.phase.PhaseInterceptorSupport;
 import org.solmix.exchange.model.SerializationInfo;
+import org.solmix.hola.common.HOLA;
 
 /**
  * 
@@ -91,9 +92,9 @@ public class SerializationOutInterceptor extends PhaseInterceptorSupport<Message
      */
     protected void encodeRequest(ByteBuf bf,Message message, Serialization serializtion) {
        
-       int writeIndexMark = bf.writerIndex();
-       bf.writerIndex(writeIndexMark+HEADER_LENGTH);
-       message.put(WRITE_INDEX_MARK, writeIndexMark);
+        int writeIndexMark = bf.writerIndex();
+        bf.writerIndex(writeIndexMark + HEADER_LENGTH);
+        message.put(WRITE_INDEX_MARK, writeIndexMark);
        
     }
 
@@ -138,6 +139,9 @@ public class SerializationOutInterceptor extends PhaseInterceptorSupport<Message
                 Bytes.long2bytes(message.getId(), header, 4);
                 int length = buffer.writerIndex() - HEADER_LENGTH - writeIndexMark;
                 Integer limit = info.getPalyload();
+                if (limit == null) {
+                    limit = HOLA.DEFAULT_PALYLOAD;
+                }
                 if (limit != null && length > limit) {
                     throw new Fault("Data length too large: " + length + ", limit: " + limit);
                 }
