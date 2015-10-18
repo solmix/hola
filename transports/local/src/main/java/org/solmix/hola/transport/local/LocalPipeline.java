@@ -107,7 +107,7 @@ public class LocalPipeline extends AbstractPipeline {
     @Override
     public void close(Message message) throws IOException {
         if(MessageUtils.isTrue(message.get(DIRECT_DISPATCH))
-            && !Boolean.TRUE.equals(message.get(Message.INBOUND_MESSAGE))){
+            && !message.isInbound()){
             if(transporter.getProcessor()==null){
                 throw new IllegalArgumentException("transporter processor is null");
             }

@@ -37,9 +37,10 @@ public interface Codec {
 
     void encode(ByteBuf buffer, Message outMsg) throws IOException;
 
-    Object decode(ByteBuf buffer) throws IOException;
+    Object decode(ByteBuf buffer,Message inMsg) throws IOException;
 
     enum DecodeResult {
         NEED_MORE_INPUT , SKIP_SOME_INPUT
     }
+
 }

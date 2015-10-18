@@ -34,9 +34,11 @@ public class NettyConfiguration
 
     private int chunkThreshold;
 
-    private int connectTimeout;
+    private int connectTimeout= HOLA.DEFAULT_CONNECT_TIMEOUT;
+    
+    private int timeout= HOLA.DEFAULT_TIMEOUT;
 
-    private int receiveTimeout= HOLA.DEFAULT_TIMEOUT;
+    private int receiveTimeout= HOLA.DEFAULT_RECEIVE_TIMEOUT;
 
     private final long asyncExecuteTimeout = -1;
 
@@ -46,7 +48,7 @@ public class NettyConfiguration
 
     private int bufferSize = HOLA.DEFAULT_BUFFER_SIZE;
 
-    private int writeTimeout = HOLA.DEFAULT_TIMEOUT;
+    private int writeTimeout = HOLA.DEFAULT_WRITE_TIMEOUT;
 
     private boolean waiteSuccess;
 
@@ -83,6 +85,16 @@ public class NettyConfiguration
     /**   */
     public boolean isChunking() {
         return chunking;
+    }
+
+    
+    public int getTimeout() {
+        return timeout;
+    }
+
+    
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     /**   */

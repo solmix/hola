@@ -18,10 +18,10 @@
  */
 package org.solmix.hola.rs.data;
 
-import org.solmix.exchange.data.ObjectInput;
 import org.solmix.exchange.data.ObjectReader;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.model.ArgumentInfo;
+import org.solmix.hola.serial.ObjectInput;
 
 
 /**

@@ -18,6 +18,8 @@
  */
 package org.solmix.hola.rs;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.solmix.commons.util.StringUtils;
 import org.solmix.exchange.Endpoint;
 import org.solmix.exchange.Message;
@@ -38,7 +40,7 @@ import org.solmix.runtime.Container;
 public class RemoteClient extends DefaultClient
 {
     private static final long serialVersionUID = 7971996445962377766L;
-
+    private static final AtomicLong INVOKE_ID = new AtomicLong(10);
     public RemoteClient(Container container, Endpoint endpoint, PipelineSelector pipelineSelector)
     {
         super(container, endpoint, pipelineSelector);
@@ -52,6 +54,9 @@ public class RemoteClient extends DefaultClient
         if(!StringUtils.isEmpty(version)){
             msg.put(HOLA.VERSION_KEY, version);
         }
+        msg. setId(newId());
     }
-
+    private static long newId() {
+        return INVOKE_ID.getAndIncrement();
+    }
 }

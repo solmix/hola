@@ -99,8 +99,7 @@ public class RemoteProxyFactory extends InterceptorProviderSupport
             
             RemoteProxy proxyHandler = createRemoteProxy(client);
             Class<?> classes[] = getImplementingClasses();
-            Object object = ProxyHelper.getProxy(clientFactory.getServiceClass().getClassLoader(),
-                classes, proxyHandler);
+            Object object = ProxyHelper.getProxy(clientFactory.getServiceClass().getClassLoader(), classes, proxyHandler);
             clientFactory.getServiceFactory().pulishEvent(ServiceFactoryEvent.PROXY_CREATED, classes,proxyHandler,object);
             return object;
         } finally {

@@ -18,6 +18,7 @@
  */
 package org.solmix.hola.rs;
 
+import static org.solmix.hola.common.util.ServicePropertiesUtils.getPositiveInt;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -30,6 +31,7 @@ import org.solmix.exchange.PipelineFactoryManager;
 import org.solmix.exchange.event.ServiceFactoryEvent;
 import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.exchange.support.TypeDetectSupport;
+import org.solmix.hola.common.HOLA;
 
 
 
@@ -65,12 +67,13 @@ public class ClientFactory extends EndpointFactory {
                 dic.put(key, value);
             }
         }
-        Client client =null;
+        RemoteClient client =null;
         Endpoint endpoint = null;
         try{
             endpoint= createEndpoint();
             getServiceFactory().pulishEvent(ServiceFactoryEvent.PRE_CLIENT_CREATE,endpoint);
             client = createClient(endpoint);
+            client.setSynchronousTimeout(getPositiveInt(properties, HOLA.TIMEOUT_KEY, HOLA.DEFAULT_TIMEOUT));
             initializeAnnotationInterceptors(endpoint, getServiceClass());
         }catch(EndpointException e){
             throw new RemoteException(e);
@@ -79,7 +82,7 @@ public class ClientFactory extends EndpointFactory {
         return client;
     }
     
-    protected Client createClient(Endpoint endpoint) {
+    protected RemoteClient createClient(Endpoint endpoint) {
         return new RemoteClient(getContainer(),endpoint,getPipelineSelector());
     }
 

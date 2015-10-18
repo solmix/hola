@@ -16,14 +16,14 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.data.java;
+package org.solmix.hola.serial.java;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 
-import org.solmix.exchange.data.ObjectOutput;
+import org.solmix.hola.serial.ObjectOutput;
 
 
 
@@ -81,7 +81,7 @@ public class JavaObjectOutput implements ObjectOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.exchange.data.DataOutput#writeUTF(java.lang.String)
+     * @see org.solmix.hola.serial.DataOutput#writeUTF(java.lang.String)
      */
     @Override
     public void writeUTF(String v) throws IOException {

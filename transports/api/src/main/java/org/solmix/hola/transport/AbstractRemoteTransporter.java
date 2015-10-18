@@ -19,9 +19,6 @@
 
 package org.solmix.hola.transport;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,8 +36,8 @@ import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.exchange.support.AbstractPipeline;
 import org.solmix.exchange.support.AbstractTransporter;
 import org.solmix.exchange.support.DefaultExchange;
+import org.solmix.hola.common.io.MessageWrappedOutputStream;
 import org.solmix.runtime.Container;
-import org.solmix.runtime.io.AbstractWrappedOutputStream;
 
 /**
  * 
@@ -48,16 +45,14 @@ import org.solmix.runtime.io.AbstractWrappedOutputStream;
  * @version $Id$ 2015年1月18日
  */
 
-public abstract class AbstractRemoteTransporter extends AbstractTransporter {
+public abstract class AbstractRemoteTransporter extends AbstractTransporter
+{
 
     private TransporterRegistry registry;
 
-    public static final String REQUEST_BYTEBUF = "REQUEST.BYTEBUF";
 
-    public static final String RESPONSE_BYTEBUF = "RESPONSE.BYTEBUF";
-
-    public AbstractRemoteTransporter(String address, EndpointInfo endpointInfo,
-        Container container, TransporterRegistry registry) {
+    public AbstractRemoteTransporter(String address, EndpointInfo endpointInfo, Container container, TransporterRegistry registry)
+    {
         super(address, endpointInfo, container);
         this.registry = registry;
     }
@@ -103,10 +98,11 @@ public abstract class AbstractRemoteTransporter extends AbstractTransporter {
         }
         return ei;
     }
+
     public void finalizeConfig() {
-        
+
     }
- 
+
     @Override
     public void shutdown() {
         synchronized (this) {
@@ -122,6 +118,7 @@ public abstract class AbstractRemoteTransporter extends AbstractTransporter {
         inMsg.setExchange(ex);
         ex.setIn(inMsg);
         ex.setOut(outMsg);
+        outMsg.setId(inMsg.getId());
         inMsg.put(Transporter.class, this);
         try {
             processor.process(inMsg);
@@ -136,36 +133,30 @@ public abstract class AbstractRemoteTransporter extends AbstractTransporter {
             throw re;
         } finally {
             if (getLogger().isTraceEnabled()) {
-                getLogger().trace(
-                    "Finished servicing http request on thread: "
-                        + Thread.currentThread());
+                getLogger().trace("Finished servicing http request on thread: " + Thread.currentThread());
             }
         }
     }
 
     @Override
     public Pipeline getBackPipeline(Message msg) throws IOException {
-        ByteBuf res = (ByteBuf) msg.get(RESPONSE_BYTEBUF);
-        return new ReturnPipeline(res);
+        return new ReturnPipeline();
     }
 
-    public class ReturnPipeline extends AbstractPipeline {
+    public class ReturnPipeline extends AbstractPipeline
+    {
 
-        private final ByteBuf responseBuffer;
 
-        public ReturnPipeline(ByteBuf buf) {
+        public ReturnPipeline()
+        {
             super("anonymous");
-            responseBuffer = buf;
         }
 
         @Override
         public void prepare(Message message) throws IOException {
-            message.put(RESPONSE_BYTEBUF, responseBuffer);
             OutputStream os = message.getContent(OutputStream.class);
             if (os == null) {
-                message.setContent(ByteBuf.class, responseBuffer);
-                message.setContent(OutputStream.class, new WrappedOutputStream(
-                    message, responseBuffer));
+                message.setContent(OutputStream.class, new WrappedOutputStream(message));
             }
 
         }
@@ -198,48 +189,18 @@ public abstract class AbstractRemoteTransporter extends AbstractTransporter {
 
     }
 
-    private class WrappedOutputStream extends AbstractWrappedOutputStream {
+    private class WrappedOutputStream extends MessageWrappedOutputStream
+    {
 
-        private final Message outMessage;
-
-        private final ByteBuf responseBuffer;
-
-        public WrappedOutputStream(Message message, ByteBuf responseBuffer) {
-            this.outMessage = message;
-            this.responseBuffer = responseBuffer;
-        }
-
-        @Override
-        protected void onFirstWrite() throws IOException {
-            OutputStream os = getOutputStream();
-            if (os != null) {
-                wrappedStream = os;
-            }
+        public WrappedOutputStream(Message message)
+        {
+            super(message);
         }
         @Override
-        public void close() throws IOException {
-            if (!written && wrappedStream == null) {
-                OutputStream os = getOutputStream();
-                if (os != null) {
-                    wrappedStream = os;
-                }
-            }
-            if (wrappedStream != null) {
-                wrappedStream.close();
-            }
+        public void send() throws IOException {
+            
         }
 
-        private OutputStream getOutputStream() {
-            boolean oneWay = isOneWay(outMessage);
-            if (oneWay) {
-                outMessage.remove(RESPONSE_BYTEBUF);
-            }
-            return new ByteBufOutputStream(responseBuffer);
-        }
-
-        private boolean isOneWay(Message message) {
-            Exchange ex = message.getExchange();
-            return ex == null ? false : ex.isOneWay();
-        }
+        
     }
 }

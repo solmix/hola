@@ -101,6 +101,19 @@ public class HOLA
      * 不设置Protocol时，使用该值
      */
     public static final String DEFAULT_PROTOCOL = "hola";
+    
+    /**
+     * 是否为心跳message
+     */
+    public static final String  HEARTBEAT_MESSAGE      = HOLA.class.getName()+".HEARTBEAT_MESSAGE";
+    
+    /**
+     * 等待请求超时时间
+     */
+    public static final int DEFAULT_TIMEOUT = 60*1000;
+    
+    /**service property 中默认value的key前缀*/
+    public static final String DEFAULT_KEY_PREFIX = "default.";
     /***==========================================================
      * 
      =============================================================*/
@@ -125,9 +138,9 @@ public class HOLA
 
     public static final int DEFAULT_HEARTBEAT = 60 * 1000;
 
-    public static final String DEFAULT_KEY_PREFIX = "";
+    
 
-    public static final int DEFAULT_TIMEOUT = 1000;
+   
 
  
 

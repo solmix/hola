@@ -28,7 +28,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.Map;
 
-import org.solmix.exchange.Protocol;
+import org.solmix.hola.transport.RemoteProtocol;
 
 /**
  * 
@@ -36,28 +36,31 @@ import org.solmix.exchange.Protocol;
  * @version $Id$ 2015年1月18日
  */
 
-public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
+public class NettyServerChannelFactory extends ChannelInitializer<Channel>
+{
 
-//    private final EventExecutorGroup applicationExecutor;
+    private final ChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
-    private final ChannelGroup allChannels = new DefaultChannelGroup( GlobalEventExecutor.INSTANCE);;
+    private final Map<String, NettyMessageHandler> handlerMap;
 
-    private final Map<String,NettyMessageHandler> handlerMap;
-    private final NettyConfiguration info;
-    private final Protocol  protocol;
-    public NettyServerChannelFactory(NettyConfiguration info,
-        Map<String,NettyMessageHandler> handlerMap,Protocol protocol) {
-//        applicationExecutor = new DefaultEventExecutorGroup(info.getThreadPoolSize());
+    private final NettyConfiguration config;
+
+    private final RemoteProtocol protocol;
+    private final NettyCodecAdapter codecAdapter;
+    public NettyServerChannelFactory(NettyConfiguration info, Map<String, NettyMessageHandler> handlerMap, RemoteProtocol protocol)
+    {
         this.handlerMap = handlerMap;
-        this.info=info;
-        this.protocol=protocol;
+        this.config = info;
+        this.protocol = protocol;
+        codecAdapter = new NettyCodecAdapter( config,protocol);
     }
-   
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
-        ChannelPipeline cp = ch.pipeline();
-       /* cp.addLast(applicationExecutor, new NettyServerHandler(this,info,protocol));*/
-        cp.addLast( new NettyServerHandler(this,info,protocol));
+        ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast("decoder", codecAdapter.getDecoder());
+        pipeline.addLast("encoder", codecAdapter.getEncoder());
+        pipeline.addLast(new NettyServerHandler(this, config, protocol));
 
     }
 
@@ -72,12 +75,5 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel> {
     public void shutdown() {
         allChannels.close();
     }
-/*    
-    public int getBufferSize(){
-       return info.getBufferSize();
-    }
-    public ByteBuf getResponeBuffer(){
-        return Unpooled.buffer(info.getBufferSize());
-    }
-*/
+
 }

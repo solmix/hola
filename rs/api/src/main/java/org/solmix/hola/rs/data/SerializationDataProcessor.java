@@ -21,11 +21,11 @@ package org.solmix.hola.rs.data;
 
 import org.solmix.exchange.Service;
 import org.solmix.exchange.data.DataProcessor;
-import org.solmix.exchange.data.ObjectInput;
-import org.solmix.exchange.data.ObjectOutput;
 import org.solmix.exchange.data.ObjectReader;
 import org.solmix.exchange.data.ObjectWriter;
 import org.solmix.exchange.interceptor.support.InterceptorProviderSupport;
+import org.solmix.hola.serial.ObjectInput;
+import org.solmix.hola.serial.ObjectOutput;
 
 /**
  * 

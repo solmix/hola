@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2015 The Solmix Project
+/*
+ * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,18 +16,18 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.serial.hola;
 
-package org.solmix.hola.transport.netty;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2015年1月16日
+ * @version 0.0.1  2014年8月24日
  */
 
-public interface ResponseCallBack {
+public interface ClassDescriptorMapper
+{
+    String getDescriptor(int index);
 
-    void responseReceived(ByteBuf buffer);
+    int getDescriptorIndex(String desc);
 }

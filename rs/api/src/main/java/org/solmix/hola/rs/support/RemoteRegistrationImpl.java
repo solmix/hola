@@ -25,13 +25,11 @@ import java.util.List;
 
 import org.solmix.exchange.Server;
 import org.solmix.exchange.model.NamedID;
-import org.solmix.hola.common.model.RemoteServiceInfo;
 import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteServiceFactory;
-import org.solmix.hola.rs.event.RemoteRegisteredEvent;
 import org.solmix.hola.rs.event.RemoteUnregisteredEvent;
 
 /**
@@ -82,7 +80,7 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
         }
     }
 
-    public void register(Dictionary<String, ?> props,RemoteServiceInfo info) {
+    /*public void register(Dictionary<String, ?> props,RemoteServiceInfo info) {
         final RemoteReferenceHolder<S> ref;
         synchronized (registry) {
             synchronized (registrationLock) {
@@ -93,11 +91,11 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
             registry.addServiceRegistration(serviceKey, this);
         }
         registry.publishServiceEvent(new RemoteRegisteredEvent(ref));
-    }
+    }*/
 
-    protected NamedID createServiceKey(RemoteServiceInfo info) {
+    /*protected NamedID createServiceKey(RemoteServiceInfo info) {
         return null;
-    }
+    }*/
 
     protected ServiceProperties createProperties(Dictionary<String, ?> props) {
         assert Thread.holdsLock(registrationLock);

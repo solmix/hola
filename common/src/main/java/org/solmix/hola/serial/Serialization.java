@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2013 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
@@ -16,18 +16,31 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.data.hola;
 
+package org.solmix.hola.serial;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.solmix.runtime.Extension;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年8月24日
+ * @version 0.0.1 2014年8月11日
  */
+@Extension(name = "java")
+public interface Serialization {
+    
+    String SERIALIZATION_ID = Serialization.class.getName() + ".SERIALIZATION_ID";
 
-public interface ClassDescriptorMapper
-{
-    String getDescriptor(int index);
+    byte getContentTypeId();
 
-    int getDescriptorIndex(String desc);
+    String getContentType();
+
+    ObjectOutput createObjectOutput(SerialConfiguration info, OutputStream output) throws IOException;
+
+    ObjectInput  createObjectInput(SerialConfiguration info, InputStream input) throws IOException;
+
 }

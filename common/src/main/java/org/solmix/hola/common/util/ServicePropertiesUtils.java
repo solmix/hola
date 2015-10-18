@@ -18,13 +18,20 @@
  */
 package org.solmix.hola.common.util;
 
+import static org.solmix.commons.util.DataUtils.commaSeparatedStringToList;
+import static org.solmix.commons.util.DataUtils.listToArray;
+
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
+import org.solmix.commons.collections.DataTypeMap;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.common.HOLA;
@@ -74,7 +81,7 @@ public class ServicePropertiesUtils
                     buf.append(":");
                     buf.append(password);
                 }
-                buf.append("@");
+                buf.append("@,");
             }
         }
         String host=(String) properties.get(HOLA.HOST_KEY);
@@ -187,7 +194,7 @@ public class ServicePropertiesUtils
             path = address.substring(i + 1);
             address = address.substring(0, i);
         }
-        i = address.indexOf("@");
+        i = address.indexOf("@,");
         if (i >= 0) {
             username = address.substring(0, i);
             int j = username.indexOf(":");
@@ -211,6 +218,420 @@ public class ServicePropertiesUtils
         parameters.put(HOLA.PORT_KEY, port);
         parameters.put(HOLA.PATH_KEY, path);
         return parameters;
+    }
+
+    public static String getString(Dictionary<String, ?> properties,String key){
+        Object value = properties.get(key);
+        if (value == null || value.toString().length() == 0) {
+            value = properties.get(HOLA.DEFAULT_KEY_PREFIX + key);
+        }
+        return value==null?null:value.toString();
+    }
+
+    /**
+     * @param key
+     * @param defaultValue
+     * @return return key's value if value is null return defaultValue.
+     */
+    public static String getString(Dictionary<String, ?> properties,Object key, String defaultValue) {
+        Object value = properties.get(key);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return value.toString();
+        }
+    }
+
+    public static Dictionary<String, ?> getSubtree(Dictionary<String, ?> properties,String key) {
+        return getSubtreePrefixed(key, properties);
+    }
+
+    public static Dictionary<String, ?> getSubtreePrefixed(String prefix, Dictionary<String, ?> data) {
+        if (prefix == null || data == null)
+            return null;
+        if (prefix.length() == 0)
+            return data;
+        Hashtable<String, Object> result = new Hashtable<String, Object>();
+        Enumeration<String> en = data.keys();
+        while (en.hasMoreElements()) {
+            String key = en.nextElement();
+            if (key.startsWith(prefix + "."))
+                result.put(key.substring(prefix.length() + 1), data.get(key));
+        }
+        return result;
+    }
+    /**
+     * @param key
+     * @param defaultValue
+     * @return return key's value if value is null return defaultValue.
+     */
+    public static String[] getStringArray(Dictionary<String, ?> properties,String key, String defaultValue[]) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        else
+            return (String[]) listToArray(getList(properties,key));
+    }
+
+    /**
+     * Gets the map being decorated.
+     * 
+     * @return the decorated map
+     */
+    public static DataTypeMap getMap(Dictionary<String, ?> properties,String key) {
+        return getMap(properties,key, null);
+    }
+
+    /**
+     * Gets the map being decorated.
+     * 
+     * @param key
+     * @param defaultValue
+     * @return if value is null return default value.
+     */
+    @SuppressWarnings("unchecked")
+    public static DataTypeMap getMap(Dictionary<String, ?> properties,String key, Map<String, Object> defaultValue) {
+        Object value = properties.get(key);
+        if (value instanceof DataTypeMap) {
+            return (DataTypeMap) value;
+        }
+        if (value instanceof Map<?, ?>) {
+            return new DataTypeMap((Map<String, Object>) value);
+        }
+        if (value == null) {
+            if (defaultValue != null) {
+                if (defaultValue instanceof DataTypeMap) {
+                    return (DataTypeMap) defaultValue;
+                } else {
+                    return new DataTypeMap(defaultValue);
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return new DataTypeMap((Map<String, Object>) value);
+        }
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    public static List<?> getList(Dictionary<String, ?> properties,String key) {
+        return getList(properties,key, null);
+    }
+
+    /**
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static List<?> getList(Dictionary<String, ?> properties,String key, List<?> defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof List<?>)
+            return (List<?>) value;
+        List<String> result = new ArrayList<String>();
+        for (StringTokenizer st = new StringTokenizer(value.toString().trim(),
+            " \r\t\n,"); st.hasMoreTokens(); result.add(st.nextToken().toString().trim()))
+            ;
+        return result;
+    }
+
+    /**
+     * put comma separated objects into a List
+     * 
+     * @param key
+     * @return
+     */
+    public static List<?> getCommaSeparatedList(Dictionary<String, ?> properties,String key) {
+        return getCommaSeparatedList(properties,key, null);
+    }
+
+    /**
+     * put comma separated objects into a List
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static List<?> getCommaSeparatedList(Dictionary<String, ?> properties,String key, List<?> defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof List<?>)
+            return (List<?>) value;
+        else
+            return commaSeparatedStringToList(value.toString().trim());
+    }
+
+    
+    /**
+     * Provided a flexible way to get boolean value
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static boolean getBoolean(Dictionary<String, ?> properties,String key, boolean defaultValue) {
+        return getBoolean(properties,key, new Boolean(defaultValue)).booleanValue();
+    }
+
+    /**
+     * Provided a flexible way to get boolean value
+     * 
+     * @param key
+     * @return
+     */
+    public static Boolean getBoolean(Dictionary<String, ?> properties,String key) {
+        return getBoolean(properties,key, ((Boolean) (null)));
+    }
+
+    /**
+     * Provided a flexible way to get boolean value
+     * <p>
+     * NOTE:String value "true","yes" return true; "false","no" return false.
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static Boolean getBoolean(Dictionary<String, ?> properties,String key, Boolean defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Boolean)
+            return (Boolean) value;
+        String s = value.toString().toLowerCase().trim();
+        if (s.equals("true") || s.equals("yes"))
+            return new Boolean(true);
+        if (s.equals("false") || s.equals("no"))
+            return new Boolean(false);
+        else
+            return defaultValue;
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    public static Byte getByte(Dictionary<String, ?> properties,String key) {
+        return getByte(properties,key, ((Byte) (null)));
+    }
+    public static char getChar(Dictionary<String, ?> properties,String key){
+        return getChar(properties,key,(Character) null);
+    }
+    public static char getChar(Dictionary<String, ?> properties,String key,Character defaultValue){
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Character)
+            return (Character) value;
+        else if(value.toString().trim().length()>1){
+            return  value.toString().trim().charAt(0);
+        }else{
+            return (char)0;
+        }
+           
+    }
+    /**
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static byte getByte(Dictionary<String, ?> properties,String key, byte defaultValue) {
+        return getByte(properties,key, new Byte(defaultValue)).byteValue();
+    }
+    /**
+     * 取正数
+     * @param properties
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static byte getPositiveByte(Dictionary<String, ?> properties,String key, byte defaultValue) {
+        if (defaultValue <= 0) {
+            throw new IllegalArgumentException("defaultValue <= 0");
+        }
+        byte value= getByte(properties,key, new Byte(defaultValue)).byteValue();
+        if (value <= 0) {
+            return defaultValue;
+        }
+        return value;
+    }
+    
+    /**
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static Byte getByte(Dictionary<String, ?> properties,String key, Byte defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Byte)
+            return (Byte) value;
+        else
+            return new Byte(value.toString().trim());
+    }
+
+    public static short getShort(Dictionary<String, ?> properties,String key, short defaultValue) {
+        return getShort(properties,key, new Short(defaultValue)).shortValue();
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    public static Short getShort(Dictionary<String, ?> properties,String key) {
+        return getShort(properties,key, ((Short) (null)));
+    }
+
+    /**
+     * get short type object if the key equal null return defaultValue
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static Short getShort(Dictionary<String, ?> properties,String key, Short defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Short)
+            return (Short) value;
+        else
+            return new Short(value.toString().trim());
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    public static Integer getInt(Dictionary<String, ?> properties,String key) {
+        return getInteger(properties,key, ((Integer) (null)));
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    public static Integer getInteger(Dictionary<String, ?> properties,String key) {
+        return getInteger(properties,key, ((Integer) (null)));
+    }
+
+    public static int getInt(Dictionary<String, ?> properties,String key, int defaultValue) {
+        return getInteger(properties,key, new Integer(defaultValue)).intValue();
+    }
+    
+    public static int getPositiveInt(Dictionary<String, ?> properties,String key, int defaultValue) {
+       
+        if (defaultValue <= 0) {
+            throw new IllegalArgumentException("defaultValue <= 0");
+        }
+        int value= getInteger(properties,key, new Integer(defaultValue)).intValue();
+        if (value <= 0) {
+            return defaultValue;
+        }
+        return value;
+    }
+    public static int getInteger(Dictionary<String, ?> properties,String key, int defaultValue) {
+        return getInteger(properties,key, new Integer(defaultValue)).intValue();
+    }
+
+    public static Integer getInteger(Dictionary<String, ?> properties,String key, Integer defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Integer)
+            return (Integer) value;
+        else
+            return new Integer(value.toString().trim());
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    public static Long getLong(Dictionary<String, ?> properties,String key) {
+        return getLong(properties,key, ((Long) (null)));
+    }
+
+    /**
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static long getLong(Dictionary<String, ?> properties,String key, long defaultValue) {
+        return getLong(properties,key, new Long(defaultValue)).longValue();
+    }
+
+    /**
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static Long getLong(Dictionary<String, ?> properties,String key, Long defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Long)
+            return (Long) value;
+        else
+            return new Long(value.toString().trim());
+    }
+
+    public static Float getFloat(Dictionary<String, ?> properties,String key) {
+        return getFloat(properties,key, ((Float) (null)));
+    }
+
+    public static float getFloat(Dictionary<String, ?> properties,String key, float defaultValue) {
+        return getFloat(properties,key, new Float(defaultValue)).floatValue();
+    }
+
+    /**
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static Float getFloat(Dictionary<String, ?> properties,String key, Float defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Float)
+            return (Float) value;
+        else
+            return new Float(value.toString().trim());
+    }
+
+    public static Double getDouble(Dictionary<String, ?> properties,String key) {
+        return getDouble(properties,key, ((Double) (null)));
+    }
+
+    /**
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static double getDouble(Dictionary<String, ?> properties,String key, double defaultValue) {
+        return getDouble(properties,key, new Double(defaultValue)).doubleValue();
+    }
+
+    /**
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static Double getDouble(Dictionary<String, ?> properties,String key, Double defaultValue) {
+        Object value = properties.get(key);
+        if (value == null)
+            return defaultValue;
+        if (value instanceof Double)
+            return (Double) value;
+        else
+            return new Double(value.toString().trim());
     }
 
 }

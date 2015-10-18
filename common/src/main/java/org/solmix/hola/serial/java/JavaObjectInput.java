@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.rs.data.java;
+package org.solmix.hola.serial.java;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.io.ObjectStreamClass;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.Type;
 
-import org.solmix.exchange.data.ObjectInput;
+import org.solmix.hola.serial.ObjectInput;
 
 
 /**
@@ -89,7 +89,7 @@ public class JavaObjectInput implements ObjectInput {
     /**
      * {@inheritDoc}
      * 
-     * @see org.solmix.exchange.data.DataInput#readUTF()
+     * @see org.solmix.hola.serial.DataInput#readUTF()
      */
     @Override
     public String readUTF() throws IOException {

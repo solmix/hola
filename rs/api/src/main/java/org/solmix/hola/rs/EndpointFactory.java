@@ -48,6 +48,7 @@ import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
 import org.solmix.hola.common.util.ServicePropertiesUtils;
+import org.solmix.hola.rs.interceptor.FaultCheckInterceptor;
 import org.solmix.hola.transport.RemoteAddress;
 
 /**
@@ -167,6 +168,8 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         if (getOutFaultInterceptors() != null) {
             ep.getOutFaultInterceptors().addAll(getOutFaultInterceptors());
         }
+        getInFaultInterceptors().add(new FaultCheckInterceptor());
+        
         serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINT_SELECTED, info, ep,
                                  serviceFactory.getServiceClass(), getServiceClass());
         return ep;

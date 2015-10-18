@@ -16,36 +16,37 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.generic.exchange;
+
+package org.solmix.hola.transport;
 
 import org.solmix.exchange.Message;
-import org.solmix.exchange.Protocol;
 import org.solmix.exchange.model.ProtocolInfo;
 import org.solmix.exchange.support.AbstractProtocol;
 import org.solmix.exchange.support.DefaultMessage;
-import org.solmix.hola.serial.SerializationManager;
+import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
-
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月21日
+ * @version $Id$ 2015年10月16日
  */
 
-public class HolaProtocol extends AbstractProtocol implements Protocol
+public class RemoteProtocol extends AbstractProtocol
 {
 
-    private static final long serialVersionUID = -1687881624306758836L;
+    private static final long serialVersionUID = -6833983637666515550L;
 
     private ProtocolInfo protocolInfo;
 
-    private SerializationManager serializationManager;
-    public HolaProtocol(ProtocolInfo protocolInfo,Container container){
+    private Codec codec;
+
+    public RemoteProtocol(ProtocolInfo protocolInfo, Container container, Codec codec)
+    {
         super(container);
-        this.protocolInfo=protocolInfo;
+        this.codec=codec;
     }
-    
+
     @Override
     public Message createMessage() {
         return new DefaultMessage();
@@ -53,7 +54,6 @@ public class HolaProtocol extends AbstractProtocol implements Protocol
 
     @Override
     public Message createMessage(Message m) {
-       
         return m;
     }
 
@@ -61,13 +61,9 @@ public class HolaProtocol extends AbstractProtocol implements Protocol
     public ProtocolInfo getProtocolInfo() {
         return protocolInfo;
     }
-   
-    public void setSerializationManager(SerializationManager sm) {
-        this.serializationManager=sm;
-    }
-    
-    public SerializationManager getSerializationManager() {
-        return serializationManager;
+
+    public Codec getCodec() {
+        return codec;
     }
 
 }

@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.transport.support;
+package org.solmix.hola.rs;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -35,12 +35,12 @@ import org.solmix.exchange.PipelineSelector;
  * @version $Id$  2015年1月27日
  */
 
-public class RpcPipelineSelector implements PipelineSelector,Closeable {
+public class RemotePipelineSelector implements PipelineSelector,Closeable {
     protected static final String KEEP_PIPELINE_ALIVE = "KeepPipelineAlive";
     protected Endpoint endpoint;
     protected Pipeline[] pipelines ;
     private final boolean shared;
-    public RpcPipelineSelector(boolean shared, int pipelines) {
+    public RemotePipelineSelector(boolean shared, int pipelines) {
         this.shared=shared;
         createPreexitPipelines(pipelines);
     }

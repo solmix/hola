@@ -19,20 +19,13 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-
 import org.solmix.exchange.Message;
+import org.solmix.hola.transport.ResponseCallback;
 
 /**
  * 
@@ -40,9 +33,8 @@ import org.solmix.exchange.Message;
  * @version $Id$ 2015年1月15日
  */
 @Sharable
-public class NettyClientHandler extends ChannelHandlerAdapter {
-
-    private final BlockingQueue<Message> sendedQueue = new LinkedBlockingDeque<Message>();
+public class NettyClientHandler extends ChannelHandlerAdapter
+{
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -55,13 +47,11 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)
-        throws Exception {
-        if (msg instanceof ByteBuf) {
-            ByteBuf response = (ByteBuf)msg;
-            Message request = sendedQueue.poll();
-            ResponseCallBack callback= request.get(ResponseCallBack.class);
-            callback.responseReceived(response);
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (msg instanceof Message) {
+            Message response = (Message) msg;
+            ResponseCallback callback = response.getExchange().get(ResponseCallback.class);
+            callback.process(response);
         } else {
             super.channelRead(ctx, msg);
         }
@@ -73,29 +63,8 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
     }
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg,
-        ChannelPromise promise) throws Exception {
-        if (msg instanceof Message) {
-            Message m = (Message) msg;
-
-            ByteBuf buffer = m.getContent(ByteBuf.class);
-            if (buffer == null) {
-                OutputStream out = m.getContent(OutputStream.class);
-                if (out instanceof ByteBufOutputStream) {
-                    buffer = ((ByteBufOutputStream) out).buffer();
-                }
-            }
-            if (buffer != null) {
-                System.out.println("--"+ByteBufUtil.hexDump(buffer)+"--");
-                sendedQueue.put(m);
-//                super.write(ctx, msg, promise);
-                ctx.writeAndFlush(buffer);
-            } else {
-                throw new IOException("write a message without bytebuf out ByteBufOutputStream");
-            }
-        } else {
-            
-            super.write(ctx, msg, promise);
-        }
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+        super.write(ctx, msg, promise);
+       
     }
 }

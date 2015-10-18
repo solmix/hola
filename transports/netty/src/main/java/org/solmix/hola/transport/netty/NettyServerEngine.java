@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
+import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
 
@@ -65,7 +65,7 @@ public class NettyServerEngine implements NettyEngine {
     private final Map<String, NettyMessageHandler> handlerMap = new ConcurrentHashMap<String, NettyMessageHandler>();
 
     private Container container;
-    private Protocol protocol;
+    private RemoteProtocol protocol;
 
     public NettyServerEngine(String host, int port) {
         this.host = host;
@@ -73,7 +73,7 @@ public class NettyServerEngine implements NettyEngine {
     }
 
     @Override
-    public synchronized void start(Protocol protocol) {
+    public synchronized void start(RemoteProtocol protocol) {
         if(channel!=null){
             return;
         }else{
@@ -111,7 +111,7 @@ public class NettyServerEngine implements NettyEngine {
         return  container.getExtensionLoader(Codec.class).getExtension(codec);
       }
 
-    protected Channel startChannel(Protocol protocol) {
+    protected Channel startChannel(RemoteProtocol protocol) {
         this.protocol=protocol;
         
         final ServerBootstrap bootstrap = new ServerBootstrap();

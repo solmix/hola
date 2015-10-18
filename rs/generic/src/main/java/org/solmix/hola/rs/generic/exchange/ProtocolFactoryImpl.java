@@ -24,17 +24,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Protocol;
 import org.solmix.exchange.Service;
-import org.solmix.exchange.data.SerializationManager;
 import org.solmix.exchange.model.NamedID;
 import org.solmix.exchange.model.ProtocolInfo;
-import org.solmix.exchange.model.SerializationInfo;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
 import org.solmix.hola.rs.ProtocolFactorySupport;
 import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
-import org.solmix.hola.rs.generic.interceptor.HolaOutInterceptor;
-import org.solmix.hola.rs.interceptor.InBindingInterceptor;
-import org.solmix.hola.rs.interceptor.SerializationOutInterceptor;
+import org.solmix.hola.rs.generic.codec.HolaCodec;
+import org.solmix.hola.serial.SerialConfiguration;
+import org.solmix.hola.serial.SerializationManager;
+import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.runtime.Extension;
 
 
@@ -50,17 +49,12 @@ public class ProtocolFactoryImpl extends ProtocolFactorySupport implements Confi
     public static final Logger LOG = LoggerFactory.getLogger(ProtocolFactoryImpl.class);
     @Override
     public Protocol createProtocol(ProtocolInfo info) {
-        HolaProtocol protocol= new HolaProtocol(info,container);
-//        protocol.getOutInterceptors().add(new HeaderEncodeInterceptor());
-       
-        protocol.getOutInterceptors().add(new HolaOutInterceptor());
-        
-        SerializationOutInterceptor soi= new SerializationOutInterceptor(info.getExtension(SerializationInfo.class));
+        SerialConfiguration config = info.getExtension(SerialConfiguration.class);
         SerializationManager sm= container.getExtension(SerializationManager.class);
-        soi.setSerializationManager(sm);
-        protocol.setSerializationManager(sm);
-        protocol.getOutInterceptors().add(soi);
-        protocol.getInInterceptors().add(new InBindingInterceptor());
+        HolaCodec codec = new HolaCodec();
+        codec.setSerialConfiguration(config);
+        codec.setSerializationManager(sm);
+        RemoteProtocol protocol= new RemoteProtocol(info,container,codec);
         return protocol;
     }
     
@@ -69,7 +63,7 @@ public class ProtocolFactoryImpl extends ProtocolFactorySupport implements Confi
         ProtocolInfo ptlInfo = new ProtocolInfo(service.getServiceInfo(), PROTOCOL_ID);
         ptlInfo.setName(new NamedID(ProtocolInfo.PROTOCOL_NS, PROTOCOL_ID));
         makeConfigAsEndpointInfoExtension(this, ptlInfo, configObject);
-        SerializationInfo si = ptlInfo.getExtension(SerializationInfo.class);
+        SerialConfiguration si = ptlInfo.getExtension(SerialConfiguration.class);
         if (si != null && si.getSerialization() == null) {
             si.setSerialization(HOLA.DEFAULT_SERIALIZATION);
         }
@@ -94,6 +88,6 @@ public class ProtocolFactoryImpl extends ProtocolFactorySupport implements Confi
 
     @Override
     public Class<?> getSupportedConfigClass() {
-        return SerializationInfo.class;
+        return SerialConfiguration.class;
     }
 }

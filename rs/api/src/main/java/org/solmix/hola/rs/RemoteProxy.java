@@ -79,22 +79,21 @@ public class RemoteProxy implements InvocationHandler, Closeable
         if (client == null) {
             throw new IllegalStateException("The client has been closed.");
         }
-        if (method.getDeclaringClass().equals(Object.class)
-            || method.getDeclaringClass().equals(Closeable.class)) {
+        if (method.getDeclaringClass().equals(Object.class) || method.getDeclaringClass().equals(Closeable.class)) {
             return method.invoke(this);
         } else if (method.getDeclaringClass().isInstance(client)) {
             return method.invoke(client, args);
         }
-        OperationDispatcher od=  (OperationDispatcher)endpoint.getService().get(OperationDispatcher.class.getName());
-        OperationInfo op=od.getOperation(method);
-        if(op==null){
-            throw  new Fault("No OperationInfo defined for method:"+method.getName());
+        OperationDispatcher od = (OperationDispatcher) endpoint.getService().get(OperationDispatcher.class.getName());
+        OperationInfo op = od.getOperation(method);
+        if (op == null) {
+            throw new Fault("No OperationInfo defined for method:" + method.getName());
         }
         Object[] params = args;
         if (null == params) {
             params = ObjectUtils.EMPTY_OBJECT_ARRAY;
         }
-        
+
         Object o = invokeSync(method, op, params);
         return adapteObject(o);
     }
@@ -102,8 +101,8 @@ public class RemoteProxy implements InvocationHandler, Closeable
     protected Object adapteObject(Object o) {
         return o;
     }
-    public Object invokeSync(Method method, OperationInfo oi, Object[] params)
-        throws Exception {
+
+    public Object invokeSync(Method method, OperationInfo oi, Object[] params) throws Exception {
         if (client == null) {
             throw new IllegalStateException("The client has been closed.");
         }

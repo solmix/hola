@@ -20,14 +20,21 @@
 package org.solmix.hola.transport.codec;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.util.List;
 
+import org.solmix.commons.util.StringUtils;
 import org.solmix.exchange.Message;
-import org.solmix.runtime.io.AbstractWrappedOutputStream;
+import org.solmix.exchange.MessageUtils;
+import org.solmix.hola.common.HOLA;
+import org.solmix.hola.serial.ObjectInput;
+import org.solmix.hola.serial.ObjectOutput;
+import org.solmix.hola.serial.SerialConfiguration;
+import org.solmix.hola.serial.Serialization;
+import org.solmix.hola.serial.SerializationManager;
 
 /**
  * 
@@ -35,30 +42,86 @@ import org.solmix.runtime.io.AbstractWrappedOutputStream;
  * @version $Id$ 2015年1月25日
  */
 
-public class TransportCodec implements Codec {
+public class TransportCodec implements Codec
+{
+
+    protected SerializationManager serializationManager;
+
+    protected SerialConfiguration serialConfiguration;
 
     @Override
     public void encode(ByteBuf buffer, Message outMsg) throws IOException {
-        OutputStream os = outMsg.get(OutputStream.class);
-        if (os instanceof AbstractWrappedOutputStream) {
-            os = ((AbstractWrappedOutputStream) os).getWrappedStream();
-        }
-        if (os instanceof ByteBufOutputStream) {
-            ByteBufOutputStream byteOut = (ByteBufOutputStream) os;
-            ByteBuf bf = byteOut.buffer();
-           encode(buffer,bf,outMsg);
-        } else {
-            throw new UnsupportedEncodingException("Unsupported outputstream type:" + os.getClass().toString());
-        }
+        ByteBufOutputStream output = new ByteBufOutputStream(buffer);
+        Serialization serialization = getSerialization(outMsg);
+        ObjectOutput objectOut = serialization.createObjectOutput(serialConfiguration, output);
+        encodeData(objectOut, outMsg);
+        objectOut.flushBuffer();
     }
 
-    protected void  encode(ByteBuf headerBuf,ByteBuf contentBuf,Message outMsg){
+    protected void encodeData(ObjectOutput objectOut, Message outMsg) throws IOException {
+        @SuppressWarnings("unchecked")
+        List<Object> datas = outMsg.getContent(List.class);
+        if (datas != null) {
+            for (Object data : datas) {
+                objectOut.writeObject(data);
+            }
+        } else {
+            Object data = outMsg.getContent(Object.class);
+            if (data != null) {
+                objectOut.writeObject(data);
+            }
+        }
 
+    }
+    
+    public Serialization getSerialization(Message msg){
+        String seril=MessageUtils.getString(msg, Serialization.SERIALIZATION_ID);
+        if(seril==null){
+            seril=serialConfiguration.getSerialization();
+        }
+        return serializationManager.getSerializationByName(seril);
+    }
+    public SerializationManager getSerializationManager() {
+        return serializationManager;
+    }
+    public void setSerializationManager(SerializationManager serializationManager) {
+        this.serializationManager = serializationManager;
+    }
+    public SerialConfiguration getSerialConfiguration() {
+        return serialConfiguration;
+    }
+    public void setSerialConfiguration(SerialConfiguration serialConfiguration) {
+        this.serialConfiguration = serialConfiguration;
     }
 
     @Override
-    public Object decode(ByteBuf buffer) throws IOException {
-        // TODO Auto-generated method stub
+    public Object decode(ByteBuf buffer, Message inMsg) throws IOException {
+        ByteBufInputStream input = new ByteBufInputStream(buffer);
+        Serialization serialization = getSerialization(inMsg);
+        ObjectInput objectInput =serialization.createObjectInput(serialConfiguration, input);
+        Object obj   =decodeData(objectInput);
+        if(obj!=null){
+            inMsg.setContent(Object.class, obj);
+            return obj;
+        }
         return null;
+    }
+    
+    protected Object decodeData(ObjectInput objectInput) throws IOException {
+        try {
+            return objectInput.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new IOException("ClassNotFoundException: " + StringUtils.toString(e));
+        }
+    }
+
+    protected void checkPayload(long length) throws IOException{
+        Integer limit = serialConfiguration.getPalyload();
+        if (limit == null) {
+            limit = HOLA.DEFAULT_PALYLOAD;
+        }
+        if (limit != null && length > limit) {
+            throw new IOException("Data length too large: " + length + ", limit: " + limit);
+        }
     }
 }

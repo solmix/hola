@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.transport.netty;
 
-import org.solmix.exchange.Protocol;
+import org.solmix.hola.transport.RemoteProtocol;
 
 
 
@@ -35,7 +35,7 @@ public interface NettyEngine {
      * 
      * @param protocol
      */
-    void start(Protocol protocol);
+    void start(RemoteProtocol protocol);
 
     void addHandler(String path, NettyMessageHandler handler);
 

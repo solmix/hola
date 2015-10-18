@@ -31,10 +31,10 @@
        </triggeringPolicy>
     </appender> 
     <logger name="org.apache.velocity"  level="INFO" />  
-    <logger name="org.solmix" level="TRACE" />  
-    
+    <logger name="org.solmix" level="INFO" />  
+    <logger name="io.netty" level="TRACE" />  
     <!-- 日志输出级别 -->
-    <root level="TRACE">   
+    <root level="INFO">   
         <appender-ref ref="STDOUT" />   
         <!-- <appender-ref ref="FILE" /> -->   
     </root> 

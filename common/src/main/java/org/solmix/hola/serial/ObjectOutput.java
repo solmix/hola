@@ -16,11 +16,9 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.data;
+package org.solmix.hola.serial;
 
-import org.solmix.exchange.data.ObjectWriter;
-import org.solmix.exchange.model.ArgumentInfo;
-import org.solmix.hola.serial.ObjectOutput;
+import java.io.IOException;
 
 
 /**
@@ -29,28 +27,8 @@ import org.solmix.hola.serial.ObjectOutput;
  * @version $Id$  2015年1月13日
  */
 
-public class SerializationWriter implements ObjectWriter<ObjectOutput> {
+public interface ObjectOutput extends DataOutput {
 
+    void writeObject(Object obj) throws IOException;
     
-    @Override
-    public void setProperty(String prop, Object value) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    
-    @Override
-    public void write(Object obj, ObjectOutput output) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    
-    @Override
-    public void write(Object obj, ArgumentInfo ai, ObjectOutput output) {
-        // TODO Auto-generated method stub
-        
-    }
-
-
 }

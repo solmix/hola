@@ -30,6 +30,7 @@ import org.solmix.exchange.Processor;
 import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.hola.transport.AbstractRemoteTransporter;
 import org.solmix.hola.transport.RemoteAddress;
+import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.TransporterRegistry;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
@@ -94,7 +95,7 @@ public class NettyTransporter extends AbstractRemoteTransporter
     @Override
     protected void activate(Processor p) {
         super.activate(p);
-        engine.start(protocol);
+        engine.start((RemoteProtocol)protocol);
         engine.addHandler(serverPath, new NettyMessageHandler(this));
     }
 

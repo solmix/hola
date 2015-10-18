@@ -19,9 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerAdapter;
@@ -29,7 +26,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +33,7 @@ import org.solmix.exchange.Message;
 import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
-import org.solmix.exchange.support.DefaultMessage;
-import org.solmix.hola.common.HOLA;
-import org.solmix.hola.transport.AbstractRemoteTransporter;
+import org.solmix.exchange.interceptor.FaultType;
 
 /**
  * 
@@ -47,25 +41,25 @@ import org.solmix.hola.transport.AbstractRemoteTransporter;
  * @version $Id$ 2015年1月18日
  */
 
-public class NettyServerHandler extends ChannelHandlerAdapter {
+public class NettyServerHandler extends ChannelHandlerAdapter
+{
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerHandler.class);
 
     private final ChannelGroup allChannels;
 
     private final NettyServerChannelFactory channelFactory;
-    
-    private final Protocol  protocol;
-    
-    private NettyConfiguration info;
-    
-    private ByteBuf buffer=Unpooled.EMPTY_BUFFER;
 
-    public NettyServerHandler(NettyServerChannelFactory factory, NettyConfiguration info,Protocol protocol) {
+    private final Protocol protocol;
+
+    private NettyConfiguration info;
+
+    public NettyServerHandler(NettyServerChannelFactory factory, NettyConfiguration info, Protocol protocol)
+    {
         allChannels = factory.getAllChannels();
         this.channelFactory = factory;
         this.info = info;
-        this.protocol=protocol;
+        this.protocol = protocol;
     }
 
     @Override
@@ -74,89 +68,39 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
             LOG.trace("open new channel {}", ctx.channel());
         }
         allChannels.add(ctx.channel());
-        //启动心跳定时器
-        //TODO
+        // 启动心跳定时器
+        // TODO
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf input = (ByteBuf) msg;
-        if(input.readableBytes()<=0){
-            return;
-        }
-        ByteBuf message ;
-        if(buffer.isReadable()){
-            buffer.writeBytes(input);
-            message=buffer;
-        }else{
-            message=input;
-        }
-        
-        Message original = protocol.createMessage();
-        ByteBufInputStream inStream = new ByteBufInputStream(message);
-        original.setContent(InputStream.class, inStream);
-        original.setContent(ByteBuf.class, message);
-        int readerIndex;
-        //根据协议初始化
-        Message inMsg =null;
-        try{
-            do{
-                readerIndex=buffer.readerIndex();
-                try{
-                    //根据协议初始化
-                     inMsg = protocol.createMessage(original);
-                }catch(Exception e){
-                    buffer = Unpooled.EMPTY_BUFFER;
-                    throw e;
-                }
-                //数据报文不够
-                if(MessageUtils.getBoolean(inMsg, HOLA.NEED_MORE_DATA, false)){
-                    buffer.readerIndex(readerIndex);
-                    break;
-                }else{
-                    if (readerIndex == message.readerIndex()) {
-                        buffer = Unpooled.EMPTY_BUFFER;
-                        throw new IOException("Decode without read data.");
-                    }
-                    if(inMsg!=null){
-                        handleMessage(ctx,inMsg);
-                    }
-                }
-                
-            }while(message.isReadable());
-        }finally{
-            if(message.isReadable()){
-                buffer.discardReadBytes();
-                buffer=message;
-            }else{
-                buffer = Unpooled.EMPTY_BUFFER;
-            }
+        if (msg instanceof Message) {
+            Message response = (Message) msg;
+            handleMessage(ctx, response);
+        } else {
+            super.channelRead(ctx, msg);
         }
     }
-    
-    private void handleMessage(ChannelHandlerContext ctx,Message inMsg) throws IOException{
-        
+
+    private void handleMessage(ChannelHandlerContext ctx, Message inMsg) throws IOException {
+
         NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(MessageUtils.getString(inMsg, Message.PATH_INFO));
 
-        ByteBuf response = ctx.alloc().buffer(info.getBufferSize());
-        
-        Message outMsg = createResponseMessage(response);
+        Message outMsg = protocol.createMessage();
         ThreadLocalChannel.set(ctx.channel());
         try {
             handler.handle(inMsg, outMsg);
         } finally {
             ThreadLocalChannel.unset();
         }
-        handleResponse(ctx, response);
+        boolean isOneWay = outMsg.getExchange().isOneWay() && MessageUtils.getBoolean(outMsg, Message.ONEWAY);
+        if (!isOneWay) {
+            handleResponse(ctx, outMsg);
+        }
+
     }
 
-    private Message createResponseMessage(ByteBuf response) {
-        DefaultMessage msg = new DefaultMessage();
-        msg.put(AbstractRemoteTransporter.RESPONSE_BYTEBUF, response);
-        return msg;
-    }
-
-    private void handleResponse(ChannelHandlerContext ctx, ByteBuf response) {
+    private void handleResponse(ChannelHandlerContext ctx, Message response) {
         boolean success = true;
         try {
             ChannelFuture future = ctx.write(response);
@@ -168,15 +112,11 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
                 throw cause;
             }
         } catch (Throwable e) {
-            throw new Fault("Failed to write response to "
-                + ctx.channel().remoteAddress());
+            throw new Fault("Failed to write response to " + ctx.channel().remoteAddress());
         }
-        if (success) {
-            throw new Fault("Failed to write response to "
-                + ctx.channel().remoteAddress() + " time out (" + info.getWriteTimeout()
-                + "ms) limit ");
+        if (!success) {
+            throw new Fault("Failed to write response to " + ctx.channel().remoteAddress() + " time out (" + info.getWriteTimeout() + "ms) limit ");
         }
-
     }
 
     @Override
@@ -185,10 +125,9 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-        throws Exception {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Netty exception on netty handler",cause);
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (LOG.isWarnEnabled()) {
+            LOG.warn("Netty exception on netty handler", cause);
         }
         ThreadLocalChannel.unset();
         Channel ch = ctx.channel();
@@ -196,14 +135,17 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
             ch.close();
         } else {
             if (ch.isActive()) {
-                sendError(cause);
+                sendError(ctx, cause);
             }
         }
         ctx.close();
     }
 
-    protected void sendError(Throwable cause) {
-        // TODO Auto-generated method stub
+    protected void sendError(ChannelHandlerContext ctx, Throwable cause) {
+        Message msg = protocol.createMessage();
+        msg.put(FaultType.class, FaultType.RUNTIME_FAULT);
+        msg.setContent(Exception.class, new IOException("exception in netty handler ", cause));
+        ctx.writeAndFlush(msg);
 
     }
 }

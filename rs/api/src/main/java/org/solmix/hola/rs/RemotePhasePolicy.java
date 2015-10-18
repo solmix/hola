@@ -68,9 +68,9 @@ public class RemotePhasePolicy implements PhasePolicy
         inPhases.add(new Phase(Phase.USER_PROTOCOL, ++i * 1000));
         inPhases.add(new Phase(Phase.PROTOCOL, ++i * 1000));
         inPhases.add(new Phase(Phase.POST_PROTOCOL, ++i * 1000));
-        inPhases.add(new Phase(Phase.PRE_DECODE, ++i * 1000));
-        inPhases.add(new Phase(Phase.DECODE, ++i * 1000));
-        inPhases.add(new Phase(Phase.POST_DECODE, ++i * 1000));
+        inPhases.add(new Phase(Phase.PRE_UNMARSHAL, ++i * 1000));
+        inPhases.add(new Phase(Phase.UNMARSHAL, ++i * 1000));
+        inPhases.add(new Phase(Phase.POST_UNMARSHAL, ++i * 1000));
         inPhases.add(new Phase(Phase.PRE_LOGICAL, ++i * 1000));
         inPhases.add(new Phase(Phase.USER_LOGICAL, ++i * 1000));
         inPhases.add(new Phase(Phase.POST_LOGICAL, ++i * 1000));
@@ -94,9 +94,9 @@ public class RemotePhasePolicy implements PhasePolicy
         outPhases.add(new Phase(Phase.PRE_PROTOCOL_FRONTEND, ++i * 1000));
         outPhases.add(new Phase(Phase.WRITE, ++i * 1000));
 
-        outPhases.add(new Phase(Phase.PRE_ENCODE, ++i * 1000));
-        outPhases.add(new Phase(Phase.ENCODE, ++i * 1000));
-        outPhases.add(new Phase(Phase.POST_ENCODE, ++i * 1000));
+        outPhases.add(new Phase(Phase.PRE_MARSHAL, ++i * 1000));
+        outPhases.add(new Phase(Phase.MARSHAL, ++i * 1000));
+        outPhases.add(new Phase(Phase.POST_MARSHAL, ++i * 1000));
 
         outPhases.add(new Phase(Phase.USER_PROTOCOL, ++i * 1000));
         outPhases.add(new Phase(Phase.PROTOCOL, ++i * 1000));
@@ -113,7 +113,7 @@ public class RemotePhasePolicy implements PhasePolicy
         outPhases.add(new Phase(Phase.POST_PROTOCOL_ENDING, ++i * 1000));
         outPhases.add(new Phase(Phase.USER_PROTOCOL_ENDING, ++i * 1000));
 
-        outPhases.add(new Phase(Phase.ENCODE_ENDING, ++i * 1000));
+        outPhases.add(new Phase(Phase.ENCODE_MARSHAL, ++i * 1000));
         outPhases.add(new Phase(Phase.WRITE_ENDING, ++i * 1000));
 
         outPhases.add(new Phase(Phase.PRE_PROTOCOL_ENDING, ++i * 1000));

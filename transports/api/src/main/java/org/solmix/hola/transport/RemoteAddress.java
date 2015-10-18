@@ -244,7 +244,7 @@ public class RemoteAddress
                 buf.append(":");
                 buf.append(password);
             }
-            buf.append("@");
+            buf.append("@,");
         }
         String host;
         if (useIP) {
@@ -328,7 +328,7 @@ public class RemoteAddress
             path = address.substring(i + 1);
             address = address.substring(0, i);
         }
-        i = address.indexOf("@");
+        i = address.indexOf("@,");
         if (i >= 0) {
             username = address.substring(0, i);
             int j = username.indexOf(":");

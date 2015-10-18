@@ -20,6 +20,7 @@ package org.solmix.hola.rs.generic.exchange;
 
 import org.solmix.exchange.ProtocolFactoryManager;
 import org.solmix.hola.rs.ServerFactory;
+import org.solmix.hola.rs.interceptor.InBindingInterceptor;
 import org.solmix.runtime.Container;
 
 
@@ -40,7 +41,7 @@ public class HolaServerFactory extends ServerFactory
     public HolaServerFactory()
     {
         super(new HolaServiceFactory());
-       
+        getInInterceptors().add(new InBindingInterceptor());
     }
     
     @Override

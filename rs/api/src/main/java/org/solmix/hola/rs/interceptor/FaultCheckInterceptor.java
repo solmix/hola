@@ -19,41 +19,42 @@
 package org.solmix.hola.rs.interceptor;
 
 import org.solmix.exchange.Endpoint;
-import org.solmix.exchange.Exchange;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.interceptor.Fault;
+import org.solmix.exchange.interceptor.FaultType;
 import org.solmix.exchange.interceptor.phase.Phase;
 import org.solmix.exchange.interceptor.phase.PhaseInterceptorSupport;
-import org.solmix.exchange.model.NamedID;
-import org.solmix.exchange.model.OperationInfo;
-import org.solmix.hola.serial.Serialization;
 
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年10月5日
+ * @version $Id$  2015年10月17日
  */
 
-public class InBindingInterceptor extends PhaseInterceptorSupport<Message>
+public class FaultCheckInterceptor  extends PhaseInterceptorSupport<Message>
 {
 
     /**
      * @param phase
      */
-    public InBindingInterceptor()
+    public FaultCheckInterceptor()
     {
-        super(Phase.PRE_PROTOCOL);
+        super(Phase.POST_PROTOCOL);
     }
 
+    
     @Override
     public void handleMessage(Message message) throws Fault {
-        Exchange exchange = message.getExchange();
-        Endpoint ed = exchange.getEndpoint();
-        NamedID opName = (NamedID) message.get(Message.OPERATION);
-        OperationInfo oi = ed.getEndpointInfo().getService().getInterface().getOperation(opName);
-        exchange.put(OperationInfo.class, oi);
-        exchange.put(Serialization.class, message.get(Serialization.class));
+        FaultType fault = message.get(FaultType.class);
+        if(fault!=null){
+            Endpoint ep = message.getExchange().getEndpoint();
+            message.getInterceptorChain().abort();
+            if(ep.getInFaultProcessor()!=null){
+                ep.getInFaultProcessor().process(message);
+            }
+        }
+        
     }
 
 }

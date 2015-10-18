@@ -22,7 +22,6 @@ package org.solmix.hola.transport.netty;
 import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,6 +32,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.solmix.exchange.Message;
+import org.solmix.exchange.Protocol;
+import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.codec.Codec;
 
 /**
@@ -41,7 +42,8 @@ import org.solmix.hola.transport.codec.Codec;
  * @version $Id$ 2015年1月23日
  */
 
-public class NettyCodecAdapter {
+public class NettyCodecAdapter
+{
 
     private final ChannelHandler encoder = new NettyEncoder();
 
@@ -49,11 +51,15 @@ public class NettyCodecAdapter {
 
     private final Codec codec;
 
-    private final int bufferSize;
+    private final NettyConfiguration config;
 
-    public NettyCodecAdapter(Codec codec, int bufferSize) {
-        this.codec = codec;
-        this.bufferSize = bufferSize;
+    private final Protocol protocol;
+
+    public NettyCodecAdapter(NettyConfiguration config, RemoteProtocol protocol)
+    {
+        this.codec = protocol.getCodec();
+        this.config = config;
+        this.protocol = protocol;
     }
 
     public ChannelHandler getEncoder() {
@@ -65,21 +71,20 @@ public class NettyCodecAdapter {
     }
 
     @Sharable
-    private class NettyEncoder extends MessageToMessageEncoder<Message> {
+    private class NettyEncoder extends MessageToMessageEncoder<Message>
+    {
 
         @Override
-        protected void encode(ChannelHandlerContext ctx, Message msg,
-            List<Object> out) throws Exception {
+        protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws Exception {
             ByteBufAllocator alloc = ctx.alloc();
-            ByteBuf buffer = alloc.buffer(bufferSize);
+            ByteBuf buffer = alloc.buffer(config.getBufferSize());
             codec.encode(buffer, msg);
 
             ByteBuf content = msg.getContent(ByteBuf.class);
             if (content != null) {
                 int contentLength = content.readableBytes();
                 if (contentLength > 0) {
-                    if (buffer != null
-                        && buffer.writableBytes() >= contentLength) {
+                    if (buffer != null && buffer.writableBytes() >= contentLength) {
                         buffer.writeBytes(content);
                         out.add(buffer);
                     } else {
@@ -88,70 +93,55 @@ public class NettyCodecAdapter {
                         }
                         out.add(content.retain());
                     }
-                } else {
-                    if (buffer != null) {
-                        out.add(buffer);
-                    } else {
-                        out.add(EMPTY_BUFFER);
-                    }
                 }
+            }
+            if (buffer != null) {
+                out.add(buffer);
+            } else {
+                out.add(EMPTY_BUFFER);
             }
         }
 
     }
 
-    private class NettyDecoder extends ByteToMessageDecoder {
+    private class NettyDecoder extends ByteToMessageDecoder
+    {
 
-        private ByteBuf buffer;
 
         @Override
-        protected void decode(ChannelHandlerContext ctx, ByteBuf in,
-            List<Object> out) throws Exception {
-            int readable = in.readableBytes();
-            if (readable <= 0) {
+        protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> out) throws Exception {
+            if (input.readableBytes() <= 0) {
                 return;
             }
-            if (buffer == null) {
-                buffer = ctx.alloc().buffer();
-            }
-            if (buffer.isReadable()) {
-                buffer.writeBytes(in);
-            } else {
-                buffer = in;
-            }
-            Object inMsg;
-            int saveReaderIndex;
+            ByteBuf message;
+            message = input;
+            Object inMsg = null;
             try {
-                // decode object.
                 do {
-                    saveReaderIndex = buffer.readerIndex();
+                   int readerIndex= message.markReaderIndex().readerIndex();
                     try {
-                        System.out.println("@@@>接受"
-                            + ByteBufUtil.hexDump(buffer));
-                        inMsg = codec.decode(buffer);
-                    } catch (IOException e) {
-                        buffer = buffer.clear();
+                        Message msg = protocol.createMessage();
+                        inMsg = codec.decode(message, msg);
+                    } catch (Exception e) {
                         throw e;
                     }
+                    // 数据报文不够
                     if (inMsg == Codec.DecodeResult.NEED_MORE_INPUT) {
-                        buffer.readerIndex(saveReaderIndex);
+                        message.resetReaderIndex();
                         break;
                     } else {
-                        if (saveReaderIndex == buffer.readerIndex()) {
-                            buffer.clear();
+                        if (readerIndex==message.readerIndex()) {
                             throw new IOException("Decode without read data.");
                         }
                         if (inMsg != null) {
                             out.add(inMsg);
                         }
                     }
-                } while (buffer.isReadable());
+                } while (message.isReadable());
             } finally {
-                if (buffer.isReadable()) {
-                    buffer.discardReadBytes();
-                } else {
-                    buffer.clear();
-                }
+                if (message.isReadable()) {
+                    message.discardReadBytes();
+                } 
             }
         }
     }

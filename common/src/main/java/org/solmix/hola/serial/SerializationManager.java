@@ -16,41 +16,18 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.data;
 
-import org.solmix.exchange.data.ObjectWriter;
-import org.solmix.exchange.model.ArgumentInfo;
-import org.solmix.hola.serial.ObjectOutput;
-
+package org.solmix.hola.serial;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年1月13日
+ * @version $Id$ 2015年1月14日
  */
 
-public class SerializationWriter implements ObjectWriter<ObjectOutput> {
+public interface SerializationManager {
 
-    
-    @Override
-    public void setProperty(String prop, Object value) {
-        // TODO Auto-generated method stub
-        
-    }
+    Serialization getSerializationById(Byte id);
 
-    
-    @Override
-    public void write(Object obj, ObjectOutput output) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    
-    @Override
-    public void write(Object obj, ArgumentInfo ai, ObjectOutput output) {
-        // TODO Auto-generated method stub
-        
-    }
-
-
+    Serialization getSerializationByName(String extendsionName);
 }

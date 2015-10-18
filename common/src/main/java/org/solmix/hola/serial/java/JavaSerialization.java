@@ -16,7 +16,7 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.rs.data.java;
+package org.solmix.hola.serial.java;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,10 +24,10 @@ import java.io.OutputStream;
 
 import javax.annotation.Resource;
 
-import org.solmix.exchange.data.ObjectInput;
-import org.solmix.exchange.data.ObjectOutput;
-import org.solmix.exchange.data.Serialization;
-import org.solmix.exchange.model.SerializationInfo;
+import org.solmix.hola.serial.ObjectInput;
+import org.solmix.hola.serial.ObjectOutput;
+import org.solmix.hola.serial.Serialization;
+import org.solmix.hola.serial.SerialConfiguration;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
@@ -59,14 +59,14 @@ public class JavaSerialization implements Serialization {
 
     
     @Override
-    public ObjectOutput createObjectOutput(SerializationInfo info,
+    public ObjectOutput createObjectOutput(SerialConfiguration info,
         OutputStream output) throws IOException {
         return new JavaObjectOutput(output);
     }
 
    
     @Override
-    public ObjectInput createObjectInput(SerializationInfo info,
+    public ObjectInput createObjectInput(SerialConfiguration info,
         InputStream input) throws IOException {
        ClassLoader loader = getClassLoader();
         return new JavaObjectInput(input, loader);

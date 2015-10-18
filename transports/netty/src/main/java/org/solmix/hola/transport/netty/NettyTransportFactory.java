@@ -70,8 +70,7 @@ public class NettyTransportFactory implements PipelineFactory,
     private final TransporterRegistry registry = new DefaultTcpRegistry();
 
     @Override
-    public Transporter getTransporter(EndpointInfo ei, Container container)
-        throws IOException {
+    public Transporter getTransporter(EndpointInfo ei, Container container) throws IOException {
         if (ei == null) {
             throw new IllegalArgumentException("EndpointInfo cannot be null");
         }
@@ -79,7 +78,7 @@ public class NettyTransportFactory implements PipelineFactory,
             AbstractRemoteTransporter t = registry.getTransporterForPath(ei.getAddress());
             if (t == null) {
                 NettyServerEngineFactory factory = container.getExtension(NettyServerEngineFactory.class);
-                t = new NettyTransporter(factory,ei, container,registry);
+                t = new NettyTransporter(factory, ei, container, registry);
                 registry.add(t);
                 configure(container, t);
                 t.finalizeConfig();
@@ -92,8 +91,7 @@ public class NettyTransportFactory implements PipelineFactory,
         configure(container, bean, null, null);
     }
 
-    protected void configure(Container container, Object bean, String name,
-        String extraName) {
+    protected void configure(Container container, Object bean, String name,String extraName) {
         BeanConfigurer configurer = container.getExtension(BeanConfigurer.class);
         if (null != configurer) {
             configurer.configureBean(name, bean);
@@ -104,14 +102,12 @@ public class NettyTransportFactory implements PipelineFactory,
     }
 
     @Override
-    public Pipeline getPipeline(EndpointInfo info, Container c)
-        throws IOException {
+    public Pipeline getPipeline(EndpointInfo info, Container c) throws IOException {
         return getPipeline(info, info.getAddress(), c);
     }
 
     @Override
-    public Pipeline getPipeline(EndpointInfo info, String address, Container container)
-        throws IOException {
+    public Pipeline getPipeline(EndpointInfo info, String address, Container container)  throws IOException {
         if (!address.equals(info.getAddress())) {
             info.setAddress(address);
         }
@@ -162,11 +158,6 @@ public class NettyTransportFactory implements PipelineFactory,
         return URI_PREFIXES;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.exchange.support.TypeDetectSupport#getTransportTypes()
-     */
     @Override
     public List<String> getTransportTypes() {
         return DEFAULT_TYPE;

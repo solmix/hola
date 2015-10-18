@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.rs.data;
+package org.solmix.hola.serial;
 
 import java.util.Map;
 import java.util.Set;
@@ -27,8 +27,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.annotation.Resource;
 
 import org.solmix.commons.util.StringUtils;
-import org.solmix.exchange.data.Serialization;
-import org.solmix.exchange.data.SerializationManager;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.extension.ExtensionLoader;
 
