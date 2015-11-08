@@ -19,14 +19,12 @@
 
 package org.solmix.hola.transport.netty;
 
-import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,34 +69,18 @@ public class NettyCodecAdapter
     }
 
     @Sharable
-    private class NettyEncoder extends MessageToMessageEncoder<Message>
+    private class NettyEncoder extends MessageToByteEncoder<Message>
     {
 
         @Override
-        protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws Exception {
-            ByteBufAllocator alloc = ctx.alloc();
-            ByteBuf buffer = alloc.buffer(config.getBufferSize());
-            codec.encode(buffer, msg);
-
+        protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
+            codec.encode(out, msg);
             ByteBuf content = msg.getContent(ByteBuf.class);
             if (content != null) {
                 int contentLength = content.readableBytes();
                 if (contentLength > 0) {
-                    if (buffer != null && buffer.writableBytes() >= contentLength) {
-                        buffer.writeBytes(content);
-                        out.add(buffer);
-                    } else {
-                        if (buffer != null) {
-                            out.add(buffer);
-                        }
-                        out.add(content.retain());
-                    }
+                        out.writeBytes(content);
                 }
-            }
-            if (buffer != null) {
-                out.add(buffer);
-            } else {
-                out.add(EMPTY_BUFFER);
             }
         }
 

@@ -21,12 +21,15 @@ package org.solmix.hola.rs;
 import java.io.Closeable;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Endpoint;
 import org.solmix.exchange.Exchange;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.Pipeline;
 import org.solmix.exchange.PipelineSelector;
+import org.solmix.exchange.support.AbstractPipelineSelector;
 
 
 /**
@@ -35,7 +38,8 @@ import org.solmix.exchange.PipelineSelector;
  * @version $Id$  2015年1月27日
  */
 
-public class RemotePipelineSelector implements PipelineSelector,Closeable {
+public class RemotePipelineSelector extends AbstractPipelineSelector implements PipelineSelector,Closeable {
+    private static final Logger LOG = LoggerFactory.getLogger(RemotePipelineSelector.class);
     protected static final String KEEP_PIPELINE_ALIVE = "KeepPipelineAlive";
     protected Endpoint endpoint;
     protected Pipeline[] pipelines ;
@@ -50,12 +54,6 @@ public class RemotePipelineSelector implements PipelineSelector,Closeable {
         
     }
 
-
-    private Pipeline getSelectedPipeline(Message message) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
     @Override
     public void prepare(Message message) {
         Pipeline pl = message.get(Pipeline.class);
@@ -112,6 +110,11 @@ public class RemotePipelineSelector implements PipelineSelector,Closeable {
         for (Pipeline p : pipelines) {
             p.close();
         }
+    }
+
+    @Override
+    protected Logger getLogger() {
+        return LOG;
     }
 
 }

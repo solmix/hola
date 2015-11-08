@@ -35,7 +35,6 @@ import org.solmix.exchange.Processor;
 import org.solmix.exchange.Transporter;
 import org.solmix.exchange.support.DefaultExchange;
 import org.solmix.exchange.support.DefaultMessage;
-import org.solmix.hola.common.model.RemoteServiceInfo;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 
@@ -97,7 +96,7 @@ public class LocalTest extends Assert {
     public void test(boolean direct,int length) throws Exception{
         LocalTransportFactory ltf = new LocalTransportFactory();
         
-        RemoteServiceInfo rei =  RemoteServiceInfo.valueOf("local://localhost/local");
+//        RemoteServiceInfo rei =  RemoteServiceInfo.valueOf("local://localhost/local");
         Container con = ContainerFactory.getDefaultContainer();
         LocalPipeline pl= (LocalPipeline)ltf.getPipeline(rei, con);
         Transporter trans =ltf.getTransporter(rei, con);
