@@ -31,7 +31,7 @@ public class HOLA
 {
     public static final Pattern SPLIT_SEMICOLON_PATTERN = Pattern.compile("\\s*[;]+\\s*");
 
-    public static final Pattern REGISTRY_SPLIT_PATTERN = Pattern.compile("\\s*[|;]+\\s*");
+    public static final Pattern DISCOVERY_SPLIT_PATTERN = Pattern.compile("\\s*[|;]+\\s*");
 
     public static final Pattern SPLIT_COMMA_PATTERN = Pattern.compile("\\s*[,]+\\s*");
     /**
@@ -48,6 +48,9 @@ public class HOLA
     public static final String USER_KEY = "user";
     public static final String PASSWORD_KEY = "password";
     
+    /**接口名称*/
+    public static final String INTERFACE_KEY = "interface";
+    
     public static final String SERIALIZATION_KEY = "serialization";
     public static final String PALYLOAD_KEY = "palyload";
 
@@ -58,7 +61,8 @@ public class HOLA
     public static final String CONNECT_TIMEOUT_KEY = "connectTimeout";
 
     public static final String RECEIVE_TIMEOUT_KEY = "receiveTimeout";
-
+    
+    public static final String ANY_VALUE = "*";
     /**
      * 默认连接超时时间
      */
@@ -118,9 +122,63 @@ public class HOLA
      * 
      =============================================================*/
 
-   
+    /**服务类别：默认为生产者*/
+    public static final String DEFAULT_CATEGORY = "provider";    
+    
+    /**服务类别表示：provider：生产者，consumer：消费者*/
+    public static final String CATEGORY_KEY = "category";
+    
+    public static final String  PROVIDER_CATEGORY                           = "provider";
 
+    public static final String  CONSUMER_CATEGORY                           = "consumer";
+    
+    public static final String DISCOVERY = "discovery";
+    
+    public static final String REGISTER = "register";
+    public static final String UNREGISTER = "unregister";
+
+    /** 动态注册 */
+    public static final String DYNAMIC_KEY = "discovery.dynamic";
+
+    public static final String DISCOVERY_URL = "discovery.url";
+    /**公告服务是否同步存储文件，默认异步*/
+    public static final String DISCOVERY_SYNC_SAVE_FILE = "discovery.save.file";
+    /**存储公告的文件*/
+    public static final String DISCOVERY_CACHE_FILE = "discovery.file";
+    
+    /**公告服务自动重连时间*/
+    public static final String DISCOVERY_RECONNECT_PERIOD = "discovery.reconnect.period";
+    public static final int DEFAULT_DISCOVERY_RECONNECT_PERIOD = 3000;
+    
+    /**默认根节点*/
+    public static final String DEFAULT_ROOT = "hola";
+    
+    /**备用公告地址*/
+    public static final String BACKUP_KEY = "discovery.backup";
+    
+    /**公告服务会话超时时间*/
+    public static final  String DISCOVERY_SESSION_TIMEOUT="discovery.session.timeout";
+    public static final int DEFAULT_SESSION_TIMEOUT = 60000;
+    
+    /**公告失败重试周期*/
+    public static final String RETRY_PERIOD_KEY = "discovery.retry.period";
+    public static final int DEFAULT_RETRY_PERIOD = 5000;
+    
+    /**服务权重*/
+    public static final String WEIGHT_KEY="weight";
+    public static final int DEFAULT_WEIGHT = 5;
+    /**优先级*/
+    public static final String PRIORITY_KEY="priority";
+    public static final int DEFAULT_PRIORITY = 5;
+    
   
+    /**生存时间*/
+    public static final String   TTL_KEY="ttl";
+    
+    /**是否开启启动检测*/
+    public static final String CHECK_KEY = "check";
+    
+
 
     public final static String PATH_SEPARATOR = "/";
 
@@ -200,7 +258,7 @@ public class HOLA
 
     public static final String DEFAULT_HOLA_CONFIG_FILE = "hola.properties";
 
-    public static final String DYNAMIC_KEY = "hola.dynamic";
+
 
   
 
@@ -236,9 +294,7 @@ public class HOLA
 
 
     public static final String PIPELINES = "pipelines";
-    /*public static final String  PROVIDER                           = "provider";
-
-    public static final String  CONSUMER                           = "consumer";
+    /*
 
     public static final String  REGISTER                           = "register";
 
@@ -761,4 +817,23 @@ public class HOLA
     public static final String GENERIC_SERIALIZATION_NATIVE_JAVA   = "nativejava";
 
     public static final String GENERIC_SERIALIZATION_DEFAULT       = "true";*/
+
+
+  
+
+
+    
+
+  
+
+ 
+    
+
+   
+
+ 
+
+ 
+
+    
 }

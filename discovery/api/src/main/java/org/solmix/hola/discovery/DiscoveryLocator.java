@@ -21,11 +21,9 @@ package org.solmix.hola.discovery;
 
 import java.util.concurrent.Future;
 
-import org.osgi.framework.ServiceListener;
-import org.solmix.hola.discovery.identity.ServiceID;
-import org.solmix.hola.discovery.identity.ServiceType;
-import org.solmix.hola.discovery.model.ServiceInfo;
-import org.solmix.runtime.identity.Namespace;
+import org.solmix.hola.discovery.model.DiscoveryInfo;
+import org.solmix.hola.discovery.model.ServiceID;
+import org.solmix.hola.discovery.model.ServiceType;
 
 /**
  * 服务定位
@@ -42,18 +40,18 @@ public interface DiscoveryLocator
      * 
      * @param service IServiceID of the service to get info about. Must not be
      *        <code>null</code>.
-     * @return IServiceInfo the service info retrieved. <code>null</code> if no
+     * @return IDiscoveryInfo the service info retrieved. <code>null</code> if no
      *         information retrievable.
      */
-    public ServiceInfo getService(ServiceID aServiceID);
+    public DiscoveryInfo getService(ServiceID aServiceID);
 
     /**
      * Synchronously get service info about all known services
      * 
-     * @return IServiceInfo[] the resulting array of service info instances.
+     * @return IDiscoveryInfo[] the resulting array of service info instances.
      *         Will not be <code>null</code>. May be of length 0.
      */
-    public ServiceInfo[] getServices();
+    public DiscoveryInfo[] getServices();
 
     /**
      * Synchronously get service info about all known services of given service
@@ -61,10 +59,10 @@ public interface DiscoveryLocator
      * 
      * @param type IServiceTypeID defining the type of service we are interested
      *        in getting service info about. Must not be <code>null</code>
-     * @return IServiceInfo[] the resulting array of service info instances.
+     * @return IDiscoveryInfo[] the resulting array of service info instances.
      *         Will not be <code>null</code>. May be of length 0.
      */
-    public ServiceInfo[] getServices(ServiceType type);
+    public DiscoveryInfo[] getServices(ServiceType type);
 
     /**
      * Synchronously get service info about all known services of given service
@@ -76,51 +74,14 @@ public interface DiscoveryLocator
     public ServiceType[] getServiceTypes();
 
     /**
-     * Get a Namespace for services associated with this discovery container
-     * adapter. The given Namespace may be used via IServiceIDFactory to create
-     * IServiceIDs rather than simple IDs. For example:
-     * 
-     * <pre>
-     * 
-     * IServiceID serviceID = ServiceIDFactory.getDefault().createServiceID(
-     *     container.getServicesNamespace(), serviceType, serviceName);
-     * </pre>
-     * 
-     * @return Namespace for creating service IDs. Will not be <code>null</code>
-     *         .
-     */
-    public Namespace getNamespace();
-
-    /**
-     * Purges the underlying IServiceInfo cache if available in the current
+     * Purges the underlying IDiscoveryInfo cache if available in the current
      * provider
      * 
      * @return The previous cache content
      */
-    public ServiceInfo[] purgeCache();
+//    public DiscoveryInfo[] purgeCache();
 
     /* Listener related API */
-
-    /**
-     * Add a service listener. The given listener will have its method called
-     * when a service is discovered.
-     * 
-     * @param listener IServiceListener to be notified. Must not be
-     *        <code>null</code> .
-     */
-    public void addServiceListener(ServiceListener listener);
-
-    /**
-     * Add a service listener. The given listener will have its method called
-     * when a service with a type matching that specified by the first parameter
-     * is discovered.
-     * 
-     * @param type String type to listen for. Must not be <code>null</code>.
-     *        Must be formatted according to this specific IDiscoveryContainer
-     * @param listener IServiceListener to be notified. Must not be
-     *        <code>null</code> .
-     */
-    public void addServiceListener(ServiceType type, ServiceListener listener);
 
     /**
      * Add a service type listener. The given listener will have its method
@@ -129,15 +90,8 @@ public interface DiscoveryLocator
      * @param listener the listener to be notified. Must not be
      *        <code>null</code>.
      */
-    public void addServiceTypeListener(ServiceTypeListener listener);
+    public void addTypeListener(ServiceType type,ServiceTypeListener listener);
 
-    /**
-     * Remove a service listener. Remove the listener from this container
-     * 
-     * @param listener IServiceListener listener to be removed. Must not be
-     *        <code>null</code>.
-     */
-    public void removeServiceListener(ServiceListener listener);
 
     /**
      * Remove a service listener. Remove the listener associated with the type
@@ -149,7 +103,7 @@ public interface DiscoveryLocator
      * @param listener IServiceListener listener to be removed. Must not be
      *        <code>null</code>.
      */
-    public void removeServiceListener(ServiceType type, ServiceListener listener);
+    public void removeTypeListener(ServiceType type, ServiceTypeListener listener);
 
     /**
      * Remove a service type listener. Remove the type listener.
@@ -157,8 +111,7 @@ public interface DiscoveryLocator
      * @param listener IServiceTypeListener to be removed. Must not be
      *        <code>null</code>.
      */
-    public void removeServiceTypeListener(ServiceTypeListener listener);
-
+    
     /* Future related API */
 
     /**
@@ -166,10 +119,10 @@ public interface DiscoveryLocator
      * 
      * @param service IServiceID of the service to get info about. Must not be
      *        <code>null</code>.
-     * @return IFuture a future status wrapping an IServiceInfo or
+     * @return IFuture a future status wrapping an IDiscoveryInfo or
      *         <code>null</code> if no information retrievable.
      */
-    public Future<ServiceInfo> getAsyncService(ServiceID aServiceID);
+    public Future<DiscoveryInfo> getAsyncService(ServiceID aServiceID);
 
     /**
      * Asynchronously get service info about all known services
@@ -178,7 +131,7 @@ public interface DiscoveryLocator
      *         service type IDs will not be <code>null</code>. May be of length
      *         0.
      */
-    public Future<ServiceInfo[]> getAsyncServices();
+    public Future<DiscoveryInfo[]> getAsyncServices();
 
     /**
      * Asynchronously get service info about all known services of given service
@@ -190,7 +143,7 @@ public interface DiscoveryLocator
      *         service type IDs will not be <code>null</code>. May be of length
      *         0.
      */
-    public Future<ServiceInfo[]> getAsyncServices(ServiceType aServiceTypeID);
+    public Future<DiscoveryInfo[]> getAsyncServices(ServiceType aServiceTypeID);
 
     /**
      * Asynchronously get service info about all known services of given service

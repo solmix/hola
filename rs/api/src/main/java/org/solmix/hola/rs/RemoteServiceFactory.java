@@ -18,8 +18,6 @@
  */
 package org.solmix.hola.rs;
 
-import java.rmi.RemoteException;
-import java.util.Collection;
 import java.util.Dictionary;
 
 import org.solmix.runtime.Extension;
@@ -46,7 +44,7 @@ public interface RemoteServiceFactory {
     
     <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties);
     
-    <S> Collection<RemoteReference<S>> getReferences(Class<S> clazz, String filter) throws RemoteException;
+    //<S> Collection<RemoteReference<S>> getReferences(Class<S> clazz, String filter) throws RemoteException;
     
 //    RemoteReference<?> getReference(String clazz);
     
@@ -59,6 +57,4 @@ public interface RemoteServiceFactory {
     void removeRemoteListener(RemoteListener listener);
     
     void destroy();
-    /**根据supportedConfigs由实现类来选择需要的参数*/
-//    RemoteServiceInfo prepare(Dictionary<String, ?> properties);
 }

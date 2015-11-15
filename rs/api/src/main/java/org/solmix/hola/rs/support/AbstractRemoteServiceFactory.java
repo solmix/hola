@@ -21,7 +21,6 @@ package org.solmix.hola.rs.support;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Collection;
 import java.util.Dictionary;
 
 import org.solmix.commons.annotation.ThreadSafe;
@@ -91,11 +90,6 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
     }
 
 
-    @Override
-    public <S> Collection<RemoteReference<S>> getReferences(Class<S> clazz, String filter) throws RemoteException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @SuppressWarnings("unchecked")
     @Override

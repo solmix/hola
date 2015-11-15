@@ -18,8 +18,7 @@
  */
 package org.solmix.hola.discovery;
 
-import org.solmix.hola.discovery.model.ServiceInfo;
-import org.solmix.runtime.identity.Namespace;
+import org.solmix.hola.discovery.model.DiscoveryInfo;
 
 
 
@@ -38,37 +37,22 @@ public interface DiscoveryAdvertiser
      * serviceInfo to the underlying publishing mechanism
      * 
      * @param serviceInfo
-     *            IServiceInfo of the service to be published. Must not be
+     *            IDiscoveryInfo of the service to be published. Must not be
      *            <code>null</code>.
      */
-    public void register(ServiceInfo serviceInfo);
+    public void register(DiscoveryInfo serviceInfo);
 
     /**
      * Unregister a previously registered service defined by serviceInfo.
      * 
      * @param serviceInfo
-     *            IServiceInfo defining the service to unregister. Must not be
+     *            IDiscoveryInfo defining the service to unregister. Must not be
      *            <code>null</code>.
      */
-    public void unregister(ServiceInfo serviceInfo);
+    public void unregister(DiscoveryInfo serviceInfo);
 
     /**
      * Unregister all previously registered service.
      */
     public void unregisterAll();
-
-    /**
-     * Get a Namespace for services associated with this discovery container
-     * adapter. The given Namespace may be used via IServiceIDFactory to create
-     * IServiceIDs rather than simple IDs. For example:
-     * 
-     * <pre>
-     * IServiceID serviceID = ServiceIDFactory.getDefault().createServiceID(
-     *          container.getServicesNamespace(), serviceType, serviceName);
-     * </pre>
-     * 
-     * @return Namespace for creating service IDs. Will not be <code>null</code>
-     *         .
-     */
-    public Namespace getNamespace();
 }

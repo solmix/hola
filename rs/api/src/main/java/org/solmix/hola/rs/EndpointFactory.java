@@ -47,7 +47,7 @@ import org.solmix.exchange.support.AbstractEndpointFactory;
 import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
-import org.solmix.hola.common.util.ServicePropertiesUtils;
+import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.rs.interceptor.FaultCheckInterceptor;
 import org.solmix.hola.transport.RemoteAddress;
 
@@ -368,7 +368,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
     public String getAddress() {
         //通过配置设置address
         if(address==null&&getProperties()!=null){
-           address=ServicePropertiesUtils.toAddress(getProperties());
+           address=PropertiesUtils.toAddress(getProperties());
         }
         return address;
     }

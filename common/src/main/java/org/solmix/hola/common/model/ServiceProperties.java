@@ -61,6 +61,11 @@ public class ServiceProperties extends UnChangeDictionary<String, Object> {
         this((props == null) ? 2 : props.size() + 2, props);
     }
 
+    public ServiceProperties()
+    {
+        super(2);
+    }
+
     /**
      * Get a clone of the value of a service's property.
      * 

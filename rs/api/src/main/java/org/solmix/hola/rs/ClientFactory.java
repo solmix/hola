@@ -18,7 +18,7 @@
  */
 package org.solmix.hola.rs;
 
-import static org.solmix.hola.common.util.ServicePropertiesUtils.getPositiveInt;
+import static org.solmix.hola.common.model.PropertiesUtils.getPositiveInt;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
