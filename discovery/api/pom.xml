@@ -18,4 +18,5 @@
   		<version>0.6.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
+  <name>Hola :: Discovery :: Api</name>
 </project>
