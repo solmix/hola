@@ -1,4 +1,5 @@
-package org.solmix.hola.discovery.jmdns;
+
+package org.solmix.hola.discovery.zk;
 
 import java.util.Dictionary;
 import java.util.concurrent.CountDownLatch;
@@ -20,9 +21,9 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.extension.ExtensionLoader;
 
-
-public class JmDNSDiscoveryTest extends Assert
+public class ZKDiscoveryTest extends Assert
 {
+
     static Container container;
 
     @BeforeClass
@@ -36,14 +37,17 @@ public class JmDNSDiscoveryTest extends Assert
             container.close();
         }
     }
-    
+    @Test
+    public void test(){
+        
+    }
     @Test
     public void testRegistor() throws InterruptedException {
         ExtensionLoader<DiscoveryProvider> loader = container.getExtensionLoader(DiscoveryProvider.class);
-        DiscoveryProvider provider = loader.getExtension(JmDNSProvider.NAME);
+        DiscoveryProvider provider = loader.getExtension(ZookeeperProvider.NAME);
         assertNotNull(provider);
         PropertiesBuilder builder = PropertiesBuilder.newBuilder();
-        Dictionary<String, ?> dic=builder.setProtocol("jmdns").setHost("localhost").setPort(6379).build();
+        Dictionary<String, ?> dic=builder.setProtocol(ZookeeperProvider.NAME).setHost("localhost").setPort(6379).build();
         Discovery discovery= provider.createDiscovery(dic);
         
         Dictionary<String, ?> service=builder.setProtocol("rpc")
@@ -53,17 +57,16 @@ public class JmDNSDiscoveryTest extends Assert
             .setProperty("gateway.port", "3242").build();
         DiscoveryInfo info = new DiscoveryInfoImpl(service);
         discovery.register(info);
-        Thread.currentThread().sleep(180000);
         discovery.unregister(info);
     }
     
     @Test
     public void testListener() throws InterruptedException {
         ExtensionLoader<DiscoveryProvider> loader = container.getExtensionLoader(DiscoveryProvider.class);
-        DiscoveryProvider provider = loader.getExtension(JmDNSProvider.NAME);
+        DiscoveryProvider provider = loader.getExtension(ZookeeperProvider.NAME);
         assertNotNull(provider);
         PropertiesBuilder builder = PropertiesBuilder.newBuilder();
-        Dictionary<String, ?> dic=builder.setProtocol("jmdns").setHost("localhost").setPort(6379).build();
+        Dictionary<String, ?> dic=builder.setProtocol("redis").setHost("localhost").setPort(6379).build();
         Discovery discovery= provider.createDiscovery(dic);
       
         ServiceType type = new ServiceTypeImpl("com.example.gateway");
@@ -79,4 +82,5 @@ public class JmDNSDiscoveryTest extends Assert
         });
         count.await();
     }
+
 }

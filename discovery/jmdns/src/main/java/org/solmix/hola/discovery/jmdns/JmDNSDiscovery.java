@@ -20,12 +20,21 @@
 package org.solmix.hola.discovery.jmdns;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
@@ -35,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
+import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.HolaRuntimeException;
 import org.solmix.hola.common.model.PropertiesUtils;
@@ -60,7 +70,7 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
 
     public static final int DEFAULT_REQUEST_TIMESOUT = 3000;
 
-    private static final Logger LOG = LoggerFactory.getLogger(JmDNSProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JmDNSDiscovery.class);
 
 
     final Object lock = new Object();
@@ -69,20 +79,17 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
 
     private boolean connected;
 
-
+    private volatile boolean admin = false;
+    
     private LinkedBlockingQueue<Runnable> queue;
 
     private Thread notificationThread;
 
-
-
     private JmDNS jmdns;
+    private final ScheduledFuture<?> cleanFuture;
+    private final ScheduledExecutorService cleanExecutor = Executors.newScheduledThreadPool(1, new NamedThreadFactory("JmDNSCleanTimer", true));
 
-
-    /**
-     * @param discoveryNamespace
-     * @throws DiscoveryException
-     */
+    private int expirePeriod;
     public JmDNSDiscovery(Dictionary<String, ?> properties, Container container) throws DiscoveryException
     {
         super(properties, container);
@@ -103,9 +110,77 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
                 throw new DiscoveryException("JmDNS can't created,Check network connection", e);
             }
         }
+        this.expirePeriod=PropertiesUtils.getInt(properties, HOLA.DISCOVERY_SESSION_TIMEOUT, HOLA.DEFAULT_SESSION_TIMEOUT);
+        if(PropertiesUtils.getBoolean(properties, "clean", true)){
+            this.cleanFuture = cleanExecutor.scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        clean(); // 清除过期者
+                    } catch (Throwable t) { // 防御性容错
+                        LOG.error("Unexpected exception occur at clean expired provider, cause: " + t.getMessage(), t);
+                    }
+                }
+            }, expirePeriod, expirePeriod, TimeUnit.MILLISECONDS);
+        }else{
+            this.cleanFuture=null;
+        }
     }
 
-
+    private void clean() {
+        if (admin) {
+                for (DiscoveryInfo info : new HashSet<DiscoveryInfo>(registered)) {
+                    if (isExpired(info)) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn("Clean expired provider " + info);
+                        }
+                        doUnregister(info);
+                    }
+                }
+        }
+    }
+    
+    private boolean isExpired(DiscoveryInfo info) {
+        Dictionary<String, ?>properties=info.getServiceProperties();
+        if (!PropertiesUtils.getBoolean(properties, HOLA.DYNAMIC_KEY, true)
+                  || PropertiesUtils.getInt(properties, HOLA.PORT_KEY,-1) <= 0
+                  || HOLA.CONSUMER_CATEGORY.equals(PropertiesUtils.getString(properties, HOLA.CATEGORY_KEY))) {
+            return false;
+        }
+        String host =PropertiesUtils.getString(properties, HOLA.HOST_KEY);
+        int port =PropertiesUtils.getInt(properties, HOLA.PORT_KEY);
+        Socket socket = null;
+        try {
+            socket = new Socket(host, port);
+        } catch (Throwable e) {
+            try {
+                Thread.sleep(100);
+            } catch (Throwable e2) {
+            }
+            Socket socket2 = null;
+            try {
+                socket2 = new Socket(host, port);
+            } catch (Throwable e2) {
+                return true;
+            } finally {
+                if (socket2 != null) {
+                    try {
+                        socket2.close();
+                    } catch (Throwable e2) {
+                    }
+                }
+            }
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (Throwable e) {
+                }
+            }
+        }
+        return false;
+    }
+    
     @Override
     public void unregisterAll() {
         jmdns.unregisterAllServices();
@@ -138,14 +213,7 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
     @Override
     public DiscoveryInfo[] getServices() {
         synchronized (lock) {
-            final ServiceType[] serviceTypeArray = getServiceTypes();
-            final List<DiscoveryInfo> results = new ArrayList<DiscoveryInfo>();
-            for (int i = 0; i < serviceTypeArray.length; i++) {
-                final ServiceType stid = serviceTypeArray[i];
-                if (stid != null)
-                    results.addAll(Arrays.asList(getServices(stid)));
-            }
-            return results.toArray(new DiscoveryInfo[] {});
+            return registered.toArray(new DiscoveryInfo[] {});
         }
     }
 
@@ -178,15 +246,26 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
     @Override
     public ServiceType[] getServiceTypes() {
         synchronized (lock) {
-            return registered.toArray(new ServiceType[] {});
+            Set<ServiceType> typeSet= new HashSet<ServiceType>();
+            for (final Iterator<DiscoveryInfo> it = registered.iterator(); it.hasNext();) {
+                DiscoveryInfo info = it.next();
+                if(info.getServiceID()==null){
+                    continue;
+                }
+                if(!typeSet.contains(info.getServiceID().getServiceType())){
+                    typeSet.add(info.getServiceID().getServiceType());
+                }
+            }
+            return typeSet.toArray(new ServiceType[] {});
         }
     }
 
     public DiscoveryInfo[] purgeCache() {
+        DiscoveryInfo[]  tmp  = registered.toArray(new DiscoveryInfo[registered.size()]);
         synchronized (lock) {
             registered.clear();
         }
-        return new DiscoveryInfo[] {};
+        return tmp;
     }
 
 
@@ -201,8 +280,12 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
                     if (Thread.currentThread().isInterrupted())
                         break;
                     final Runnable run = queue.peek();
-                    if (run == null)
-                        break;
+                    if (run == null){
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {}
+                        continue;
+                    }
                     try {
                         run.run();
                     } catch (final Throwable t) {
@@ -215,11 +298,19 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
     }
 
     @Override
-    public void close() throws IOException {
-        super.close();
+    public void destroy() throws IOException {
+        super.destroy();
+        try {
+            if (cleanFuture != null) {
+                cleanFuture.cancel(true);
+            }
+        } catch (Throwable t) {
+            LOG.warn(t.getMessage(), t);
+        }
         synchronized (lock) {
             if (closed)
                 return;
+            jmdns.close();
             notificationThread.interrupt();
             notificationThread = null;
             registered.clear();
@@ -243,7 +334,7 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
     @Override
     public void serviceAdded(final ServiceEvent event) {
         if (LOG.isTraceEnabled())
-            LOG.trace("------------------serviceAdded(" + event + ")");
+            LOG.trace("serviceAdded(" + event + ")");
         try {
             queue.put(new Runnable() {
 
@@ -251,25 +342,41 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
                 public void run() {
                     final String serviceType = event.getType();
                     final String serviceName = event.getName();
-                    DiscoveryInfo meta = null;
+                    DiscoveryInfo discoveryInfo = null;
                     synchronized (lock) {
                         if (closed) {
                             return;
                         }
                         try {
                             final ServiceInfo info = event.getDNS().getServiceInfo(serviceType, serviceName);
-                            meta = createDiscoveryInfo(info);
-                            registered.add(meta);
+                            discoveryInfo = createDiscoveryInfo(info);
+                            registered.add(discoveryInfo);
+                            notifyListener(discoveryInfo,DiscoveryTypeEvent.REGISTER);
                         } catch (Exception e) {
-                            LOG.trace("Failed to resolve in serviceAdded(" + event.getName() + ")");
+                            LOG.trace("Failed to resolve in serviceAdded(" + event.getName() + ")",e);
                         }
                     }
-                    fireServiceTypeDiscovered(new DiscoveryTypeEvent(this, meta.getServiceID().getServiceType()));
+                    
                 }
 
             });
         } catch (InterruptedException e) {
             LOG.error("serviceAdded() exception:", e);
+        }
+    }
+    
+    private void notifyListener(DiscoveryInfo info,int eventType){
+        Map<ServiceType, Set<ServiceTypeListener>> typeListeners = new HashMap<ServiceType, Set<ServiceTypeListener>>(getTypeListeners());
+        for(Map.Entry<ServiceType, Set<ServiceTypeListener>> entry:typeListeners.entrySet()){
+            ServiceType type = entry.getKey();
+            Set<ServiceTypeListener> listeners = entry.getValue();
+            if(isMatch(type, info)){
+                if(listeners!=null&&listeners.size()>0){
+                    for(ServiceTypeListener listener:listeners){
+                        doNotify(type, listener, Arrays.asList(info), eventType);
+                    }
+                }
+            }
         }
     }
 
@@ -284,11 +391,17 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
 
                 @Override
                 public void run() {
+                    DiscoveryInfo discoveryInfo = null;
+                    try {
                     final String serviceType = event.getType();
                     final String serviceName = event.getName();
                     final ServiceInfo info = event.getDNS().getServiceInfo(serviceType, serviceName);
-                    
-                    fireServiceUnDiscovered(new DiscoveryEvent(this, metadata));
+                    discoveryInfo= createDiscoveryInfo(info);
+                    registered.remove(discoveryInfo);
+                    notifyListener(discoveryInfo,DiscoveryTypeEvent.REGISTER);
+                    } catch (Exception e) {
+                        LOG.trace("Failed to resolve in serviceAdded(" + event.getName() + ")");
+                    }
                 }
             });
         } catch (InterruptedException e) {
@@ -321,18 +434,29 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
 
     @Override
     protected void doSubscribe(ServiceType type, ServiceTypeListener listener) {
-        
+        DiscoveryInfo[] infos= getServices(type);
+        doNotify(type, listener, Arrays.asList(infos), DiscoveryTypeEvent.REGISTER);
     }
 
     @Override
     protected void doUnsubscribe(ServiceType type, ServiceTypeListener listener) {
         
     }
+    
     private ServiceInfo createServiceInfo(DiscoveryInfo discoveryInfo) {
         if (discoveryInfo == null){
             return null;
         }
         Dictionary<String, ?> prop = discoveryInfo.getServiceProperties();
+        final ServiceID id = discoveryInfo.getServiceID();
+        int port = PropertiesUtils.getInt(prop, HOLA.PORT_KEY);
+        final ServiceInfo si = ServiceInfo.create(id.getServiceType().getIdentityName(), 
+                                                discoveryInfo.getServiceID().getName(), 
+                                                port,
+                                                discoveryInfo.getWeight(), 
+                                                discoveryInfo.getPriority(), 
+                                                "");
+        return si;
        /* 
         final Hashtable<String, Object> props = new Hashtable<String, Object>();
         if (prop != null) {
@@ -357,25 +481,14 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
                 }
             }
         }*/
-        
-        final ServiceID id = discoveryInfo.getServiceID();
-        int port = PropertiesUtils.getInt(prop, HOLA.PORT_KEY);
-        final ServiceInfo si = ServiceInfo.create(
-                                                id.getServiceType().getIdentityName(), 
-                                                discoveryInfo.getServiceID().getName(), 
-                                                port,
-                                                discoveryInfo.getWeight(), 
-                                                discoveryInfo.getPriority(), 
-                                                "");
-        return si;
     }
 
-    /**
-     * @param info
-     * @return
-     */
     protected DiscoveryInfo createDiscoveryInfo(ServiceInfo info) throws Exception {
         Assert.isNotNull(info);
+        // service name
+        final String name = info.getName();
+        return new DiscoveryInfoImpl(PropertiesUtils.toProperties(name));
+
        /* final int priority = info.getPriority();
         final int weight = info.getWeight();
         final Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -406,11 +519,6 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
                 }
             }
         }
-*/
-        // service name
-        final String name = info.getName();
-
-        return new DiscoveryInfoImpl(PropertiesUtils.toProperties(name));
-
+        */
     }
 }

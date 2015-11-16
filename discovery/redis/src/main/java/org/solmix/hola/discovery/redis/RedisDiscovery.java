@@ -24,6 +24,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
+import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.discovery.DiscoveryException;
@@ -33,6 +34,7 @@ import org.solmix.hola.discovery.model.DiscoveryInfo;
 import org.solmix.hola.discovery.model.DiscoveryInfoImpl;
 import org.solmix.hola.discovery.model.ServiceID;
 import org.solmix.hola.discovery.model.ServiceType;
+import org.solmix.hola.discovery.model.ServiceTypeImpl;
 import org.solmix.hola.discovery.support.FailbackDiscovery;
 import org.solmix.runtime.Container;
 
@@ -196,8 +198,8 @@ public class RedisDiscovery extends FailbackDiscovery
     }
     
     @Override
-    public void close() throws IOException{
-        super.close();
+    public void destroy() throws IOException{
+        super.destroy();
         try {
             expireFuture.cancel(true);
         } catch (Throwable t) {
@@ -257,32 +259,136 @@ public class RedisDiscovery extends FailbackDiscovery
     }
 
     @Override
-    public DiscoveryInfo getService(ServiceID aServiceID) {
-        // TODO Auto-generated method stub
+    public DiscoveryInfo getService(ServiceID id) {
+        DiscoveryInfo[] infos  = getServices(id.getServiceType());
+        for(DiscoveryInfo info:infos){
+            if(StringUtils.isEquals(info.getServiceName(),id.getName())){
+                return info;
+            }
+        }
         return null;
     }
 
     @Override
     public DiscoveryInfo[] getServices() {
-        // TODO Auto-generated method stub
-        return null;
+        List<DiscoveryInfo> infos = new ArrayList<DiscoveryInfo>();
+        for (Map.Entry<String, JedisPool> entry : jedisPools.entrySet()) {
+            JedisPool jedisPool = entry.getValue();
+            try {
+                Jedis jedis = jedisPool.getResource();
+                try {
+                    Set<String> keys = jedis.keys(root + HOLA.ANY_VALUE);
+                    if (keys != null && keys.size() > 0) {
+                        for (String key : keys) {
+                            Map<String, String> values = jedis.hgetAll(key);
+                            if (values != null && values.size() > 0) {
+                                long now = System.currentTimeMillis();
+                                for (String id : values.keySet()) {
+                                    Dictionary<String, ?> properties = PropertiesUtils.toProperties(id);
+                                    if (PropertiesUtils.getBoolean(properties, HOLA.DYNAMIC_KEY, true)) {
+                                        long expire = Long.parseLong(values.get(id));
+                                        if (expire > now) {
+                                            // 过期公告不要，但也不注销，等管理线程处理
+                                            infos.add(new DiscoveryInfoImpl(properties));
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    if (!replicate) {
+                        break; //  如果服务器端已同步数据，只需写入单台机器
+                    }
+                } finally {
+                    jedis.close();
+                }
+            } catch (Exception e) {
+                LOG.warn("Failed to get discoveried advertise", e);
+            }
+
+        }
+        return getServices(root + HOLA.ANY_VALUE);
+    }
+    
+    public DiscoveryInfo[] getServices(String keyPattern) {
+        List<DiscoveryInfo> infos = new ArrayList<DiscoveryInfo>();
+        for (Map.Entry<String, JedisPool> entry : jedisPools.entrySet()) {
+            JedisPool jedisPool = entry.getValue();
+            try {
+                Jedis jedis = jedisPool.getResource();
+                try {
+                    Set<String> keys = jedis.keys(keyPattern);
+                    if (keys != null && keys.size() > 0) {
+                        for (String key : keys) {
+                            Map<String, String> values = jedis.hgetAll(key);
+                            if (values != null && values.size() > 0) {
+                                long now = System.currentTimeMillis();
+                                for (String id : values.keySet()) {
+                                    Dictionary<String, ?> properties = PropertiesUtils.toProperties(id);
+                                    if (PropertiesUtils.getBoolean(properties, HOLA.DYNAMIC_KEY, true)) {
+                                        long expire = Long.parseLong(values.get(id));
+                                        if (expire > now) {
+                                            // 过期公告不要，但也不注销，等管理线程处理
+                                            infos.add(new DiscoveryInfoImpl(properties));
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    if (!replicate) {
+                        break; //  如果服务器端已同步数据，只需写入单台机器
+                    }
+                } finally {
+                    jedis.close();
+                }
+            } catch (Exception e) {
+                LOG.warn("Failed to get discoveried advertise", e);
+            }
+
+        }
+        return infos.toArray(new DiscoveryInfo[] {});
     }
 
     @Override
     public DiscoveryInfo[] getServices(ServiceType type) {
-        // TODO Auto-generated method stub
-        return null;
+        return getServices(toRedisRoot(type.getIdentityName()));
     }
 
     @Override
     public ServiceType[] getServiceTypes() {
-        // TODO Auto-generated method stub
-        return null;
+        List<ServiceType> types = new ArrayList<ServiceType>();
+        for (Map.Entry<String, JedisPool> entry : jedisPools.entrySet()) {
+            JedisPool jedisPool = entry.getValue();
+            try {
+                Jedis jedis = jedisPool.getResource();
+                try {
+                    Set<String> keys = jedis.keys(root + HOLA.ANY_VALUE);
+                    if (keys != null && keys.size() > 0) {
+                        for (String key : keys) {
+                            types.add(ServiceTypeImpl.fromAddress(key));
+                        }
+                    }
+                    if (!replicate) {
+                        break; //  如果服务器端已同步数据，只需写入单台机器
+                    }
+                } finally {
+                    jedis.close();
+                }
+            } catch (Exception e) {
+                LOG.warn("Failed to get discoveried advertise", e);
+            }
+        }
+        return types.toArray(new ServiceType[]{});
     }
 
     @Override
     protected void doRegister(DiscoveryInfo meta) {
-        String expire = String.valueOf(System.currentTimeMillis() + expirePeriod);
+        //生命周期
+       long ttl=meta.getTTL()<0?expirePeriod:meta.getTTL();
+        String expire = String.valueOf(System.currentTimeMillis() + ttl);
         boolean success = false;
         String key = toRedisRoot(meta.getServiceID().getServiceType().getIdentityName());
         String value  = PropertiesUtils.toAddress(meta.getServiceProperties());
@@ -303,7 +409,7 @@ public class RedisDiscovery extends FailbackDiscovery
                     jedis.close();
                 }
             } catch (Throwable t) {
-                exception = new DiscoveryException("Failed to register service to redis registry. registry: " + entry.getKey() + ", service: " + meta + ", cause: " + t.getMessage(), t);
+                exception = new DiscoveryException("Failed to register service to redis discovery. advertise: " + entry.getKey() + ", service: " + meta + ", cause: " + t.getMessage(), t);
             }
         }
         if (exception != null) {

@@ -57,6 +57,7 @@ public class RedisDiscoveryTest extends Assert
             .setProperty("gateway.port", "3242").build();
         DiscoveryInfo info = new DiscoveryInfoImpl(service);
         discovery.register(info);
+        Thread.currentThread().sleep(2000);
         discovery.unregister(info);
     }
     

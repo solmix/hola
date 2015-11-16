@@ -174,8 +174,8 @@ public abstract class FailbackDiscovery extends AbstractDiscovery implements Dis
     }
 
     @Override
-    public void close() throws IOException {
-        super.close();
+    public void destroy() throws IOException {
+        super.destroy();
         try {
             retryFuture.cancel(true);
         } catch (Throwable t) {

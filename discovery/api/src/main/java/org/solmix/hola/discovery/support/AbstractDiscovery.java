@@ -505,7 +505,7 @@ public abstract class AbstractDiscovery implements Discovery
         });
     }
 
-    public void close() throws IOException {
+    public void destroy() throws IOException {
         if (LOG.isInfoEnabled()) {
             LOG.info("Destroy registry:" + PropertiesUtils.toAddress(serviceProperties));
         }

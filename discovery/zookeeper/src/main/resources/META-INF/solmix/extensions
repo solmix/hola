@@ -1,0 +1,2 @@
+#
+org.solmix.hola.discovery.zk.ZookeeperProvider:org.solmix.hola.discovery.DiscoveryProvider
