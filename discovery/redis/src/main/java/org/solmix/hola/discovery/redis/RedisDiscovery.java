@@ -62,7 +62,7 @@ public class RedisDiscovery extends FailbackDiscovery
     {
         super(properties, container);
         if(PropertiesUtils.getString(properties, HOLA.HOST_KEY)==null){
-            throw new IllegalArgumentException("redis registor address is null");
+            throw new IllegalArgumentException("redis discovery address is null");
         }
         List<String> addresses = new ArrayList<String>();
         addresses.add(PropertiesUtils.toAddress(properties));

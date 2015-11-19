@@ -28,11 +28,13 @@ import org.solmix.exchange.Server;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteProxy;
+import org.solmix.hola.rs.RemoteProxyFactory;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.event.RemoteRegisteredEvent;
-import org.solmix.hola.rs.generic.exchange.HolaProxyFactory;
+import org.solmix.hola.rs.generic.exchange.HolaClientFactory;
+import org.solmix.hola.rs.generic.exchange.HolaRemoteService;
 import org.solmix.hola.rs.generic.exchange.HolaServerFactory;
 import org.solmix.hola.rs.support.AbstractRemoteServiceFactory;
 import org.solmix.hola.rs.support.RemoteReferenceImpl;
@@ -56,6 +58,55 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
     @Override
     public <S> RemoteRegistration<S> doRegister(Class<S> clazz, S service, Dictionary properties) throws RemoteException {
        
+        properties=adaptor(properties);
+        HolaServerFactory factory = new HolaServerFactory();
+        factory.setContainer(container);
+        factory.setProperties(properties);
+        factory.setServiceClass(clazz);
+        factory.setServiceBean(service);
+        Server server =factory.create();
+        RemoteRegistrationImpl<S> reg = new RemoteRegistrationImpl<S>(this, registry, clazz, service,properties);
+        reg.setServer(server);
+        registry.publishServiceEvent(new RemoteRegisteredEvent(reg.getReference()));
+        return reg;
+    }
+    
+    @Override
+    protected <S> S doGetService(RemoteReference<S> reference) throws RemoteException {
+        RemoteReferenceImpl<S> ref=null;
+        if(reference instanceof RemoteReferenceImpl){
+            ref=(RemoteReferenceImpl<S>)reference;
+        }
+        if(ref==null){
+            throw new RemoteException("Unsupport RemoteReference type:"+reference.getClass().getName());
+        }
+        RemoteProxyFactory factory= new RemoteProxyFactory(new HolaClientFactory());
+        factory.setContainer(container);
+        factory.setServiceClass(reference.getServiceClass());
+        factory.setProperties(toDictionary(reference));
+        Object obj = factory.create();
+        ref.setClient(RemoteProxy.getClient(obj));
+        return (S) obj;
+    }
+   
+
+    @Override
+    protected <S> RemoteReference<S> doReference(Class<S> clazz, Dictionary<String, ?> properties) {
+        return new RemoteReferenceImpl<S>(clazz,registry,adaptor(properties),this);
+     }
+    
+    public static Dictionary<String, ?> toDictionary(RemoteReference<?> reference) {
+        if(reference==null){
+            return null;
+        }
+        Dictionary<String, Object> dic = new Hashtable<String, Object>();
+        String[] keys = reference.getPropertyKeys();
+        for(String key:keys){
+            dic.put(key, reference.getProperty(key));
+        }
+        return dic;
+    }
+    public  static Dictionary<String, ?> adaptor(Dictionary properties){
         if(properties==null){
             properties= new Hashtable<String, Object>();
         }
@@ -73,64 +124,14 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
         if(properties.get(HOLA.PROTOCOL_KEY)==null){
             properties.put(HOLA.PROTOCOL_KEY, PROVIDER_ID);
         }
-        HolaServerFactory factory = new HolaServerFactory();
-        factory.setContainer(container);
-        factory.setProperties(properties);
-        factory.setServiceClass(clazz);
-        factory.setServiceBean(service);
-        Server server =factory.create();
-        RemoteRegistrationImpl<S> reg = new RemoteRegistrationImpl<S>(this, registry, clazz, service);
-        reg.setServer(server);
-        registry.publishServiceEvent(new RemoteRegisteredEvent(reg.getReference()));
-        return reg;
-    }
-    
-    @Override
-    protected <S> S doGetRemoteService(RemoteReference<S> reference) throws RemoteException {
-        RemoteReferenceImpl<S> ref=null;
-        if(reference instanceof RemoteReferenceImpl){
-            ref=(RemoteReferenceImpl<S>)reference;
-        }
-        if(ref==null){
-            throw new RemoteException("Unsupport RemoteReference type:"+reference.getClass().getName());
-        }
-        HolaProxyFactory factory= new HolaProxyFactory();
-        factory.setContainer(container);
-        factory.setServiceClass(reference.getServiceClass());
-        Hashtable<String, Object> copyed = new Hashtable<String, Object>();
-        for(String key:reference.getPropertyKeys()){
-            copyed.put(key, reference.getProperty(key));
-        }
-        
-        if(copyed.get(HOLA.CODEC_KEY)!=null){
-            if(!PROVIDER_ID.equals(copyed.get(HOLA.CODEC_KEY))){
-                LOG.warn("Hola protocol need hola codec");
-            }
-        }
-        copyed.put(HOLA.CODEC_KEY, PROVIDER_ID);
-        //设置默认port
-        if(copyed.get(HOLA.PORT_KEY)==null){
-            copyed.put(HOLA.PORT_KEY, PORT);
-        }
-        //设置默认protocol
-        if(copyed.get(HOLA.PROTOCOL_KEY)==null){
-            copyed.put(HOLA.PROTOCOL_KEY, PROVIDER_ID);
-        }
-        factory.setProperties(copyed);
-        Object obj = factory.create();
-        ref.setClient(RemoteProxy.getClient(obj));
-        return (S) obj;
+        return properties;
     }
 
     @Override
-    public RemoteService getRemoteService(RemoteReference<?> reference) {
-        return null;
+    protected <S> RemoteService<S> doGetRemoteService(RemoteReferenceImpl<S> reference) throws RemoteException {
+       return new HolaRemoteService<S>(container, reference);
     }
 
-    @Override
-    public <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties) {
-        return new RemoteReferenceImpl(clazz,properties,this);
-    }
-   
+  
 
 }

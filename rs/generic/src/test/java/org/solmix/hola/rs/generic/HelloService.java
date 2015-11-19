@@ -29,4 +29,5 @@ public interface HelloService
 {
     String say(String user);
 
+    void send(String user);
 }

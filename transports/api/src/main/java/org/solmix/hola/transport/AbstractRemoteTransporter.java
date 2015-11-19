@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.exchange.Exchange;
 import org.solmix.exchange.Message;
+import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.Pipeline;
 import org.solmix.exchange.Processor;
 import org.solmix.exchange.Transporter;
@@ -116,6 +117,7 @@ public abstract class AbstractRemoteTransporter extends AbstractTransporter
     protected void invoke(Message inMsg, Message outMsg) {
         Exchange ex = new DefaultExchange();
         inMsg.setExchange(ex);
+        ex.setOneWay(MessageUtils.getBoolean(outMsg, Message.ONEWAY));
         ex.setIn(inMsg);
         ex.setOut(outMsg);
         outMsg.setId(inMsg.getId());

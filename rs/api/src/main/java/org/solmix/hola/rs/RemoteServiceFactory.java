@@ -37,20 +37,17 @@ public interface RemoteServiceFactory {
     
     
     /**
+     * 在配置中处理
      * @param clazz 带有注解的class
      * @return
      */
-    <S> RemoteReference<S> getReference(Class<S> clazz);
+    //<S> RemoteReference<S> getReference(Class<S> clazz);
     
     <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties);
     
-    //<S> Collection<RemoteReference<S>> getReferences(Class<S> clazz, String filter) throws RemoteException;
-    
-//    RemoteReference<?> getReference(String clazz);
-    
     <S> S getService(RemoteReference<S> reference);
     
-    RemoteService getRemoteService(RemoteReference<?> reference);
+    <S> RemoteService<S> getRemoteService(RemoteReference<S> reference);
     
     void addRemoteListener(RemoteListener listener);
 

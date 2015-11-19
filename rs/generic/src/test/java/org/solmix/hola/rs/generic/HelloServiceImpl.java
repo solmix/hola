@@ -33,4 +33,9 @@ public class HelloServiceImpl implements HelloService
         return "hello " +user;
     }
 
+    @Override
+    public void send(String user) {
+        System.out.println(user);
+    }
+
 }

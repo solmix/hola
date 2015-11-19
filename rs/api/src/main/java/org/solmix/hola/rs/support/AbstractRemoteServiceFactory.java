@@ -32,6 +32,7 @@ import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteReference.ReferenceType;
 import org.solmix.hola.rs.RemoteRegistration;
+import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteServiceFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
@@ -77,19 +78,33 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
     public <S> RemoteRegistration<S> register(Class<S> clazz, S service, Dictionary<String, ?> properties) throws RemoteException {
         Assert.isNotNull(service, "register service is null");
         Assert.isNotNull(clazz, "register class is null");
-        return doRegister(clazz, service, properties);
+        RemoteRegistration<S> reg= doRegister(clazz, service, properties);
+        if(reg!=null){
+            registry.addServiceRegistration(reg);
+        }
+        return reg;
     }
 
     @SuppressWarnings("rawtypes")
     public abstract <S> RemoteRegistration<S> doRegister(Class<S> clazz, S service,  Dictionary properties) throws RemoteException;
 
+
+
     @Override
-    public <S> RemoteReference<S> getReference(Class<S> clazz) {
-        // TODO Auto-generated method stub
-        return null;
+    public <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties) {
+        RemoteReference<S> refer = doReference(clazz,properties);
+        if(refer!=null){
+            registry.addServiceReference(refer);
+        }
+        return refer;
     }
+   
 
 
+
+    protected <S> RemoteReference<S> doReference(Class<S> clazz, Dictionary<String, ?> properties) {
+       return new RemoteReferenceImpl<S>(clazz,registry,properties,this);
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -99,11 +114,11 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
         if(type==ReferenceType.LOCAL){
            return (S) registry.getService((RemoteReferenceHolder<S>)reference);
         }else if(type==ReferenceType.REMOTE){
-            return doGetRemoteService(reference);
+            return doGetService(reference);
         }
         return null;
     }
-    protected abstract <S> S doGetRemoteService(RemoteReference<S> reference) throws RemoteException ;
+    
     @Override
     public void addRemoteListener(RemoteListener listener) {
         registry.addRemoteListener(listener);
@@ -113,13 +128,23 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
     public void removeRemoteListener(RemoteListener listener) {
         registry.removeRemoteListener(listener);
     }
-
+    @Override
+    public <S> RemoteService<S> getRemoteService(RemoteReference<S> reference) {
+        ReferenceType type = reference.getReferenceType();
+        if(type==ReferenceType.LOCAL){
+            throw new IllegalArgumentException("Reference is Local"); 
+        }else if(type==ReferenceType.REMOTE){
+            return doGetRemoteService((RemoteReferenceImpl<S>)reference);
+        }
+        return null;
+    }
 
     @Override
     public void destroy() {
         registry.destroy();
     }
-
+    protected abstract <S> S doGetService(RemoteReference<S> reference) throws RemoteException ;
+    protected abstract <S> RemoteService<S> doGetRemoteService(RemoteReferenceImpl<S> reference) throws RemoteException ;
     /**
      * 检查服务是否为接口的实例
      * 

@@ -33,8 +33,7 @@ public interface RemoteRequest
     /**
      * 远程调用超时时间默认值,可通过hola.remotecall.timeout在System中配置,单位为毫秒.
      */
-    public static final int DEFAULT_TIMEOUT = new Integer(System.getProperty(
-        "hola.remote.timeout", "30000")).intValue();
+    public static final int DEFAULT_TIMEOUT = new Integer(System.getProperty("hola.remote.timeout", "30000")).intValue();
 
     /**
      * 远程方法名,非空.
@@ -44,25 +43,22 @@ public interface RemoteRequest
     public String getMethod();
 
     /**
-     * 方法调用所需要的参数,数组中的参数可序列化并参数到远程服务调用端
+     * 方法参数类型
+     * @return
+     */
+    Class<?>[] getParameterTypes();
+
+    /**
+     * 方法调用所需要的参数
      * 
      * @return 返回非空对象数组
      */
     public Object[] getParameters();
 
-    /**
-     * 调用超时时间，单位：毫秒．
-     * 
-     * @return
-     */
-    public int getTimeout();
-    
-    Map<String, String> getProperties();
-   
-    String getProperty(String key);
-    
-    String getProperty(String key, String defaultValue);
-    
-   
-    
+    Map<String, Object> getRequestContext();
+
+    Object getContextAttr(String key);
+
+    Object getContextAttr(String key, Object defaultValue);
+
 }

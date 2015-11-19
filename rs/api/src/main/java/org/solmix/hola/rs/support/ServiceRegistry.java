@@ -20,12 +20,13 @@
 package org.solmix.hola.rs.support;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
-import org.solmix.exchange.model.NamedID;
+import org.solmix.commons.collections.ConcurrentHashSet;
 import org.solmix.hola.rs.RemoteListener;
+import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteServiceFactory;
 import org.solmix.hola.rs.event.RemoteEvent;
@@ -38,21 +39,21 @@ import org.solmix.hola.rs.event.RemoteEvent;
 
 public class ServiceRegistry {
 
-    protected final Map<NamedID, RemoteRegistration<?>> services = new ConcurrentHashMap<NamedID, RemoteRegistration<?>>();
+    protected final Set<RemoteRegistration<?>> regitrations = new ConcurrentHashSet<RemoteRegistration<?>>();
     protected final List<RemoteListener> listeners = new ArrayList<RemoteListener>(4);
-
+    protected final Set<RemoteReference<?>> references = new ConcurrentHashSet<RemoteReference<?>>();
     private final RemoteServiceFactory remoteServiceFactory;
 
     public ServiceRegistry(RemoteServiceFactory manager) {
         remoteServiceFactory = manager;
     }
 
-    public void addServiceRegistration(NamedID serviceKey,RemoteRegistration<?> regitration) {
-        //TODO
+    public void addServiceRegistration(RemoteRegistration<?> regitration) {
+        regitrations.add(regitration);
     }
 
-    public void removeServiceRegistration(NamedID serviceKey, RemoteRegistration<?> regitration) {
-        //TODO
+    public void removeServiceRegistration( RemoteRegistration<?> regitration) {
+        regitrations.remove(regitration);
     }
     
     public RemoteServiceFactory getRemoteServiceFactory(){
@@ -91,9 +92,35 @@ public class ServiceRegistry {
      * 
      */
     public void destroy() {
+        synchronized (regitrations) {
+            Set<RemoteRegistration<?>> regs = new HashSet<RemoteRegistration<?>>(regitrations);
+            for(RemoteRegistration<?> reg: regs){
+                if(reg!=null){
+                    reg.unregister();
+                }
+            }
+            regitrations.clear();
+        }
+        synchronized (references) {
+            Set<RemoteReference<?>> regs = new HashSet<RemoteReference<?>>(references);
+            for(RemoteReference<?> reg: regs){
+                if(reg!=null){
+                    reg.destroy();
+                }
+            }
+            references.clear();
+        }
+       
         synchronized (listeners) {
             listeners.clear();
         }
-        
+    }
+
+    public void addServiceReference(RemoteReference<?> refer) {
+        references.add(refer);
+    }
+    
+    public void removeServiceReference(RemoteReference<?> refer) {
+        references.remove(refer);
     }
 }

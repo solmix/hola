@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.hola.rs.call.RemoteRequestListener;
+import org.solmix.hola.rs.call.RemoteResponse;
 
 
 /**
@@ -30,16 +31,16 @@ import org.solmix.hola.rs.call.RemoteRequestListener;
  * @version $Id$  2015年9月16日
  */
 
-public interface RemoteService
+public interface RemoteService<T>
 {
-    String[] getInterfaces();
+    Class<T> getServiceClass();
     /**
      * 同步调用远程方法，返回调用结果
      * 
      * @param call
      * @return
      */
-    Object sync(RemoteRequest call) throws RemoteException;
+    RemoteResponse sync(RemoteRequest call) throws RemoteException;
 
     /**
      * 异步调用远程方法
@@ -54,7 +55,7 @@ public interface RemoteService
      * @param call
      * @return
      */
-    Future<Object> async(RemoteRequest call);
+    Future<RemoteResponse> async(RemoteRequest call);
 
     /**
      * 异步调用远程方法，区别于｛@link {@link #async(RemoteRequest)} 的是，该方法无须返回值，也不返回异常．
@@ -69,15 +70,10 @@ public interface RemoteService
      * @return
      * @throws RemoteException
      */
-    Object getProxy() throws RemoteException;
+    T getProxy() throws RemoteException;
 
-    /**
-     * 返回远程服务接口的本地代理对象
-     * 
-     * @param classLoader
-     * @param interfaceClasses
-     * @return
-     * @throws RemoteException
-     */
-    Object getProxy(ClassLoader classLoader, Class<?>[] interfaceClasses)  throws RemoteException;
+    
+    Object getProperty(String key);
+
+    String[] getPropertyKeys();
 }

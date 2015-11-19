@@ -19,8 +19,6 @@
 package org.solmix.hola.rs.generic.codec;
 
 import static org.solmix.exchange.MessageUtils.getString;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,6 +39,9 @@ import org.solmix.hola.serial.ObjectOutput;
 import org.solmix.hola.serial.Serialization;
 import org.solmix.hola.transport.codec.RemoteCodec;
 import org.solmix.runtime.Extension;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 
 
 /**
@@ -95,6 +96,7 @@ public class HolaCodec extends RemoteCodec
                     inMsg.setExchange(getExchange(id));
                 }
             } else {
+                input = serial.createObjectInput(serialConfiguration, is);
                 String errorString = input.readUTF();
                 Fault fault = new Fault("ServerException");
                 fault.setDetail(errorString);
@@ -105,6 +107,8 @@ public class HolaCodec extends RemoteCodec
             }
         } else {// request
             inMsg.setRequest(true);
+            boolean oneWay = (flag & FLAG_ONEWAY) != 0;
+            inMsg.put(Message.ONEWAY, Boolean.valueOf(oneWay));
             inMsg.put(HOLA.HOLA_VERSION_KEY, HOLA.VERSION);
             inMsg.put(Message.ONEWAY, (flag & FLAG_ONEWAY) != 0);
             if (isEvent) {

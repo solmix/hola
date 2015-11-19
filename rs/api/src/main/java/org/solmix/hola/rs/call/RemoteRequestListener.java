@@ -16,19 +16,21 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+
 package org.solmix.hola.rs.call;
 
-import org.solmix.hola.rs.event.RemoteRequestEvent;
-
+import java.util.Map;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version 0.0.1  2014年4月29日
+ * @version 0.0.1 2014年4月29日
  */
 
 public interface RemoteRequestListener
 {
-    
-    void onHandle(RemoteRequestEvent event);
+
+    public void handleResponse(Object res, Map<String, Object> ctx);
+
+    public void handleException(Throwable ex, Map<String, Object> ctx);
 }

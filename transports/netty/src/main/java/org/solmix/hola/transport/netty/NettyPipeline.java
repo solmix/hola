@@ -19,14 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -54,6 +46,14 @@ import org.solmix.hola.transport.support.RemoteResponses;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.threadpool.ThreadPool;
 import org.solmix.runtime.threadpool.ThreadPoolManager;
+
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  * 
@@ -121,7 +121,21 @@ public class NettyPipeline extends AbstractPipeline {
     protected OutputStream createOutputStream(Message message, NettyConfiguration config, URI url) throws IOException {
         return new NettyWrappedOutputStream(message);
     }
-    
+    @Override
+    public void close(){
+        super.close();
+       Channel channel = getChannel();
+       if(channel!=null){
+           if(LOG.isDebugEnabled()){
+               LOG.debug("Close netty pipleline:"+channel.id().asShortText());
+           }
+           try {
+            channel.disconnect().sync();
+        } catch (InterruptedException e) {
+           LOG.warn("Failed to disconnect channel in netty pipeline"+e.getMessage());
+        }
+       }
+    }
     protected void connect(URI url) {
         RemoteProtocol protocol = (RemoteProtocol)getProtocol();
         bootstrap.handler(new NettyClientChannelFactory(clientInfo,protocol));
@@ -187,15 +201,18 @@ public class NettyPipeline extends AbstractPipeline {
             try {
                 boolean exceptionSet = outMessage.getContent(Exception.class) != null;
                 if (!exceptionSet) {
-                    ResponseCallback callBack = new ResponseCallback() {
-                        @Override
-                        public void process(Message response) {
-                            setInMessage(response);
-                        }
-                    };
-                    outMessage.getExchange().put(ResponseCallback.class, callBack);
-                    outMessage.put(HOLA.TIMEOUT_KEY, clientInfo.getTimeout());
-                    RemoteResponses.bind(NettyPipeline.this, outMessage);
+                    boolean oneway = outMessage.getExchange().isOneWay();
+                    if(!oneway){
+                        ResponseCallback callBack = new ResponseCallback() {
+                            @Override
+                            public void process(Message response) {
+                                setInMessage(response);
+                            }
+                        };
+                        outMessage.getExchange().put(ResponseCallback.class, callBack);
+                        outMessage.put(HOLA.TIMEOUT_KEY, clientInfo.getTimeout());
+                        RemoteResponses.bind(NettyPipeline.this, outMessage);
+                    }
                     
                     ChannelFutureListener listener = new ChannelFutureListener() {
                         @Override
@@ -208,6 +225,14 @@ public class NettyPipeline extends AbstractPipeline {
                     };
                     ChannelFuture channelFuture = getChannel().writeAndFlush(outMessage);
                     channelFuture.addListener(listener);
+                    if(oneway){
+                        try {
+                            channelFuture.sync();
+                        } catch (InterruptedException e) {
+                            LOG.warn("Failed to write oneway message",e);
+                        }
+                        return;
+                    }
                 }
                 handleResponse(outMessage);
             } catch (IOException e) {

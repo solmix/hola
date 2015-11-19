@@ -185,7 +185,7 @@ public class PropertiesUtils
         Dictionary<String, Object> dic = new Hashtable<String, Object>();
         String[] keys = sp.getPropertyKeys();
         for(String key:keys){
-            dic.put(key, sp.get(key));
+            dic.put(key, sp.getProperty(key));
         }
         return dic;
     }
@@ -730,6 +730,34 @@ public class PropertiesUtils
             return getString(properties, HOLA.PATH_KEY);
         }
         return null;
+    }
+    /**用于服务链接的字符串，包含backup*/
+    public static String getConnectString(Dictionary<String, ?> properties) {
+        String host=getString(properties, HOLA.HOST_KEY);
+        int port =getInt(properties, HOLA.PORT_KEY,0);
+        StringBuilder sb  = new StringBuilder().append(host).append(":").append(port);
+        String backs = PropertiesUtils.getString(properties, HOLA.BACKUP_KEY);
+        String[] backups = backs==null?null:HOLA.SPLIT_COMMA_PATTERN.split(backs);
+        if(!StringUtils.isEmpty(backs)){
+            for(String back:backups){
+                sb.append(",");
+                sb.append(appendDefaultPort(back,port));
+            }
+        }
+        return sb.toString();
+    }
+    
+    private static String appendDefaultPort(String address, int defaultPort) {
+        if (address != null && address.length() > 0
+                  && defaultPort > 0) {
+            int i = address.indexOf(':');
+            if (i < 0) {
+                return address + ":" + defaultPort;
+            } else if (Integer.parseInt(address.substring(i + 1)) == 0) {
+                return address.substring(0, i + 1) + defaultPort;
+            }
+        }
+        return address;
     }
     /**在目标数据集中加入目标数据集中不存在，但源数据集中存在的*/
     public static Dictionary<String, ?> copyNotExist(Dictionary<String, Object> source, Dictionary<String, Object> target) {

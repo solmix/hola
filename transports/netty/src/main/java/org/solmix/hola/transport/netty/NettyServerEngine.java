@@ -19,6 +19,19 @@
 
 package org.solmix.hola.transport.netty;
 
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.solmix.exchange.interceptor.Fault;
+import org.solmix.hola.transport.RemoteProtocol;
+import org.solmix.hola.transport.codec.Codec;
+import org.solmix.runtime.Container;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -26,17 +39,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultExecutorServiceFactory;
-
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.solmix.exchange.interceptor.Fault;
-import org.solmix.hola.transport.RemoteProtocol;
-import org.solmix.hola.transport.codec.Codec;
-import org.solmix.runtime.Container;
 
 /**
  * 
@@ -46,6 +48,7 @@ import org.solmix.runtime.Container;
 
 public class NettyServerEngine implements NettyEngine {
 
+    private static final Logger LOG  = LoggerFactory.getLogger(NettyServerEngine.class);
     private volatile Channel channel;
 
     EventLoopGroup bossGroup;
@@ -152,6 +155,9 @@ public class NettyServerEngine implements NettyEngine {
 
     @Override
     public synchronized void shutdown() {
+        if(LOG.isDebugEnabled()){
+            LOG.debug("Clos netty engine ["+host+":"+port+"] "+(channel!=null?("channel id:"+channel.id().asShortText()):""));
+        }
         handlerMap.clear();
         registedPaths.clear();
         if (channelFactory != null) {

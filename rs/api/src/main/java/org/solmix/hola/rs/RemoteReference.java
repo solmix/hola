@@ -32,10 +32,11 @@ public interface RemoteReference<S> {
         LOCAL,REMOTE
     }
     
-    public ReferenceType getReferenceType();
-    public Object getProperty(String key);
+    ReferenceType getReferenceType();
+    
+    Object getProperty(String key);
 
-    public String[] getPropertyKeys();
+    String[] getPropertyKeys();
     /**
      * is available.
      * 
@@ -47,7 +48,8 @@ public interface RemoteReference<S> {
      * destroy.
      */
     void destroy();
+    
     Class<S> getServiceClass();
 
-    public RemoteServiceFactory getRemoteServiceFactory();
+    RemoteServiceFactory getRemoteServiceFactory();
 }

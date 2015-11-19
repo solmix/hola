@@ -3,6 +3,8 @@ package org.solmix.hola.discovery.zk;
 
 import java.util.Dictionary;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -42,12 +44,12 @@ public class ZKDiscoveryTest extends Assert
         
     }
     @Test
-    public void testRegistor() throws InterruptedException {
+    public void testRegistor() throws InterruptedException, ExecutionException {
         ExtensionLoader<DiscoveryProvider> loader = container.getExtensionLoader(DiscoveryProvider.class);
         DiscoveryProvider provider = loader.getExtension(ZookeeperProvider.NAME);
         assertNotNull(provider);
         PropertiesBuilder builder = PropertiesBuilder.newBuilder();
-        Dictionary<String, ?> dic=builder.setProtocol(ZookeeperProvider.NAME).setHost("localhost").setPort(6379).build();
+        Dictionary<String, ?> dic=builder.setProtocol(ZookeeperProvider.NAME).setHost("localhost").setPort(2181).build();
         Discovery discovery= provider.createDiscovery(dic);
         
         Dictionary<String, ?> service=builder.setProtocol("rpc")
@@ -57,6 +59,15 @@ public class ZKDiscoveryTest extends Assert
             .setProperty("gateway.port", "3242").build();
         DiscoveryInfo info = new DiscoveryInfoImpl(service);
         discovery.register(info);
+        DiscoveryInfo[] infos =discovery.getServices();
+        assertTrue(infos.length>0);
+        DiscoveryInfo disinfo= discovery.getService(info.getServiceID());
+        assertEquals(info.getServiceID(), disinfo.getServiceID());
+        ServiceType[] types  = discovery.getServiceTypes();
+        Future<DiscoveryInfo[]> futures=  discovery.getAsyncServices();
+        DiscoveryInfo[] finfos =futures.get();
+        assertEquals(infos.length,finfos.length);
+        assertTrue(types.length>0);
         discovery.unregister(info);
     }
     
@@ -66,7 +77,7 @@ public class ZKDiscoveryTest extends Assert
         DiscoveryProvider provider = loader.getExtension(ZookeeperProvider.NAME);
         assertNotNull(provider);
         PropertiesBuilder builder = PropertiesBuilder.newBuilder();
-        Dictionary<String, ?> dic=builder.setProtocol("redis").setHost("localhost").setPort(6379).build();
+        Dictionary<String, ?> dic=builder.setProtocol("redis").setHost("localhost").setPort(2181).build();
         Discovery discovery= provider.createDiscovery(dic);
       
         ServiceType type = new ServiceTypeImpl("com.example.gateway");

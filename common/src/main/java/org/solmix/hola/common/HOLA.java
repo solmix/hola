@@ -128,9 +128,13 @@ public class HOLA
     /**服务类别表示：provider：生产者，consumer：消费者*/
     public static final String CATEGORY_KEY = "category";
     
-    public static final String  PROVIDER_CATEGORY                           = "provider";
+    public static final String PROVIDER_CATEGORY = "provider";
 
-    public static final String  CONSUMER_CATEGORY                           = "consumer";
+    public static final String CONSUMER_CATEGORY = "consumer";
+
+    public static final String ROUTER_CATEGORY = "router";
+
+    public static final String CONFIGURATOR_CATEGORY = "configurator";
     
     public static final String DISCOVERY = "discovery";
     
@@ -196,7 +200,7 @@ public class HOLA
 
     public static final int DEFAULT_HEARTBEAT = 60 * 1000;
 
-    
+    public static final String CLUSTER_AVAILABLE_CHECK = "cluster.available.check";
 
    
 
@@ -818,18 +822,6 @@ public class HOLA
 
     public static final String GENERIC_SERIALIZATION_DEFAULT       = "true";*/
 
-
-  
-
-
-    
-
-  
-
- 
-    
-
-   
 
  
 

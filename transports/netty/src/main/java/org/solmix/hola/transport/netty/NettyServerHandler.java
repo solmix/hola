@@ -19,12 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.group.ChannelGroup;
-
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -34,6 +28,12 @@ import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.FaultType;
+
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.group.ChannelGroup;
 
 /**
  * 
@@ -87,6 +87,9 @@ public class NettyServerHandler extends ChannelHandlerAdapter
         NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(MessageUtils.getString(inMsg, Message.PATH_INFO));
 
         Message outMsg = protocol.createMessage();
+        outMsg.setRequest(false);
+        outMsg.setInbound(false);
+        outMsg.put(Message.ONEWAY, MessageUtils.getBoolean(inMsg, Message.ONEWAY));
         ThreadLocalChannel.set(ctx.channel());
         try {
             handler.handle(inMsg, outMsg);

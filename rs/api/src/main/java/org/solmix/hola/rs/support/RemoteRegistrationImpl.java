@@ -24,7 +24,6 @@ import java.util.Dictionary;
 import java.util.List;
 
 import org.solmix.exchange.Server;
-import org.solmix.exchange.model.NamedID;
 import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteReference;
@@ -64,38 +63,21 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
 
     protected final List<RemoteListener> listeners = new ArrayList<RemoteListener>(4);
 
-    protected NamedID serviceKey;
-
     private Server server;
 
     public RemoteRegistrationImpl(RemoteServiceFactory manager, ServiceRegistry registry,
-        Class<S> clazze, S service) {
+        Class<S> clazze, S service,Dictionary<String,?> properties) {
         this.clazze = clazze;
         this.service = service;
         this.manager = manager;
         this.registry = registry;
         synchronized (registrationLock) {
             this.state = REGISTERED;
+            this.properties=createProperties(properties);
             reference = new RemoteReferenceHolder<S>(this);
         }
+       
     }
-
-    /*public void register(Dictionary<String, ?> props,RemoteServiceInfo info) {
-        final RemoteReferenceHolder<S> ref;
-        synchronized (registry) {
-            synchronized (registrationLock) {
-                ref = reference;
-                this.properties = createProperties(props);
-            }
-            serviceKey = createServiceKey(info);
-            registry.addServiceRegistration(serviceKey, this);
-        }
-        registry.publishServiceEvent(new RemoteRegisteredEvent(ref));
-    }*/
-
-    /*protected NamedID createServiceKey(RemoteServiceInfo info) {
-        return null;
-    }*/
 
     protected ServiceProperties createProperties(Dictionary<String, ?> props) {
         assert Thread.holdsLock(registrationLock);
@@ -104,9 +86,6 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
         return sp;
     }
 
-    public NamedID getID() {
-        return serviceKey;
-    }
     public S getServiceObject(){
         return service;
     }
@@ -136,12 +115,14 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
                 if (state != REGISTERED) {
                     throw new IllegalStateException( "Service already unregistered.");
                 }
-                registry.removeServiceRegistration(serviceKey, this);
+                registry.removeServiceRegistration( this);
                 state = UNREGISTERING;
-                //停止server
-                server.stop();
                 ref = reference;
             }
+        }
+        //停止server
+        if(server!=null){
+            server.destroy();
         }
         registry.publishServiceEvent(new RemoteUnregisteredEvent(ref));
         synchronized (registrationLock) {

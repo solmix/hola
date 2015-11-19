@@ -51,9 +51,9 @@ public interface RemoteResponse
      */
     boolean hasException();
 
-    Map<String, String> getProperties();
+    Map<String, Object> getResponseContext();
 
-    String getProperty(String key);
+    Object getContextAttr(String key);
 
-    String getProperty(String key, String defaultValue);
+    Object getContextAttr(String key, Object defaultValue);
 }

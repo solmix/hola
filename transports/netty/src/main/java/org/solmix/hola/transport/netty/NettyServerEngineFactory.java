@@ -46,10 +46,8 @@ public class NettyServerEngineFactory implements ContainerListener {
     private static ConcurrentHashMap<ServerKeyID, NettyServerEngine> engines = new ConcurrentHashMap<ServerKeyID, NettyServerEngine>();
 
     public NettyServerEngineFactory() {
-
     }
-
-    /**   */
+    
     public Container getContainer() {
         return container;
     }

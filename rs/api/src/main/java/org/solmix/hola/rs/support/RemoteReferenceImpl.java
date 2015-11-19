@@ -43,13 +43,15 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S>
     private RemoteServiceFactory factory;
 
     private Client client;
-    public RemoteReferenceImpl(Class<S> clazz, Dictionary<String, ?> properties,RemoteServiceFactory factory)
+    private final ServiceRegistry registry;
+    public RemoteReferenceImpl(Class<S> clazz, ServiceRegistry registry, Dictionary<String, ?> properties,RemoteServiceFactory factory)
     {
         this.clazz = clazz;
         this.properties = createProperties(properties);
         this.factory=factory;
         //还未创建远程连接，不可用
         this.available=false;
+        this.registry=registry;
     }
 
     @Override
@@ -78,12 +80,18 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S>
     }
 
     @Override
-    public void destroy() {
+    public synchronized void destroy() {
         if (isDestroyed()) {
             return;
         }
         destroyed = true;
         setAvailable(false);
+        if(registry!=null){
+            registry.removeServiceReference(this);
+        }
+        if(client!=null){
+            client.destroy();
+        }
     }
     
     public boolean isDestroyed() {
@@ -105,6 +113,9 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S>
         this.client=client;
     }
 
+    public Client getClient(){
+        return client;
+    }
     @Override
     public org.solmix.hola.rs.RemoteReference.ReferenceType getReferenceType() {
         return ReferenceType.REMOTE;
