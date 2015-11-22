@@ -26,15 +26,15 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.common.HOLA;
+import org.solmix.hola.common.model.DefaultServiceType;
 import org.solmix.hola.common.model.PropertiesUtils;
+import org.solmix.hola.common.model.ServiceID;
+import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.DiscoveryException;
 import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.DiscoveryTypeEvent;
 import org.solmix.hola.discovery.model.DiscoveryInfo;
 import org.solmix.hola.discovery.model.DiscoveryInfoImpl;
-import org.solmix.hola.discovery.model.ServiceID;
-import org.solmix.hola.discovery.model.ServiceType;
-import org.solmix.hola.discovery.model.ServiceTypeImpl;
 import org.solmix.hola.discovery.support.FailbackDiscovery;
 import org.solmix.runtime.Container;
 
@@ -368,7 +368,7 @@ public class RedisDiscovery extends FailbackDiscovery
                     Set<String> keys = jedis.keys(root + HOLA.ANY_VALUE);
                     if (keys != null && keys.size() > 0) {
                         for (String key : keys) {
-                            types.add(ServiceTypeImpl.fromAddress(key));
+                            types.add(DefaultServiceType.fromAddress(key));
                         }
                     }
                     if (!replicate) {

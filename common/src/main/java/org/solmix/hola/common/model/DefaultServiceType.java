@@ -17,7 +17,7 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.discovery.model;
+package org.solmix.hola.common.model;
 
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.DataUtils;
@@ -30,7 +30,7 @@ import org.solmix.runtime.identity.IDCreateException;
  * @version 0.0.1 2014年4月12日
  */
 
-public class ServiceTypeImpl implements ServiceType
+public class DefaultServiceType implements ServiceType
 {
 
     private static final long serialVersionUID = 6751472077455908271L;
@@ -43,7 +43,7 @@ public class ServiceTypeImpl implements ServiceType
 
     private final String category;
 
-    public ServiceTypeImpl(String serviceInterface, String group,String category)
+    public DefaultServiceType(String serviceInterface, String group,String category)
     {
         this.group = group;
         this.serviceInterface=serviceInterface;
@@ -52,12 +52,12 @@ public class ServiceTypeImpl implements ServiceType
         Assert.isNotNull(typeName);
     }
 
-    public ServiceTypeImpl( ServiceType type)
+    public DefaultServiceType( ServiceType type)
     {
         this(type.getServiceInterface(), type.getGroup(), type.getCategory());
     }
     
-    public static ServiceTypeImpl fromAddress(String address){
+    public static DefaultServiceType fromAddress(String address){
         if (address == null)
             throw new IDCreateException("Service Type Name is null");
         try {
@@ -75,7 +75,7 @@ public class ServiceTypeImpl implements ServiceType
             String group=address.substring(0,first);
             String serviceInterface=address.substring(first,last);
         
-        ServiceTypeImpl  st = new ServiceTypeImpl(serviceInterface,group,category);
+        DefaultServiceType  st = new DefaultServiceType(serviceInterface,group,category);
         st.encodeType();
         return st;
         }catch (Exception e) {
@@ -83,7 +83,7 @@ public class ServiceTypeImpl implements ServiceType
         }
     }
 
-    public ServiceTypeImpl(String serviceInterface)
+    public DefaultServiceType(String serviceInterface)
     {
       this(serviceInterface,null,HOLA.PROVIDER_CATEGORY);
 

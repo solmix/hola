@@ -21,6 +21,8 @@ package org.solmix.hola.discovery.model;
 import java.io.Serializable;
 import java.util.Dictionary;
 
+import org.solmix.hola.common.model.ServiceID;
+
 /**
  * 
  * @author solmix.f@gmail.com

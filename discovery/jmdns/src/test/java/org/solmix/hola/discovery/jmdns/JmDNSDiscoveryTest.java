@@ -7,15 +7,15 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.solmix.hola.common.model.DefaultServiceType;
 import org.solmix.hola.common.model.PropertiesBuilder;
+import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryProvider;
 import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.DiscoveryTypeEvent;
 import org.solmix.hola.discovery.model.DiscoveryInfo;
 import org.solmix.hola.discovery.model.DiscoveryInfoImpl;
-import org.solmix.hola.discovery.model.ServiceType;
-import org.solmix.hola.discovery.model.ServiceTypeImpl;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.extension.ExtensionLoader;
@@ -66,7 +66,7 @@ public class JmDNSDiscoveryTest extends Assert
         Dictionary<String, ?> dic=builder.setProtocol("jmdns").setHost("localhost").setPort(6379).build();
         Discovery discovery= provider.createDiscovery(dic);
       
-        ServiceType type = new ServiceTypeImpl("com.example.gateway");
+        ServiceType type = new DefaultServiceType("com.example.gateway");
         final CountDownLatch count= new CountDownLatch(1);
         discovery.addTypeListener(type, new ServiceTypeListener() {
             

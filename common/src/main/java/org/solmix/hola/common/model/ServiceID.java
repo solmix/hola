@@ -16,27 +16,20 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-package org.solmix.hola.discovery.model;
+package org.solmix.hola.common.model;
 
 /**
- * 一类服务的标示
  * 
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年4月5日
  */
 
-public interface ServiceType extends java.io.Serializable
+public interface ServiceID extends java.io.Serializable
 {
-
-    public static final String DEFAULT_GROUP = "default"; 
+    public ServiceType getServiceType();
     
-    public static final String DEFAULT_NA = "N/A"; 
+    public ServiceProperties getServiceProperties();
 
-    public String getCategory();
-
-    public String getGroup();
-
-    public String getServiceInterface();
-    public String getServiceName() ;
-    public String getIdentityName() ;
+    public String getName();
+   
 }

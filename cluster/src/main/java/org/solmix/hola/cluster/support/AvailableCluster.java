@@ -11,8 +11,7 @@ public class AvailableCluster implements Cluster
     public static final String NAME = "available";
     @Override
     public <T> RemoteService<T> join(Directory<T> directory) {
-        // TODO Auto-generated method stub
-        return null;
+        return new AvailableRemoteService<T>(directory);
     }
 
 }

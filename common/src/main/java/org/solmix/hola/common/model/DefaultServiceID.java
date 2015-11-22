@@ -17,14 +17,12 @@
  * or see the FSF site: http://www.fsf.org. 
  */
 
-package org.solmix.hola.discovery.model;
+package org.solmix.hola.common.model;
 
 import java.util.Dictionary;
 
 import org.solmix.commons.annotation.Immutable;
 import org.solmix.commons.util.Assert;
-import org.solmix.hola.common.model.PropertiesUtils;
-import org.solmix.hola.common.model.ServiceProperties;
 
 /**
  * 
@@ -32,7 +30,7 @@ import org.solmix.hola.common.model.ServiceProperties;
  * @version 0.0.1 2014年4月13日
  */
 @Immutable
-public class ServiceIDImpl  implements ServiceID
+public class DefaultServiceID  implements ServiceID
 {
 
     private static final long serialVersionUID = -3700231292762874357L;
@@ -43,7 +41,7 @@ public class ServiceIDImpl  implements ServiceID
 
     private String serviceName;
 
-    public ServiceIDImpl(ServiceType type, String address)
+    public DefaultServiceID(ServiceType type, String address)
     {
         Assert.isNotNull(type);
         this.type = type;
@@ -51,7 +49,7 @@ public class ServiceIDImpl  implements ServiceID
         this.serviceProperties = new ServiceProperties(PropertiesUtils.toProperties(address));
     }
 
-    public ServiceIDImpl( ServiceType type, Dictionary<String, ?> properties)
+    public DefaultServiceID( ServiceType type, Dictionary<String, ?> properties)
     {
 
         Assert.isNotNull(type);

@@ -131,12 +131,13 @@ public class HolaRemoteServiceFactoryTest extends Assert
                 
             }
         });
+        count.await();
         RemoteRequest send = new DefaultRemoteRequest("send", str);
         rs.fireAsync(send);
         Future<RemoteResponse> future=rs.async(request);
        String returnValue= (String) future.get().getValue();
        assertEquals(mock, returnValue);
-        count.await();
+       
         reference.destroy();
         reg.unregister();
 

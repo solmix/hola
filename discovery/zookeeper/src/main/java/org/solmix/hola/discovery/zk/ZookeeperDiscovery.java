@@ -23,15 +23,15 @@ import org.apache.zookeeper.WatchedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.common.HOLA;
+import org.solmix.hola.common.model.DefaultServiceType;
 import org.solmix.hola.common.model.PropertiesUtils;
+import org.solmix.hola.common.model.ServiceID;
+import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.DiscoveryException;
 import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.DiscoveryTypeEvent;
 import org.solmix.hola.discovery.model.DiscoveryInfo;
 import org.solmix.hola.discovery.model.DiscoveryInfoImpl;
-import org.solmix.hola.discovery.model.ServiceID;
-import org.solmix.hola.discovery.model.ServiceType;
-import org.solmix.hola.discovery.model.ServiceTypeImpl;
 import org.solmix.hola.discovery.support.FailbackDiscovery;
 import org.solmix.runtime.Container;
 
@@ -226,7 +226,7 @@ public class ZookeeperDiscovery extends FailbackDiscovery
                            String path = event.getPath();
                            List<String> children=client.getChildren().usingWatcher(this).forPath(path);
                            for(String child:children){
-                               ServiceType childType = ServiceTypeImpl.fromAddress(child);
+                               ServiceType childType = DefaultServiceType.fromAddress(child);
                                addTypeListener(childType, listener);
                            }
                             
@@ -240,7 +240,7 @@ public class ZookeeperDiscovery extends FailbackDiscovery
                 List<String> services =addCuratorWatcher(root, watcher);
                 if(services!=null && services.size()>0){
                     for(String service:services){
-                     ServiceType childType = ServiceTypeImpl.fromAddress(service);
+                     ServiceType childType = DefaultServiceType.fromAddress(service);
                      addTypeListener(childType, listener);
                     }
                 }

@@ -21,9 +21,9 @@ package org.solmix.hola.discovery;
 
 import java.util.concurrent.Future;
 
+import org.solmix.hola.common.model.ServiceID;
+import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.model.DiscoveryInfo;
-import org.solmix.hola.discovery.model.ServiceID;
-import org.solmix.hola.discovery.model.ServiceType;
 
 /**
  * 服务定位

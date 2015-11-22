@@ -20,6 +20,7 @@ package org.solmix.hola.rs;
 
 import java.util.concurrent.Future;
 
+import org.solmix.exchange.Node;
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.hola.rs.call.RemoteRequestListener;
 import org.solmix.hola.rs.call.RemoteResponse;
@@ -31,7 +32,7 @@ import org.solmix.hola.rs.call.RemoteResponse;
  * @version $Id$  2015年9月16日
  */
 
-public interface RemoteService<T>
+public interface RemoteService<T> extends Node
 {
     Class<T> getServiceClass();
     /**

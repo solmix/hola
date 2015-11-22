@@ -41,11 +41,11 @@ import org.solmix.commons.collections.ConcurrentHashSet;
 import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.PropertiesUtils;
+import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.DiscoveryTypeEvent;
 import org.solmix.hola.discovery.model.DiscoveryInfo;
-import org.solmix.hola.discovery.model.ServiceType;
 import org.solmix.runtime.Container;
 
 /**

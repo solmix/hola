@@ -23,8 +23,12 @@ import java.util.Dictionary;
 
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.common.HOLA;
+import org.solmix.hola.common.model.DefaultServiceID;
+import org.solmix.hola.common.model.DefaultServiceType;
 import org.solmix.hola.common.model.PropertiesUtils;
+import org.solmix.hola.common.model.ServiceID;
 import org.solmix.hola.common.model.ServiceProperties;
+import org.solmix.hola.common.model.ServiceType;
 
 /**
  * 
@@ -62,11 +66,11 @@ public class DiscoveryInfoImpl implements DiscoveryInfo
         String service = PropertiesUtils.getServiceInterface(properties);
         String group = PropertiesUtils.getString(properties, HOLA.GROUP_KEY);
         String category = PropertiesUtils.getString(properties, HOLA.CATEGORY_KEY, HOLA.DEFAULT_CATEGORY);
-        ServiceTypeImpl type = new ServiceTypeImpl( service, group, category);
+        DefaultServiceType type = new DefaultServiceType( service, group, category);
         int weight = PropertiesUtils.getInt(properties, HOLA.WEIGHT_KEY, HOLA.DEFAULT_WEIGHT);
         int priority = PropertiesUtils.getInt(properties, HOLA.PRIORITY_KEY, HOLA.DEFAULT_PRIORITY);
         long ttl = PropertiesUtils.getLong(properties, HOLA.TTL_KEY, -1);
-        this.serviceID = new  ServiceIDImpl (type, properties );
+        this.serviceID = new  DefaultServiceID (type, properties );
         this.serviceName = serviceID.getName();
 
         this.weight = weight;
@@ -86,7 +90,7 @@ public class DiscoveryInfoImpl implements DiscoveryInfo
         dic.put(HOLA.PRIORITY_KEY, priority);
         dic.put(HOLA.WEIGHT_KEY, weight);
         dic.put(HOLA.TTL_KEY, ttl);
-        this.serviceID =new  ServiceIDImpl (type, dic );
+        this.serviceID =new  DefaultServiceID (type, dic );
 
         this.serviceName = serviceID.getName();
 

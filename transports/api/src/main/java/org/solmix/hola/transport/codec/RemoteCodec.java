@@ -18,10 +18,6 @@
  */
 package org.solmix.hola.transport.codec;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -38,6 +34,10 @@ import org.solmix.hola.serial.ObjectInput;
 import org.solmix.hola.serial.ObjectOutput;
 import org.solmix.hola.serial.Serialization;
 import org.solmix.hola.transport.support.RemoteResponses;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 
 
 /**

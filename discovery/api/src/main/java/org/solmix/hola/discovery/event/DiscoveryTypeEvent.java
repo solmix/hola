@@ -22,8 +22,8 @@ package org.solmix.hola.discovery.event;
 import java.util.EventObject;
 import java.util.List;
 
+import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.model.DiscoveryInfo;
-import org.solmix.hola.discovery.model.ServiceType;
 
 /**
  * 
