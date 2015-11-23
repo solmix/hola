@@ -12,5 +12,6 @@ public interface Directory<T> extends Node
     List<RemoteService<T>> list(RemoteRequest request) throws ClusterException;
 
     ServiceID getConsumerServiceID();
+    Class<T> getServiceClass();
 
 }

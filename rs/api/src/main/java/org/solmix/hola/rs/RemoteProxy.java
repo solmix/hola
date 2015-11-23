@@ -23,14 +23,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Future;
 
-import org.solmix.commons.util.ObjectUtils;
-import org.solmix.exchange.Client;
-import org.solmix.exchange.Endpoint;
-import org.solmix.exchange.interceptor.Fault;
-import org.solmix.exchange.invoker.OperationDispatcher;
-import org.solmix.exchange.model.OperationInfo;
+import org.solmix.hola.rs.call.DefaultRemoteRequest;
+import org.solmix.hola.rs.call.RemoteRequest;
+import org.solmix.hola.rs.call.RemoteResponse;
 
 /**
  * 
@@ -41,22 +40,17 @@ import org.solmix.exchange.model.OperationInfo;
 public class RemoteProxy implements InvocationHandler, Closeable
 {
 
-    protected Client client;
-
-    private Endpoint endpoint;
-
-    public RemoteProxy(Client client)
+    private RemoteService<?> remoteService;
+    public RemoteProxy(RemoteService<?> remoteService)
     {
-        this.endpoint = client.getEndpoint();
-        this.client = client;
+        this.remoteService=remoteService;
     }
 
     @Override
     public void close() throws IOException {
-        if (client != null) {
-            client.destroy();
-            client = null;
-            endpoint = null;
+        if (remoteService != null) {
+            remoteService.destroy();
+            remoteService = null;
         }
     }
 
@@ -66,52 +60,43 @@ public class RemoteProxy implements InvocationHandler, Closeable
         super.finalize();
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public static Client getClient(Object o) {
-        return ((RemoteProxy) Proxy.getInvocationHandler(o)).getClient();
-    }
-
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (client == null) {
-            throw new IllegalStateException("The client has been closed.");
-        }
+        Map<String,Object> requestContext=new HashMap<String,Object>();
+        RemoteRequest request  = new DefaultRemoteRequest(method, args,requestContext);
+        
         if (method.getDeclaringClass().equals(Object.class) || method.getDeclaringClass().equals(Closeable.class)) {
             return method.invoke(this);
-        } else if (method.getDeclaringClass().isInstance(client)) {
-            return method.invoke(client, args);
+        } else if (method.getDeclaringClass().isInstance(remoteService)) {
+            return method.invoke(remoteService, args);
         }
-        OperationDispatcher od = (OperationDispatcher) endpoint.getService().get(OperationDispatcher.class.getName());
-        OperationInfo op = od.getOperation(method);
-        if (op == null) {
-            throw new Fault("No OperationInfo defined for method:" + method.getName());
+        request.getRequestContext().put(Method.class.getName(), method);
+        boolean isAsync = isAsync(method);
+        try{
+            if(isAsync){
+               return remoteService.async(request);
+            }else{
+                RemoteResponse response= remoteService.sync(request);
+                if(response.hasException()){
+                    throw response.getException();
+                }else{
+                    return response.getValue();
+                }
+            }
+        }catch(RemoteException e){
+            throw e;
+        }catch (Exception e) {
+            throw new RemoteException(e);
         }
-        Object[] params = args;
-        if (null == params) {
-            params = ObjectUtils.EMPTY_OBJECT_ARRAY;
-        }
-
-        Object o = invokeSync(method, op, params);
-        return adapteObject(o);
     }
 
     protected Object adapteObject(Object o) {
         return o;
     }
-
-    public Object invokeSync(Method method, OperationInfo oi, Object[] params) throws Exception {
-        if (client == null) {
-            throw new IllegalStateException("The client has been closed.");
-        }
-        Object rawRet[] = client.invoke(oi, params);
-
-        if (rawRet != null && rawRet.length > 0) {
-            return rawRet[0];
-        } else {
-            return null;
-        }
+    
+    boolean isAsync(Method m) {
+        return m.getName().endsWith("Async")
+            && (Future.class.equals(m.getReturnType()) );
     }
+
 }

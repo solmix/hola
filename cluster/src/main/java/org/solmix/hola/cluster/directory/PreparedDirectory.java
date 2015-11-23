@@ -58,4 +58,9 @@ public class PreparedDirectory<T> extends AbstractDirectory<T>
         }
         return false;
     }
+
+    @Override
+    public Class<T> getServiceClass() {
+        return null;
+    }
 }

@@ -1,12 +1,15 @@
 
 package org.solmix.hola.rs.call;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class DefaultRemoteRequest implements RemoteRequest
 {
 
     private String methodName;
+    
+    private Method method;
 
     private Class<?>[] parameterTypes;
 
@@ -14,6 +17,15 @@ public class DefaultRemoteRequest implements RemoteRequest
 
     private Map<String, Object> attachments;
 
+    public DefaultRemoteRequest(Method method, Object[] parameter, Map<String, Object> attachments){
+        this.method=method;
+        this.parameter = parameter;
+        this.attachments = attachments;
+    }
+    public DefaultRemoteRequest(Method method, Object[] parameter){
+        this.method=method;
+        this.parameter = parameter;
+    }
     public DefaultRemoteRequest(String methodName, Class<?>[] parameterTypes, Object[] parameter, Map<String, Object> attachments)
     {
         this.methodName = methodName;
@@ -38,12 +50,18 @@ public class DefaultRemoteRequest implements RemoteRequest
     }
 
     @Override
-    public String getMethod() {
+    public String getMethodName() {
+        if(method!=null){
+            methodName=method.getName();
+        }
         return methodName;
     }
 
     @Override
     public Class<?>[] getParameterTypes() {
+        if(method!=null){
+            parameterTypes=method.getParameterTypes();
+        }
         return parameterTypes;
     }
 
@@ -70,5 +88,12 @@ public class DefaultRemoteRequest implements RemoteRequest
         }
         return result;
     }
+    @Override
+    public Method getMethod() {
+        return method;
+    }
 
+    public void setContextAttr(String key,Object value){
+        attachments.put(key, value);
+    }
 }

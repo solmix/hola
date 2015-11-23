@@ -7,17 +7,17 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name=BroadcastCluster.NAME)
-public class BroadcastCluster implements Cluster,ContainerAware
+@Extension(name=MergeableCluster.NAME)
+public class MergeableCluster implements Cluster,ContainerAware
 {
 
-    public static final String NAME = "broadcast";
+    public static final String NAME = "mergeable";
 
     private Container container;
 
     @Override
     public <T> RemoteService<T> join(Directory<T> directory) {
-        return new BroadcastRemoteService<T>(directory,container);
+        return new MergeableRemoteService<T>(directory,container);
     }
 
     @Override

@@ -20,7 +20,9 @@ package org.solmix.hola.rs;
 
 import java.util.concurrent.Future;
 
+import org.solmix.exchange.ClientCallback;
 import org.solmix.exchange.Node;
+import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.hola.rs.call.RemoteRequestListener;
 import org.solmix.hola.rs.call.RemoteResponse;
@@ -64,17 +66,9 @@ public interface RemoteService<T> extends Node
      * @param call
      */
     void fireAsync(RemoteRequest call) throws RemoteException;
-
-    /**
-     * 返回远程服务接口的本地代理对象
-     * 
-     * @return
-     * @throws RemoteException
-     */
-    T getProxy() throws RemoteException;
-
     
-    Object getProperty(String key);
-
-    String[] getPropertyKeys();
+    ServiceProperties getServiceProperties();
+    
+    @Deprecated
+    Object[] invoke(ClientCallback callback, RemoteRequest request, boolean oneway) throws RemoteException ;
 }

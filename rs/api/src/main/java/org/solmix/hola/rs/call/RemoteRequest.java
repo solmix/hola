@@ -19,6 +19,7 @@
 
 package org.solmix.hola.rs.call;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -40,7 +41,9 @@ public interface RemoteRequest
      * 
      * @return
      */
-    public String getMethod();
+    public Method getMethod();
+    
+    public String getMethodName();
 
     /**
      * 方法参数类型

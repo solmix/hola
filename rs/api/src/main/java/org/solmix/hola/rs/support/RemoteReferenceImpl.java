@@ -21,9 +21,9 @@ package org.solmix.hola.rs.support;
 
 import java.util.Dictionary;
 
-import org.solmix.exchange.Client;
 import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteServiceFactory;
 
 /**
@@ -42,7 +42,7 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S>
     private volatile boolean destroyed = false;
     private RemoteServiceFactory factory;
 
-    private Client client;
+    private RemoteService<S> remoteService;
     private final ServiceRegistry registry;
     public RemoteReferenceImpl(Class<S> clazz, ServiceRegistry registry, Dictionary<String, ?> properties,RemoteServiceFactory factory)
     {
@@ -52,6 +52,9 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S>
         //还未创建远程连接，不可用
         this.available=false;
         this.registry=registry;
+    }
+    public ServiceProperties getServiceProperties(){
+        return properties;
     }
 
     @Override
@@ -89,8 +92,8 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S>
         if(registry!=null){
             registry.removeServiceReference(this);
         }
-        if(client!=null){
-            client.destroy();
+        if(remoteService!=null){
+            remoteService.destroy();
         }
     }
     
@@ -109,12 +112,12 @@ public class RemoteReferenceImpl<S> implements RemoteReference<S>
         return clazz;
     }
 
-    public void setClient(Client client){
-        this.client=client;
+    public void setRemoteService(RemoteService<S> remoteService){
+        this.remoteService=remoteService;
     }
 
-    public Client getClient(){
-        return client;
+    public RemoteService<S> getRemoteService(){
+        return remoteService;
     }
     @Override
     public org.solmix.hola.rs.RemoteReference.ReferenceType getReferenceType() {

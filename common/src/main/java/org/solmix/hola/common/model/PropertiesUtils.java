@@ -777,4 +777,19 @@ public class PropertiesUtils
         }
         return target;
     }
+    public static String getServiceKey(ServiceProperties serviceProperties) {
+        String inf = getServiceInterface(serviceProperties);
+        if (inf == null) return null;
+        StringBuilder buf = new StringBuilder();
+        String group = getString(serviceProperties,HOLA.GROUP_KEY);
+        if (group != null && group.length() > 0) {
+            buf.append(group).append("/");
+        }
+        buf.append(inf);
+        String version = getString(serviceProperties,HOLA.VERSION_KEY);
+        if (version != null && version.length() > 0) {
+            buf.append(":").append(version);
+        }
+        return buf.toString();
+    }
 }

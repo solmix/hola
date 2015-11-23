@@ -7,17 +7,17 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name=BroadcastCluster.NAME)
-public class BroadcastCluster implements Cluster,ContainerAware
+@Extension(name=ForkingCluster.NAME)
+public class ForkingCluster implements Cluster,ContainerAware
 {
 
-    public static final String NAME = "broadcast";
+    public static final String NAME = "fork";
 
     private Container container;
 
     @Override
     public <T> RemoteService<T> join(Directory<T> directory) {
-        return new BroadcastRemoteService<T>(directory,container);
+        return new ForkingRemoteService<T>(directory,container);
     }
 
     @Override

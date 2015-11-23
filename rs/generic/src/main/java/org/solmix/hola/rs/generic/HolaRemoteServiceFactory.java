@@ -27,13 +27,11 @@ import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Server;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.rs.RemoteException;
-import org.solmix.hola.rs.RemoteProxy;
 import org.solmix.hola.rs.RemoteProxyFactory;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.event.RemoteRegisteredEvent;
-import org.solmix.hola.rs.generic.exchange.HolaClientFactory;
 import org.solmix.hola.rs.generic.exchange.HolaRemoteService;
 import org.solmix.hola.rs.generic.exchange.HolaServerFactory;
 import org.solmix.hola.rs.support.AbstractRemoteServiceFactory;
@@ -80,13 +78,9 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
         if(ref==null){
             throw new RemoteException("Unsupport RemoteReference type:"+reference.getClass().getName());
         }
-        RemoteProxyFactory factory= new RemoteProxyFactory(new HolaClientFactory());
-        factory.setContainer(container);
-        factory.setServiceClass(reference.getServiceClass());
-        factory.setProperties(toDictionary(reference));
-        Object obj = factory.create();
-        ref.setClient(RemoteProxy.getClient(obj));
-        return (S) obj;
+        RemoteService<S> rs = getRemoteService(ref);
+        S obj = RemoteProxyFactory.getProxy(rs,container);
+        return  obj;
     }
    
 

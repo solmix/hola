@@ -134,7 +134,11 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
         if(type==ReferenceType.LOCAL){
             throw new IllegalArgumentException("Reference is Local"); 
         }else if(type==ReferenceType.REMOTE){
-            return doGetRemoteService((RemoteReferenceImpl<S>)reference);
+            RemoteReferenceImpl<S> impl =(RemoteReferenceImpl<S>)reference;
+            if(impl.getRemoteService()!=null){
+                return impl.getRemoteService();
+            }
+            return doGetRemoteService(impl);
         }
         return null;
     }
