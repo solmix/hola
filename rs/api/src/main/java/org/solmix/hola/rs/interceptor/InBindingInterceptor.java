@@ -26,7 +26,7 @@ import org.solmix.exchange.interceptor.phase.Phase;
 import org.solmix.exchange.interceptor.phase.PhaseInterceptorSupport;
 import org.solmix.exchange.model.NamedID;
 import org.solmix.exchange.model.OperationInfo;
-import org.solmix.hola.serial.Serialization;
+import org.solmix.hola.common.serial.Serialization;
 
 
 /**

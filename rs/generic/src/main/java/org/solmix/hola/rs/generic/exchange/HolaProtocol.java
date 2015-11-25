@@ -23,7 +23,7 @@ import org.solmix.exchange.Protocol;
 import org.solmix.exchange.model.ProtocolInfo;
 import org.solmix.exchange.support.AbstractProtocol;
 import org.solmix.exchange.support.DefaultMessage;
-import org.solmix.hola.serial.SerializationManager;
+import org.solmix.hola.common.serial.SerializationManager;
 import org.solmix.runtime.Container;
 
 

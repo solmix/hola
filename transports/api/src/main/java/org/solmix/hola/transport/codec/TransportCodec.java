@@ -30,11 +30,11 @@ import org.solmix.commons.util.StringUtils;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.MessageUtils;
 import org.solmix.hola.common.HOLA;
-import org.solmix.hola.serial.ObjectInput;
-import org.solmix.hola.serial.ObjectOutput;
-import org.solmix.hola.serial.SerialConfiguration;
-import org.solmix.hola.serial.Serialization;
-import org.solmix.hola.serial.SerializationManager;
+import org.solmix.hola.common.serial.ObjectInput;
+import org.solmix.hola.common.serial.ObjectOutput;
+import org.solmix.hola.common.serial.SerialConfiguration;
+import org.solmix.hola.common.serial.Serialization;
+import org.solmix.hola.common.serial.SerializationManager;
 
 /**
  * 

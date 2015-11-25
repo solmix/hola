@@ -20,7 +20,7 @@ package org.solmix.hola.rs.data;
 
 import org.solmix.exchange.data.ObjectWriter;
 import org.solmix.exchange.model.ArgumentInfo;
-import org.solmix.hola.serial.ObjectOutput;
+import org.solmix.hola.common.serial.ObjectOutput;
 
 
 /**

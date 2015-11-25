@@ -7,20 +7,21 @@ import org.solmix.hola.cluster.Router;
 import org.solmix.hola.common.model.ServiceID;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
+import org.solmix.runtime.Container;
 
 public class PreparedDirectory<T> extends AbstractDirectory<T>
 {
 
     private final List<RemoteService<T>> remoteServices;
 
-    public PreparedDirectory(List<Router> reouters, ServiceID id)
+    public PreparedDirectory(Container container,List<Router> reouters, ServiceID id)
     {
-        this(null, reouters, id);
+        this(container,null, reouters, id);
     }
 
-    public PreparedDirectory(List<RemoteService<T>> remoteServices, List<Router> reouters, ServiceID id)
+    public PreparedDirectory(Container container,List<RemoteService<T>> remoteServices, List<Router> reouters, ServiceID id)
     {
-        super(reouters, id);
+        super(container,reouters, id);
         if (remoteServices == null || remoteServices.size() < 0) {
             throw new IllegalArgumentException("PreparedDirectory remoteservice is empty");
         }

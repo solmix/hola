@@ -43,8 +43,8 @@ import org.solmix.exchange.model.NamedID;
 import org.solmix.exchange.model.NamedIDPolicy;
 import org.solmix.exchange.model.OperationInfo;
 import org.solmix.hola.common.HOLA;
-import org.solmix.hola.serial.ObjectInput;
-import org.solmix.hola.serial.SerialConfiguration;
+import org.solmix.hola.common.serial.ObjectInput;
+import org.solmix.hola.common.serial.SerialConfiguration;
 import org.solmix.hola.transport.codec.Decodeable;
 
 /**

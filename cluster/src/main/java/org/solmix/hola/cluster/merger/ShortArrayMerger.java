@@ -1,9 +1,11 @@
 package org.solmix.hola.cluster.merger;
 
 import org.solmix.hola.cluster.Merger;
-
+import org.solmix.runtime.Extension;
+@Extension(name="short")
 public class ShortArrayMerger implements Merger<short[]> {
 
+    @Override
     public short[] merge(short[]... items) {
         int total = 0;
         for (short[] array : items) {

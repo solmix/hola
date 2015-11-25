@@ -1,12 +1,15 @@
 
 package org.solmix.hola.cluster.merger;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.solmix.commons.util.Reflection;
 import org.solmix.hola.cluster.Merger;
 import org.solmix.hola.cluster.MergerFactory;
 import org.solmix.runtime.Container;
+import org.solmix.runtime.extension.ExtensionLoader;
 
 public class DefaultMergerFactory implements MergerFactory
 {
@@ -17,8 +20,10 @@ public class DefaultMergerFactory implements MergerFactory
     public DefaultMergerFactory(Container container){
         this.container=container;
     }
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> Merger<T> getMerger(Class<T> returnType) {
+       
         Merger result;
         if (returnType.isArray()) {
             Class type = returnType.getComponentType();
@@ -41,7 +46,13 @@ public class DefaultMergerFactory implements MergerFactory
     }
 
     private void loadMergers() {
-        
+        ExtensionLoader<Merger> loader=  container.getExtensionLoader(Merger.class);
+      Set<String> extensions=  loader.getLoadedExtensions();
+      for(String str:extensions){
+          Merger merger = loader.getExtension(str);
+          mergerCache.putIfAbsent(Reflection.getGenericClass(merger.getClass()), merger);
+      }
+          
     }
 
 }

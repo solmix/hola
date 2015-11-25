@@ -1,9 +1,11 @@
 package org.solmix.hola.cluster.merger;
 
 import org.solmix.hola.cluster.Merger;
-
+import org.solmix.runtime.Extension;
+@Extension(name="long")
 public class LongArrayMerger implements Merger<long[]> {
 
+    @Override
     public long[] merge(long[]... items) {
         int total = 0;
         for (long[] array : items) {

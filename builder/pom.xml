@@ -19,11 +19,6 @@
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-monitor-api</artifactId>
-  		<version>${project.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-rs-api</artifactId>
   		<version>${project.version}</version>
   	</dependency>
@@ -39,8 +34,43 @@
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-transports-netty</artifactId>
-  		<version>${project.version}</version>
+  		<artifactId>hola-monitor</artifactId>
+  		<version>0.6.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.aries.blueprint</groupId>
+			<artifactId>org.apache.aries.blueprint.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
 </project>

@@ -10,9 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.solmix.hola.cluster.ClusterException;
 import org.solmix.hola.cluster.Directory;
 import org.solmix.hola.cluster.Router;
+import org.solmix.hola.cluster.RouterFactory;
+import org.solmix.hola.cluster.router.ExpressionRouterFactory;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ServiceID;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
+import org.solmix.runtime.Container;
 
 public abstract class AbstractDirectory<T> extends Object implements Directory<T>
 {
@@ -24,12 +28,14 @@ public abstract class AbstractDirectory<T> extends Object implements Directory<T
     private volatile List<Router> routers;
 
     private ServiceID consumerId;
-    public AbstractDirectory(ServiceID consumerID){
-        this(null,consumerID);
+    private Container container;
+    public AbstractDirectory(Container container,ServiceID consumerID){
+        this(container,null,consumerID);
     }
 
-    public AbstractDirectory(List<Router> routers, ServiceID consumerID)
+    public AbstractDirectory(Container container,List<Router> routers, ServiceID consumerID)
     {
+        this.container=container;
         setRouters(routers);
     }
 
@@ -68,6 +74,14 @@ public abstract class AbstractDirectory<T> extends Object implements Directory<T
 
     public void setRouters(List<Router> routers) {
         routers = routers == null ? new ArrayList<Router>() : new ArrayList<Router>(routers);
+        Object rule =consumerId.getServiceProperties().get(HOLA.ROUTER_RULE_KEY);
+        
+        if(rule!=null&&rule.toString().length()>0){
+            Object router =consumerId.getServiceProperties().get(HOLA.ROUTER_KEY);
+            String key=(router==null)?ExpressionRouterFactory.NAME:router.toString();
+            RouterFactory factory =container.getExtensionLoader(RouterFactory.class).getExtension(key);
+            routers.add(factory.createRouter(rule.toString()));
+        }
         Collections.sort(routers);
         this.routers = routers;
     }

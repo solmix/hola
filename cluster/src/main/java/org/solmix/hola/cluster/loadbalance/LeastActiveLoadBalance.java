@@ -7,8 +7,9 @@ import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
+import org.solmix.runtime.Extension;
 
-
+@Extension(name = LeastActiveLoadBalance.NAME)
 public class LeastActiveLoadBalance extends AbstractLoadBalance
 {
     public static final String NAME = "leastactive";

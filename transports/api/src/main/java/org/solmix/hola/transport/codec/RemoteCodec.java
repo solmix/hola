@@ -30,9 +30,9 @@ import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.FaultType;
 import org.solmix.hola.common.HOLA;
-import org.solmix.hola.serial.ObjectInput;
-import org.solmix.hola.serial.ObjectOutput;
-import org.solmix.hola.serial.Serialization;
+import org.solmix.hola.common.serial.ObjectInput;
+import org.solmix.hola.common.serial.ObjectOutput;
+import org.solmix.hola.common.serial.Serialization;
 import org.solmix.hola.transport.support.RemoteResponses;
 
 import io.netty.buffer.ByteBuf;

@@ -24,8 +24,8 @@ import org.solmix.exchange.data.DataProcessor;
 import org.solmix.exchange.data.ObjectReader;
 import org.solmix.exchange.data.ObjectWriter;
 import org.solmix.exchange.interceptor.support.InterceptorProviderSupport;
-import org.solmix.hola.serial.ObjectInput;
-import org.solmix.hola.serial.ObjectOutput;
+import org.solmix.hola.common.serial.ObjectInput;
+import org.solmix.hola.common.serial.ObjectOutput;
 
 /**
  * 

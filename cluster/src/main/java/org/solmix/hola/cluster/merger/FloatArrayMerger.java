@@ -1,9 +1,11 @@
 package org.solmix.hola.cluster.merger;
 
 import org.solmix.hola.cluster.Merger;
-
+import org.solmix.runtime.Extension;
+@Extension(name="float")
 public class FloatArrayMerger implements Merger<float[]> {
 
+    @Override
     public float[] merge(float[]... items) {
         int total = 0;
         for (float[] array : items) {

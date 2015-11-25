@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.solmix.hola.cluster.Merger;
-
+import org.solmix.runtime.Extension;
+@Extension(name="list")
 public class ListMerger implements Merger<List<?>> {
 
     @Override

@@ -1,9 +1,11 @@
 package org.solmix.hola.cluster.merger;
 
 import org.solmix.hola.cluster.Merger;
-
+import org.solmix.runtime.Extension;
+@Extension(name="byte")
 public class ByteArrayMerger implements Merger<byte[]>{
 
+    @Override
     public byte[] merge(byte[]... items) {
         int total = 0;
         for (byte[] array : items) {

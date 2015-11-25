@@ -35,17 +35,21 @@ public class HOLA
 
     public static final Pattern SPLIT_COMMA_PATTERN = Pattern.compile("\\s*[,]+\\s*");
     /**
-     * 构成Address的元素
+     * 地址
      */
     public static final String ADDRESS_KEY = "address";
     public static final String GROUP_KEY = "group";
-
-   
+    /**协议*/
     public static final String PROTOCOL_KEY = "protocol";
+    /**主机/IP*/
     public static final String HOST_KEY = "host";
+    /**端口号*/
     public static final String PORT_KEY = "port";
+    /**路径*/
     public static final String PATH_KEY = "path";
+    /**用户名称*/
     public static final String USER_KEY = "user";
+    /**密码*/
     public static final String PASSWORD_KEY = "password";
     
     /**接口名称*/
@@ -57,9 +61,9 @@ public class HOLA
     public static final String DEFAULT_SERIALIZATION = "java";
     
     public static final String TIMEOUT_KEY = "timeout";
-
+    /**连接超时时间*/
     public static final String CONNECT_TIMEOUT_KEY = "connectTimeout";
-
+    /**接收超时时间*/
     public static final String RECEIVE_TIMEOUT_KEY = "receiveTimeout";
     
     public static final String ANY_VALUE = "*";
@@ -202,7 +206,10 @@ public class HOLA
     public static final String IS_SERVER = "server";
 
     public static final int DEFAULT_HEARTBEAT = 60 * 1000;
-
+    
+    /**
+     * 集群时，启动是否检查可用
+     */
     public static final String CLUSTER_AVAILABLE_CHECK = "cluster.available.check";
 
     /**
@@ -290,6 +297,9 @@ public class HOLA
 
    
 
+    /**
+     * 数据缓冲大小
+     */
     public static final String BUFFER_KEY = "bufferSize";
 
     public static final String ANYHOST_KEY = "anyhost";
@@ -314,13 +324,30 @@ public class HOLA
 
 
     public static final String PIPELINES = "pipelines";
+    
+    /**
+     *指定合并实现类型 
+     */
     public static final String MERGER_KEY = "merger";
 
+    /**
+     * 时间戳
+     */
     public static final String TIMESTAMP_KEY = "timestamp";
 
     public static final String WARMUP_KEY = "warmup";
 
     public static final int DEFAULT_WARMUP = 600000;
+
+    /**
+     * 集群路由实现类型
+     */
+    public static final Object ROUTER_KEY = "router";
+
+    /**
+     * 集群路由规则
+     */
+    public static final Object ROUTER_RULE_KEY = "router.rule";
 
 
 

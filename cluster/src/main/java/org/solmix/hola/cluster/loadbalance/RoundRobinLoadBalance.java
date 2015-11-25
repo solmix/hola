@@ -9,8 +9,9 @@ import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.common.util.AtomicPositiveInteger;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
+import org.solmix.runtime.Extension;
 
-
+@Extension(name = RoundRobinLoadBalance.NAME)
 public class RoundRobinLoadBalance extends AbstractLoadBalance
 {
     public static final String NAME = "roundrobin"; 

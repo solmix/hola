@@ -14,11 +14,13 @@ import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
+import org.solmix.runtime.Extension;
 
-
+@Extension(name = ConsistentHashLoadBalance.NAME)
 public class ConsistentHashLoadBalance extends AbstractLoadBalance
 {
 
+    public static final String NAME="consistenthash";
     private final ConcurrentMap<String, ConsistentHashSelector<?>> selectors = new ConcurrentHashMap<String, ConsistentHashSelector<?>>();
 
     @Override

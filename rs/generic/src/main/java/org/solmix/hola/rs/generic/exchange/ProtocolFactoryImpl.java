@@ -28,11 +28,11 @@ import org.solmix.exchange.model.NamedID;
 import org.solmix.exchange.model.ProtocolInfo;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
+import org.solmix.hola.common.serial.SerialConfiguration;
+import org.solmix.hola.common.serial.SerializationManager;
 import org.solmix.hola.rs.ProtocolFactorySupport;
 import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
 import org.solmix.hola.rs.generic.codec.HolaCodec;
-import org.solmix.hola.serial.SerialConfiguration;
-import org.solmix.hola.serial.SerializationManager;
 import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.runtime.Extension;
 
