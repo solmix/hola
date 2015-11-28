@@ -145,8 +145,8 @@
     		</xsd:extension>
     	</xsd:complexContent>
     </xsd:complexType>
-    
-     <xsd:complexType name="abstractServiceType">
+
+    <xsd:complexType name="abstractServiceType">
     	<xsd:complexContent>
     		<xsd:extension base="abstractInterfaceType">
     			<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
@@ -156,10 +156,11 @@
     			<xsd:attribute name="dynamic" type="xsd:boolean"></xsd:attribute>
     			<xsd:attribute name="executes" type="xsd:int"></xsd:attribute>
     			<xsd:attribute name="publish" type="xsd:boolean"></xsd:attribute>
+    			<xsd:attribute name="delay" type="xsd:int"></xsd:attribute>
     		</xsd:extension>
     	</xsd:complexContent>
     </xsd:complexType>
-    
+
     <xsd:complexType name="providerType">
     	<xsd:complexContent>
     		<xsd:extension base="abstractServiceType">
@@ -259,7 +260,6 @@
     			</xsd:attribute>
     			<xsd:attribute name="ref" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="path" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="delay" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="server" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="generic" type="xsd:string"></xsd:attribute>
     		</xsd:extension>

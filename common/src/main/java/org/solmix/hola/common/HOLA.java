@@ -140,7 +140,7 @@ public class HOLA
 
     public static final String CONFIGURATOR_CATEGORY = "configurator";
     
-    public static final String DISCOVERY = "discovery";
+    public static final String DISCOVERY_KEY = "discovery";
     
     public static final String REGISTER = "register";
     public static final String UNREGISTER = "unregister";
@@ -348,6 +348,28 @@ public class HOLA
      * 集群路由规则
      */
     public static final Object ROUTER_RULE_KEY = "router.rule";
+
+    public static final String NO_AVAILABLE = "N/A";
+
+    public static final String DEFAULT_KEY = "default";
+
+    /**
+     * 进程号
+     */
+    public static final String PID_KEY = "pid";
+
+    public static final String SCOPE_KEY = "scope";
+
+    public static final String MONITOR_KEY = "monitor";
+
+    public static final String DELEGATE_FACTORY = "delegate";
+
+    /**
+     * 不在公告中显示的参数的前缀
+     */
+    public static final String DIC_HIDDEN_PREFIX = ".";
+
+    public static final String CLUSTER_KEY = "cluster";
 
 
 

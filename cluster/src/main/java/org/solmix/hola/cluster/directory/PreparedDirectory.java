@@ -14,9 +14,9 @@ public class PreparedDirectory<T> extends AbstractDirectory<T>
 
     private final List<RemoteService<T>> remoteServices;
 
-    public PreparedDirectory(Container container,List<Router> reouters, ServiceID id)
+    public PreparedDirectory(Container container,List<RemoteService<T>> remoteServices, ServiceID id)
     {
-        this(container,null, reouters, id);
+        this(container,remoteServices, null, id);
     }
 
     public PreparedDirectory(Container container,List<RemoteService<T>> remoteServices, List<Router> reouters, ServiceID id)

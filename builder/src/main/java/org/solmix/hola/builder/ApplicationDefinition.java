@@ -49,7 +49,7 @@ public class ApplicationDefinition extends AbstractBeanDefinition {
     private List<DiscoveryDefinition> discoveries;
 
     private MonitorDefinition monitor;
-
+    @Property(excluded = true)
     public String getName() {
         return name;
     }

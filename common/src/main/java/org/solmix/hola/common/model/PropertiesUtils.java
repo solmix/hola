@@ -53,6 +53,8 @@ public class PropertiesUtils
     private PropertiesUtils(){
         
     }
+    public static String[] ESCAPLES=new String[] { HOLA.ADDRESS_KEY, HOLA.PROTOCOL_KEY, HOLA.HOST_KEY,
+        HOLA.PORT_KEY, HOLA.PATH_KEY, HOLA.USER_KEY, HOLA.PASSWORD_KEY,HOLA.MONITOR_KEY,HOLA.DISCOVERY_KEY };
     public static String toAddress(Dictionary<String, ?> properties){
         return toAddress(properties,false,true,false,false);
     }
@@ -113,8 +115,7 @@ public class PropertiesUtils
             buf.append(path);
         }
         if (appendParameter) {
-            buildQueryString(buf, true,identity, properties, new String[] { HOLA.ADDRESS_KEY, HOLA.PROTOCOL_KEY, HOLA.HOST_KEY,
-                HOLA.PORT_KEY, HOLA.PATH_KEY, HOLA.USER_KEY, HOLA.PASSWORD_KEY });
+            buildQueryString(buf, true,identity, properties,ESCAPLES );
         }
         return buf.toString();
     }
@@ -777,6 +778,25 @@ public class PropertiesUtils
         }
         return target;
     }
+    
+    public static void filterCopy(Dictionary<String, Object> source, Dictionary<String, Object> target, String... escapes) {
+        if (escapes == null || escapes.length == 0) {
+            return;
+        }
+        List<String> escapeList = Arrays.asList(escapes);
+        Enumeration<String> keys = source.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            if(key.startsWith(HOLA.DIC_HIDDEN_PREFIX)){
+                continue;
+            }
+            if (escapeList.contains(key)) {
+                continue;
+            }
+            target.put(key, source.get(key));
+        }
+    }
+    
     public static String getServiceKey(ServiceProperties serviceProperties) {
         String inf = getServiceInterface(serviceProperties);
         if (inf == null) return null;
@@ -791,5 +811,66 @@ public class PropertiesUtils
             buf.append(":").append(version);
         }
         return buf.toString();
+    }
+    
+    /**
+     * @param address 地址
+     * @param defaultDic 地址上附加的默认参数
+     * @return
+     */
+    public static Dictionary<String, ?> parseURL(String address,Dictionary<String, Object> defaults){
+        if (address == null || address.length() == 0) {
+            return null;
+        }
+        String url;
+        if (address.indexOf("://") >= 0) {
+            url = address;
+        } else {
+            String[] addresses = HOLA.SPLIT_COMMA_PATTERN.split(address);
+            url = addresses[0];
+            if (addresses.length > 1) {
+                StringBuilder backup = new StringBuilder();
+                for (int i = 1; i < addresses.length; i++) {
+                    if (i > 1) {
+                        backup.append(",");
+                    }
+                    backup.append(addresses[i]);
+                }
+                url += "?" + HOLA.BACKUP_KEY + "=" + backup.toString();
+            }
+        }
+        Object defaultProtocol = defaults == null ? null : defaults.get(HOLA.PROTOCOL_KEY);
+        if (defaultProtocol == null) {
+            defaultProtocol = "hola";
+        }
+        defaults.put(HOLA.PROTOCOL_KEY, defaultProtocol);
+        Dictionary<String, ?> prop=  toProperties(url);
+        copyNotExist(defaults, (Dictionary<String, Object>)prop);
+        return prop;
+    }
+    
+    public static List<Dictionary<String, ?>> parseURLs(String address, Dictionary<String, ?> defaults) {
+        if (address == null || address.length() == 0) {
+            return null;
+        }
+        String[] addresses = HOLA.DISCOVERY_SPLIT_PATTERN.split(address);
+        if (addresses == null || addresses.length == 0) {
+            return null; //here won't be empty
+        }
+        List<Dictionary<String, ?>> registries = new ArrayList<Dictionary<String, ?>>();
+        for (String addr : addresses) {
+            registries.add(parseURL(addr, (Dictionary<String, Object>)defaults));
+        }
+        return registries;
+    }
+
+    public static void putIfAbsent(Dictionary<String, Object> dic, String key, Object value) {
+        if (key == null || key.length() == 0 || value == null) {
+            return;
+        }
+        if(dic.get(key)!=null){
+            return ;
+        }
+        dic.put(key, value);
     }
 }

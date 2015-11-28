@@ -232,12 +232,12 @@ public class DiscoveryDefinition extends AbstractBeanDefinition {
         this.subscribe = subscribe;
     }
 
-    /**   */
+    
     public String getProtocol() {
         return protocol;
     }
 
-    /**   */
+    
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }

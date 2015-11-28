@@ -38,8 +38,6 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
 
     public static final String SCOPE_LOCAL = "local";
 
-    private String protocol;
-
     /**
      * 代理实现
      */
@@ -51,23 +49,13 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
     /** 服务注册和引用的范围,local为本地,remote为远程 */
     protected String scope;
 
-    private ApplicationDefinition application;
+    protected ApplicationDefinition application;
 
-    private ModuleDefinition module;
+    protected ModuleDefinition module;
 
-    private List<DiscoveryDefinition> discoveries;
+    protected List<DiscoveryDefinition> discoveries;
 
-    private MonitorDefinition monitor;
-
-    /**   */
-    public String getProtocol() {
-        return protocol;
-    }
-
-    /**   */
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
+    protected MonitorDefinition monitor;
 
     /**   */
     public String getProxy() {
@@ -101,6 +89,9 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
 
     /**   */
     public ApplicationDefinition getApplication() {
+        if(application!=null){
+            appendSystemProperties(application);
+        }
         return application;
     }
 
@@ -131,6 +122,9 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
 
     /**   */
     public MonitorDefinition getMonitor() {
+        if(monitor!=null){
+            appendSystemProperties(monitor);
+        }
         return monitor;
     }
 
@@ -149,5 +143,38 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
         discoveries.add(registry);
         this.discoveries = discoveries;
     }
+    
+    protected void checkInterfaceAndMethods(Class<?> interfaceClass, List<MethodDefinition> methods) {
+        // 接口不能为空
+        if (interfaceClass == null) {
+            throw new IllegalStateException("interface not allow null!");
+        }
+        // 检查接口类型必需为接口
+        if(! interfaceClass.isInterface()) { 
+            throw new IllegalStateException("The interface class " + interfaceClass + " is not a interface!");
+        }
+        // 检查方法是否在接口中存在
+        if (methods != null && methods.size() > 0) {
+            for (MethodDefinition methodBean : methods) {
+                String methodName = methodBean.getName();
+                if (methodName == null || methodName.length() == 0) {
+                    throw new IllegalStateException("<hola:method> name attribute is required! Please check: <dubbo:service interface=\"" + interfaceClass.getName() + "\" ... ><dubbo:method name=\"\" ... /></<dubbo:reference>");
+                }
+                boolean hasMethod = false;
+                for (java.lang.reflect.Method method : interfaceClass.getMethods()) {
+                    if (method.getName().equals(methodName)) {
+                        hasMethod = true;
+                        break;
+                    }
+                }
+                if (!hasMethod) {
+                    throw new IllegalStateException("The interface " + interfaceClass.getName() + " not found method " + methodName);
+                }
+            }
+        }
+    }
+    
+    
+    
 
 }

@@ -41,6 +41,7 @@ public class MethodDefinition extends AbstractMethodDefinition {
     private List<ArgumentDefinition> arguments;
 
     /**   */
+    @Property(excluded = true)
     public String getName() {
         return name;
     }

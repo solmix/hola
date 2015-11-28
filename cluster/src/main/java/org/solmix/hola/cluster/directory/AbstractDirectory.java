@@ -25,7 +25,7 @@ public abstract class AbstractDirectory<T> extends Object implements Directory<T
 
     private volatile boolean destroyed = false;
 
-    private volatile List<Router> routers;
+    protected volatile List<Router> routers;
 
     private ServiceID consumerId;
     private Container container;

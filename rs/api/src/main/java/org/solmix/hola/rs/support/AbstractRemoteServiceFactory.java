@@ -156,7 +156,7 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
      * @param service
      * @return
      */
-    static Class<?> checkServiceClass(final String clazz, final Object service) {
+    public static Class<?> checkServiceClass(final String clazz, final Object service) {
         final ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 
             @Override

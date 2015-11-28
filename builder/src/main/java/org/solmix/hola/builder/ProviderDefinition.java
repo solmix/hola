@@ -29,6 +29,7 @@ public class ProviderDefinition extends AbstractServiceDefinition {
 
     private static final long serialVersionUID = 7508462139160267039L;
 
+    private String protocol;
     /**
      * 主机
      */
@@ -128,6 +129,17 @@ public class ProviderDefinition extends AbstractServiceDefinition {
      * 是否为默认设置
      */
     private Boolean isDefault;
+    
+
+    
+    public String getProtocol() {
+        return protocol;
+    }
+
+    
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
 
     /**   */
     public String getHost() {

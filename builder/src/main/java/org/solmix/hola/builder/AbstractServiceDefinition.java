@@ -64,6 +64,10 @@ public class AbstractServiceDefinition extends AbstractInterfaceDefinition {
      */
     private Boolean publish;
 
+    /**
+     * 延迟发布时间(ms)
+     */
+    protected Integer delay;
     /**   */
     public Boolean isPublish() {
         return publish;
@@ -153,4 +157,15 @@ public class AbstractServiceDefinition extends AbstractInterfaceDefinition {
     public void setExecutes(Integer executes) {
         this.executes = executes;
     }
+
+    
+    public Integer getDelay() {
+        return delay;
+    }
+
+    
+    public void setDelay(Integer delay) {
+        this.delay = delay;
+    }
+    
 }
