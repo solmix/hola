@@ -27,6 +27,7 @@ public abstract class BaseRemoteService<T> extends AbstractRemoteService<T> impl
     private Client client;
 
     private String address;
+    
 
     protected ClientFactory clientFactory;
 
@@ -57,8 +58,12 @@ public abstract class BaseRemoteService<T> extends AbstractRemoteService<T> impl
 
     @Override
     public void destroy() {
+        //remoteservice 清空
+        refer.setRemoteService(null);
         refer.destroy();
-        client = null;
+        if(client!=null){
+            client.destroy();
+        }
     }
 
     @Override

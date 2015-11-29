@@ -18,6 +18,7 @@ import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.common.model.ServiceID;
 import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.Discovery;
+import org.solmix.hola.discovery.DiscoveryProvider;
 import org.solmix.hola.discovery.model.DiscoveryInfo;
 import org.solmix.hola.discovery.model.DiscoveryInfoImpl;
 import org.solmix.hola.rs.RemoteException;
@@ -103,8 +104,8 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
 
     private Discovery getDiscovery(Dictionary<String, Object> discoveryInfo) {
         String protocol = PropertiesUtils.getString(discoveryInfo, HOLA.PROTOCOL_KEY);
-        Discovery discovery= container.getExtensionLoader(Discovery.class).getExtension(protocol);
-        return discovery;
+        DiscoveryProvider provider= container.getExtensionLoader(DiscoveryProvider.class).getExtension(protocol);
+        return provider.createDiscovery(discoveryInfo);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

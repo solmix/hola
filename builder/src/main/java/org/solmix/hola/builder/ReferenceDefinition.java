@@ -19,14 +19,19 @@
 
 package org.solmix.hola.builder;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.commons.Version;
 import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.DataUtils;
+import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.commons.util.SystemPropertyAction;
 import org.solmix.hola.builder.delegate.DelegateRemoteServiceFactory;
@@ -42,6 +47,7 @@ import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteServiceFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
+import org.solmix.runtime.ContainerFactory;
 
 /**
  * 
@@ -53,6 +59,8 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
 
     /**    */
     private static final long serialVersionUID = 2328539426745902984L;
+    
+    private static final Logger LOG  = LoggerFactory.getLogger(ReferenceDefinition.class);
 
     private String interfaceName;
 
@@ -74,6 +82,14 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
 
     private transient volatile boolean destroyed;
     private transient volatile RemoteService<?> remoteService;
+    
+    public ReferenceDefinition(){
+        this(ContainerFactory.getThreadDefaultContainer());
+    }
+    
+    public ReferenceDefinition(Container container){
+        this.container=container;
+    }
     /**   */
     public ConsumerDefinition getConsumer() {
         return consumer;
@@ -84,6 +100,7 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
         this.consumer = client;
     }
 
+    @Property(excluded = true)
     public String getUrl() {
         return url;
     }
@@ -206,8 +223,11 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
             dic.put(HOLA.VERSION, revision);
         }
         dic.put(HOLA.INTERFACE_KEY, interfaceName);
+        appendSystemProperties(application);
         appendDictionaries(dic, application);
+        appendSystemProperties(module);
         appendDictionaries(dic, module);
+        appendSystemProperties(consumer);
         appendDictionaries(dic, consumer);
         appendDictionaries(dic, this);
         if(methods!=null&&methods.size()>0){
@@ -224,6 +244,7 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
         }
         ref=createProxy(dic);
     }
+    
     protected List<DiscoveryDefinition> checkDiscovery(ConsumerDefinition provider) {
         List<DiscoveryDefinition> discoveries = getDiscoveries();
         if(discoveries==null){
@@ -261,7 +282,7 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                         dic.put(HOLA.PID_KEY, pid);
                     }
                     if(dic.get(HOLA.PROTOCOL_KEY)==null){
-                        dic.put(HOLA.PALYLOAD_KEY, "hola");
+                        dic.put(HOLA.PROTOCOL_KEY, "hola");
                     }
                     List<Dictionary<String, ?>> urls= PropertiesUtils.parseURLs(address, dic);
                     for(Dictionary<String, ?> url:urls){
@@ -282,9 +303,7 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
         if("local".equalsIgnoreCase(scope)){
             isLocal=true;
         }
-       if(isLocal==null&&StringUtils.isEmpty(url)){
-           isLocal=true;
-       }
+     
        final boolean local = isLocal==null?false:isLocal.booleanValue();
        if(local){
            return referLocal(dic);
@@ -295,6 +314,31 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
            }else{
                  urlinfos.add(dic);
            }
+           for(Dictionary<String, ?> info :urlinfos){
+               Dictionary<String, Object> url =(Dictionary<String, Object>) info;
+               String host = PropertiesUtils.getString(url, HOLA.HOST_KEY);
+               if (NetUtils.isInvalidLocalHost(host)) {
+                   try {
+                       host = InetAddress.getLocalHost().getHostAddress();
+                   } catch (UnknownHostException e) {
+                       logger.warn(e.getMessage(), e);
+                   }
+                   if (NetUtils.isInvalidLocalHost(host)) {
+                       if (NetUtils.isInvalidLocalHost(host)) {
+                           host = NetUtils.getLocalHost();
+                       }
+                   }
+               }
+               url.put(HOLA.HOST_KEY, host);
+               //设置默认协议
+               if(url.get(HOLA.PROTOCOL_KEY)==null){
+                   url.put(HOLA.PROTOCOL_KEY, "hola");
+               }
+               //没有设置path使用interface
+               if(url.get(HOLA.PATH_KEY)==null){
+                   url.put(HOLA.PATH_KEY, url.get(HOLA.INTERFACE_KEY));
+               }
+           }
            List<Dictionary<String, ?>> discoveryDics = getDiscoveryDictionaries(consumer);
            //通过公告集群
            if(DataUtils.isNotNullAndEmpty(discoveryDics)){
@@ -304,7 +348,9 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                        info.put(HOLA.DISCOVERY_KEY, discoveryDics.get(0));
                        RemoteReference<?> reference= factory.getReference(interfaceClass, info);
                        remoteService= factory.getRemoteService(reference);
-                       return (T) RemoteProxyFactory.getProxy(remoteService,container);
+                       if(LOG.isTraceEnabled()){
+                           LOG.trace("Reference service :"+PropertiesUtils.toAddress(info));
+                       }
                    }else{
                        List<RemoteService<?>> services = new ArrayList<RemoteService<?>>();
                        String clusterType = getCluster();
@@ -322,7 +368,6 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                        }
                        Cluster cluster = container.getExtensionLoader(Cluster.class).getExtension(clusterType);
                        remoteService=cluster.join(new PreparedDirectory(container, services, null));
-                       return (T) RemoteProxyFactory.getProxy(remoteService,container);
                    }
            }else{
                if(urlinfos.size()==1){
@@ -331,7 +376,9 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                    RemoteServiceFactory factory=   container.getExtensionLoader(RemoteServiceFactory.class).getExtension(protocol);
                    RemoteReference<?> reference=factory.getReference(interfaceClass, info);
                    remoteService=factory.getRemoteService(reference);
-                   return (T) RemoteProxyFactory.getProxy(remoteService,container);
+                   if(LOG.isTraceEnabled()){
+                       LOG.trace("Reference service :"+PropertiesUtils.toAddress(info));
+                   }
                }else{
                    List<RemoteService<?>> services = new ArrayList<RemoteService<?>>();
                    String clusterType = getCluster();
@@ -349,18 +396,21 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                        
                    Cluster cluster = container.getExtensionLoader(Cluster.class).getExtension(clusterType);
                    remoteService=cluster.join(new PreparedDirectory(container, services, null));
-                   return (T) RemoteProxyFactory.getProxy(remoteService,container);
                }
            }
           
        }
+       if(remoteService!=null){
+           return (T) RemoteProxyFactory.getProxy(remoteService,container);
+       }
+       return null;
     }
 
     private T referLocal(Dictionary<String, Object> dic) {
         return null;
     }
 
-    public T refer(){
+    public synchronized T refer(){
         if(destroyed){
             throw new IllegalStateException("Already destroyed!");
         }

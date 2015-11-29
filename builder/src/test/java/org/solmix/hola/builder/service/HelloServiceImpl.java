@@ -8,8 +8,7 @@ public class HelloServiceImpl implements HelloService
 
     @Override
     public String echo(String sayString) {
-        // TODO Auto-generated method stub
-        return null;
+        return sayString;
     }
 
     @Override

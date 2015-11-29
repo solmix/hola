@@ -1,0 +1,2 @@
+#
+org.solmix.hola.builder.delegate.DelegateRemoteServiceFactory:org.solmix.hola.rs.RemoteServiceFactory:true

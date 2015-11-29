@@ -135,7 +135,7 @@ public abstract class AbstractRemoteTransporter extends AbstractTransporter
             throw re;
         } finally {
             if (getLogger().isTraceEnabled()) {
-                getLogger().trace("Finished servicing http request on thread: " + Thread.currentThread());
+                getLogger().trace("Finished servicing remote request on thread: " + Thread.currentThread());
             }
         }
     }

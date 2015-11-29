@@ -115,10 +115,6 @@ public class ProviderDefinition extends AbstractServiceDefinition {
      */
     private String dispatcher;
 
-    /**
-     * 是否公告
-     */
-    private Boolean advertise;
 
     /**
      * 组网方式
@@ -310,16 +306,6 @@ public class ProviderDefinition extends AbstractServiceDefinition {
     /**   */
     public void setDispatcher(String dispatcher) {
         this.dispatcher = dispatcher;
-    }
-
-    /**   */
-    public Boolean isAdvertise() {
-        return advertise;
-    }
-
-    /**   */
-    public void setAdvertise(Boolean advertise) {
-        this.advertise = advertise;
     }
 
     /**   */

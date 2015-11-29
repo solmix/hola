@@ -156,9 +156,9 @@ public class NettyPipeline extends AbstractPipeline {
                     NettyPipeline.this.channel=newChannel;
                 }
             }else if (future.cause() != null) {
-                throw new TransportException(" failed connect to server"+url,future.cause());
+                throw new TransportException(" failed connect to server "+url,future.cause());
             }else{
-                throw new TransportException(" failed connect to server"+url+" client timeout ("+clientInfo.getConnectTimeout()+")ms",future.cause());
+                throw new TransportException(" failed connect to server "+url+" client timeout ("+clientInfo.getConnectTimeout()+")ms",future.cause());
             }
             
         }finally{

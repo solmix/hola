@@ -18,12 +18,14 @@
  */
 package org.solmix.hola.discovery;
 
+import org.solmix.runtime.Extension;
+
 /**
  * 
  * @author solmix.f@gmail.com
  * @version 0.0.1  2014年5月4日
  */
-
+@Extension
 public interface Discovery extends DiscoveryAdvertiser,DiscoveryLocator
 {
 }
