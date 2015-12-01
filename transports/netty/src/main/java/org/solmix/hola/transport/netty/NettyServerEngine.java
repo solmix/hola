@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.exchange.interceptor.Fault;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
@@ -118,8 +119,8 @@ public class NettyServerEngine implements NettyEngine {
         this.protocol=protocol;
         
         final ServerBootstrap bootstrap = new ServerBootstrap();
-        bossGroup = new NioEventLoopGroup( 2,new DefaultExecutorServiceFactory("Netty-Server-Parent"));
-        workerGroup = new NioEventLoopGroup( 2,new DefaultExecutorServiceFactory("Netty-Server-child"));
+        bossGroup = new NioEventLoopGroup( HOLA.DEFAULT_IO_THREADS,new DefaultExecutorServiceFactory("Netty-Server-Parent"));
+        workerGroup = new NioEventLoopGroup( HOLA.DEFAULT_IO_THREADS,new DefaultExecutorServiceFactory("Netty-Server-child"));
         bootstrap.group(bossGroup, workerGroup).channel(
             NioServerSocketChannel.class).option(ChannelOption.SO_REUSEADDR,
             true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, info.getConnectTimeout());

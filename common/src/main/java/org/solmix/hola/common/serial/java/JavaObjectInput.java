@@ -44,7 +44,7 @@ public class JavaObjectInput implements ObjectInput {
 
     public JavaObjectInput(InputStream in, ClassLoader loader)
         throws IOException {
-        this(new DescObjectInputStream(in, loader));
+        this(new ObjectInputStream(in));
     }
 
     public JavaObjectInput(ObjectInputStream in) {
@@ -86,11 +86,6 @@ public class JavaObjectInput implements ObjectInput {
         return inputStream.readDouble();
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.common.serial.DataInput#readUTF()
-     */
     @Override
     public String readUTF() throws IOException {
         int len = inputStream.readInt();

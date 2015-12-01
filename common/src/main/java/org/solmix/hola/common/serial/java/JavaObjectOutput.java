@@ -38,7 +38,7 @@ public class JavaObjectOutput implements ObjectOutput {
     private final ObjectOutputStream outputStream;
     
     public JavaObjectOutput(OutputStream out) throws IOException{
-        this(new DescObjectOutputStream(out));
+        this(new ObjectOutputStream(out));
     }
     public JavaObjectOutput(ObjectOutputStream out){
         outputStream=out;
@@ -78,11 +78,6 @@ public class JavaObjectOutput implements ObjectOutput {
         outputStream.writeDouble(v);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.hola.common.serial.DataOutput#writeUTF(java.lang.String)
-     */
     @Override
     public void writeUTF(String v) throws IOException {
         if (v == null) {

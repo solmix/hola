@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.solmix.hola.cluster.ConsumerInfo;
 import org.solmix.hola.cluster.Router;
 import org.solmix.hola.cluster.directory.AbstractDirectory;
 import org.solmix.hola.common.model.PropertiesUtils;
-import org.solmix.hola.common.model.ServiceID;
+import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.ServiceTypeListener;
 import org.solmix.hola.discovery.event.DiscoveryTypeEvent;
@@ -28,13 +29,13 @@ public class DiscoveriedDirectory<T> extends AbstractDirectory<T> implements Ser
     private RemoteServiceFactory factory;
     private java.util.concurrent.ConcurrentMap<String, RemoteService<T>> remoteServiceMap= new ConcurrentHashMap<String, RemoteService<T>>();
     
-    public DiscoveriedDirectory(Container container,ServiceID consumerID,Class<T> serviceType)
+    public DiscoveriedDirectory(Container container,Class<T> serviceType,Dictionary<String, ?> properties,ConsumerInfo info)
     {
-        this(container,null,consumerID,serviceType);
+        this(container,null,serviceType,properties,info);
     }
-    public DiscoveriedDirectory(Container container, List<Router> routers, ServiceID consumerID,Class<T> serviceType)
+    public DiscoveriedDirectory(Container container, List<Router> routers, Class<T> serviceType,Dictionary<String, ?> properties,ConsumerInfo info)
     {
-        super(container, routers, consumerID);
+        super(container, routers,properties,info);
         if(serviceType == null )
             throw new IllegalArgumentException("service type is null.");
         this.serviceType = serviceType;
@@ -78,7 +79,7 @@ public class DiscoveriedDirectory<T> extends AbstractDirectory<T> implements Ser
     }
     
     public void addDiscoveryListener(){
-        discovery.addTypeListener(getConsumerID().getServiceType(), this);
+        discovery.addTypeListener(getConsumerInfo().geServiceType(), this);
     }
     
     @Override
@@ -100,6 +101,10 @@ public class DiscoveriedDirectory<T> extends AbstractDirectory<T> implements Ser
             }
         }
        
+    }
+    @Override
+    public ServiceProperties getServiceProperties() {
+        return new ServiceProperties(directoryProperties);
     }
 
 }

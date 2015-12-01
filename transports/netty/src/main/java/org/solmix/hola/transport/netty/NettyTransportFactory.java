@@ -19,10 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.util.concurrent.DefaultExecutorServiceFactory;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -47,6 +43,10 @@ import org.solmix.runtime.ContainerEvent;
 import org.solmix.runtime.ContainerListener;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.bean.BeanConfigurer;
+
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.concurrent.DefaultExecutorServiceFactory;
 
 /**
  * 
@@ -172,8 +172,18 @@ public class NettyTransportFactory implements PipelineFactory,
   
     @Override
     public String[] getSupportedConfigs(Dictionary<String, ?> info) {
-        return new String[] { HOLA.CONNECT_TIMEOUT_KEY, HOLA.RECEIVE_TIMEOUT_KEY, HOLA.TIMEOUT_KEY, HOLA.HOST_KEY,
-            HOLA.PORT_KEY, HOLA.PATH_KEY, HOLA.BUFFER_KEY ,HOLA.CODEC_KEY};
+        return new String[] { HOLA.CONNECT_TIMEOUT_KEY, 
+                                HOLA.READ_TIMEOUT_KEY,
+                                HOLA.WRITE_TIMEOUT_KEY, 
+                                HOLA.IDLE_TIMEOUT_KEY,
+                                HOLA.HEARTBEAT_KEY,
+                                HOLA.HEARTBEAT_TIMEOUT_KEY,
+                                HOLA.TIMEOUT_KEY, 
+                                HOLA.HOST_KEY,
+                                HOLA.PORT_KEY, 
+                                HOLA.PATH_KEY, 
+                                HOLA.BUFFER_KEY ,
+                                HOLA.CODEC_KEY};
     }
 
   

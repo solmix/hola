@@ -430,20 +430,6 @@ public class NettyPipeline extends AbstractPipeline {
             message.put(Message.ENDPOINT_ADDRESS, defaultEndpointURIString);
         }
         return uri;
-      //如果Message中已经配置，按配置生成地址
-        //不支持在message中定义地址，动态更改pipeline address，同一个pipleline发送的消息地址必须是相同的
-        /*else{
-            
-            String pathInfo = (String) message.get(Message.PATH_INFO);
-            String queryString = (String) message.get(Message.QUERY_STRING);
-            if (null != pathInfo && !result.endsWith(pathInfo)) {
-                result = result + pathInfo;
-            }
-            if (queryString != null) {
-                result = result + "?" + queryString;
-            }
-            return new URI(result);
-        }*/
     }
 
     protected URI getEndpointAddressURI() throws URISyntaxException {

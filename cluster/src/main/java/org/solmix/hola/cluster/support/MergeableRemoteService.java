@@ -67,7 +67,7 @@ public class MergeableRemoteService<T> extends AbstractRemoteService<T> implemen
     @Override
     public Object[] invoke(final ClientCallback callback, final RemoteRequest request, final boolean oneway) throws RemoteException {
         List<RemoteService<T>> services =directory.list(request);
-        ServiceProperties sp= directory.getConsumerServiceID().getServiceProperties();
+        ServiceProperties sp= directory.getServiceProperties();
         String merger = PropertiesUtils.getString(sp, request.getMethodName()+"."+HOLA.MERGER_KEY);
         if(StringUtils.isEmpty(merger)){
             for(RemoteService<T> rs:services){
@@ -96,7 +96,7 @@ public class MergeableRemoteService<T> extends AbstractRemoteService<T> implemen
             futures.add(future);
         }
         List<Object> resultList = new ArrayList<Object>(futures.size());
-        final int timeout =  PropertiesUtils.getInt(directory.getConsumerServiceID().getServiceProperties(), HOLA.TIMEOUT_KEY,HOLA.DEFAULT_TIMEOUT);
+        final int timeout =  PropertiesUtils.getInt(directory.getServiceProperties(), HOLA.TIMEOUT_KEY,HOLA.DEFAULT_TIMEOUT);
         for(Future<Object> futurue:futures){
             try{
                 Object obj =futurue.get(timeout, TimeUnit.MILLISECONDS);
@@ -182,7 +182,7 @@ public class MergeableRemoteService<T> extends AbstractRemoteService<T> implemen
 
     @Override
     public ServiceProperties getServiceProperties() {
-        return directory.getConsumerServiceID().getServiceProperties();
+        return directory.getServiceProperties();
     }
 
 }

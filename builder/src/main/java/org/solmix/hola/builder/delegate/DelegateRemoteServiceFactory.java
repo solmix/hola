@@ -11,11 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.cluster.Cluster;
+import org.solmix.hola.cluster.ConsumerInfo;
 import org.solmix.hola.common.HOLA;
-import org.solmix.hola.common.model.DefaultServiceID;
 import org.solmix.hola.common.model.DefaultServiceType;
 import org.solmix.hola.common.model.PropertiesUtils;
-import org.solmix.hola.common.model.ServiceID;
 import org.solmix.hola.common.model.ServiceType;
 import org.solmix.hola.discovery.Discovery;
 import org.solmix.hola.discovery.DiscoveryProvider;
@@ -87,8 +86,6 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
             } catch (Throwable t) {
                 LOG.warn(t.getMessage(), t);
             }
-                
-                
             }
         };
     }
@@ -96,8 +93,8 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private DiscoveryInfo getDiscoveryInfo(Dictionary properties) {
-       Dictionary<String, Object> serviceProp = new Hashtable<String, Object>();
-        PropertiesUtils.filterCopy(properties, serviceProp, HOLA.MONITOR_KEY);
+        Dictionary<String, Object> serviceProp = new Hashtable<String, Object>();
+        PropertiesUtils.filterCopy(properties, serviceProp, HOLA.MONITOR_KEY,HOLA.DISCOVERY_KEY);
         DiscoveryInfo info  = new DiscoveryInfoImpl(serviceProp);
         return info;
     }
@@ -204,6 +201,7 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
         
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties) {
         return new RemoteReferenceWrapper(clazz,properties);
@@ -216,16 +214,16 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
         return  obj;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <S> RemoteService<S> getRemoteService(RemoteReference<S> reference) {
-        RemoteReferenceWrapper<S> refer =(RemoteReferenceWrapper)reference;
+        RemoteReferenceWrapper<S> refer =(RemoteReferenceWrapper<S>)reference;
         Dictionary<String, ?> prop =refer.getProperties();
         String interfaceName = PropertiesUtils.getServiceInterface(prop);
         String group = PropertiesUtils.getString(prop, HOLA.GROUP_KEY);
-        ServiceType type  =new  DefaultServiceType(interfaceName,group,HOLA.CONSUMER_CATEGORY);
-        ServiceID id  = new DefaultServiceID(type, prop);
+        ServiceType type  =new  DefaultServiceType(interfaceName,group,HOLA.PROVIDER_CATEGORY);
         
-        DiscoveriedDirectory directory = new DiscoveriedDirectory<S>(container, id, refer.getServiceClass());
+        DiscoveriedDirectory<S> directory = new DiscoveriedDirectory<S>(container, refer.getServiceClass(),prop,new ConsumerInfo(type,prop));
         Dictionary<String, Object> discoveryInfo  = (Dictionary<String, Object>)prop.get(HOLA.DISCOVERY_KEY);
         final Discovery discovery = getDiscovery(discoveryInfo);
         directory.setDiscovery(discovery);
@@ -235,7 +233,7 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
         
         directory.setRemoteServiceFactory(factory);
         directory.addDiscoveryListener();
-        String clusterType = PropertiesUtils.getString(refer.getProperties(), HOLA.CLUSTER_KEY);
+        String clusterType = PropertiesUtils.getString(refer.getProperties(), HOLA.CLUSTER_KEY,HOLA.DEFAULT_CLUSTER);
         Cluster cluster = container.getExtensionLoader(Cluster.class).getExtension(clusterType);
         RemoteService<S> remoteService=cluster.join(directory);
         return remoteService;

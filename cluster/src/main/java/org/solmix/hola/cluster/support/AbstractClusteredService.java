@@ -10,12 +10,12 @@ import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.DataUtils;
 import org.solmix.exchange.ClientCallback;
 import org.solmix.hola.cluster.ClusterException;
+import org.solmix.hola.cluster.ConsumerInfo;
 import org.solmix.hola.cluster.Directory;
 import org.solmix.hola.cluster.LoadBalance;
 import org.solmix.hola.cluster.directory.AbstractDirectory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.PropertiesUtils;
-import org.solmix.hola.common.model.ServiceID;
 import org.solmix.hola.common.model.ServiceProperties;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteService;
@@ -36,11 +36,11 @@ public abstract class AbstractClusteredService<T> extends AbstractRemoteService<
 
     private volatile RemoteService<T> stickyService = null;
 
-    private ServiceID consumerId;
+    private ConsumerInfo consumerId;
 
     private Container container;
 
-    public AbstractClusteredService(Directory<T> directory, ServiceID consumerId, Container container)
+    public AbstractClusteredService(Directory<T> directory, ConsumerInfo consumerId, Container container)
     {
         Assert.assertNotNull(directory);
         this.container = container;
@@ -48,13 +48,15 @@ public abstract class AbstractClusteredService<T> extends AbstractRemoteService<
         this.consumerId = consumerId;
         this.availablecheck = PropertiesUtils.getBoolean(consumerId.getServiceProperties(), HOLA.CLUSTER_AVAILABLE_CHECK, true);
     }
+    
     @Override
     public ServiceProperties getServiceProperties() {
-        return consumerId.getServiceProperties();
+        return directory.getServiceProperties();
     }
+    
     public AbstractClusteredService(Directory<T> directory, Container container)
     {
-        this(directory, directory.getConsumerServiceID(), container);
+        this(directory, directory.getConsumerInfo(), container);
     }
 
     @Override
@@ -136,7 +138,7 @@ public abstract class AbstractClusteredService<T> extends AbstractRemoteService<
 
     protected RemoteService<T> doSelect(LoadBalance loadbalance, List<RemoteService<T>> services, RemoteRequest request,
         List<RemoteService<T>> selected) {
-        if (services.size() == 0) {
+        if (services.size() == 1) {
             return services.get(0);
         }
         // 两个就轮询
@@ -164,7 +166,7 @@ public abstract class AbstractClusteredService<T> extends AbstractRemoteService<
                     "clustor relselect fail reason is :" + t.getMessage() + " if can not slove ,you can set cluster.availablecheck=false in url", t);
             }
         }
-        return null;
+        return remoteservice;
     }
 
     private RemoteService<T> reselect(LoadBalance loadbalance, List<RemoteService<T>> services, List<RemoteService<T>> selected,
@@ -205,7 +207,7 @@ public abstract class AbstractClusteredService<T> extends AbstractRemoteService<
     }
 
     
-    public ServiceID getConsumerID() {
+    public ConsumerInfo getConsumerInfo() {
         return consumerId;
     }
     

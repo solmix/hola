@@ -728,9 +728,9 @@ public class PropertiesUtils
     public static String getServiceInterface(Dictionary<String, ?> properties) {
         String si = getString(properties, HOLA.INTERFACE_KEY);
         if(si==null){
-            return getString(properties, HOLA.PATH_KEY);
+            si= getString(properties, HOLA.PATH_KEY);
         }
-        return null;
+        return si;
     }
     /**用于服务链接的字符串，包含backup*/
     public static String getConnectString(Dictionary<String, ?> properties) {

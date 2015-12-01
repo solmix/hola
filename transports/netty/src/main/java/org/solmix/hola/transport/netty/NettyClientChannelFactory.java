@@ -18,11 +18,11 @@
  */
 package org.solmix.hola.transport.netty;
 
+import org.solmix.hola.transport.RemoteProtocol;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-
-import org.solmix.hola.transport.RemoteProtocol;
 
 
 /**
@@ -35,8 +35,10 @@ public class NettyClientChannelFactory extends ChannelInitializer<Channel> {
 
     
    private final NettyCodecAdapter codecAdapter;
+   private final NettyConfiguration config;
    
     public NettyClientChannelFactory(NettyConfiguration config,RemoteProtocol protocol) {
+        this.config=config;
         codecAdapter = new NettyCodecAdapter( config,protocol);
     }
 

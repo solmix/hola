@@ -36,9 +36,13 @@ public class NettyConfiguration
 
     private int connectTimeout= HOLA.DEFAULT_CONNECT_TIMEOUT;
     
+    private int writeTimeout = HOLA.DEFAULT_WRITE_TIMEOUT;
+    
+    private int idleTimeout = HOLA.DEFAULT_IDLE_TIMEOUT;
+    
     private int timeout= HOLA.DEFAULT_TIMEOUT;
 
-    private int receiveTimeout= HOLA.DEFAULT_RECEIVE_TIMEOUT;
+    private int readTimeout= HOLA.DEFAULT_READ_TIMEOUT;
 
     private final long asyncExecuteTimeout = -1;
 
@@ -47,8 +51,10 @@ public class NettyConfiguration
     private int threadPoolSize = 5;
 
     private int bufferSize = HOLA.DEFAULT_BUFFER_SIZE;
+    private int heartbeat;
+    
+    private int heartbeatTimeout;
 
-    private int writeTimeout = HOLA.DEFAULT_WRITE_TIMEOUT;
 
     private boolean waiteSuccess;
 
@@ -72,14 +78,15 @@ public class NettyConfiguration
         this.connectTimeout = connectTimeout;
     }
 
-    /**   */
-    public int getReceiveTimeout() {
-        return receiveTimeout;
+
+    
+    public int getReadTimeout() {
+        return readTimeout;
     }
 
-    /**   */
-    public void setReceiveTimeout(int receiveTimeout) {
-        this.receiveTimeout = receiveTimeout;
+    
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
     }
 
     /**   */
@@ -156,6 +163,36 @@ public class NettyConfiguration
     
     public void setWaiteSuccess(boolean waiteSuccess) {
         this.waiteSuccess = waiteSuccess;
+    }
+
+    
+    public int getIdleTimeout() {
+        return idleTimeout;
+    }
+
+    
+    public void setIdleTimeout(int idleTimeout) {
+        this.idleTimeout = idleTimeout;
+    }
+
+    
+    public int getHeartbeat() {
+        return heartbeat;
+    }
+
+    
+    public void setHeartbeat(int heartbeat) {
+        this.heartbeat = heartbeat;
+    }
+
+    
+    public int getHeartbeatTimeout() {
+        return heartbeatTimeout;
+    }
+
+    
+    public void setHeartbeatTimeout(int heartbeatTimeout) {
+        this.heartbeatTimeout = heartbeatTimeout;
     }
 
 }

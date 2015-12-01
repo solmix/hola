@@ -28,7 +28,7 @@ public abstract class AbstractRemoteService<T> implements RemoteService<T>
             Object[] obj = doInvoke(null, request);
             if (obj != null && obj.length > 0) {
                 res.setValue(obj[0]);
-            } else if (obj.length > 1) {
+            } else if (obj != null &&obj.length > 1) {
                 res.setException(new IllegalArgumentException("sync return multi return values"));
             }
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public abstract class AbstractRemoteService<T> implements RemoteService<T>
                     super.handleResponse(ctx, res);
                     if (res != null && res.length > 0) {
                         listener.handleResponse(res[0], ctx);
-                    } else if (res.length > 1) {
+                    } else if (res != null &&res.length > 1) {
                         listener.handleException(new IllegalArgumentException("sync return multi return values"), ctx);
                     }
                 }

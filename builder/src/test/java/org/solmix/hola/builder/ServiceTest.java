@@ -1,5 +1,7 @@
 package org.solmix.hola.builder;
 
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -7,6 +9,7 @@ import org.junit.Test;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.hola.builder.service.HelloService;
 import org.solmix.hola.builder.service.HelloServiceImpl;
+import org.solmix.hola.builder.service.Person;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 
@@ -68,6 +71,7 @@ public class ServiceTest extends Assert
         ConsumerDefinition consumer = new ConsumerDefinition();
         consumer.setHost("localhost");
         consumer.setPort(port);
+        consumer.setSerial("hola");
         refer.setConsumer(consumer);
         
         try {
@@ -76,14 +80,12 @@ public class ServiceTest extends Assert
             assertNotNull(hello);
             String he = hello.echo("aaaaaaasss");
             assertEquals(he, "aaaaaaasss");
+            List<Person> ps = hello.listPerson();
+            assertTrue(ps!=null&&ps.size()==1);
         } finally{
             refer.destroy();
             definition.unregister();
         }
     }
-    
-    @Test
-    public void testRemoteWithDiscovery(){
-        int port = NetUtils.getRandomPort();
-    }
+  
 }

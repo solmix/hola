@@ -168,11 +168,10 @@ public class HolaCodec extends RemoteCodec
     protected void encodeResponseBody(ByteBuf buffer, ObjectOutput out, Message outMsg) throws IOException {
         Object obj = outMsg.getContent(Object.class);
         if (obj == null) {
-            @SuppressWarnings("rawtypes")
-            List objs = outMsg.getContent(List.class);
-            if (objs.size() == 0) {
+            obj = outMsg.getContent(List.class);
+          /*  if (objs.size() == 1) {
                 obj = objs.get(0);
-            }
+            }*/
         }
         if (obj != null) {
             out.writeByte(RESPONSE_NO_NULL);

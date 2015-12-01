@@ -64,8 +64,8 @@ public class ProtocolFactoryImpl extends ProtocolFactorySupport implements Confi
         ptlInfo.setName(new NamedID(ProtocolInfo.PROTOCOL_NS, PROTOCOL_ID));
         makeConfigAsEndpointInfoExtension(this, ptlInfo, configObject);
         SerialConfiguration si = ptlInfo.getExtension(SerialConfiguration.class);
-        if (si != null && si.getSerialization() == null) {
-            si.setSerialization(HOLA.DEFAULT_SERIALIZATION);
+        if (si != null && si.getSerial() == null) {
+            si.setSerial(HOLA.DEFAULT_SERIAL);
         }
         
         return ptlInfo;
@@ -83,7 +83,7 @@ public class ProtocolFactoryImpl extends ProtocolFactorySupport implements Confi
 
     @Override
     public String[] getSupportedConfigs(Dictionary<String, ?> info) {
-        return new String[]{HOLA.SERIALIZATION_KEY,HOLA.PALYLOAD_KEY};
+        return new String[]{HOLA.SERIAL_KEY,HOLA.PALYLOAD_KEY,HOLA.DECODE_IN_IO_KEY};
     }
 
     @Override

@@ -3,8 +3,8 @@ package org.solmix.hola.cluster.router;
 
 import java.util.List;
 
+import org.solmix.hola.cluster.ConsumerInfo;
 import org.solmix.hola.cluster.Router;
-import org.solmix.hola.common.model.ServiceID;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
 
@@ -28,7 +28,7 @@ public class ExpressionRouter implements Router
     }
 
     @Override
-    public <T> List<RemoteService<T>> route(List<RemoteService<T>> routes, ServiceID consumer, RemoteRequest request) {
+    public <T> List<RemoteService<T>> route(List<RemoteService<T>> routes, ConsumerInfo consumer, RemoteRequest request) {
         // TODO Auto-generated method stub
         return null;
     }

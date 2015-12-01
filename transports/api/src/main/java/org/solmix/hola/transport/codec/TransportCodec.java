@@ -77,7 +77,7 @@ public class TransportCodec implements Codec
     public Serialization getSerialization(Message msg){
         String seril=MessageUtils.getString(msg, Serialization.SERIALIZATION_ID);
         if(seril==null){
-            seril=serialConfiguration.getSerialization();
+            seril=serialConfiguration.getSerial();
         }
         return serializationManager.getSerializationByName(seril);
     }

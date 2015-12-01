@@ -28,7 +28,7 @@ package org.solmix.hola.common.serial;
 public class SerialConfiguration
 {
 
-    private String serialization;
+    private String serial;
 
     private Integer palyload;
 
@@ -41,15 +41,15 @@ public class SerialConfiguration
 
     public SerialConfiguration(String serialization)
     {
-        this.serialization = serialization;
+        this.serial = serialization;
     }
 
-    public String getSerialization() {
-        return serialization;
+    public String getSerial() {
+        return serial;
     }
 
-    public void setSerialization(String serialization) {
-        this.serialization = serialization;
+    public void setSerial(String serialization) {
+        this.serial = serialization;
     }
 
     public Integer getPalyload() {

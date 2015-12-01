@@ -23,3 +23,8 @@ org.solmix.hola.cluster.support.ForkingCluster:org.solmix.hola.cluster.Cluster:t
 org.solmix.hola.cluster.support.MergeableCluster:org.solmix.hola.cluster.Cluster:true:false
 #router
 org.solmix.hola.cluster.router.ExpressionRouterFactory:org.solmix.hola.cluster.RouterFactory:true:false
+#loadbalance
+org.solmix.hola.cluster.loadbalance.ConsistentHashLoadBalance:org.solmix.hola.cluster.LoadBalance:true:false
+org.solmix.hola.cluster.loadbalance.LeastActiveLoadBalance:org.solmix.hola.cluster.LoadBalance:true:false
+org.solmix.hola.cluster.loadbalance.RandomLoadBalance:org.solmix.hola.cluster.LoadBalance:true:false
+org.solmix.hola.cluster.loadbalance.RoundRobinLoadBalance:org.solmix.hola.cluster.LoadBalance:true:false

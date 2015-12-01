@@ -49,7 +49,7 @@ public final class PropertiesBuilder
     }
     
     public PropertiesBuilder setPassword(String password){
-        dic.put(HOLA.PALYLOAD_KEY, password);
+        dic.put(HOLA.PASSWORD_KEY, password);
         return this;
     }
     

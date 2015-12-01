@@ -298,7 +298,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
                       dic.put(HOLA.PID_KEY, pid);
                   }
                   if(dic.get(HOLA.PROTOCOL_KEY)==null){
-                      dic.put(HOLA.PALYLOAD_KEY, "hola");
+                      dic.put(HOLA.PROTOCOL_KEY, "hola");
                   }
                   List<Dictionary<String, ?>> urls= PropertiesUtils.parseURLs(address, dic);
                   for(Dictionary<String, ?> url:urls){

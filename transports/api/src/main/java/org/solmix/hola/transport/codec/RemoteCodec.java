@@ -311,8 +311,7 @@ public class RemoteCodec extends TransportCodec
             buffer.writeBytes(header); // write header.
             buffer.writerIndex(writeIndexMark + HEADER_LENGTH + length);
         } catch (Throwable t) {
-            t.printStackTrace();
-            //TODO codec抛错处理办法
+            LOG.warn("encodeResponse",t);
         }
 
     }

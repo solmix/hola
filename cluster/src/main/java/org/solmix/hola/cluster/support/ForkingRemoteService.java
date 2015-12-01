@@ -35,8 +35,8 @@ public class ForkingRemoteService<T> extends AbstractClusteredService<T> impleme
         throws RemoteException {
         checkRemoteServices(services, request);
         final  List<RemoteService<T>> selected;
-        final int forks = PropertiesUtils.getInt(getConsumerID().getServiceProperties(), HOLA.CLUSTER_FORK_KEY,HOLA.DEFAULT_CLUSTER_FORK);
-        final int timeout =  PropertiesUtils.getInt(getConsumerID().getServiceProperties(), HOLA.TIMEOUT_KEY,HOLA.DEFAULT_TIMEOUT);
+        final int forks = PropertiesUtils.getInt(getConsumerInfo().getServiceProperties(), HOLA.CLUSTER_FORK_KEY,HOLA.DEFAULT_CLUSTER_FORK);
+        final int timeout =  PropertiesUtils.getInt(getConsumerInfo().getServiceProperties(), HOLA.TIMEOUT_KEY,HOLA.DEFAULT_TIMEOUT);
         if(forks<=0||forks>=services.size()){
             selected=services;
         }else{
