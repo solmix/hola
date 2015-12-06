@@ -68,6 +68,7 @@ public class HolaCodec extends RemoteCodec
         boolean isEvent = (flag & FLAG_EVENT) != 0;
         ObjectInput input =null;
         if ((flag & FLAG_REQUEST) == 0) {
+            inMsg.setRequest(false);
             if (isEvent) {
                 inMsg.put(Message.EVENT_MESSAGE, true);
             }

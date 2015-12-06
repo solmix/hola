@@ -47,7 +47,12 @@ public class NettyClientChannelFactory extends ChannelInitializer<Channel> {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast("decoder", codecAdapter.getDecoder());
         pipeline.addLast("encoder", codecAdapter.getEncoder());
+        if(config.enableHeartbeat()){
+            pipeline.addLast("heartbeat", new HeartbeatHandler(config));
+        }
+//        pipeline.addLast("idle",new IdleStateHandler( ));
         pipeline.addLast(new NettyClientHandler());
     }
 
+    
 }

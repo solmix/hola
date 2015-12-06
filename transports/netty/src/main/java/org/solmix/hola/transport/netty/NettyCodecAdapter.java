@@ -19,13 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.MessageToByteEncoder;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -33,6 +26,13 @@ import org.solmix.exchange.Message;
 import org.solmix.exchange.Protocol;
 import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.codec.Codec;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
  * 
@@ -45,7 +45,6 @@ public class NettyCodecAdapter
 
     private final ChannelHandler encoder = new NettyEncoder();
 
-    private final ChannelHandler decoder = new NettyDecoder();
 
     private final Codec codec;
 
@@ -65,9 +64,8 @@ public class NettyCodecAdapter
     }
 
     public ChannelHandler getDecoder() {
-        return decoder;
+        return new NettyDecoder();
     }
-
     @Sharable
     private class NettyEncoder extends MessageToByteEncoder<Message>
     {
@@ -85,7 +83,6 @@ public class NettyCodecAdapter
         }
 
     }
-
     private class NettyDecoder extends ByteToMessageDecoder
     {
 

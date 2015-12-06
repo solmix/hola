@@ -57,13 +57,15 @@ public class ServiceTest extends Assert
         }
     }
     @Test
-    public void testRegister2(){
+    public void testRegister2() throws InterruptedException{
         int port = NetUtils.getRandomPort();
         HelloService hs = new HelloServiceImpl();
         ServiceDefinition<HelloService> definition = new ServiceDefinition<HelloService>(hs);
         definition.setInterface(HelloService.class.getName());
         ProviderDefinition provider=new ProviderDefinition();
         provider.setPort(port);
+        provider.setHeartbeat(10*1000);
+        provider.setTimeout(5000);
         definition.setProvider(provider);
         
         ReferenceDefinition<HelloService> refer = new ReferenceDefinition<HelloService>();
@@ -71,7 +73,9 @@ public class ServiceTest extends Assert
         ConsumerDefinition consumer = new ConsumerDefinition();
         consumer.setHost("localhost");
         consumer.setPort(port);
-        consumer.setSerial("hola");
+//        consumer.setSerial("hola");
+        consumer.setHeartbeat(3*1000);
+        consumer.setTimeout(5000);
         refer.setConsumer(consumer);
         
         try {
@@ -82,6 +86,14 @@ public class ServiceTest extends Assert
             assertEquals(he, "aaaaaaasss");
             List<Person> ps = hello.listPerson();
             assertTrue(ps!=null&&ps.size()==1);
+//            while(true){
+                try {
+                    hello.echo("aaaaaaasss");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Thread.currentThread().sleep(5000);
+//            }2
         } finally{
             refer.destroy();
             definition.unregister();

@@ -19,13 +19,17 @@
 
 package org.solmix.hola.transport.netty;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.solmix.exchange.Message;
+import org.solmix.exchange.MessageUtils;
+import org.solmix.exchange.support.DefaultMessage;
+import org.solmix.hola.transport.ResponseCallback;
+
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-
-import org.solmix.exchange.Message;
-import org.solmix.hola.transport.ResponseCallback;
 
 /**
  * 
@@ -35,7 +39,17 @@ import org.solmix.hola.transport.ResponseCallback;
 @Sharable
 public class NettyClientHandler extends ChannelHandlerAdapter
 {
+    private static final Logger LOG = LoggerFactory.getLogger(NettyClientHandler.class);
 
+    public NettyClientHandler(){
+        
+    }
+    public NettyClientHandler(NettyConfiguration config)
+    {
+    }
+    
+  
+    
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -50,13 +64,38 @@ public class NettyClientHandler extends ChannelHandlerAdapter
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof Message) {
             Message response = (Message) msg;
-            ResponseCallback callback = response.getExchange().get(ResponseCallback.class);
-            callback.process(response);
+            if(MessageUtils.getBoolean(response, Message.EVENT_MESSAGE)){
+                handleEvent(ctx,response);
+            }else{
+                ResponseCallback callback = response.getExchange().get(ResponseCallback.class);
+                callback.process(response);
+            }
+           
         } else {
             super.channelRead(ctx, msg);
         }
     }
 
+    private void handleEvent(ChannelHandlerContext ctx, Message response) {
+        Object content = response.getContent(Object.class);
+        if(content==HeartbeatHandler.HEARTBEAT_EVENT){
+            //返回心跳
+            if(!MessageUtils.getBoolean(response, Message.ONEWAY)){
+                Message msg = new DefaultMessage();
+                msg.put(Message.EVENT_MESSAGE, Boolean.TRUE);
+                msg.put(Message.ONEWAY, Boolean.TRUE);
+              //新心跳
+                msg.setRequest(true);
+                msg.setInbound(false);
+                msg.setContent(Object.class, HeartbeatHandler.HEARTBEAT_EVENT);
+                ctx.writeAndFlush(msg);
+            }else{
+                if(LOG.isDebugEnabled()){
+                    LOG.debug(new StringBuilder(32).append("Receive heartbeat response ").append(ctx.channel().toString()).toString());
+                }
+            }
+        }
+    }
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush();
@@ -65,6 +104,7 @@ public class NettyClientHandler extends ChannelHandlerAdapter
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         super.write(ctx, msg, promise);
-       
+
     }
+
 }

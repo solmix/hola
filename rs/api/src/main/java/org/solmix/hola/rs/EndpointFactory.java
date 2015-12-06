@@ -188,6 +188,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         }
 
         if (transporter == null) {
+            transporter = PropertiesUtils.getString(getProperties(), HOLA.TRANSPORTER_KEY);
             if (transporter == null && getAddress() != null && getAddress().contains("://")) {
                 transporter = getTransportTypeForAddress(getAddress());
             }

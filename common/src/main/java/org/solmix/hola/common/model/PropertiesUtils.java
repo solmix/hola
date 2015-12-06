@@ -56,7 +56,7 @@ public class PropertiesUtils
     public static String[] ESCAPLES=new String[] { HOLA.ADDRESS_KEY, HOLA.PROTOCOL_KEY, HOLA.HOST_KEY,
         HOLA.PORT_KEY, HOLA.PATH_KEY, HOLA.USER_KEY, HOLA.PASSWORD_KEY,HOLA.MONITOR_KEY,HOLA.DISCOVERY_KEY };
     public static String toAddress(Dictionary<String, ?> properties){
-        return toAddress(properties,false,true,false,false);
+        return toAddress(properties,false,true,false,true);
     }
     
     public static String toIndentityAddress(Dictionary<String, ?> properties){

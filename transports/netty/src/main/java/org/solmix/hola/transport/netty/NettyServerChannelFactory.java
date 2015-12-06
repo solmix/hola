@@ -19,16 +19,16 @@
 
 package org.solmix.hola.transport.netty;
 
+import java.util.Map;
+
+import org.solmix.hola.transport.RemoteProtocol;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
-
-import java.util.Map;
-
-import org.solmix.hola.transport.RemoteProtocol;
 
 /**
  * 
@@ -60,6 +60,9 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel>
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast("decoder", codecAdapter.getDecoder());
         pipeline.addLast("encoder", codecAdapter.getEncoder());
+        if(config.enableHeartbeat()){
+            pipeline.addLast("heartbeat", new HeartbeatHandler(config));
+        }
         pipeline.addLast(new NettyServerHandler(this, config, protocol));
 
     }

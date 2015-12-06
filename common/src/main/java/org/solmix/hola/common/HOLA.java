@@ -84,10 +84,10 @@ public class HOLA
     public static final String CONNECT_TIMEOUT_KEY = "connectTimeout";
 
     /** 接收超时时间 */
-    public static final String READ_TIMEOUT_KEY = "readTimeout";
+    public static final String READ_IDLE_TIMEOUT_KEY = "readIdleTimeout";
 
     /** 写超时时间 */
-    public static final String WRITE_TIMEOUT_KEY = "writeTimeout";
+    public static final String WRITE_IDLE_TIMEOUT_KEY = "writeIdleTimeout";
 
     public static final String ANY_VALUE = "*";
 
@@ -96,15 +96,6 @@ public class HOLA
      */
     public static final int DEFAULT_CONNECT_TIMEOUT = 3000;
 
-    /**
-     * 默认读超时时间
-     */
-    public static final int DEFAULT_READ_TIMEOUT = 120*1000;
-   
-    /**
-     * 默认写超时时间
-     */
-    public static final int DEFAULT_WRITE_TIMEOUT = 3000;
 
     /**
      * 心跳周期，值类型：int（ms）

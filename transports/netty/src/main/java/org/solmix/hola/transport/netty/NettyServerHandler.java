@@ -28,6 +28,7 @@ import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.FaultType;
+import org.solmix.exchange.support.DefaultMessage;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -76,10 +77,36 @@ public class NettyServerHandler extends ChannelHandlerAdapter
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof Message) {
             Message response = (Message) msg;
-            handleMessage(ctx, response);
+            if(MessageUtils.getBoolean(response, Message.EVENT_MESSAGE)){
+                handleEvent(ctx,response);
+            }else{
+                handleMessage(ctx, response);
+            }
         } else {
             super.channelRead(ctx, msg);
         }
+    }
+
+    private void handleEvent(ChannelHandlerContext ctx, Message response) {
+        Object content = response.getContent(Object.class);
+        if(content==HeartbeatHandler.HEARTBEAT_EVENT){
+            //返回心跳
+            if(!MessageUtils.getBoolean(response, Message.ONEWAY)){
+                Message msg = new DefaultMessage();
+                msg.put(Message.EVENT_MESSAGE, Boolean.TRUE);
+                msg.put(Message.ONEWAY, Boolean.TRUE);
+                //新心跳
+                msg.setRequest(true);
+                msg.setInbound(false);
+                msg.setContent(Object.class, HeartbeatHandler.HEARTBEAT_EVENT);
+                ctx.writeAndFlush(msg);
+            }else{
+                if(LOG.isDebugEnabled()){
+                    LOG.debug(new StringBuilder(32).append("Receive heartbeat response ").append(ctx.channel().toString()).toString());
+                }
+            }
+        }
+        
     }
 
     private void handleMessage(ChannelHandlerContext ctx, Message inMsg) throws IOException {
@@ -106,7 +133,7 @@ public class NettyServerHandler extends ChannelHandlerAdapter
     private void handleResponse(ChannelHandlerContext ctx, Message response) {
         boolean success = true;
         try {
-            ChannelFuture future = ctx.write(response);
+            ChannelFuture future = ctx.writeAndFlush(response);
             if (info.isWaiteSuccess()) {
                 success = future.await(info.getWriteTimeout());
             }

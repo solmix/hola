@@ -146,21 +146,11 @@ public class LocalTransportFactory implements TransporterFactory, PipelineFactor
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.exchange.support.TypeDetectSupport#getUriPrefixes()
-     */
     @Override
     public Set<String> getUriPrefixes() {
         return URI_PREFIXES;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.solmix.exchange.support.TypeDetectSupport#getTransportTypes()
-     */
     @Override
     public List<String> getTransportTypes() {
         return DEFAULT_TYPE;

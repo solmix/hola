@@ -147,6 +147,7 @@ public class RemoteCodec extends TransportCodec
         boolean isEvent = (flag & FLAG_EVENT) != 0;
         //response
         if ((flag & FLAG_REQUEST) == 0) {
+            inMsg.setRequest(false);
             if (isEvent) {
                 inMsg.put(Message.EVENT_MESSAGE, true);
             }

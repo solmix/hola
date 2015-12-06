@@ -71,7 +71,7 @@ public class HolaRemoteServiceFactoryTest extends Assert
         HelloService hello=rsf.getService(reg.getReference());
         assertSame(hs, hello);
         Dictionary<String, Object> properties=mockConfig();
-        properties.put(HOLA.HOST_KEY, HOLA.LOCALHOST_VALUE);
+       
         RemoteReference<HelloService> reference=rsf.getReference(HelloService.class, properties);
         assertNotNull(reference);
         HelloService remote = rsf.getService(reference);
@@ -100,7 +100,7 @@ public class HolaRemoteServiceFactoryTest extends Assert
         };
         
         t.start();
-        for( i=0;i<2;i++){
+        for( i=0;i<2000;i++){
             
         try {
             String returnString=remote.say(str);
@@ -148,7 +148,6 @@ public class HolaRemoteServiceFactoryTest extends Assert
     private String getString() {
         StringBuffer sb = new StringBuffer();
         for(int i=0;i<1;i++){
-//            sb.append("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*(");
             sb.append("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*(");
         }
         return sb.toString();
@@ -158,6 +157,8 @@ public class HolaRemoteServiceFactoryTest extends Assert
         table.put(HOLA.PATH_KEY, "/hola");
         table.put(HOLA.PORT_KEY,PORT);
         table.put(HOLA.TIMEOUT_KEY,1000*600);
+//        table.put(HOLA.TRANSPORTER_KEY, "local");
+        table.put(HOLA.HOST_KEY, HOLA.LOCALHOST_VALUE);
         return table;
     }
 

@@ -173,9 +173,10 @@ public class NettyTransportFactory implements PipelineFactory,
     @Override
     public String[] getSupportedConfigs(Dictionary<String, ?> info) {
         return new String[] { HOLA.CONNECT_TIMEOUT_KEY, 
-                                HOLA.READ_TIMEOUT_KEY,
-                                HOLA.WRITE_TIMEOUT_KEY, 
+                                HOLA.READ_IDLE_TIMEOUT_KEY,
+                                HOLA.WRITE_IDLE_TIMEOUT_KEY, 
                                 HOLA.IDLE_TIMEOUT_KEY,
+                                "writeTimeout",
                                 HOLA.HEARTBEAT_KEY,
                                 HOLA.HEARTBEAT_TIMEOUT_KEY,
                                 HOLA.TIMEOUT_KEY, 

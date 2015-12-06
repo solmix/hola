@@ -36,13 +36,14 @@ public class NettyConfiguration
 
     private int connectTimeout= HOLA.DEFAULT_CONNECT_TIMEOUT;
     
-    private int writeTimeout = HOLA.DEFAULT_WRITE_TIMEOUT;
+    private Integer writeIdleTimeout ;
+    private int writeTimeout =HOLA.DEFAULT_TIMEOUT;
     
-    private int idleTimeout = HOLA.DEFAULT_IDLE_TIMEOUT;
+    private Integer idleTimeout;
     
     private int timeout= HOLA.DEFAULT_TIMEOUT;
 
-    private int readTimeout= HOLA.DEFAULT_READ_TIMEOUT;
+    private Integer readIdleTimeout;
 
     private final long asyncExecuteTimeout = -1;
 
@@ -51,27 +52,43 @@ public class NettyConfiguration
     private int threadPoolSize = 5;
 
     private int bufferSize = HOLA.DEFAULT_BUFFER_SIZE;
-    private int heartbeat;
+    private Integer heartbeat;
     
-    private int heartbeatTimeout;
+    private Integer heartbeatTimeout;
 
 
     private boolean waiteSuccess;
 
-    /**   */
-    public String getCodec() {
-        return codec;
+
+    
+    public boolean isChunking() {
+        return chunking;
     }
 
-    /**   */
-    public void setCodec(String codec) {
-        this.codec = codec;
+
+    
+    public void setChunking(boolean chunking) {
+        this.chunking = chunking;
     }
+
+
+    
+    public int getChunkThreshold() {
+        return chunkThreshold;
+    }
+
+
+    
+    public void setChunkThreshold(int chunkThreshold) {
+        this.chunkThreshold = chunkThreshold;
+    }
+
 
     
     public int getConnectTimeout() {
         return connectTimeout;
     }
+
 
     
     public void setConnectTimeout(int connectTimeout) {
@@ -80,119 +97,158 @@ public class NettyConfiguration
 
 
     
-    public int getReadTimeout() {
-        return readTimeout;
+    public Integer getWriteIdleTimeout() {
+        return writeIdleTimeout;
     }
+
 
     
-    public void setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
+    public void setWriteIdleTimeout(Integer writeIdleTimeout) {
+        this.writeIdleTimeout = writeIdleTimeout;
     }
 
-    /**   */
-    public boolean isChunking() {
-        return chunking;
+
+    
+    public Integer getIdleTimeout() {
+        return idleTimeout;
     }
+
+
+    
+    public void setIdleTimeout(Integer idleTimeout) {
+        this.idleTimeout = idleTimeout;
+    }
+
 
     
     public int getTimeout() {
         return timeout;
     }
 
+
     
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
-    /**   */
-    public void setChunking(boolean chunking) {
-        this.chunking = chunking;
-    }
-
-    /**   */
-    public int getChunkThreshold() {
-        return chunkThreshold;
-    }
-
-    /**   */
-    public void setChunkThreshold(int chunkThreshold) {
-        this.chunkThreshold = chunkThreshold;
-    }
-
-    /**   */
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
-    /**   */
-    public void setBufferSize(int bufferSize) {
-        this.bufferSize = bufferSize;
-    }
-
-    /**
-     * @return
-     */
-    public long getAsyncExecuteTimeout() {
-        return asyncExecuteTimeout;
-    }
 
     
-    public int getThreadPoolSize() {
-        return threadPoolSize;
+    public Integer getReadIdleTimeout() {
+        return readIdleTimeout;
     }
 
+
     
-    public void setThreadPoolSize(int threadPoolSize) {
-        this.threadPoolSize = threadPoolSize;
+    public void setReadIdleTimeout(Integer readIdleTimeout) {
+        this.readIdleTimeout = readIdleTimeout;
     }
+
+
+    
+    public String getCodec() {
+        return codec;
+    }
+
+
+    
+    public void setCodec(String codec) {
+        this.codec = codec;
+    }
+
+
+    
     
     public int getWriteTimeout() {
         return writeTimeout;
     }
+
+
 
     
     public void setWriteTimeout(int writeTimeout) {
         this.writeTimeout = writeTimeout;
     }
 
+
+
+    public int getThreadPoolSize() {
+        return threadPoolSize;
+    }
+
+
+    
+    public void setThreadPoolSize(int threadPoolSize) {
+        this.threadPoolSize = threadPoolSize;
+    }
+
+
+    
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+
+    
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
+
+
+    
+    public Integer getHeartbeat() {
+        return heartbeat;
+    }
+
+
+    
+    public void setHeartbeat(Integer heartbeat) {
+        this.heartbeat = heartbeat;
+    }
+
+
+    
+    public Integer getHeartbeatTimeout() {
+        return heartbeatTimeout;
+    }
+
+
+    
+    public void setHeartbeatTimeout(Integer heartbeatTimeout) {
+        this.heartbeatTimeout = heartbeatTimeout;
+    }
+
+
     
     public boolean isWaiteSuccess() {
         return waiteSuccess;
     }
+
 
     
     public void setWaiteSuccess(boolean waiteSuccess) {
         this.waiteSuccess = waiteSuccess;
     }
 
-    
-    public int getIdleTimeout() {
-        return idleTimeout;
-    }
 
     
-    public void setIdleTimeout(int idleTimeout) {
-        this.idleTimeout = idleTimeout;
+    public long getAsyncExecuteTimeout() {
+        return asyncExecuteTimeout;
     }
 
+    public boolean enableIdleHeartbeat(){
+        if(enableHeartbeat()
+            &&(
+                (this.writeIdleTimeout!=null&&this.writeIdleTimeout>0)
+                ||(this.readIdleTimeout!=null&&this.readIdleTimeout>0)
+                ||(this.idleTimeout!=null&&this.idleTimeout>0))){
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
     
-    public int getHeartbeat() {
-        return heartbeat;
+    public boolean enableHeartbeat(){
+        return heartbeat!=null&&heartbeat.intValue()>0;
     }
-
-    
-    public void setHeartbeat(int heartbeat) {
-        this.heartbeat = heartbeat;
-    }
-
-    
-    public int getHeartbeatTimeout() {
-        return heartbeatTimeout;
-    }
-
-    
-    public void setHeartbeatTimeout(int heartbeatTimeout) {
-        this.heartbeatTimeout = heartbeatTimeout;
-    }
-
 }

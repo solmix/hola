@@ -40,6 +40,9 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.io.AbstractWrappedOutputStream;
 import org.solmix.runtime.io.CachedOutputStream;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 
 /**
  * 
@@ -177,6 +180,8 @@ public class LocalPipeline extends AbstractPipeline {
                 wrappedStream = new PipedOutputStream(stream);
                 inMsg.setContent(InputStream.class, stream);
             }
+            ByteBuf buffer = Unpooled.buffer();
+            
             inMsg.put(Transporter.class, transporter);
             inMsg.put(IN_PIPE, conduit);
 

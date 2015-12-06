@@ -157,7 +157,7 @@ public class NettyServerEngine implements NettyEngine {
     @Override
     public synchronized void shutdown() {
         if(LOG.isDebugEnabled()){
-            LOG.debug("Close netty engine ["+host+":"+port+"] "+(channel!=null?("channel id:"+channel.id().asShortText()):""));
+            LOG.debug("Close netty engine ["+host+":"+port+"] "+(channel!=null?("channel:"+channel.toString()):""));
         }
         handlerMap.clear();
         registedPaths.clear();

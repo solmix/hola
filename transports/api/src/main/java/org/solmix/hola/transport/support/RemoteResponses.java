@@ -94,7 +94,7 @@ public class RemoteResponses
     static {
         Thread th = new Thread(new RemoteResponseScanner(), "ResponseTimeoutScanner");
         th.setDaemon(true);
-//        th.start();
+        th.start();
     }
 
 }

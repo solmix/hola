@@ -348,8 +348,8 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                        info.put(HOLA.DISCOVERY_KEY, discoveryDics.get(0));
                        RemoteReference<?> reference= factory.getReference(interfaceClass, info);
                        remoteService= factory.getRemoteService(reference);
-                       if(LOG.isTraceEnabled()){
-                           LOG.trace("Reference service :"+PropertiesUtils.toAddress(info));
+                       if(LOG.isInfoEnabled()){
+                           LOG.info("Reference service :"+PropertiesUtils.toAddress(info));
                        }
                    }else{
                        List<RemoteService<?>> services = new ArrayList<RemoteService<?>>();
@@ -376,8 +376,8 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                    RemoteServiceFactory factory=   container.getExtensionLoader(RemoteServiceFactory.class).getExtension(protocol);
                    RemoteReference<?> reference=factory.getReference(interfaceClass, info);
                    remoteService=factory.getRemoteService(reference);
-                   if(LOG.isTraceEnabled()){
-                       LOG.trace("Reference service :"+PropertiesUtils.toAddress(info));
+                   if(LOG.isInfoEnabled()){
+                       LOG.info("Reference service :"+PropertiesUtils.toAddress(info));
                    }
                }else{
                    List<RemoteService<?>> services = new ArrayList<RemoteService<?>>();

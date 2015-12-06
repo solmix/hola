@@ -127,7 +127,7 @@ public class NettyPipeline extends AbstractPipeline {
        Channel channel = getChannel();
        if(channel!=null){
            if(LOG.isDebugEnabled()){
-               LOG.debug("Close netty pipleline:"+channel.id().asShortText());
+               LOG.debug("Close netty pipleline:"+channel.toString());
            }
            try {
             channel.disconnect().sync();
@@ -142,23 +142,24 @@ public class NettyPipeline extends AbstractPipeline {
         ChannelFuture future = bootstrap.connect(new InetSocketAddress(url.getHost(), url.getPort()));
         try{
             boolean ret = future.awaitUninterruptibly(clientInfo.getConnectTimeout(), TimeUnit.MILLISECONDS);
-            if(ret&&future.isSuccess()){
+            if (ret && future.isSuccess()) {
                 Channel newChannel = future.channel();
                 try {
                     Channel old = NettyPipeline.this.channel;
-                    if(old!=null){
-                        if(LOG.isDebugEnabled()){
-                            LOG.debug("Closing old netty channel {} on created new netty channel {}",old,newChannel);
+                    if (old != null) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Closing old netty channel {} on created new netty channel {}", old, newChannel);
                         }
                         old.close();
                     }
-                }finally{
-                    NettyPipeline.this.channel=newChannel;
+                } finally {
+                    NettyPipeline.this.channel = newChannel;
                 }
-            }else if (future.cause() != null) {
-                throw new TransportException(" failed connect to server "+url,future.cause());
-            }else{
-                throw new TransportException(" failed connect to server "+url+" client timeout ("+clientInfo.getConnectTimeout()+")ms",future.cause());
+            } else if (future.cause() != null) {
+                throw new TransportException(" failed connect to server " + url, future.cause());
+            } else {
+                throw new TransportException(" failed connect to server " + url + " client timeout (" + clientInfo.getConnectTimeout() + ")ms",
+                    future.cause());
             }
             
         }finally{
@@ -173,7 +174,15 @@ public class NettyPipeline extends AbstractPipeline {
         Channel channel = getChannel();
         if (channel == null)
             return false;
-        return channel.isOpen()||channel.isActive();
+        if(channel.isOpen()||channel.isActive()){
+            return true;
+        }else{
+            synchronized (channel) {
+                channel.close();
+            }
+            return false;
+        }
+      
     }
 
     /***/
