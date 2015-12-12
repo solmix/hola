@@ -73,9 +73,9 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
     private Integer queues;
 
     /**
-     * 最大接收连接数
+     * 连接数
      */
-    private Integer accepts;
+    private Integer pipelines;
 
     /**
      * 编码实现名称
@@ -242,18 +242,16 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
     public void setQueues(Integer queues) {
         this.queues = queues;
     }
-
     
-    public Integer getAccepts() {
-        return accepts;
+    public Integer getPipelines() {
+        return pipelines;
     }
 
     
-    public void setAccepts(Integer accepts) {
-        this.accepts = accepts;
+    public void setPipelines(Integer pipelines) {
+        this.pipelines = pipelines;
     }
 
-    
     public String getCodec() {
         return codec;
     }

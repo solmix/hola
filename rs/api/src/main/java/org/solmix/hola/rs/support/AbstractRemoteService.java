@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import org.solmix.commons.util.Reflection;
 import org.solmix.exchange.Client;
 import org.solmix.exchange.ClientCallback;
+import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.invoker.OperationDispatcher;
 import org.solmix.exchange.model.OperationInfo;
 import org.solmix.hola.rs.RemoteException;
@@ -28,14 +29,17 @@ public abstract class AbstractRemoteService<T> implements RemoteService<T>
             Object[] obj = doInvoke(null, request);
             if (obj != null && obj.length > 0) {
                 res.setValue(obj[0]);
-            } else if (obj != null &&obj.length > 1) {
+            } else if (obj != null && obj.length > 1) {
                 res.setException(new IllegalArgumentException("sync return multi return values"));
             }
+        } catch (Fault e) {
+            res.setException(e.getCause());
         } catch (Exception e) {
             if (e instanceof RemoteException) {
                 throw (RemoteException) e;
             }
             res.setException(e);
+
         }
         return res;
     }

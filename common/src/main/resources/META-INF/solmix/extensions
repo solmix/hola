@@ -1,0 +1,5 @@
+#
+org.solmix.hola.common.serial.DefaultSerializationManager:org.solmix.hola.common.serial.SerializationManager:true
+org.solmix.hola.common.serial.java.JavaSerialization:org.solmix.hola.common.serial.Serialization:true
+org.solmix.hola.common.serial.hola.HolaSerialization:org.solmix.hola.common.serial.Serialization:true
+

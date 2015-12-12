@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.solmix.commons.util.Assert;
 import org.solmix.exchange.Client;
 import org.solmix.exchange.ClientCallback;
+import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.model.OperationInfo;
 import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.common.model.ServiceProperties;
@@ -96,7 +97,11 @@ public abstract class BaseRemoteService<T> extends AbstractRemoteService<T> impl
         } catch (RemoteException e) {
             throw e;
         } catch (Exception e) {
-            throw new RemoteException(e);
+            if(e instanceof Fault){
+                throw (Fault)e;
+            }else{
+                throw new RemoteException(e);
+            }
         }
         return null;
     }

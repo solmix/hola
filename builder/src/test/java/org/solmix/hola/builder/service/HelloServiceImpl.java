@@ -30,7 +30,7 @@ public class HelloServiceImpl implements HelloService
 
     @Override
     public void test() throws HelloException {
-        // TODO Auto-generated method stub
+      throw new HelloException("exception hello");
 
     }
 

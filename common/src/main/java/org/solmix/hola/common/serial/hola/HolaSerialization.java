@@ -8,8 +8,9 @@ import org.solmix.hola.common.serial.ObjectInput;
 import org.solmix.hola.common.serial.ObjectOutput;
 import org.solmix.hola.common.serial.SerialConfiguration;
 import org.solmix.hola.common.serial.Serialization;
+import org.solmix.runtime.Extension;
 
-
+@Extension(name="hola")
 public class HolaSerialization implements Serialization
 {
 
@@ -25,14 +26,12 @@ public class HolaSerialization implements Serialization
 
     @Override
     public ObjectOutput createObjectOutput(SerialConfiguration info, OutputStream output) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        return new HolaObjectOutput(output);
     }
 
     @Override
     public ObjectInput createObjectInput(SerialConfiguration info, InputStream input) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        return new HolaObjectInput(input);
     }
 
 }

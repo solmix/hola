@@ -19,10 +19,6 @@
 
 package org.solmix.hola.transport.codec;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -35,6 +31,10 @@ import org.solmix.hola.common.serial.ObjectOutput;
 import org.solmix.hola.common.serial.SerialConfiguration;
 import org.solmix.hola.common.serial.Serialization;
 import org.solmix.hola.common.serial.SerializationManager;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 
 /**
  * 
@@ -116,12 +116,17 @@ public class TransportCodec implements Codec
     }
 
     protected void checkPayload(long length) throws IOException{
+        Integer limit = getLimit();
+        if (limit != null && length > limit) {
+            throw new IOException("Data length too large: " + length + ", limit: " + limit);
+        }
+    }
+    
+    protected int getLimit(){
         Integer limit = serialConfiguration.getPalyload();
         if (limit == null) {
             limit = HOLA.DEFAULT_PALYLOAD;
         }
-        if (limit != null && length > limit) {
-            throw new IOException("Data length too large: " + length + ", limit: " + limit);
-        }
+        return limit;
     }
 }

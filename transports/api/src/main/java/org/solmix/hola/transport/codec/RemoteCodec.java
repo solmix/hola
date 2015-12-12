@@ -29,6 +29,7 @@ import org.solmix.exchange.Message;
 import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.FaultType;
+import org.solmix.exchange.interceptor.support.ClientFaultConverter;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.serial.ObjectInput;
 import org.solmix.hola.common.serial.ObjectOutput;
@@ -298,7 +299,7 @@ public class RemoteCodec extends TransportCodec
                     encodeResponseBody(buffer, objectOut, outMsg);
                 }
             }else{
-                encodeResponseException(buffer,objectOut,outMsg);
+                encodeResponseException(buffer,objectOut,outMsg,fault);
             }
             
             objectOut.flushBuffer();
@@ -324,10 +325,15 @@ public class RemoteCodec extends TransportCodec
 
     }
 
-    protected void encodeResponseException(ByteBuf buffer, ObjectOutput objectOut, Message outMsg) throws IOException {
+    protected void encodeResponseException(ByteBuf buffer, ObjectOutput objectOut, Message outMsg,FaultType type) throws IOException {
         Exception cause = outMsg.getContent(Exception.class);
         if(cause!=null){
-            objectOut.writeUTF(StringUtils.toString(cause));
+            if(cause instanceof Fault && type==FaultType.CHECKED_FAULT){
+                objectOut.writeUTF(ClientFaultConverter.toString(cause.getCause(),getLimit()));
+            }else{
+                objectOut.writeUTF(ClientFaultConverter.toString(cause.getCause(),getLimit()));
+            }
+           
         }
     }
     /**
@@ -350,13 +356,13 @@ public class RemoteCodec extends TransportCodec
     
     protected static byte formFaultType(FaultType type){
         switch (type) {
-            case CHECKED_APPLICATION_FAULT:
+            case CHECKED_FAULT:
                return CHECKED_APPLICATION_FAULT;
             case LOGICAL_RUNTIME_FAULT:
                 return LOGICAL_RUNTIME_FAULT;
             case RUNTIME_FAULT:
                 return RUNTIME_FAULT;
-            case UNCHECKED_APPLICATION_FAULT:
+            case UNCHECKED_FAULT:
                 return UNCHECKED_APPLICATION_FAULT;
             default:
                 return OK;
@@ -367,13 +373,13 @@ public class RemoteCodec extends TransportCodec
     protected static FaultType formStatusByte(byte b){
         switch(b){
             case CHECKED_APPLICATION_FAULT:
-                return FaultType.CHECKED_APPLICATION_FAULT;
+                return FaultType.CHECKED_FAULT;
              case LOGICAL_RUNTIME_FAULT:
                  return FaultType.LOGICAL_RUNTIME_FAULT;
              case RUNTIME_FAULT:
                  return FaultType.RUNTIME_FAULT;
              case UNCHECKED_APPLICATION_FAULT:
-                 return FaultType.UNCHECKED_APPLICATION_FAULT;
+                 return FaultType.UNCHECKED_FAULT;
              default:
                  return null;
         }

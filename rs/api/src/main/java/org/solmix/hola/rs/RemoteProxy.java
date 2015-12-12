@@ -85,8 +85,6 @@ public class RemoteProxy implements InvocationHandler, Closeable
             }
         }catch(RemoteException e){
             throw e;
-        }catch (Exception e) {
-            throw new RemoteException(e);
         }
     }
 
