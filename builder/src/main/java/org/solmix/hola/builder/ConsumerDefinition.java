@@ -31,26 +31,8 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
     private static final long serialVersionUID = -2030026232826658223L;
 
     private Boolean isDefault;
-    /**
-     * 序列化方法
-     */
-    private String serial;
     
-    private String protocol;
-    /**
-     * 主机
-     */
-    private String host;
-
-    /**
-     * 服务端口
-     */
-    private Integer port;
-
-    /**
-     * 上下文路径
-     */
-    private String path;
+    
 
     /**
      * 线程池名称
@@ -73,40 +55,19 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
     private Integer queues;
 
     /**
-     * 连接数
+     * <li>连接数
      */
     private Integer pipelines;
 
-    /**
-     * 编码实现名称
-     */
-    private String codec;
-
 
     /**
-     * 字符集
+     * <li>字符集
      */
     private String charset;
 
-    /**
-     * 最大请求数据长度
-     */
-    private Integer payload;
 
-    /**
-     * 心跳间隔
-     */
-    private Integer heartbeat;
 
-    /**
-     * 网络传输方式
-     */
-    private String transporter;
 
-    /**
-     * 缓存区大小
-     */
-    private Integer buffer;
 
     /**
      * 信息交换方式
@@ -142,18 +103,8 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
         this.isDefault = isDefault;
     }
 
-    
-    /**   */
-    public String getSerial() {
-        return serial;
-    }
-    
-    /**   */
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
+  
 
-    
     public Boolean getIsDefault() {
         return isDefault;
     }
@@ -164,45 +115,6 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
     }
 
     
-    public String getProtocol() {
-        return protocol;
-    }
-
-    
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
-
-    
-    public String getHost() {
-        return host;
-    }
-
-    
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    
-    public Integer getPort() {
-        return port;
-    }
-
-    
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    
-    public String getPath() {
-        return path;
-    }
-
-    
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     
     public String getExecutor() {
         return executor;
@@ -252,15 +164,6 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
         this.pipelines = pipelines;
     }
 
-    public String getCodec() {
-        return codec;
-    }
-
-    
-    public void setCodec(String codec) {
-        this.codec = codec;
-    }
-
     
     public String getCharset() {
         return charset;
@@ -269,46 +172,6 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
     
     public void setCharset(String charset) {
         this.charset = charset;
-    }
-
-    
-    public Integer getPayload() {
-        return payload;
-    }
-
-    
-    public void setPayload(Integer payload) {
-        this.payload = payload;
-    }
-
-    
-    public Integer getHeartbeat() {
-        return heartbeat;
-    }
-
-    
-    public void setHeartbeat(Integer heartbeat) {
-        this.heartbeat = heartbeat;
-    }
-
-    
-    public String getTransporter() {
-        return transporter;
-    }
-
-    
-    public void setTransporter(String transporter) {
-        this.transporter = transporter;
-    }
-
-    
-    public Integer getBuffer() {
-        return buffer;
-    }
-
-    
-    public void setBuffer(Integer buffer) {
-        this.buffer = buffer;
     }
 
     
@@ -340,5 +203,6 @@ public class ConsumerDefinition extends AbstractReferenceDefinition {
     public void setNetworker(String networker) {
         this.networker = networker;
     }
+
     
 }

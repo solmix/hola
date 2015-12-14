@@ -60,14 +60,30 @@ public class AbstractServiceDefinition extends AbstractInterfaceDefinition {
     private Integer executes;
 
     /**
-     * 服务是否允许暴露
+     * <li>服务是否允许暴露
      */
     private Boolean publish;
 
     /**
-     * 延迟发布时间(ms)
+     * <li>延迟发布时间(ms)
      */
     protected Integer delay;
+    
+    /**
+     * 最大接收连接数
+     */
+    private Integer accepts;
+    
+
+    /**   */
+    public Integer getAccepts() {
+        return accepts;
+    }
+
+    /**   */
+    public void setAccepts(Integer accepts) {
+        this.accepts = accepts;
+    }
     /**   */
     public Boolean isPublish() {
         return publish;

@@ -182,6 +182,7 @@ public class NettyTransportFactory implements PipelineFactory,
                                 HOLA.TIMEOUT_KEY, 
                                 HOLA.HOST_KEY,
                                 HOLA.PORT_KEY, 
+                                HOLA.ACCEPTS_KEY,
                                 HOLA.PATH_KEY, 
                                 HOLA.BUFFER_KEY ,
                                 HOLA.CODEC_KEY};

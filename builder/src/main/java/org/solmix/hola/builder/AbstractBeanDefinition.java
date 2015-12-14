@@ -225,7 +225,7 @@ public class AbstractBeanDefinition extends InfoPropertiesSupport implements
                         continue;
                     }
                     int i = name.startsWith("get") ? 3 : 2;
-                    String prop = StringUtils.camelToSplitName(name.substring(i, i + 1).toLowerCase() + name.substring(i + 1), ".");
+                    String prop = StringUtils.camelToSplitName(name.substring(i, i + 1).toLowerCase() + name.substring(i + 1), HOLA.CAMEL_SPLIT_KEY);
                     String key;
                     if (parameter != null && parameter.key() != null && parameter.key().length() > 0) {
                         key = parameter.key();

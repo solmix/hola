@@ -81,13 +81,13 @@ public class HOLA
     public static final String TIMEOUT_KEY = "timeout";
 
     /** 连接超时时间 */
-    public static final String CONNECT_TIMEOUT_KEY = "connectTimeout";
+    public static final String CONNECT_TIMEOUT_KEY = "connect.timeout";
 
     /** 接收超时时间 */
-    public static final String READ_IDLE_TIMEOUT_KEY = "readIdleTimeout";
+    public static final String READ_IDLE_TIMEOUT_KEY = "read.idle.timeout";
 
     /** 写超时时间 */
-    public static final String WRITE_IDLE_TIMEOUT_KEY = "writeIdleTimeout";
+    public static final String WRITE_IDLE_TIMEOUT_KEY = "write.idle.timeout";
 
     public static final String ANY_VALUE = "*";
 
@@ -105,7 +105,7 @@ public class HOLA
     /**
      * 心跳超时时间，值类型：int(ms)
      */
-    public static final String HEARTBEAT_TIMEOUT_KEY = "heartbeatTimeout";
+    public static final String HEARTBEAT_TIMEOUT_KEY = "heartbeat.timeout";
     /**
      * 空闲超时，值类型：int（ms）
      */
@@ -351,10 +351,16 @@ public class HOLA
     public static final String SERVICE_ID_KEY = "remote.service.id";
 
     /**
-     * 管道数量，值类型：int
+     * 一个Client运行开通的管道数量，值类型：int
      */
-    public static final String PIPELINES = "pipelines";
+    public static final String PIPELINES_KEY = "pipelines";
 
+
+    /**
+     * 一个Server允许接受的连接数量，值类型：int
+     */
+    public static final String ACCEPTS_KEY="accepts";
+    
     /**
      * 指定合并实现类型
      */
@@ -401,6 +407,12 @@ public class HOLA
      * 不在公告中显示的参数的前缀
      */
     public static final String DIC_HIDDEN_PREFIX = ".";
+    
+    /**
+     * java bean样式转化为驼峰样式的分隔符号
+     * connectTimeout=>connect.timeout
+     */
+    public static final String CAMEL_SPLIT_KEY = ".";
 
     /**
      * 集群方式，值类型：string
@@ -411,5 +423,6 @@ public class HOLA
 
     /** 是否在IO线程中编码解码,值类型 boolean */
     public static final String DECODE_IN_IO_KEY = "decodeInIo";
+
 
 }

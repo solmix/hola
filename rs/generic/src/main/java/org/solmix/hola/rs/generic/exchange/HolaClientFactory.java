@@ -21,7 +21,6 @@ package org.solmix.hola.rs.generic.exchange;
 import org.solmix.exchange.ProtocolFactoryManager;
 import org.solmix.exchange.support.ReflectServiceFactory;
 import org.solmix.hola.rs.ClientFactory;
-import org.solmix.hola.rs.RemotePipelineSelector;
 import org.solmix.runtime.Container;
 
 
@@ -52,6 +51,8 @@ public class HolaClientFactory extends ClientFactory
             pf.setContainer(container);
             pfm.register(ProtocolFactoryImpl.PROTOCOL_ID, pf);
         }
-        setPipelineSelector(new RemotePipelineSelector(container,true, 6));
+      
+       
     }
+    
 }

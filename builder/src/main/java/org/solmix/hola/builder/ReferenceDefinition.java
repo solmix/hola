@@ -374,6 +374,9 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                    Dictionary<String, ?> info = urlinfos.get(0);
                    String protocol = PropertiesUtils.getString(info, HOLA.PROTOCOL_KEY);
                    RemoteServiceFactory factory=   container.getExtensionLoader(RemoteServiceFactory.class).getExtension(protocol);
+                   if(factory==null){
+                       throw new IllegalStateException("Can't lookup RemoteServiceFactory for protocol:"+protocol);
+                   }
                    RemoteReference<?> reference=factory.getReference(interfaceClass, info);
                    remoteService=factory.getRemoteService(reference);
                    if(LOG.isInfoEnabled()){

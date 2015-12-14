@@ -105,10 +105,10 @@ public class RemotePipelineSelector implements PipelineSelector, Closeable
 
     @Override
     public void prepare(Message message) {
-        if (init) {
-            return;
-        } else {
             synchronized (endpoint) {
+                if (init) {
+                    return;
+                } else {
                 createPreexitPipelines(limits);
                 init = true;
             }
@@ -118,6 +118,7 @@ public class RemotePipelineSelector implements PipelineSelector, Closeable
 
     @Override
     public Pipeline select(Message message) {
+       
         Pipeline pl = getPipeline(message);
         if (pl == null) {
             if (pipelines.length == 1) {

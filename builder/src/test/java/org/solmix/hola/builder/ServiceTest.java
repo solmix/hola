@@ -2,6 +2,7 @@ package org.solmix.hola.builder;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -21,7 +22,9 @@ import org.solmix.runtime.threadpool.ThreadPool;
 public class ServiceTest extends Assert
 {
     static Container container;
-    
+    static AtomicInteger succ=new  AtomicInteger();
+    static AtomicInteger failed=new  AtomicInteger();
+    static AtomicInteger send=new  AtomicInteger();
     @BeforeClass
     public static void setup(){
         container= ContainerFactory.getDefaultContainer(true);
@@ -60,7 +63,6 @@ public class ServiceTest extends Assert
             definition.unregister();
         }
     }
-    int succ=0,failed=0;
     @Test
     public void testRegister2() throws InterruptedException{
         int port = NetUtils.getRandomPort();
@@ -68,9 +70,17 @@ public class ServiceTest extends Assert
         ServiceDefinition<HelloService> definition = new ServiceDefinition<HelloService>(hs);
         definition.setInterface(HelloService.class.getName());
         ProviderDefinition provider=new ProviderDefinition();
-        provider.setPort(port);
-        provider.setHeartbeat(10*1000);
-        provider.setTimeout(5000);
+        definition.setPort(port);
+        definition.setAccepts(8);
+        provider.setPort(port+1);
+        definition.setConnectTimeout(5000);
+//        provider.setPalyload(5000);
+//        provider.setContextpath("/hola_s");
+//        provider.setProtocol("rmi");
+//        provider.setTransporter("mina");
+        definition.setHeartbeat(10*1000);
+        definition.setHeartbeatTimeout(100*1000);
+//        provider.setTimeout(5000);
         definition.setProvider(provider);
         
         ReferenceDefinition<HelloService> refer = new ReferenceDefinition<HelloService>();
@@ -78,8 +88,12 @@ public class ServiceTest extends Assert
         ConsumerDefinition consumer = new ConsumerDefinition();
         consumer.setHost("localhost");
         consumer.setPort(port);
+//        consumer.setProtocol("rmi");
+//        consumer.setPalyload(500);
         consumer.setSerial("hola");
-        consumer.setHeartbeat(3*1000);
+//        consumer.setHeartbeat(3*1000);
+        consumer.setPipelines(8);
+//        consumer.setTransporter("mina");
         consumer.setTimeout(5000);
         refer.setConsumer(consumer);
         
@@ -97,37 +111,49 @@ public class ServiceTest extends Assert
                 e.printStackTrace();
             }
             int i=0;
-            long _$=System.currentTimeMillis();
-            ThreadPool pool = new DefaultThreadPool(10000);
-           final CountDownLatch la= new CountDownLatch(60);
-          
-            while(i<60){
+           
+            int total=20;
+            ThreadPool pool = new DefaultThreadPool(total,"TEST");
+           final CountDownLatch la= new CountDownLatch(total);
+          final String ECHO = getString();
+          long _$=System.currentTimeMillis();
+            while(i<total){
                 i++;
+                
                 pool.execute(new Runnable() {
                     
                     @Override
                     public void run() {
+                        send.incrementAndGet();
                         try {
-                            String str = hello.echo("aaaaaaasss");
+                            String str = hello.echo(ECHO);
 //                            System.out.println(System.currentTimeMillis());
-                            succ++;
+                            succ.incrementAndGet();
                         }catch(Throwable e){
-                            failed++;
+                            e.printStackTrace();
+                            failed.incrementAndGet();
                         } finally {
+                            
                             la.countDown();
                         }
                         
                     }
                 });
                 
-//                  Thread.currentThread().sleep(5000);
             }
             la.await();
-            System.out.println(succ+"----"+failed+"==========="+(System.currentTimeMillis()-_$));
+           
+            System.out.println(succ+"----"+failed+"----"+send+"==========="+(System.currentTimeMillis()-_$));
         } finally{
             refer.destroy();
             definition.unregister();
         }
     }
-  
+    private String getString() {
+        StringBuffer sb = new StringBuffer();
+        while(sb.length()<1024){
+            sb.append("abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*(");
+        }
+        return sb.toString();
+    }
 }

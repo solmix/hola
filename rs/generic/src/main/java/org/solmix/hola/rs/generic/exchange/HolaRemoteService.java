@@ -6,6 +6,9 @@ import java.util.Enumeration;
 
 import org.solmix.commons.util.Assert;
 import org.solmix.exchange.Client;
+import org.solmix.hola.common.HOLA;
+import org.solmix.hola.common.model.PropertiesUtils;
+import org.solmix.hola.rs.RemotePipelineSelector;
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
 import org.solmix.hola.rs.support.BaseRemoteService;
@@ -39,6 +42,12 @@ public class HolaRemoteService<T> extends BaseRemoteService<T>
                 dic.put(key, value);
             }
         }
+        //处理pipeline共享
+        int pipelines= PropertiesUtils.getInt(clientFactory.getProperties(), HOLA.PIPELINES_KEY,0);
+        if(pipelines<=0){
+            pipelines=1;
+        }
+        clientFactory.setPipelineSelector(new RemotePipelineSelector(clientFactory.getContainer(),true, pipelines));
         Client client = clientFactory.create();
         return client;
     }

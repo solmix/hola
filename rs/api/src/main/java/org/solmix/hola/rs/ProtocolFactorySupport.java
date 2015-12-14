@@ -26,8 +26,10 @@ import org.slf4j.Logger;
 import org.solmix.commons.util.ArrayUtils;
 import org.solmix.commons.util.DataUtils;
 import org.solmix.commons.util.Reflection;
+import org.solmix.commons.util.StringUtils;
 import org.solmix.exchange.model.ProtocolInfo;
 import org.solmix.exchange.support.AbstractProtocolFactory;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.ConfigSupportedReference;
 
 
@@ -54,7 +56,7 @@ public abstract class ProtocolFactorySupport extends AbstractProtocolFactory
                 for(String key:supported){
                     Object value = properties.get(key);
                     if(value!=null){
-                        copyed.put(key, properties.get(key));
+                        copyed.put(StringUtils.splitToCamelName(key, HOLA.CAMEL_SPLIT_KEY), properties.get(key));
                     }
                 }
                 DataUtils.setProperties(copyed, bean, false);

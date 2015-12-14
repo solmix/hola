@@ -62,15 +62,10 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
 {
     /**    */
     private static final long serialVersionUID = -6412855348674400197L;
+    
     private String interfaceName;
 
-   
-
-    /**
-     * 服务路径,默认为interface名称,如果设置了{@link ProviderDefinition#getContextpath()
-     * contextpath}为 contextpath/path.
-     */
-    private String path;
+  
     /**
      * 一个服务可以通过多种协议发布
      */
@@ -141,14 +136,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
     public void setRef(T ref) {
         this.ref = ref;
     }
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        checkPathName("path", path);
-        this.path = path;
-    }
+   
       /**
        * @return the methods
        */
@@ -236,8 +224,8 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         if(delay==null){
             delay=provider.getDelay();
         }
-        if (path == null || path.length() == 0) {
-            path = interfaceName;
+        if (getPath() == null || getPath().length() == 0) {
+            setPath(interfaceName);
         }
         if(delay!=null&&delay>0){
             final int pdelay=delay;
@@ -324,58 +312,10 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         }
         checkInterfaceAndMethods(interfaceClass, methods);
         checkRef();
+        Dictionary<String, Object> dic = new Hashtable<String, Object>();
         List<Dictionary<String, ?>> discoveryDics = getDiscoveryDictionaries(provider);
         String protocol = provider.getProtocol();
-        String host = provider.getHost();
-        if (NetUtils.isInvalidLocalHost(host)) {
-            try {
-                host = InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException e) {
-                logger.warn(e.getMessage(), e);
-            }
-            if (NetUtils.isInvalidLocalHost(host)) {
-                if (discoveryDics != null && discoveryDics.size() > 0) {
-                    for (Dictionary<String, ?> dis : discoveryDics) {
-                        try {
-                            Socket socket = new Socket();
-                            try {
-                                String dhost = PropertiesUtils.getString(dis, HOLA.HOST_KEY);
-                                int port = PropertiesUtils.getInt(dis, HOLA.PORT_KEY);
-                                SocketAddress addr = new InetSocketAddress(dhost, port);
-                                socket.connect(addr, 1000);
-                                host = socket.getLocalAddress().getHostAddress();
-                                break;
-                            } finally {
-                                try {
-                                    socket.close();
-                                } catch (Throwable e) {}
-                            }
-                        } catch (Exception e) {
-                            logger.warn(e.getMessage(), e);
-                        }
-                    }
-                }
-                if (NetUtils.isInvalidLocalHost(host)) {
-                    host = NetUtils.getLocalHost();
-                }
-            }
-        }//end host
         
-        Integer port =provider.getPort();
-        if(port==null||port<0){
-            port = getRandomPort(protocol);
-            if (port == null || port < 0) {
-                port = NetUtils.getAvailablePort();
-                putRandomPort(protocol, port);
-            }
-            logger.warn("Use random available port(" + port + ") for protocol " + protocol);
-        }
-        
-        Dictionary<String, Object> dic = new Hashtable<String, Object>();
-        dic.put(HOLA.HOST_KEY, host);
-        dic.put(HOLA.PORT_KEY, port);
-        dic.put(HOLA.CATEGORY_KEY, HOLA.PROVIDER_CATEGORY);
-        dic.put(HOLA.TIMESTAMP_KEY, System.currentTimeMillis());
         int pid  = SystemPropertyAction.getPid();
         if(pid>0){
             dic.put(HOLA.PID_KEY, pid);
@@ -450,6 +390,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
             dic.put(HOLA.VERSION, revision);
         }
         String contextPath = provider.getContextpath();
+        String  path = getPath();
         if(!StringUtils.isEmpty(contextPath)){
             if(contextPath.endsWith("/")){
                 contextPath=contextPath.substring(0, contextPath.length()-1);
@@ -460,6 +401,58 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
             path=contextPath+"/"+path;
         }
         dic.put(HOLA.PATH_KEY, path);
+        
+        //RECHECK
+        String host = PropertiesUtils.getString(dic, HOLA.HOST_KEY);
+        if (NetUtils.isInvalidLocalHost(host)) {
+            try {
+                host = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                logger.warn(e.getMessage(), e);
+            }
+            if (NetUtils.isInvalidLocalHost(host)) {
+                if (discoveryDics != null && discoveryDics.size() > 0) {
+                    for (Dictionary<String, ?> dis : discoveryDics) {
+                        try {
+                            Socket socket = new Socket();
+                            try {
+                                String dhost = PropertiesUtils.getString(dis, HOLA.HOST_KEY);
+                                int port = PropertiesUtils.getInt(dis, HOLA.PORT_KEY);
+                                SocketAddress addr = new InetSocketAddress(dhost, port);
+                                socket.connect(addr, 1000);
+                                host = socket.getLocalAddress().getHostAddress();
+                                break;
+                            } finally {
+                                try {
+                                    socket.close();
+                                } catch (Throwable e) {}
+                            }
+                        } catch (Exception e) {
+                            logger.warn(e.getMessage(), e);
+                        }
+                    }
+                }
+                if (NetUtils.isInvalidLocalHost(host)) {
+                    host = NetUtils.getLocalHost();
+                }
+            }
+        }//end host
+        
+        Integer port =PropertiesUtils.getInt(dic, HOLA.PORT_KEY);
+        if(port==null||port<0){
+            port = getRandomPort(protocol);
+            if (port == null || port < 0) {
+                port = NetUtils.getAvailablePort();
+                putRandomPort(protocol, port);
+            }
+            logger.warn("Use random available port(" + port + ") for protocol " + protocol);
+        }
+        
+        
+        dic.put(HOLA.HOST_KEY, host);
+        dic.put(HOLA.PORT_KEY, port);
+        dic.put(HOLA.CATEGORY_KEY, HOLA.PROVIDER_CATEGORY);
+        dic.put(HOLA.TIMESTAMP_KEY, System.currentTimeMillis());
         
         String scope = PropertiesUtils.getString(dic,HOLA.SCOPE_KEY);
         if(!"none".equalsIgnoreCase(scope)){
@@ -498,6 +491,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
                 }
             }
         }
+       
     }
     protected void registerLocal(Dictionary<String, Object> dic) {
     }

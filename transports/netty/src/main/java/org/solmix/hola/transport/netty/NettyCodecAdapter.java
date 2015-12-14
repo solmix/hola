@@ -89,6 +89,7 @@ public class NettyCodecAdapter
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> out) throws Exception {
+            
             if (input.readableBytes() <= 0) {
                 return;
             }

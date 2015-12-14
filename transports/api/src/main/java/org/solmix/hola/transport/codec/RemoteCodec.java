@@ -120,7 +120,7 @@ public class RemoteCodec extends TransportCodec
             return DecodeResult.NEED_MORE_INPUT;
         }
 
-        ByteBufInputStream is = new ByteBufInputStream(buffer);
+        ByteBufInputStream is = new ByteBufInputStream(buffer,length);
         try {
             return decodeBody(is, header, inMsg);
         } finally {
@@ -315,7 +315,6 @@ public class RemoteCodec extends TransportCodec
         } catch (Throwable t) {
             LOG.warn("encodeResponse",t);
         }
-
     }
  
     
@@ -331,7 +330,7 @@ public class RemoteCodec extends TransportCodec
             if(cause instanceof Fault && type==FaultType.CHECKED_FAULT){
                 objectOut.writeUTF(ClientFaultConverter.toString(cause.getCause(),getLimit()));
             }else{
-                objectOut.writeUTF(ClientFaultConverter.toString(cause.getCause(),getLimit()));
+                objectOut.writeUTF(ClientFaultConverter.toString(cause,getLimit()));
             }
            
         }

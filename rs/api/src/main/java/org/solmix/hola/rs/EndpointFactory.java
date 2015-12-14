@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.ArrayUtils;
 import org.solmix.commons.util.DataUtils;
 import org.solmix.commons.util.Reflection;
+import org.solmix.commons.util.StringUtils;
 import org.solmix.exchange.Endpoint;
 import org.solmix.exchange.EndpointException;
 import org.solmix.exchange.EndpointInfoFactory;
@@ -256,7 +257,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
                 for(String key:supported){
                     Object value = properties.get(key);
                     if(value!=null){
-                        copyed.put(key, properties.get(key));
+                        copyed.put(StringUtils.splitToCamelName(key, HOLA.CAMEL_SPLIT_KEY), properties.get(key));
                     }
                 }
                 DataUtils.setProperties(copyed, bean, false);

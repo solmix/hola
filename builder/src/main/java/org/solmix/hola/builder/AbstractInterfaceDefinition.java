@@ -56,6 +56,177 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
     protected List<DiscoveryDefinition> discoveries;
 
     protected MonitorDefinition monitor;
+    /**
+     * <li>心跳间隔
+     */
+    private Integer heartbeat;
+    
+
+    /**
+     * <li>心跳超时
+     */
+    private Integer heartbeatTimeout;
+    /**
+     * 编码实现名称
+     */
+    private String codec;
+    /**
+     * <li>有效负载，数据报文长度
+     */
+    private Integer palyload;
+    
+    /**
+     * <li>连接超时时间
+     */
+    private Integer connectTimeout;
+    /**
+     * <li>序列化方法
+     */
+    private String serial;
+    
+    /**
+     * <li>通信协议
+     */
+    private String protocol;
+    /**
+     * <li>主机
+     */
+    private String host;
+
+    /**
+     * <li>服务端口
+     * 服务路径,默认为interface名称,如果设置了{@link ProviderDefinition#getContextpath()
+     * contextpath}为 contextpath/path.
+     */
+    private Integer port;
+
+    /**
+     * <li>上下文路径
+     */
+    private String path;
+    
+
+    /**
+     * <li>网络传输方式
+     */
+    private String transporter;
+
+    /**
+     * <li>缓存区大小
+     */
+    private Integer buffer;
+    
+    
+    
+    public Integer getHeartbeatTimeout() {
+        return heartbeatTimeout;
+    }
+
+    
+    public void setHeartbeatTimeout(Integer heartbeatTimeout) {
+        this.heartbeatTimeout = heartbeatTimeout;
+    }
+
+    
+    public String getCodec() {
+        return codec;
+    }
+
+    
+    public void setCodec(String codec) {
+        this.codec = codec;
+    }
+
+    
+    public Integer getPalyload() {
+        return palyload;
+    }
+
+    
+    public void setPalyload(Integer palyload) {
+        this.palyload = palyload;
+    }
+
+    
+    public Integer getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    
+    public void setConnectTimeout(Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    
+    public String getSerial() {
+        return serial;
+    }
+
+    
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    
+    public String getProtocol() {
+        return protocol;
+    }
+
+    
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    
+    public String getHost() {
+        return host;
+    }
+
+    
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    
+    public Integer getPort() {
+        return port;
+    }
+
+    
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    
+    public String getPath() {
+        return path;
+    }
+
+    
+    public void setPath(String path) {
+        checkPathName("path", path);
+        this.path = path;
+    }
+
+    
+    public String getTransporter() {
+        return transporter;
+    }
+
+    
+    public void setTransporter(String transporter) {
+        this.transporter = transporter;
+    }
+
+    
+    public Integer getBuffer() {
+        return buffer;
+    }
+
+    
+    public void setBuffer(Integer buffer) {
+        this.buffer = buffer;
+    }
 
     /**   */
     public String getProxy() {
@@ -142,6 +313,17 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
         List<DiscoveryDefinition> discoveries = new ArrayList<DiscoveryDefinition>(1);
         discoveries.add(registry);
         this.discoveries = discoveries;
+    }
+    
+
+    /**   */
+    public Integer getHeartbeat() {
+        return heartbeat;
+    }
+
+    /**   */
+    public void setHeartbeat(Integer heartbeat) {
+        this.heartbeat = heartbeat;
     }
     
     protected void checkInterfaceAndMethods(Class<?> interfaceClass, List<MethodDefinition> methods) {

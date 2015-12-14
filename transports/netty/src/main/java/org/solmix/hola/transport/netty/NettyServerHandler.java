@@ -29,6 +29,7 @@ import org.solmix.exchange.Protocol;
 import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.FaultType;
 import org.solmix.exchange.support.DefaultMessage;
+import org.solmix.hola.common.HolaRuntimeException;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -65,23 +66,36 @@ public class NettyServerHandler extends ChannelHandlerAdapter
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("open new channel {}", ctx.channel());
+        int accepts = info.getAccepts();
+        if(accepts>0&&allChannels.size()>accepts){
+            LOG.error("Close channel " + ctx.channel() + ", cause: The server " + ctx.channel().localAddress() + " connections greater than max config " + accepts);
+            ctx.channel().close();
+            return;
+        }else{
+            allChannels.add(ctx.channel());
+            ctx.fireChannelActive();
         }
-        allChannels.add(ctx.channel());
-        // 启动心跳定时器
-        // TODO
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        allChannels.remove(ctx.channel());
+        ctx.fireChannelInactive();
+    }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof Message) {
             Message response = (Message) msg;
-            if(MessageUtils.getBoolean(response, Message.EVENT_MESSAGE)){
-                handleEvent(ctx,response);
-            }else{
-                handleMessage(ctx, response);
+            try{
+                if(MessageUtils.getBoolean(response, Message.EVENT_MESSAGE)){
+                    handleEvent(ctx,response);
+                }else{
+                    handleMessage(ctx, response);
+                }
+            }catch(Throwable e){
+                throw new NettyServerException(response.getId(), e);
             }
+            
         } else {
             super.channelRead(ctx, msg);
         }
@@ -110,9 +124,11 @@ public class NettyServerHandler extends ChannelHandlerAdapter
     }
 
     private void handleMessage(ChannelHandlerContext ctx, Message inMsg) throws IOException {
-
-        NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(MessageUtils.getString(inMsg, Message.PATH_INFO));
-
+        String path = MessageUtils.getString(inMsg, Message.PATH_INFO);
+        NettyMessageHandler handler = channelFactory.getNettyBuffedHandler(path);
+        if(handler==null){
+            throw new IllegalArgumentException("No Server found Handler for path:"+path);
+        }
         Message outMsg = protocol.createMessage();
         outMsg.setRequest(false);
         outMsg.setInbound(false);
@@ -157,25 +173,42 @@ public class NettyServerHandler extends ChannelHandlerAdapter
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (LOG.isWarnEnabled()) {
-            LOG.warn("Netty exception on netty handler", cause);
+            LOG.warn("Netty exception on server handler", cause);
         }
         ThreadLocalChannel.unset();
         Channel ch = ctx.channel();
         if (cause instanceof IllegalArgumentException) {
             ch.close();
         } else {
-            if (ch.isActive()) {
-                sendError(ctx, cause);
+            if (ch.isActive()&&cause instanceof NettyServerException) {
+                sendError(ctx, (NettyServerException)cause);
             }
         }
         ctx.close();
     }
 
-    protected void sendError(ChannelHandlerContext ctx, Throwable cause) {
+    protected void sendError(ChannelHandlerContext ctx, NettyServerException cause) {
         Message msg = protocol.createMessage();
+        msg.setId(cause.getId());
         msg.put(FaultType.class, FaultType.RUNTIME_FAULT);
-        msg.setContent(Exception.class, new IOException("exception in netty handler ", cause));
+        msg.setContent(Exception.class,cause.getCause());
         ctx.writeAndFlush(msg);
 
+    }
+    //标记服务端出现的异常，并将异常返回，避免客户端等待直到超时。
+    private class NettyServerException extends HolaRuntimeException
+    {
+        private long id;
+      
+        private static final long serialVersionUID = -1347804624802182657L;
+
+         NettyServerException(long id,Throwable e){
+            super(e);
+            this.id=id;
+        }
+        
+        public long getId(){
+            return id;
+        }
     }
 }

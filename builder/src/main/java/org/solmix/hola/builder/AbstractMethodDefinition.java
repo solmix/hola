@@ -56,8 +56,6 @@ public class AbstractMethodDefinition extends AbstractBeanDefinition {
 
     protected Boolean asyncwait;
 
-    /** 服务连接数,0表示共享连接 */
-    protected Integer connections;
 
     /**
      * @return the asyncwait
@@ -143,13 +141,4 @@ public class AbstractMethodDefinition extends AbstractBeanDefinition {
         this.async = async;
     }
 
-    /**   */
-    public Integer getConnections() {
-        return connections;
-    }
-
-    /**   */
-    public void setConnections(Integer connections) {
-        this.connections = connections;
-    }
 }

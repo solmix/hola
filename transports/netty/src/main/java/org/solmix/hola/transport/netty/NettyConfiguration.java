@@ -37,6 +37,7 @@ public class NettyConfiguration
     private int connectTimeout= HOLA.DEFAULT_CONNECT_TIMEOUT;
     
     private Integer writeIdleTimeout ;
+    
     private int writeTimeout =HOLA.DEFAULT_TIMEOUT;
     
     private Integer idleTimeout;
@@ -52,6 +53,7 @@ public class NettyConfiguration
     private int threadPoolSize = 5;
 
     private int bufferSize = HOLA.DEFAULT_BUFFER_SIZE;
+    
     private Integer heartbeat;
     
     private Integer heartbeatTimeout;
@@ -59,111 +61,76 @@ public class NettyConfiguration
 
     private boolean waiteSuccess;
 
-
+    
+    private Integer accepts;
     
     public boolean isChunking() {
         return chunking;
     }
-
-
     
     public void setChunking(boolean chunking) {
         this.chunking = chunking;
     }
-
-
     
     public int getChunkThreshold() {
         return chunkThreshold;
     }
-
-
     
     public void setChunkThreshold(int chunkThreshold) {
         this.chunkThreshold = chunkThreshold;
     }
-
-
     
     public int getConnectTimeout() {
         return connectTimeout;
     }
-
-
     
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
-
-
     
     public Integer getWriteIdleTimeout() {
         return writeIdleTimeout;
     }
-
-
     
     public void setWriteIdleTimeout(Integer writeIdleTimeout) {
         this.writeIdleTimeout = writeIdleTimeout;
     }
-
-
     
     public Integer getIdleTimeout() {
         return idleTimeout;
     }
-
-
     
     public void setIdleTimeout(Integer idleTimeout) {
         this.idleTimeout = idleTimeout;
     }
-
-
     
     public int getTimeout() {
         return timeout;
     }
-
-
     
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
-
-
     
     public Integer getReadIdleTimeout() {
         return readIdleTimeout;
     }
 
-
-    
     public void setReadIdleTimeout(Integer readIdleTimeout) {
         this.readIdleTimeout = readIdleTimeout;
     }
 
-
-    
     public String getCodec() {
         return codec;
     }
 
-
-    
     public void setCodec(String codec) {
         this.codec = codec;
     }
 
-
-    
-    
     public int getWriteTimeout() {
         return writeTimeout;
     }
-
-
-
     
     public void setWriteTimeout(int writeTimeout) {
         this.writeTimeout = writeTimeout;
@@ -174,33 +141,23 @@ public class NettyConfiguration
     public int getThreadPoolSize() {
         return threadPoolSize;
     }
-
-
     
     public void setThreadPoolSize(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
     }
 
-
-    
     public int getBufferSize() {
         return bufferSize;
     }
-
-
     
     public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
     }
-
-
     
     public Integer getHeartbeat() {
         return heartbeat;
     }
 
-
-    
     public void setHeartbeat(Integer heartbeat) {
         this.heartbeat = heartbeat;
     }
@@ -216,21 +173,24 @@ public class NettyConfiguration
     public void setHeartbeatTimeout(Integer heartbeatTimeout) {
         this.heartbeatTimeout = heartbeatTimeout;
     }
-
-
     
     public boolean isWaiteSuccess() {
         return waiteSuccess;
     }
-
-
     
     public void setWaiteSuccess(boolean waiteSuccess) {
         this.waiteSuccess = waiteSuccess;
     }
-
-
     
+    
+    public Integer getAccepts() {
+        return accepts;
+    }
+    
+    public void setAccepts(Integer accepts) {
+        this.accepts = accepts;
+    }
+
     public long getAsyncExecuteTimeout() {
         return asyncExecuteTimeout;
     }

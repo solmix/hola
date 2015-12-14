@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.exchange.Exchange;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.Processor;
@@ -60,7 +61,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  * @author solmix.f@gmail.com
  * @version $Id$ 2015年1月15日
  */
-
+@ThreadSafe
 public class NettyPipeline extends AbstractPipeline {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyPipeline.class);
@@ -99,14 +100,7 @@ public class NettyPipeline extends AbstractPipeline {
 
     @Override
     public void prepare(Message message) throws IOException {
-        if(!isConnected()){
-            try {
-                URI uri = getEndpointAddressURI();
-                connect(uri);
-            } catch (URISyntaxException e) {
-               throw new TransportException(e);
-            }
-        }
+        prepareChannel();
         URI currentURI;
         try {
             currentURI = setupURI(message);
@@ -136,7 +130,7 @@ public class NettyPipeline extends AbstractPipeline {
         }
        }
     }
-    protected void connect(URI url) {
+    protected synchronized void connect(URI url) {
         RemoteProtocol protocol = (RemoteProtocol)getProtocol();
         bootstrap.handler(new NettyClientChannelFactory(clientInfo,protocol));
         ChannelFuture future = bootstrap.connect(new InetSocketAddress(url.getHost(), url.getPort()));
@@ -168,6 +162,17 @@ public class NettyPipeline extends AbstractPipeline {
             }
         }
         
+    }
+    
+    private synchronized void prepareChannel(){
+        if(!isConnected()){
+            try {
+                URI uri = getEndpointAddressURI();
+                connect(uri);
+            } catch (URISyntaxException e) {
+               throw new TransportException(e);
+            }
+        }
     }
    
     private boolean isConnected()  {
@@ -232,15 +237,18 @@ public class NettyPipeline extends AbstractPipeline {
                             }
                         }
                     };
-                    ChannelFuture channelFuture = getChannel().writeAndFlush(outMessage);
-                    channelFuture.addListener(listener);
-                    if(oneway){
-                        try {
-                            channelFuture.sync();
-                        } catch (InterruptedException e) {
-                            LOG.warn("Failed to write oneway message",e);
+                    Channel channel = getChannel();
+                    synchronized (channel) {
+                        ChannelFuture channelFuture = channel.writeAndFlush(outMessage);
+                        channelFuture.addListener(listener);
+                        if(oneway){
+                            try {
+                                channelFuture.sync();
+                            } catch (InterruptedException e) {
+                                LOG.warn("Failed to write oneway message",e);
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
                 handleResponse(outMessage);

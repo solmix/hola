@@ -106,5 +106,13 @@ public class NettyClientHandler extends ChannelHandlerAdapter
         super.write(ctx, msg, promise);
 
     }
+    
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (LOG.isWarnEnabled()) {
+            LOG.warn("Netty exception on client handler,case :{}", cause.getMessage());
+        }
+        ctx.close();
+    }
 
 }

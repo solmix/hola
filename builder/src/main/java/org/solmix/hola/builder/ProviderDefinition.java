@@ -28,20 +28,10 @@ package org.solmix.hola.builder;
 public class ProviderDefinition extends AbstractServiceDefinition {
 
     private static final long serialVersionUID = 7508462139160267039L;
-
-    private String protocol;
-    /**
-     * 主机
-     */
-    private String host;
+   
 
     /**
-     * 服务端口
-     */
-    private Integer port;
-
-    /**
-     * 上下文路径
+     * <li>上下文路径
      */
     private String contextpath;
 
@@ -65,50 +55,14 @@ public class ProviderDefinition extends AbstractServiceDefinition {
      */
     private Integer queues;
 
-    /**
-     * 最大接收连接数
-     */
-    private Integer accepts;
-
-    /**
-     * 编码实现名称
-     */
-    private String codec;
-
-    /**
-     * 序列化方法
-     */
-    private String serial;
-
+   
     /**
      * 字符集
      */
     private String charset;
 
-    /**
-     * 最大请求数据长度
-     */
-    private Integer payload;
+ 
 
-    /**
-     * 心跳间隔
-     */
-    private Integer heartbeat;
-
-    /**
-     * 网络传输方式
-     */
-    private String transporter;
-
-    /**
-     * 缓存区大小
-     */
-    private Integer buffer;
-
-    /**
-     * 信息交换方式
-     */
-    private String exchanger;
 
     /**
      * 信息线程模型派发方式
@@ -126,36 +80,6 @@ public class ProviderDefinition extends AbstractServiceDefinition {
      */
     private Boolean isDefault;
     
-
-    
-    public String getProtocol() {
-        return protocol;
-    }
-
-    
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
-
-    /**   */
-    public String getHost() {
-        return host;
-    }
-
-    /**   */
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    /**   */
-    public Integer getPort() {
-        return port;
-    }
-
-    /**   */
-    public void setPort(Integer port) {
-        this.port = port;
-    }
 
     /**   */
     public String getContextpath() {
@@ -208,35 +132,6 @@ public class ProviderDefinition extends AbstractServiceDefinition {
         this.queues = queues;
     }
 
-    /**   */
-    public Integer getAccepts() {
-        return accepts;
-    }
-
-    /**   */
-    public void setAccepts(Integer accepts) {
-        this.accepts = accepts;
-    }
-
-    /**   */
-    public String getCodec() {
-        return codec;
-    }
-
-    /**   */
-    public void setCodec(String codec) {
-        this.codec = codec;
-    }
-
-    /**   */
-    public String getSerial() {
-        return serial;
-    }
-
-    /**   */
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
 
     /**   */
     public String getCharset() {
@@ -248,55 +143,6 @@ public class ProviderDefinition extends AbstractServiceDefinition {
         this.charset = charset;
     }
 
-    /**   */
-    public Integer getPayload() {
-        return payload;
-    }
-
-    /**   */
-    public void setPayload(Integer payload) {
-        this.payload = payload;
-    }
-
-    /**   */
-    public Integer getHeartbeat() {
-        return heartbeat;
-    }
-
-    /**   */
-    public void setHeartbeat(Integer heartbeat) {
-        this.heartbeat = heartbeat;
-    }
-
-    /**   */
-    public String getTransporter() {
-        return transporter;
-    }
-
-    /**   */
-    public void setTransporter(String transporter) {
-        this.transporter = transporter;
-    }
-
-    /**   */
-    public Integer getBuffer() {
-        return buffer;
-    }
-
-    /**   */
-    public void setBuffer(Integer buffer) {
-        this.buffer = buffer;
-    }
-
-    /**   */
-    public String getExchanger() {
-        return exchanger;
-    }
-
-    /**   */
-    public void setExchanger(String exchanger) {
-        this.exchanger = exchanger;
-    }
 
     /**   */
     public String getDispatcher() {
@@ -325,4 +171,7 @@ public class ProviderDefinition extends AbstractServiceDefinition {
     public void setDefault(Boolean isDefault) {
         this.isDefault = isDefault;
     }
+
+
+    
 }
