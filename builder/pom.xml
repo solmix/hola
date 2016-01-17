@@ -79,4 +79,36 @@
 			<scope>test</scope>
 		</dependency>
   </dependencies>
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Category>solmix</Bundle-Category>
+						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
+						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
+						<Private-Package>org.solmix.hola.builder.internal</Private-Package>
+						<!-- <DynamicImport-Package>${solmix.osgi.dynamic.import}</DynamicImport-Package> -->
+						<Bundle-Activator>org.solmix.hola.builder.internal.Activator</Bundle-Activator>
+						<_failok>false</_failok>
+						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<solmix.osgi.export.pkg>org.solmix.hola.builder*</solmix.osgi.export.pkg>
+		<solmix.osgi.import.pkg>
+			org.springframework*;resolution:=optional;version="${spring.version}",
+			*
+		</solmix.osgi.import.pkg>
+		<solmix.osgi.dynamic.import>*</solmix.osgi.dynamic.import>
+	</properties>
+	<packaging>bundle</packaging>
+	<name>Hola :: Service Builder</name>
 </project>

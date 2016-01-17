@@ -29,6 +29,7 @@ import org.solmix.commons.util.NetUtils;
 import org.solmix.exchange.Message;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.RemoteAddress;
+import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.cm.Configurer;
 
@@ -83,6 +84,8 @@ public class NettyServerEngineTest extends Assert
         String urlStr = "http://localhost:" + PORT1 + "/test";
         NettyServerEngine nse = factory.createEngine(remoteAddress);
         nse.setNettyConfiguration(new NettyConfiguration());
+        RemoteProtocol protocol = new RemoteProtocol(null, container, null);
+        nse.start(protocol);
         nse.addHandler(urlStr, new TestHandler("hello"));
     }
     

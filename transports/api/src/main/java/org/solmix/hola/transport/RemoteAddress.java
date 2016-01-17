@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.Assert;
 import org.solmix.commons.annotation.Immutable;
+import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.common.HOLA;

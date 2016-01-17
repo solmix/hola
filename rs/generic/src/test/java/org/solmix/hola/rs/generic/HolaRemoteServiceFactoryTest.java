@@ -78,7 +78,7 @@ public class HolaRemoteServiceFactoryTest extends Assert
         assertNotNull(remote);
         long start =System.currentTimeMillis();
         String str= getString();
-       final String mock="hello "+str;
+        final String mock="hello "+str;
         ResourceLeakDetector.setLevel(Level.PARANOID);
         Thread t = new Thread() {
 
@@ -99,7 +99,7 @@ public class HolaRemoteServiceFactoryTest extends Assert
             }
         };
         
-        t.start();
+//        t.start();
         for( i=0;i<2000;i++){
             
         try {

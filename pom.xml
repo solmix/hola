@@ -8,9 +8,7 @@
   <groupId>org.solmix.hola</groupId>
   <artifactId>hola</artifactId>
   <packaging>pom</packaging>
-  <properties>
-		<netty.version>5.0.0.Alpha2</netty.version>
-	</properties>
+  
   <!-- <modules>
   	<module>cluster</module>
   	<module>core</module>
@@ -35,4 +33,11 @@
   	<module>test</module>
   	<module>examples</module>
   </modules> -->
+  <modules>
+  	<module>common</module>
+  	<module>rs/api</module>
+  	<module>rs/generic</module>
+  	<module>transports/api</module>
+  	<module>transports/netty</module>
+  </modules>
 </project>

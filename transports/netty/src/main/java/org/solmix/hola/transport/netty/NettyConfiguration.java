@@ -62,7 +62,7 @@ public class NettyConfiguration
     private boolean waiteSuccess;
 
     
-    private Integer accepts;
+    private int accepts;
     
     public boolean isChunking() {
         return chunking;
@@ -183,7 +183,7 @@ public class NettyConfiguration
     }
     
     
-    public Integer getAccepts() {
+    public int getAccepts() {
         return accepts;
     }
     

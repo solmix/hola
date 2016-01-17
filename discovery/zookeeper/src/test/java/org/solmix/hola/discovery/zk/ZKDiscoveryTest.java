@@ -43,7 +43,7 @@ public class ZKDiscoveryTest extends Assert
     public void test(){
         
     }
-    @Test
+//    @Test
     public void testRegistor() throws InterruptedException, ExecutionException {
         ExtensionLoader<DiscoveryProvider> loader = container.getExtensionLoader(DiscoveryProvider.class);
         DiscoveryProvider provider = loader.getExtension(ZookeeperProvider.NAME);
@@ -71,7 +71,7 @@ public class ZKDiscoveryTest extends Assert
         discovery.unregister(info);
     }
     
-    @Test
+//    @Test
     public void testListener() throws InterruptedException {
         ExtensionLoader<DiscoveryProvider> loader = container.getExtensionLoader(DiscoveryProvider.class);
         DiscoveryProvider provider = loader.getExtension(ZookeeperProvider.NAME);

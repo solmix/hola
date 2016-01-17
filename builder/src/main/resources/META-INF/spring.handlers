@@ -1,1 +1,1 @@
-http\://www.solmix.org/schema/hola=org.solmix.hola.builder.spring.NamespaceHandler
+http\://www.solmix.org/schema/hola/v1.0.0=org.solmix.hola.builder.spring.NamespaceHandler

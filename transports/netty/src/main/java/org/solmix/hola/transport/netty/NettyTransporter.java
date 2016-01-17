@@ -22,9 +22,9 @@ package org.solmix.hola.transport.netty;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.Assert;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.Processor;
 import org.solmix.exchange.model.EndpointInfo;
