@@ -73,7 +73,7 @@ public class ServiceTest extends Assert
         definition.setPort(port);
         definition.setAccepts(8);
         provider.setPort(port+1);
-        definition.setConnectTimeout(5000);
+//        definition.setConnectTimeout(5000);
 //        provider.setPalyload(5000);
 //        provider.setContextpath("/hola_s");
 //        provider.setProtocol("rmi");

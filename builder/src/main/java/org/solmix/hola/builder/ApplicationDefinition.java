@@ -32,23 +32,45 @@ public class ApplicationDefinition extends AbstractBeanDefinition {
 
     private static final long serialVersionUID = 4137875412576793316L;
 
+    /**
+     * 应用名称
+     */
     private String name;
 
+    /**
+     * 版本
+     */
     private String version;
 
+    /**
+     * 负责人
+     */
     private String owner;
 
+    /**
+     * 组织名称
+     */
     private String organization;
 
+    /**
+     * 服务层级（model/control..)
+     */
     private String architecture;
 
+    /**
+     * 运行环境（dev/test/run）
+     */
     private String environment;
 
+    /**
+     * 是否为缺省配置
+     */
     private Boolean isDefault;
 
     private List<DiscoveryDefinition> discoveries;
 
     private MonitorDefinition monitor;
+    
     @Property(excluded = true)
     public String getName() {
         return name;

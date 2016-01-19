@@ -48,19 +48,11 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
 
     /** 服务注册和引用的范围,local为本地,remote为远程 */
     protected String scope;
-
-    protected ApplicationDefinition application;
-
-    protected ModuleDefinition module;
-
-    protected List<DiscoveryDefinition> discoveries;
-
-    protected MonitorDefinition monitor;
+    
     /**
      * <li>心跳间隔
      */
     private Integer heartbeat;
-    
 
     /**
      * <li>心跳超时
@@ -75,10 +67,7 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
      */
     private Integer palyload;
     
-    /**
-     * <li>连接超时时间
-     */
-    private Integer connectTimeout;
+
     /**
      * <li>序列化方法
      */
@@ -101,12 +90,6 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
     private Integer port;
 
     /**
-     * <li>上下文路径
-     */
-    private String path;
-    
-
-    /**
      * <li>网络传输方式
      */
     private String transporter;
@@ -116,114 +99,118 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
      */
     private Integer buffer;
     
+    /**
+     * 线程池名称
+     */
+    private String executor;
+
+    /**
+     * 线程池大小
+     */
+    private Integer threads;
+
+    /**
+     * IO线程池大小
+     */
+    private Integer iothreads;
+
+    /**
+     * 线程池队列大小
+     */
+    private Integer queues;
+   
+    /**
+     * 字符集
+     */
+    private String charset;
+
+    /**
+     * 组网方式
+     */
+    private String networker;
     
+    
+    /**
+     * 是否为默认设置
+     */
+    private Boolean isDefault;
+
+    protected ApplicationDefinition application;
+
+    protected ModuleDefinition module;
+
+    protected List<DiscoveryDefinition> discoveries;
+
+    protected MonitorDefinition monitor;
     
     public Integer getHeartbeatTimeout() {
         return heartbeatTimeout;
     }
-
-    
     public void setHeartbeatTimeout(Integer heartbeatTimeout) {
         this.heartbeatTimeout = heartbeatTimeout;
     }
-
     
     public String getCodec() {
         return codec;
     }
-
     
     public void setCodec(String codec) {
         this.codec = codec;
     }
-
     
     public Integer getPalyload() {
         return palyload;
     }
-
     
     public void setPalyload(Integer palyload) {
         this.palyload = palyload;
     }
 
     
-    public Integer getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    
-    public void setConnectTimeout(Integer connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    
     public String getSerial() {
         return serial;
     }
-
     
     public void setSerial(String serial) {
         this.serial = serial;
     }
-
     
     public String getProtocol() {
         return protocol;
     }
 
-    
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
-    
     public String getHost() {
         return host;
     }
-
     
     public void setHost(String host) {
         this.host = host;
     }
-
     
     public Integer getPort() {
         return port;
     }
-
     
     public void setPort(Integer port) {
         this.port = port;
     }
 
-    
-    public String getPath() {
-        return path;
-    }
-
-    
-    public void setPath(String path) {
-        checkPathName("path", path);
-        this.path = path;
-    }
-
-    
     public String getTransporter() {
         return transporter;
     }
-
     
     public void setTransporter(String transporter) {
         this.transporter = transporter;
     }
-
     
     public Integer getBuffer() {
         return buffer;
     }
 
-    
     public void setBuffer(Integer buffer) {
         this.buffer = buffer;
     }
@@ -314,7 +301,78 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
         discoveries.add(registry);
         this.discoveries = discoveries;
     }
+
+    /**   */
+    public String getExecutor() {
+        return executor;
+    }
+
+    /**   */
+    public void setExecutor(String executor) {
+        this.executor = executor;
+    }
+
+    /**   */
+    public Integer getThreads() {
+        return threads;
+    }
+
+    /**   */
+    public void setThreads(Integer threads) {
+        this.threads = threads;
+    }
+
+    /**   */
+    public Integer getIothreads() {
+        return iothreads;
+    }
+
+    /**   */
+    public void setIothreads(Integer iothreads) {
+        this.iothreads = iothreads;
+    }
+
+    /**   */
+    public Integer getQueues() {
+        return queues;
+    }
+
+    /**   */
+    public void setQueues(Integer queues) {
+        this.queues = queues;
+    }
+
+
+    /**   */
+    public String getCharset() {
+        return charset;
+    }
+
+
+    public Boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
     
+    /**   */
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
+
+    /**   */
+    public String getNetworker() {
+        return networker;
+    }
+
+    /**   */
+    public void setNetworker(String networker) {
+        this.networker = networker;
+    }
+
 
     /**   */
     public Integer getHeartbeat() {

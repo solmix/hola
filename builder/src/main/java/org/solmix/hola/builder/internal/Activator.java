@@ -20,7 +20,7 @@ public class Activator implements BundleActivator
                 return new HolaNamespaceHandler();
             }
         };
-        BPNamespaceRegisterer.register(context, factory, "http://www.solmix.org/schema/hola");
+        BPNamespaceRegisterer.register(context, factory, "http://www.solmix.org/schema/hola/v1.0.0");
     }
 
     @Override

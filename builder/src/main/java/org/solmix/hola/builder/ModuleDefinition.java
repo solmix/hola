@@ -46,6 +46,8 @@ public class ModuleDefinition extends AbstractBeanDefinition
     private MonitorDefinition monitor;
 
     private Boolean  isDefault;
+    
+    private ApplicationDefinition  application;
     /**
      * @return the name
      */
@@ -166,4 +168,17 @@ public class ModuleDefinition extends AbstractBeanDefinition
     public void setDefault(Boolean isDefault) {
         this.isDefault = isDefault;
     }
+
+
+    
+    public ApplicationDefinition getApplication() {
+        return application;
+    }
+
+
+    
+    public void setApplication(ApplicationDefinition application) {
+        this.application = application;
+    }
+    
 }

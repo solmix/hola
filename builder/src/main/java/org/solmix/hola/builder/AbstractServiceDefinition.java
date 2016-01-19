@@ -74,7 +74,7 @@ public class AbstractServiceDefinition extends AbstractInterfaceDefinition {
      */
     private Integer accepts;
     
-
+    protected Boolean generic;
     /**   */
     public Integer getAccepts() {
         return accepts;
@@ -182,6 +182,16 @@ public class AbstractServiceDefinition extends AbstractInterfaceDefinition {
     
     public void setDelay(Integer delay) {
         this.delay = delay;
+    }
+
+    
+    public Boolean isGeneric() {
+        return generic;
+    }
+
+    
+    public void setGeneric(Boolean generic) {
+        this.generic = generic;
     }
     
 }

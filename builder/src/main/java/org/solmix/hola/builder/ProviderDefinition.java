@@ -28,58 +28,11 @@ package org.solmix.hola.builder;
 public class ProviderDefinition extends AbstractServiceDefinition {
 
     private static final long serialVersionUID = 7508462139160267039L;
-   
 
     /**
      * <li>上下文路径
      */
     private String contextpath;
-
-    /**
-     * 线程池名称
-     */
-    private String executor;
-
-    /**
-     * 线程池大小
-     */
-    private Integer threads;
-
-    /**
-     * IO线程池大小
-     */
-    private Integer iothreads;
-
-    /**
-     * 线程池队列大小
-     */
-    private Integer queues;
-
-   
-    /**
-     * 字符集
-     */
-    private String charset;
-
- 
-
-
-    /**
-     * 信息线程模型派发方式
-     */
-    private String dispatcher;
-
-
-    /**
-     * 组网方式
-     */
-    private String networker;
-
-    /**
-     * 是否为默认设置
-     */
-    private Boolean isDefault;
-    
 
     /**   */
     public String getContextpath() {
@@ -91,87 +44,4 @@ public class ProviderDefinition extends AbstractServiceDefinition {
         checkPathName("contextpath", contextpath);
         this.contextpath = contextpath;
     }
-
-    /**   */
-    public String getExecutor() {
-        return executor;
-    }
-
-    /**   */
-    public void setExecutor(String executor) {
-        this.executor = executor;
-    }
-
-    /**   */
-    public Integer getThreads() {
-        return threads;
-    }
-
-    /**   */
-    public void setThreads(Integer threads) {
-        this.threads = threads;
-    }
-
-    /**   */
-    public Integer getIothreads() {
-        return iothreads;
-    }
-
-    /**   */
-    public void setIothreads(Integer iothreads) {
-        this.iothreads = iothreads;
-    }
-
-    /**   */
-    public Integer getQueues() {
-        return queues;
-    }
-
-    /**   */
-    public void setQueues(Integer queues) {
-        this.queues = queues;
-    }
-
-
-    /**   */
-    public String getCharset() {
-        return charset;
-    }
-
-    /**   */
-    public void setCharset(String charset) {
-        this.charset = charset;
-    }
-
-
-    /**   */
-    public String getDispatcher() {
-        return dispatcher;
-    }
-
-    /**   */
-    public void setDispatcher(String dispatcher) {
-        this.dispatcher = dispatcher;
-    }
-
-    /**   */
-    public String getNetworker() {
-        return networker;
-    }
-
-    /**   */
-    public void setNetworker(String networker) {
-        this.networker = networker;
-    }
-
-    public Boolean isDefault() {
-        return isDefault;
-    }
-
-    public void setDefault(Boolean isDefault) {
-        this.isDefault = isDefault;
-    }
-
-
-    
 }

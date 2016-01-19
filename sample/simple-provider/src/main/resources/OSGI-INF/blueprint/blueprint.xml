@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
 	xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+	xmlns:hola="http://www.solmix.org/schema/hola/v1.0.0"
 	xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 	
-
-	 <bean id="service" class="com.foo.simple.impl.SimpleServiceImpl"  />
+	 <bean id="service" class="com.foo.simple.impl.SimpleServiceImpl"  >
+	 </bean>
 	
-	<service ref="service" interface="com.foo.simple.api.SimpleService"></service>
+	<!-- <service ref="service" interface="com.foo.simple.api.SimpleService"></service> -->
+	<hola:discovery id="dis1" name="zk-discovery" address="192.168.0.101:2181" check="true" default="true"  dynamic="true" protocol="zk" file="~/.discover/services" timeout="3000"/>
+	<hola:discovery id="dis2" name="zk-discovery" address="192.168.0.101:2182" check="true" default="true"  dynamic="true" protocol="redis" file="~/.discover/services" timeout="3000">
+		<hola:properties>
+			<entry key="runtime.production" value="xxxxx" />
+		</hola:properties>
+	</hola:discovery>
+	<hola:monitor id="monitor" group="hola" version="1.2.1" default="true"></hola:monitor>
+	<hola:module id="module1"  application="foo-service" monitor="monitor" discovery="dis1"/>
+	<hola:application id="foo-service" name="foo-name" architecture="service" environment="test" organization="solmix.org" owner="solmix.f" version="1.2.5" discovery="dis1,dis2" monitor="monitor"/> 
 	
+	<hola:provider id="provider1" async="true" host="localhost" module="module1" application="foo-service" monitor="monitor" discovery="dis1"></hola:provider>
+	<hola:service interface="com.foo.simple.api.SimpleService"  ref="service"></hola:service>
 </blueprint>

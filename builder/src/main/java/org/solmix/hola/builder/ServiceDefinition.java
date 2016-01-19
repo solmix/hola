@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.solmix.commons.Version;
 import org.solmix.commons.util.ClassLoaderUtils;
+import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.commons.util.DataUtils;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
@@ -83,8 +84,11 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
      */
     private List<MethodDefinition> methods;
     
+    /**
+     * <li>上下文路径
+     */
+    private String path;
     
-    private boolean generic;
     
     private Container container;
     
@@ -94,6 +98,9 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
     
     private final List<RemoteRegistration<T>> registrations = new ArrayList<RemoteRegistration<T>>();
     private static final Map<String, Integer> RANDOM_PORT_MAP = new HashMap<String, Integer>();
+    public ServiceDefinition(){
+        
+    }
     public ServiceDefinition(T t){
         this(ContainerFactory.getThreadDefaultContainer(),t);
     }
@@ -101,14 +108,15 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         this.container=c;
         this.ref=t;
     }
-    /**   */
-    public boolean isGeneric() {
-        return generic;
-    }
     
-    /**   */
-    public void setGeneric(boolean generic) {
-        this.generic = generic;
+    public String getPath() {
+        return path;
+    }
+
+    
+    public void setPath(String path) {
+        checkPathName("path", path);
+        this.path = path;
     }
 
     
@@ -227,9 +235,10 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         if (getPath() == null || getPath().length() == 0) {
             setPath(interfaceName);
         }
-        if(delay!=null&&delay>0){
-            final int pdelay=delay;
+        if (delay != null && delay > 0) {
+            final int pdelay = delay;
             Thread thread = new Thread(new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -242,7 +251,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
             thread.setDaemon(true);
             thread.setName("DelayRegisterServiceThread");
             thread.start();
-        }else{
+        } else {
             doExportInteral(provider);
         }
         
@@ -252,6 +261,9 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         List<DiscoveryDefinition> discoveries = getDiscoveries();
         if(discoveries==null){
             discoveries= provider.getDiscoveries();
+        }
+        if(discoveries==null&&application!=null){
+            discoveries=application.getDiscoveries();
         }
         if(discoveries!=null){
             for(DiscoveryDefinition def:discoveries){
@@ -305,16 +317,31 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         if(StringUtils.isEmpty(interfaceName)){
             throw new IllegalArgumentException("<hola:service interface=\"\"/> interface is null or empty");
         }
+        ClassLoaderHolder origLoader = null;
         try {
-            interfaceClass= (Class<T>) ClassLoaderUtils.loadClass(interfaceName, ServiceDefinition.class);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            ClassLoader loader = container.getExtension(ClassLoader.class);
+            if (loader != null) {
+                origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
+            }
+            try {
+                interfaceClass = (Class<T>) ClassLoaderUtils.loadClass(interfaceName, ServiceDefinition.class);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        } finally {
+            if (origLoader != null) {
+                origLoader.reset();
+            }
+
         }
         checkInterfaceAndMethods(interfaceClass, methods);
         checkRef();
         Dictionary<String, Object> dic = new Hashtable<String, Object>();
         List<Dictionary<String, ?>> discoveryDics = getDiscoveryDictionaries(provider);
-        String protocol = provider.getProtocol();
+        String protocol = getProtocol();
+        if(protocol==null){
+            protocol=provider.getProtocol();
+        }
         
         int pid  = SystemPropertyAction.getPid();
         if(pid>0){
@@ -500,6 +527,9 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         MonitorDefinition monitor = getMonitor();
         if(monitor==null){
             monitor = provider.getMonitor();
+        }
+        if(monitor==null){
+            monitor = application.getMonitor();
         }
         if(monitor==null){
             return null;

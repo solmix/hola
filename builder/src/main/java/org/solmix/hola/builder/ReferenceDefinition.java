@@ -250,6 +250,9 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
         if(discoveries==null){
             discoveries= provider.getDiscoveries();
         }
+        if(discoveries==null&&application!=null){
+            discoveries=application.getDiscoveries();
+        }
         if(discoveries!=null){
             for(DiscoveryDefinition def:discoveries){
                 appendSystemProperties(def);

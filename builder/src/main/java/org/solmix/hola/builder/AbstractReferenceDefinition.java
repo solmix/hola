@@ -41,6 +41,14 @@ public class AbstractReferenceDefinition extends AbstractInterfaceDefinition {
     protected String reconnect;
 
     protected Boolean lazy;
+    /**
+     * <li>连接超时时间
+     */
+    private Integer connectTimeout;
+    /**
+     * <li>连接数
+     */
+    private Integer pipelines;
 
     /**   */
     public String getVersion() {
@@ -102,6 +110,26 @@ public class AbstractReferenceDefinition extends AbstractInterfaceDefinition {
     /**   */
     public void setLazy(Boolean lazy) {
         this.lazy = lazy;
+    }
+
+    
+    public Integer getPipelines() {
+        return pipelines;
+    }
+
+    
+    public void setPipelines(Integer pipelines) {
+        this.pipelines = pipelines;
+    }
+
+    
+    public Integer getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    
+    public void setConnectTimeout(Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
     }
 
 }

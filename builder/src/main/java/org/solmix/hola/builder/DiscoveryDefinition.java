@@ -19,14 +19,11 @@
 
 package org.solmix.hola.builder;
 
-import org.solmix.commons.annotation.ThreadSafe;
-
 /**
  * 
  * @author solmix.f@gmail.com
  * @version $Id$ 2014年9月14日
  */
-@ThreadSafe
 public class DiscoveryDefinition extends AbstractBeanDefinition {
 
     private static final long serialVersionUID = 7819222894033381016L;
@@ -62,27 +59,44 @@ public class DiscoveryDefinition extends AbstractBeanDefinition {
 
     private String cluster;
 
+    /**
+     * 服务群组
+     */
     private String group;
 
     private String version;
 
-    // 注册中心请求超时时间(毫秒)
+    /**
+     * 公告服务请求超时时间
+     */
     private Integer timeout;
 
-    // 启动时检查注册中心是否存在
+    /**
+     * 启动时检查服务是否存在
+     */
     private Boolean check;
 
-    // 在该注册中心上注册是动态的还是静态的服务
+    /**
+     * 注册静态还是动态服务
+     */
     private Boolean dynamic;
 
-    private Boolean advertise;
+    /**
+     * 为false时，该公告服务不用于发布服务
+     */
+    private Boolean publish;
 
-    // 在该注册中心上服务是否引用
+    /**
+     * 为false时，该公告服务不用于订阅服务引用
+     */
     private Boolean subscribe;
 
     /** 本地缓存公告,启动时可以临时使用 */
     private String file;
 
+    /**
+     * 是否为默认公告服务
+     */
     private Boolean isDefault;
 
     /**   */
@@ -212,14 +226,15 @@ public class DiscoveryDefinition extends AbstractBeanDefinition {
         this.dynamic = dynamic;
     }
 
-    /**   */
-    public Boolean getAdvertise() {
-        return advertise;
+
+    
+    public Boolean isPublish() {
+        return publish;
     }
 
-    /**   */
-    public void setAdvertise(Boolean advertise) {
-        this.advertise = advertise;
+    
+    public void setPublish(Boolean publish) {
+        this.publish = publish;
     }
 
     /**   */

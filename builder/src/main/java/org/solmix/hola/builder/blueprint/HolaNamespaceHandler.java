@@ -51,8 +51,8 @@ public class HolaNamespaceHandler implements NamespaceHandler
 
     @Override
     public URL getSchemaLocation(String arg0) {
-        if ("http://www.solmix.org/schema/hola".equals(arg0)) {
-            return getClass().getClassLoader().getResource("schema/blueprint/hola-1.0.xsd");
+        if ("http://www.solmix.org/schema/hola/v1.0.0".equals(arg0)) {
+            return getClass().getClassLoader().getResource("schema/blueprint/hola-1.0.0.xsd");
         }
         return null;
     }
