@@ -19,5 +19,5 @@
 	<hola:application id="foo-service" name="foo-name" architecture="service" environment="test" organization="solmix.org" owner="solmix.f" version="1.2.5" discovery="dis1,dis2" monitor="monitor"/> 
 	
 	<hola:provider id="provider1" async="true" host="localhost" module="module1" application="foo-service" monitor="monitor" discovery="dis1"></hola:provider>
-	<hola:service interface="com.foo.simple.api.SimpleService"  ref="service"></hola:service>
+	<hola:service interface="com.foo.simple.api.SimpleService"  ref="service" port="15715"></hola:service>
 </blueprint>

@@ -16,4 +16,20 @@ public class SimpleManager
     public void setService(SimpleService service) {
         this.service = service;
     }
+    
+    @SuppressWarnings("static-access")
+    public void start(){
+        try {
+            Thread.currentThread().sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Thread t = new Thread(){
+          @Override
+        public void run(){
+              System.out.println(service.getUID());
+          }
+        };
+        t.start();
+    }
 }

@@ -24,7 +24,7 @@ public class ServiceDefinitionParser extends AbstractBPBeanDefinitionParser
         MutableBeanMetadata meta = context.createMetadata(MutableBeanMetadata.class);
         String id = getIdOrName(element);
         if (StringUtils.isEmpty(id)) {
-            meta.setId("provider-" + UUID.randomUUID().toString());
+            meta.setId("service-" + UUID.randomUUID().toString());
         } else {
             meta.setId(id);
         }

@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.Version;
 import org.solmix.commons.util.ClassLoaderUtils;
+import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.commons.util.DataUtils;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
@@ -174,11 +175,24 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
         }
         checkConsumer();
         appendSystemProperties(this);
+        ClassLoaderHolder origLoader = null;
         try {
-            interfaceClass= ClassLoaderUtils.loadClass(interfaceName, ServiceDefinition.class);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            ClassLoader loader = container.getExtension(ClassLoader.class);
+            if (loader != null) {
+                origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
+            }
+            try {
+                interfaceClass = ClassLoaderUtils.loadClass(interfaceName, ServiceDefinition.class);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        } finally {
+            if (origLoader != null) {
+                origLoader.reset();
+            }
+
         }
+        
         checkInterfaceAndMethods(interfaceClass, methods);
         if (consumer != null) {
             if (application == null) {
