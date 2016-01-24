@@ -27,7 +27,16 @@ public class SimpleManager
         Thread t = new Thread(){
           @Override
         public void run(){
-              System.out.println(service.getUID());
+              while(true){
+                  System.out.println(service.getUID());
+                  try {
+                    Thread.sleep(100000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+              }
+             
           }
         };
         t.start();

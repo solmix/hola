@@ -409,7 +409,19 @@ public class RedisDiscovery extends FailbackDiscovery
                     jedis.close();
                 }
             } catch (Throwable t) {
-                exception = new DiscoveryException("Failed to register service to redis discovery. advertise: " + entry.getKey() + ", service: " + meta + ", cause: " + t.getMessage(), t);
+                String msg= new StringBuilder()
+                        .append("Failed to register service to redis discovery. advertise: ")
+                        .append(entry.getKey())
+                        .append(", service: ")
+                        .append(meta)
+                        .append(", cause: ")
+                        .append(t.getMessage()).toString();
+                if(PropertiesUtils.getBoolean(this.serviceProperties, HOLA.CHECK_KEY, true)){
+                    exception = new DiscoveryException(msg, t);
+                }else{
+                    LOG.warn(msg,t);
+                }
+                
             }
         }
         if (exception != null) {

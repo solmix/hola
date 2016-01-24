@@ -100,6 +100,7 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
         }
         return dic;
     }
+    
     public  static Dictionary<String, ?> adaptor(Dictionary properties){
         if(properties==null){
             properties= new Hashtable<String, Object>();

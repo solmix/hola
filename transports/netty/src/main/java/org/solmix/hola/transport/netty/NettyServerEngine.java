@@ -27,7 +27,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.exchange.interceptor.Fault;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.codec.Codec;
@@ -107,7 +106,8 @@ public class NettyServerEngine implements NettyEngine {
     protected void checkRegistedPath(String path) {
         for (String registedPath : registedPaths) {
             if (path.equals(registedPath)) {
-                throw new Fault("path already in use");
+                LOG.warn("path "+path+" already in use");
+                registedPaths.remove(registedPath);
             }
         }
     }

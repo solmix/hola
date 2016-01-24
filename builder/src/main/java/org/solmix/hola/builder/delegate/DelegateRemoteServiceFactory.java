@@ -102,6 +102,9 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
     private Discovery getDiscovery(Dictionary<String, Object> discoveryInfo) {
         String protocol = PropertiesUtils.getString(discoveryInfo, HOLA.PROTOCOL_KEY);
         DiscoveryProvider provider= container.getExtensionLoader(DiscoveryProvider.class).getExtension(protocol);
+        if(provider==null){
+            throw new IllegalArgumentException("Can't found discovery implementation for type "+protocol);
+        }
         return provider.createDiscovery(discoveryInfo);
     }
 

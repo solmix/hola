@@ -528,7 +528,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         if(monitor==null){
             monitor = provider.getMonitor();
         }
-        if(monitor==null){
+        if(monitor==null&&application!=null){
             monitor = application.getMonitor();
         }
         if(monitor==null){

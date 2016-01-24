@@ -17,6 +17,16 @@
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>${jredis.version}</version>
+			<exclusions>
+			<exclusion>
+				<groupId>org.apache.commons</groupId>
+    <artifactId>commons-pool2</artifactId>
+			</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-pool2</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
