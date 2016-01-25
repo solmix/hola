@@ -3,6 +3,8 @@ package org.solmix.hola.rs.jaxws;
 
 import java.util.Dictionary;
 
+import org.apache.cxf.bus.extension.ExtensionManagerBus;
+import org.apache.cxf.jaxws.EndpointImpl;
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.common.HOLA;
@@ -20,7 +22,9 @@ import org.solmix.hola.rs.support.RemoteReferenceImpl;
 import org.solmix.hola.rs.support.ServiceRegistry;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
+import org.solmix.runtime.Extension;
 
+@Extension(name=JaxwsRemoteServiceFactory.PROVIDER_ID)
 public class JaxwsRemoteServiceFactory implements RemoteServiceFactory, ContainerAware
 {
     public static final String PROVIDER_ID = "jaxws";
@@ -28,6 +32,8 @@ public class JaxwsRemoteServiceFactory implements RemoteServiceFactory, Containe
     protected volatile ServiceRegistry registry = new ServiceRegistry(this);
 
     protected Container container;
+    
+    private final ExtensionManagerBus bus = new ExtensionManagerBus();
 
     @Override
     public void setContainer(Container container) {
@@ -56,8 +62,12 @@ public class JaxwsRemoteServiceFactory implements RemoteServiceFactory, Containe
     public <S> RemoteRegistration<S> register(Class<S> clazze, S service, Dictionary<String, ?> properties) throws RemoteException {
         String address = PropertiesUtils.getString(properties, HOLA.PATH_KEY);
         Assert.assertNotNull(address,"cxf webservice publish address is null ,check <hola:service protocol=\"jaxws\" path/>");
-       
-        return null;
+        EndpointImpl jaxws = new EndpointImpl(bus,service);
+        jaxws.setAddress(address);
+        jaxws.publish();
+        JaxwsRegistration<S> reg  = new JaxwsRegistration<S>(this, registry, clazze, service, properties);
+        reg.setEndpoint(jaxws);
+        return reg;
     }
 
     @Override
@@ -69,6 +79,7 @@ public class JaxwsRemoteServiceFactory implements RemoteServiceFactory, Containe
         return refer;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <S> S getService(RemoteReference<S> reference) {
         Assert.assertNotNull(reference,"RemoteReference");
@@ -81,10 +92,7 @@ public class JaxwsRemoteServiceFactory implements RemoteServiceFactory, Containe
         return null;
     }
 
-    private<S> S doGetService(RemoteReference<S> reference) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+   
 
     @Override
     public <S> RemoteService<S> getRemoteService(RemoteReference<S> reference) {
@@ -102,6 +110,10 @@ public class JaxwsRemoteServiceFactory implements RemoteServiceFactory, Containe
     }
 
     private  <S>RemoteService<S> doGetRemoteService(RemoteReferenceImpl<S> impl) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    private<S> S doGetService(RemoteReference<S> reference) {
         // TODO Auto-generated method stub
         return null;
     }

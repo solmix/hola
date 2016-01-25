@@ -268,8 +268,7 @@
     			</xsd:all>
 
 
-    			<xsd:attribute name="interface" type="xsd:token"
-    				use="required">
+    			<xsd:attribute name="interface" type="xsd:token">
     			</xsd:attribute>
     			<xsd:attribute name="ref" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="path" type="xsd:string"></xsd:attribute>

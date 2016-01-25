@@ -45,7 +45,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$ 2015年9月17日
  */
-@Extension(name="hola")
+@Extension(name=HolaRemoteServiceFactory.PROVIDER_ID)
 @SuppressWarnings({"unchecked","rawtypes"})
 public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory implements ContainerAware
 {
