@@ -5,6 +5,7 @@ import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.solmix.hola.cluster.ConsumerInfo;
 import org.solmix.hola.cluster.Router;
@@ -27,7 +28,7 @@ public class DiscoveriedDirectory<T> extends AbstractDirectory<T> implements Ser
     private final Class<T> serviceType;
     private Discovery discovery;
     private RemoteServiceFactory factory;
-    private java.util.concurrent.ConcurrentMap<String, RemoteService<T>> remoteServiceMap= new ConcurrentHashMap<String, RemoteService<T>>();
+    private ConcurrentMap<String, RemoteService<T>> remoteServiceMap= new ConcurrentHashMap<String, RemoteService<T>>();
     
     public DiscoveriedDirectory(Container container,Class<T> serviceType,Dictionary<String, ?> properties,ConsumerInfo info)
     {
