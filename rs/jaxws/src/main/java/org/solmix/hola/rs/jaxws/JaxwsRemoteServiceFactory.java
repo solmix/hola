@@ -5,6 +5,7 @@ import java.util.Dictionary;
 
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
 import org.apache.cxf.jaxws.EndpointImpl;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.hola.common.HOLA;
@@ -110,12 +111,14 @@ public class JaxwsRemoteServiceFactory implements RemoteServiceFactory, Containe
     }
 
     private  <S>RemoteService<S> doGetRemoteService(RemoteReferenceImpl<S> impl) {
-        // TODO Auto-generated method stub
-        return null;
+        return new JaxwsRemoteService<S>(bus,impl);
     }
+    
     private<S> S doGetService(RemoteReference<S> reference) {
-        // TODO Auto-generated method stub
-        return null;
+    	JaxwsRemoteService<S> service = (JaxwsRemoteService<S>)getRemoteService(reference);
+    	
+        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean(service.getJaxWsClientFactoryBean());
+        return (S)factory.create();
     }
 
     @Override
