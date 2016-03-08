@@ -1,7 +1,6 @@
 
 package org.solmix.hola.discovery.zk;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashSet;
@@ -89,7 +88,7 @@ public class ZookeeperDiscovery extends FailbackDiscovery
     }
     
     @Override
-    public void destroy() throws IOException {
+    public void destroy() {
         super.destroy();
         try {
             client.close();

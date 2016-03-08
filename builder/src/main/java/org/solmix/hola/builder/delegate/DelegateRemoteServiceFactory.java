@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.exchange.Node;
 import org.solmix.hola.cluster.Cluster;
 import org.solmix.hola.cluster.ConsumerInfo;
 import org.solmix.hola.common.HOLA;
@@ -85,6 +86,9 @@ public class DelegateRemoteServiceFactory implements RemoteServiceFactory,Contai
                 discovery.unregister(serviceInfo);
             } catch (Throwable t) {
                 LOG.warn(t.getMessage(), t);
+            }
+            if(discovery instanceof Node){
+                ((Node) discovery).destroy();
             }
             }
         };

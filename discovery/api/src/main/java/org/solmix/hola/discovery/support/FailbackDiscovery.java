@@ -19,7 +19,6 @@
 
 package org.solmix.hola.discovery.support;
 
-import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -174,7 +173,7 @@ public abstract class FailbackDiscovery extends AbstractDiscovery implements Dis
     }
 
     @Override
-    public void destroy() throws IOException {
+    public void destroy()  {
         super.destroy();
         try {
             retryFuture.cancel(true);

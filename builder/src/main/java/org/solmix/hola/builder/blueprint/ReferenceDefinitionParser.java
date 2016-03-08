@@ -53,7 +53,7 @@ public class ReferenceDefinitionParser extends AbstractBPBeanDefinitionParser
     @Override
     protected boolean parseAttributes(Element element, ParserContext ctx, MutableBeanMetadata bean) {
         NamedNodeMap atts = element.getAttributes();
-        boolean setBus = false;
+        boolean setContainer = false;
         for (int i = 0; i < atts.getLength(); i++) {
             Attr node = (Attr) atts.item(i);
             String val = node.getValue();
@@ -73,7 +73,7 @@ public class ReferenceDefinitionParser extends AbstractBPBeanDefinitionParser
                 }
             }
         }
-        return setBus;
+        return setContainer;
     }
     
     @Override

@@ -298,7 +298,7 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
     }
 
     @Override
-    public void destroy() throws IOException {
+    public void destroy()  {
         super.destroy();
         try {
             if (cleanFuture != null) {
@@ -310,7 +310,11 @@ public class JmDNSDiscovery extends FailbackDiscovery implements javax.jmdns.Ser
         synchronized (lock) {
             if (closed)
                 return;
-            jmdns.close();
+            try {
+                jmdns.close();
+            } catch (IOException e) {
+               throw new DiscoveryException( e);
+            }
             notificationThread.interrupt();
             notificationThread = null;
             registered.clear();

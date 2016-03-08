@@ -37,7 +37,10 @@ public class DiscoveryException extends RuntimeException
     {
         super(string,e);
     }
-
+    public DiscoveryException( Throwable e)
+    {
+        super(e);
+    }
     /**
      * 
      */
