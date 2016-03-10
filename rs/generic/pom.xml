@@ -35,6 +35,7 @@
 						<Bundle-Category>solmix</Bundle-Category>
 						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
 						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
+						<DynamicImport-Package>${solmix.osgi.dynamic.import}</DynamicImport-Package>
 						<_failok>false</_failok>
 						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>
 					</instructions>

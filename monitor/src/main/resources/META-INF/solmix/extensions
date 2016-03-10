@@ -1,0 +1,3 @@
+#
+org.solmix.hola.monitor.interceptor.MonitorInterceptor:org.solmix.exchange.interceptor.Interceptor:true
+org.solmix.hola.monitor.support.DefaultMonitorFactory:org.solmix.hola.monitor.MonitorFactory:true

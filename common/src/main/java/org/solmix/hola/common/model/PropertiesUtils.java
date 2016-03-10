@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -189,6 +190,20 @@ public class PropertiesUtils
             dic.put(key, sp.getProperty(key));
         }
         return dic;
+    }
+    
+    
+    public static Map<String,Object> toMap(Dictionary<String, ?> dic){
+        if(dic==null){
+            return null;
+        }
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        Enumeration<String> e=  dic.keys();
+        while(e.hasMoreElements()){
+            String key = e.nextElement();
+            map.put(key, dic.get(key));
+        }
+        return  map;
     }
     
     

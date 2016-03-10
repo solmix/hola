@@ -42,6 +42,7 @@ public interface RemoteService<T> extends Node
      * 
      * @param call
      * @return
+     * @see {@link #invoke(ClientCallback, RemoteRequest, boolean)}
      */
     RemoteResponse sync(RemoteRequest call) throws RemoteException;
 
@@ -50,25 +51,38 @@ public interface RemoteService<T> extends Node
      * 
      * @param call
      * @return
+     * @see {@link #invoke(ClientCallback, RemoteRequest, boolean)}
      */
    void async(RemoteRequest call,RemoteRequestListener listener);
     
     /**
      * 立即返回调用结果
+     * 
      * @param call
      * @return
+     * @see {@link #invoke(ClientCallback, RemoteRequest, boolean)}
      */
     Future<RemoteResponse> async(RemoteRequest call);
 
     /**
-     * 异步调用远程方法，区别于｛@link {@link #async(RemoteRequest)} 的是，该方法无须返回值，也不返回异常．
+     * 异步调用远程方法，区别于{@link #async(RemoteRequest)} 的是，该方法无须返回值，也不返回异常．
      * 
      * @param call
+     * @see {@link #invoke(ClientCallback, RemoteRequest, boolean)}
      */
     void fireAsync(RemoteRequest call) throws RemoteException;
     
     ServiceProperties getServiceProperties();
     
+    /**
+     * 远程服务实际调用的接口
+     * 
+     * @param callback
+     * @param request
+     * @param oneway
+     * @return
+     * @throws RemoteException
+     */
     @Deprecated
     Object[] invoke(ClientCallback callback, RemoteRequest request, boolean oneway) throws RemoteException ;
 }

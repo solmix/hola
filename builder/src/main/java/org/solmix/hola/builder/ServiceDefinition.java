@@ -32,6 +32,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.framework.BundleContext;
 import org.solmix.commons.Version;
 import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
@@ -48,7 +49,6 @@ import org.solmix.hola.rs.RemoteServiceFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.ContainerFactory;
-import org.solmix.runtime.monitor.MonitorService;
 
 
 
@@ -483,9 +483,11 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         
         String scope = PropertiesUtils.getString(dic,HOLA.SCOPE_KEY);
         if(!"none".equalsIgnoreCase(scope)){
+            //默认在注册远程服务的时候依旧会注册本地服务,如果已在scope中指定了remote则不本地注册.
             if(!"remote".equalsIgnoreCase(scope)){
                 registerLocal(dic);
             }
+            //默认都注册为远程服务,如配置指定为local则不注册远程
             if(!"local".equalsIgnoreCase(scope)){
                 if (logger.isInfoEnabled()) {
                     logger.info("Register Remote service " + interfaceClass.getName() + " to url " + PropertiesUtils.toAddress(dic));
@@ -520,37 +522,15 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         }
        
     }
+    //在OSGI环境下同时注册服务到本地OSGI中
     protected void registerLocal(Dictionary<String, Object> dic) {
+        BundleContext context=    container.getExtension(BundleContext.class);
+        if(context!=null){
+            context.registerService(interfaceClass, ref, dic);
+        }
     }
     
-    protected Dictionary<String, ?> getMonitorDictionary(ProviderDefinition provider) {
-        MonitorDefinition monitor = getMonitor();
-        if(monitor==null){
-            monitor = provider.getMonitor();
-        }
-        if(monitor==null&&application!=null){
-            monitor = application.getMonitor();
-        }
-        if(monitor==null){
-            return null;
-        }
-        appendSystemProperties(monitor);
-        Dictionary<String, Object> monitorInfo  = new Hashtable<String, Object>();
-        monitorInfo.put(HOLA.INTERFACE_KEY, MonitorService.class.getName());
-        monitorInfo.put(HOLA.TIMESTAMP_KEY, System.currentTimeMillis());
-        int pid  = SystemPropertyAction.getPid();
-        if(pid>0){
-            monitorInfo.put(HOLA.PID_KEY, pid);
-        }
-        appendDictionaries(monitorInfo, monitor);
-        String address = monitor.getAddress();
-        if(!StringUtils.isEmpty(address)){
-            return PropertiesUtils.parseURL(address, monitorInfo);
-        }else{
-            monitorInfo.put(HOLA.PROTOCOL_KEY, "hola");
-        }
-        return monitorInfo;
-    }
+   
     
     public synchronized void register(){
         if(unregistered){

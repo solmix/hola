@@ -377,6 +377,10 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                        for(Dictionary<String, ?> info:urlinfos){
                            Dictionary<String, Object> url =(Dictionary<String, Object>) info;
                            for(Dictionary<String, ?> dis:discoveryDics){
+                               Dictionary<String, ?> monitor = getMonitorDictionary(consumer);
+                               if (monitor != null) {
+                                   dic.put(HOLA.MONITOR_KEY, monitor);
+                               }
                                url.put(HOLA.DISCOVERY_KEY, dis);
                                RemoteReference<?> reference= factory.getReference(interfaceClass, info);
                                RemoteService<?> remoteService= factory.getRemoteService(reference);

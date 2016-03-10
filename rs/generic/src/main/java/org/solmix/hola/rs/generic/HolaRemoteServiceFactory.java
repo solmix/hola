@@ -24,8 +24,11 @@ import java.util.Hashtable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.exchange.Message;
 import org.solmix.exchange.Server;
+import org.solmix.exchange.interceptor.Interceptor;
 import org.solmix.hola.common.HOLA;
+import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteProxyFactory;
 import org.solmix.hola.rs.RemoteReference;
@@ -39,6 +42,7 @@ import org.solmix.hola.rs.support.RemoteReferenceImpl;
 import org.solmix.hola.rs.support.RemoteRegistrationImpl;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
+import org.solmix.runtime.extension.ExtensionLoader;
 
 /**
  * 
@@ -62,6 +66,15 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
         factory.setProperties(properties);
         factory.setServiceClass(clazz);
         factory.setServiceBean(service);
+        Object monitor = PropertiesUtils.getString(properties, HOLA.MONITOR_KEY);
+        if(monitor!=null){
+            Interceptor i =getMonitorInterceptor();
+            if(i!=null){
+                factory.getInInterceptors().add(i);
+                factory.getOutInterceptors().add(i);
+            }
+            
+        }
         Server server =factory.create();
         RemoteRegistrationImpl<S> reg = new RemoteRegistrationImpl<S>(this, registry, clazz, service,properties);
         reg.setServer(server);
@@ -69,6 +82,12 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
         return reg;
     }
     
+    private Interceptor<? extends Message> getMonitorInterceptor() {
+        ExtensionLoader<Interceptor> loader=  getContainer().getExtensionLoader(Interceptor.class);
+        
+        return loader.getExtension("monitor");
+    }
+
     @Override
     protected <S> S doGetService(RemoteReference<S> reference) throws RemoteException {
         RemoteReferenceImpl<S> ref=null;

@@ -424,5 +424,7 @@ public class HOLA
     /** 是否在IO线程中编码解码,值类型 boolean */
     public static final String DECODE_IN_IO_KEY = "decodeInIo";
 
+    public static final String APPLICATION_KEY = "application";
+
 
 }

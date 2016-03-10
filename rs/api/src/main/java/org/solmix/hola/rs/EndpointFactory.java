@@ -208,6 +208,7 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
             endpointInfo.setTransportor(transporter);
         } else {
             endpointInfo = new EndpointInfo(service.getServiceInfo(), transporter);
+//            endpointInfo.setProperties(PropertiesUtils.toMap(getProperties()));
         }
         int count = 1;
         while (service.getEndpointInfo(endpointName) != null) {
@@ -228,6 +229,12 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         }
         endpointInfo.setAddress(getAddress());
         endpointInfo.addExtension(ra);
+        //放入monitor key
+        Dictionary m = (Dictionary)getProperties().get(HOLA.MONITOR_KEY);
+        if(m!=null){
+            endpointInfo.setProperty(HOLA.MONITOR_KEY, m);
+            endpointInfo.setProperty("MONITOR_IDENTIRY", PropertiesUtils.toIndentityAddress(m));
+        }
         serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINTINFO_CREATED, endpointInfo);
         return endpointInfo;
     }

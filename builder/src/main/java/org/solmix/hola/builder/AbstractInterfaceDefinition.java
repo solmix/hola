@@ -20,7 +20,15 @@
 package org.solmix.hola.builder;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
+
+import org.solmix.commons.util.StringUtils;
+import org.solmix.commons.util.SystemPropertyAction;
+import org.solmix.hola.common.HOLA;
+import org.solmix.hola.common.model.PropertiesUtils;
+import org.solmix.hola.monitor.MonitorService;
 
 /**
  * 
@@ -413,7 +421,36 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
             }
         }
     }
-    
+    protected Dictionary<String, ?> getMonitorDictionary(AbstractInterfaceDefinition provider) {
+        MonitorDefinition monitor = getMonitor();
+        if(monitor==null){
+            monitor = provider.getMonitor();
+        }
+        if(monitor==null&&application!=null){
+            monitor = application.getMonitor();
+        }
+        if(monitor==null){
+            return null;
+        }
+        appendSystemProperties(monitor);
+        Dictionary<String, Object> monitorInfo  = new Hashtable<String, Object>();
+        monitorInfo.put(HOLA.INTERFACE_KEY, MonitorService.class.getName());
+        monitorInfo.put(HOLA.TIMESTAMP_KEY, System.currentTimeMillis());
+        int pid  = SystemPropertyAction.getPid();
+        if(pid>0){
+            monitorInfo.put(HOLA.PID_KEY, pid);
+        }
+        appendDictionaries(monitorInfo, monitor);
+        String address = monitor.getAddress();
+        if(!StringUtils.isEmpty(address)){
+            return PropertiesUtils.parseURL(address, monitorInfo);
+        }else{
+            monitorInfo.put(HOLA.PROTOCOL_KEY, "hola");
+        }
+        //移除address,在toAddress中会影响最终Address结果.
+        monitorInfo.remove(HOLA.ADDRESS_KEY);
+        return monitorInfo;
+    }
     
     
 
