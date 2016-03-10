@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+	xmlns:hola="http://www.solmix.org/schema/hola/v1.0.0"
+	xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
+	
+	 <bean id="service" class="com.foo.simple.monitor.FooMonitor"/>
+	
+	<hola:discovery id="dis1" name="zk-discovery" address="192.168.0.101:2181" check="true" default="true"  dynamic="true" protocol="zk" file="~/.discover/services" timeout="3000"/>
+	<hola:discovery id="dis2" name="zk-discovery2" address="localhost:6379" check="false" default="true"  dynamic="true" protocol="redis" file="~/.discover/redis" timeout="3000">
+		<hola:properties>
+			<entry key="runtime.production" value="xxxxx" />
+		</hola:properties>
+	</hola:discovery>
+	
+	<hola:service interface="org.solmix.hola.monitor.MonitorService"  ref="service" discovery="dis2" port="15716"/>
+</blueprint>

@@ -17,20 +17,20 @@ public class SimpleManager
         this.service = service;
     }
     
-    @SuppressWarnings("static-access")
     public void start(){
-        try {
-            Thread.currentThread().sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        
+        long start = System.currentTimeMillis();
+        for(int i=0;i<10;i++){
+            service.getUID();
         }
-        Thread t = new Thread(){
+        System.out.println(System.currentTimeMillis()-start);
+        /*Thread t = new Thread(){
           @Override
         public void run(){
               while(true){
                   System.out.println(service.getUID());
                   try {
-                    Thread.sleep(3000);
+                    Thread.sleep(3);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -39,6 +39,6 @@ public class SimpleManager
              
           }
         };
-        t.start();
+        t.start();*/
     }
 }

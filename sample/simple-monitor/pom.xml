@@ -6,19 +6,7 @@
     <version>0.6.1-SNAPSHOT</version>
   </parent>
   <groupId>org.solmix.hola.sample</groupId>
-  <artifactId>simple-provider</artifactId>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.solmix.hola.sample</groupId>
-  		<artifactId>simple-api</artifactId>
-  		<version>0.6.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.solmix.hola</groupId>
-  		<artifactId>hola-monitor</artifactId>
-  		<version>0.6.1-SNAPSHOT</version>
-  	</dependency>
-  </dependencies>
+  <artifactId>simple-monitor</artifactId>
   <build>
 		<plugins>
 			<plugin>
@@ -40,12 +28,18 @@
 	</build>
 	<properties>
 		<solmix.osgi.export.pkg>
-		com.foo.simple.impl*
 		</solmix.osgi.export.pkg>
 		<solmix.osgi.import.pkg>
 			*
 		</solmix.osgi.import.pkg>
 	</properties>
 	<packaging>bundle</packaging>
-  <name>Sample :: Simple Provider</name>
+  <name>Sample :: Simple Monitor</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.solmix.hola</groupId>
+  		<artifactId>hola-monitor</artifactId>
+  		<version>0.6.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
 </project>
