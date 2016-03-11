@@ -10,12 +10,10 @@
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-discovery-api</artifactId>
-  		<version>0.6.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-rs-api</artifactId>
-  		<version>0.6.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
 			<groupId>ch.qos.logback</groupId>

@@ -10,32 +10,26 @@
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-cluster</artifactId>
-  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-discovery-api</artifactId>
-  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-rs-api</artifactId>
-  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-rs-generic</artifactId>
-  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-transports-api</artifactId>
-  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-monitor</artifactId>
-  		<version>0.6.1-SNAPSHOT</version>
   	</dependency>
   	<dependency>
 			<groupId>org.springframework</groupId>
@@ -75,7 +69,6 @@
 		<dependency>
 			<groupId>org.solmix.hola</groupId>
 			<artifactId>hola-discovery-redis</artifactId>
-			<version>0.6.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
   </dependencies>

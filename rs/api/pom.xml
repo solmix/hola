@@ -10,12 +10,10 @@
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-common</artifactId>
-  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-transports-api</artifactId>
-  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -30,7 +28,6 @@
 		<dependency>
 			<groupId>org.solmix.hola</groupId>
 			<artifactId>hola-transports-netty</artifactId>
-			<version>${project.version}</version>
 		</dependency>
   </dependencies>
   <build>

@@ -5,9 +5,7 @@
     <artifactId>hola</artifactId>
     <version>0.6.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.solmix.hola</groupId>
   <artifactId>hola-rs-rmi</artifactId>
-  <version>0.6.1-SNAPSHOT</version>
   <dependencies>
   <dependency>
     <groupId>org.springframework.integration</groupId>
