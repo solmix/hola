@@ -18,8 +18,8 @@
   	<module>builder</module>
   	<module>cluster</module>
   	<module>discovery/api</module>
-  	<module>discovery/jmdns</module>
-  	<module>discovery/redis</module>
+  	
+  	
   	<module>discovery/zookeeper</module>
   	<module>monitor</module>
   	<module>rs/jaxws</module>
