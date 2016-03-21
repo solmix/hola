@@ -24,4 +24,16 @@
   	<module>monitor</module>
   	<module>rs/jaxws</module>
   </modules>
+  <properties>
+  <curator.version>2.10.0</curator.version>
+  </properties>
+  <dependencyManagement>
+  <dependencies>
+  <dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>${curator.version}</version>
+		</dependency>
+  </dependencies>
+  </dependencyManagement>
 </project>
