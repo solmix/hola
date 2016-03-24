@@ -93,6 +93,7 @@ public class DiscoveryDefinition extends AbstractBeanDefinition {
 
     /** 本地缓存公告,启动时可以临时使用 */
     private String file;
+    
 
     /**
      * 是否为默认公告服务
@@ -256,6 +257,7 @@ public class DiscoveryDefinition extends AbstractBeanDefinition {
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
+
 
     /** 是否为默认配置 */
     public Boolean isDefault() {

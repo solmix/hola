@@ -4,14 +4,14 @@ package org.solmix.scheduler.event;
 import java.util.EventObject;
 
 import org.solmix.runtime.event.Event;
-import org.solmix.scheduler.JobContext;
+import org.solmix.scheduler.job.JobExecutionShardingContext;
 
 public class JobEvent extends EventObject implements Event
 {
 
     private final int type;
 
-    private final JobContext container;
+    private final JobExecutionShardingContext container;
 
     public final static int BEFORE = 0x00000002;
 
@@ -20,7 +20,7 @@ public class JobEvent extends EventObject implements Event
     /**
      * @param source
      */
-    public JobEvent(int type, Object source, JobContext container)
+    public JobEvent(int type, Object source, JobExecutionShardingContext container)
     {
         super(source);
         this.type = type;
@@ -39,7 +39,7 @@ public class JobEvent extends EventObject implements Event
     /**
      * @return the container
      */
-    public JobContext getJobContext() {
+    public JobExecutionShardingContext getJobContext() {
         return container;
     }
 

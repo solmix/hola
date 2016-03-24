@@ -178,18 +178,18 @@ public class HOLA
     public static final String UNREGISTER = "unregister";
 
     /** 动态注册 */
-    public static final String DYNAMIC_KEY = "discovery.dynamic";
+    public static final String DYNAMIC_KEY = "dynamic";
 
-    public static final String DISCOVERY_URL = "discovery.url";
+    public static final String DISCOVERY_URL = "url";
 
     /** 公告服务是否同步存储文件，默认异步 */
-    public static final String DISCOVERY_SYNC_SAVE_FILE = "discovery.save.file";
+    public static final String DISCOVERY_SYNC_SAVE_FILE = "save.file";
 
     /** 存储公告的文件 */
-    public static final String DISCOVERY_CACHE_FILE = "discovery.file";
+    public static final String DISCOVERY_CACHE_FILE = "file";
 
     /** 公告服务自动重连时间 */
-    public static final String DISCOVERY_RECONNECT_PERIOD = "discovery.reconnect.period";
+    public static final String DISCOVERY_RECONNECT_PERIOD = "reconnect.period";
 
     public static final int DEFAULT_DISCOVERY_RECONNECT_PERIOD = 3000;
 
@@ -197,15 +197,15 @@ public class HOLA
     public static final String DEFAULT_ROOT = "hola";
 
     /** 备用公告地址 */
-    public static final String BACKUP_KEY = "discovery.backup";
+    public static final String BACKUP_KEY = "backup";
 
     /** 公告服务会话超时时间 */
-    public static final String DISCOVERY_SESSION_TIMEOUT = "discovery.session.timeout";
+    public static final String DISCOVERY_SESSION_TIMEOUT = "session.timeout";
 
     public static final int DEFAULT_SESSION_TIMEOUT = 60000;
 
     /** 公告失败重试周期 */
-    public static final String RETRY_PERIOD_KEY = "discovery.retry.period";
+    public static final String RETRY_PERIOD_KEY = "retry.period";
 
     public static final int DEFAULT_RETRY_PERIOD = 5000;
 

@@ -259,7 +259,7 @@ public class ZookeeperDiscovery extends FailbackDiscovery
                             public void process(WatchedEvent event) throws Exception {
                                String path = event.getPath();
                                List<String> children=client.getChildren().usingWatcher(this).forPath(path);
-                               ZookeeperDiscovery.this.notify(type, listener, matchedChildren(type,path,children), DiscoveryTypeEvent.REGISTER);
+                               ZookeeperDiscovery.this.notify(type, listener, matchedChildren(type,path,children), DiscoveryTypeEvent.CHANGED);
                             }
                             
                         });
@@ -271,7 +271,7 @@ public class ZookeeperDiscovery extends FailbackDiscovery
                     if(services!=null && services.size()>0){
                         infos.addAll(matchedChildren(type, path, services));
                     }
-                    notify(type, listener, infos, DiscoveryTypeEvent.REGISTER);
+                    notify(type, listener, infos, DiscoveryTypeEvent.CHANGED);
                 }
             }
         } catch (Exception e) {

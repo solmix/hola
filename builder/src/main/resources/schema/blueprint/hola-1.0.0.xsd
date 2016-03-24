@@ -45,7 +45,9 @@
       <xsd:element name="discovery" >
     <xsd:complexType>
     	<xsd:all>
-    		<xsd:element name="properties" type="beans:Tmap" minOccurs="0"></xsd:element>
+    		<xsd:element name="properties" type="beans:Tmap"
+    			minOccurs="0">
+    		</xsd:element>
     	</xsd:all>
     	<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
     	<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
@@ -65,7 +67,7 @@
     	<xsd:attribute name="file" type="xsd:string"></xsd:attribute>
     	<xsd:attribute name="default" type="xsd:boolean"></xsd:attribute>
     </xsd:complexType>
-    </xsd:element>
+      </xsd:element>
     
      <xsd:element name="monitor">
     <xsd:complexType>

@@ -92,13 +92,24 @@ public class DiscoveriedDirectory<T> extends AbstractDirectory<T> implements Ser
                 Dictionary<String, ?> prop=  info.getServiceProperties();
                 RemoteReference<T> reference= factory.getReference(serviceType, prop);
                 RemoteService<T> rs =  factory.getRemoteService(reference);
-                remoteServiceMap.putIfAbsent(PropertiesUtils.toAddress(prop), rs);
+                remoteServiceMap.putIfAbsent(PropertiesUtils.toIndentityAddress(prop), rs);
             }
             
         }else if(type==DiscoveryTypeEvent.UNREGISTER){
             for(DiscoveryInfo info :infos){
                 Dictionary<String, ?> prop=  info.getServiceProperties();
-                remoteServiceMap.remove(PropertiesUtils.toAddress(prop));
+                remoteServiceMap.remove(PropertiesUtils.toIndentityAddress(prop));
+            }
+        }else if(type==DiscoveryTypeEvent.CHANGED){
+            ConcurrentMap<String, RemoteService<T>> changed=  new ConcurrentHashMap<String, RemoteService<T>>();
+            for(DiscoveryInfo info :infos){
+                Dictionary<String, ?> prop=  info.getServiceProperties();
+                RemoteReference<T> reference= factory.getReference(serviceType, prop);
+                RemoteService<T> rs =  factory.getRemoteService(reference);
+                changed.putIfAbsent(PropertiesUtils.toIndentityAddress(prop), rs);
+            }
+            synchronized (remoteServiceMap) {
+                remoteServiceMap=changed;
             }
         }
        

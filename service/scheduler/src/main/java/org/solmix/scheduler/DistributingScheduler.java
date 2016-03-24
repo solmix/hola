@@ -3,7 +3,7 @@ package org.solmix.scheduler;
 
 import java.util.Date;
 
-public interface SchedulerService
+public interface DistributingScheduler
 {
 
     void init();

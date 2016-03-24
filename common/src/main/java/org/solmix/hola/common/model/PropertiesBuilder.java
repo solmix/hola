@@ -4,6 +4,7 @@ package org.solmix.hola.common.model;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.solmix.commons.collections.UnChangeDictionary;
 import org.solmix.hola.common.HOLA;
 
 public final class PropertiesBuilder
@@ -86,7 +87,12 @@ public final class PropertiesBuilder
     }
     public Dictionary<String, ?> build(boolean readonly) {
         validate();
-        return dic;
+        if(readonly){
+            return new UnChangeDictionary(dic);
+        }else{
+            return dic;
+        }
+       
     }
     private void validate() {
         String password = PropertiesUtils.getString(dic, HOLA.PASSWORD_KEY);

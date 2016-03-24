@@ -3,6 +3,7 @@ package org.solmix.scheduler.services;
 import java.util.List;
 
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+import org.solmix.scheduler.model.JobInfo;
 
 public interface StorageService
 {
@@ -31,7 +32,8 @@ public interface StorageService
     void executeInTransaction(final TransactionExecutionCallback callback) ;
     
     void executeInLeader(final String latchNode, final LeaderExecutionCallback callback);
-
+    long getRegistryCenterTime();
+    
     public interface LeaderExecutionCallback{
         void execute();
     }
@@ -46,5 +48,7 @@ public interface StorageService
          */
         void execute(CuratorTransactionFinal curatorTransactionFinal) throws Exception;
     }
+
+    JobInfo getJobInfo();
 
 }

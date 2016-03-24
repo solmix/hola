@@ -180,7 +180,7 @@ public class PropertiesUtils
         
     }
     
-    public static Dictionary<String, ?> toDictionary(ServiceProperties sp){
+    public static Dictionary<String, Object> toDictionary(ServiceProperties sp){
         if(sp==null){
             return null;
         }
@@ -209,11 +209,11 @@ public class PropertiesUtils
     
     
     
-    public static Dictionary<String, ?> toProperties(String address){
+    public static Dictionary<String, Object> toProperties(String address){
         return toProperties(address,new Hashtable<String, Object>());
     }
     
-    public static Dictionary<String, ?> toProperties(String address,Dictionary<String, Object> parameters){
+    public static Dictionary<String, Object> toProperties(String address,Dictionary<String, Object> parameters){
         if (address == null || (address = address.trim()).length() == 0) {
             throw new IllegalArgumentException("address == null");
         }
@@ -833,6 +833,7 @@ public class PropertiesUtils
      * @param defaultDic 地址上附加的默认参数
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static Dictionary<String, ?> parseURL(String address,Dictionary<String, Object> defaults){
         if (address == null || address.length() == 0) {
             return null;
@@ -860,7 +861,7 @@ public class PropertiesUtils
         }
         defaults.put(HOLA.PROTOCOL_KEY, defaultProtocol);
         Dictionary<String, ?> prop=  toProperties(url);
-        copyNotExist(defaults, (Dictionary<String, Object>)prop);
+        copyNotExist( defaults,(Dictionary<String, Object>)prop);
         return prop;
     }
     

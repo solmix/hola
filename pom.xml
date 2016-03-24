@@ -25,7 +25,7 @@
   	<module>rs/jaxws</module>
   </modules>
   <properties>
-  <curator.version>2.10.0</curator.version>
+  <curator.version>3.1.0</curator.version>
   </properties>
   <dependencyManagement>
   <dependencies>

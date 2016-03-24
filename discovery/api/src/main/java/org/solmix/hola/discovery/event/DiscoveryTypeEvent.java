@@ -40,22 +40,25 @@ public class DiscoveryTypeEvent extends EventObject
 
     public static final int UNREGISTER = 2;
 
+    public static final int CHANGED = 3;
+
     private final ServiceType serviceType;
-    
+
     private int type;
 
     private final List<DiscoveryInfo> discoveryInfoList;
 
-    public DiscoveryTypeEvent(Object source, ServiceType type, List<DiscoveryInfo> categoryList )
+    public DiscoveryTypeEvent(Object source, ServiceType type, List<DiscoveryInfo> categoryList)
     {
-        this(source,type,categoryList,REGISTER);
+        this(source, type, categoryList, REGISTER);
     }
-    public DiscoveryTypeEvent(Object source, ServiceType type, List<DiscoveryInfo> categoryList ,int eventType)
+
+    public DiscoveryTypeEvent(Object source, ServiceType type, List<DiscoveryInfo> categoryList, int eventType)
     {
         super(source);
         this.serviceType = type;
         this.discoveryInfoList = categoryList;
-        this.type=eventType;
+        this.type = eventType;
     }
 
     public ServiceType getServiceType() {
@@ -66,8 +69,8 @@ public class DiscoveryTypeEvent extends EventObject
     public List<DiscoveryInfo> getDiscoveryInfoList() {
         return discoveryInfoList;
     }
-    
-    public int getEventType(){
+
+    public int getEventType() {
         return type;
     }
 
