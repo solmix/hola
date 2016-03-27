@@ -149,14 +149,14 @@ public class AbstractBeanDefinition extends InfoPropertiesSupport implements
                         String pn = prefix + definition.getId() + "." + property;
                         value = System.getProperty(pn);
                         if(! StringUtils.isBlank(value)) {
-                            logger.info("Use System Property " + pn + " to config dubbo");
+                            logger.info("Use System Property " + pn + " to config hola");
                         }
                     }
                     if (value == null || value.length() == 0) {
                         String pn = prefix + property;
                         value = System.getProperty(pn);
                         if(! StringUtils.isBlank(value)) {
-                            logger.info("Use System Property " + pn + " to config dubbo");
+                            logger.info("Use System Property " + pn + " to config hola");
                         }
                     }
                     if (value == null || value.length() == 0) {

@@ -406,7 +406,7 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
             for (MethodDefinition methodBean : methods) {
                 String methodName = methodBean.getName();
                 if (methodName == null || methodName.length() == 0) {
-                    throw new IllegalStateException("<hola:method> name attribute is required! Please check: <dubbo:service interface=\"" + interfaceClass.getName() + "\" ... ><dubbo:method name=\"\" ... /></<dubbo:reference>");
+                    throw new IllegalStateException("<hola:method> name attribute is required! Please check: <hola:service interface=\"" + interfaceClass.getName() + "\" ... ><hola:method name=\"\" ... /></<hola:reference>");
                 }
                 boolean hasMethod = false;
                 for (java.lang.reflect.Method method : interfaceClass.getMethods()) {

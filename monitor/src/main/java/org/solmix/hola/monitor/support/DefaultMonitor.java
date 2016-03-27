@@ -24,7 +24,7 @@ import org.solmix.hola.rs.RemoteReference;
 public class DefaultMonitor implements Monitor
 {
     private static final Logger LOG  = LoggerFactory.getLogger(DefaultMonitor.class);
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3, new NamedThreadFactory("DubboMonitorSendTimer", true));
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3, new NamedThreadFactory("holaMonitorSendTimer", true));
 
     private final ScheduledFuture<?> sendFuture;
     private final long monitorInterval;
