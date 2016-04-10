@@ -233,7 +233,6 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         Dictionary m = (Dictionary)getProperties().get(HOLA.MONITOR_KEY);
         if(m!=null){
             endpointInfo.setProperty(HOLA.MONITOR_KEY, m);
-            endpointInfo.setProperty("MONITOR_IDENTIRY", PropertiesUtils.toIndentityAddress(m));
         }
         serviceFactory.pulishEvent(ServiceFactoryEvent.ENDPOINTINFO_CREATED, endpointInfo);
         return endpointInfo;

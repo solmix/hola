@@ -45,6 +45,9 @@ public class HOLA
 
     /** 协议 */
     public static final String PROTOCOL_KEY = "protocol";
+    
+    /** invoker filter List<String>*/
+    public static final String FILTER_KEY = "filter";
 
     /** 主机/IP */
     public static final String HOST_KEY = "host";

@@ -4,6 +4,8 @@ package org.solmix.hola.rs.call;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.solmix.hola.common.model.ServiceProperties;
+
 public class DefaultRemoteRequest implements RemoteRequest
 {
 
@@ -16,6 +18,10 @@ public class DefaultRemoteRequest implements RemoteRequest
     private Object[] parameter;
 
     private Map<String, Object> attachments;
+    
+    private  ServiceProperties serviceProperties;
+    
+    private boolean async;
 
     public DefaultRemoteRequest(Method method, Object[] parameter, Map<String, Object> attachments){
         this.method=method;
@@ -96,4 +102,17 @@ public class DefaultRemoteRequest implements RemoteRequest
     public void setContextAttr(String key,Object value){
         attachments.put(key, value);
     }
+    
+    @Override
+    public boolean isAsync() {
+        return async;
+    }
+    
+    public void setAsync(boolean async) {
+        this.async = async;
+    }
+    
+
+    
+    
 }

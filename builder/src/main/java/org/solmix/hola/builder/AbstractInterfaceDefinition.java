@@ -142,6 +142,8 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
      * 是否为默认设置
      */
     private Boolean isDefault;
+    
+    private String filter;
 
     protected ApplicationDefinition application;
 
@@ -382,6 +384,14 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
     }
 
 
+    
+    public String getFilter() {
+        return filter;
+    }
+    
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
     /**   */
     public Integer getHeartbeat() {
         return heartbeat;

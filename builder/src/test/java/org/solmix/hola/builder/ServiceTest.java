@@ -80,6 +80,7 @@ public class ServiceTest extends Assert
 //        provider.setTransporter("mina");
         definition.setHeartbeat(10*1000);
         definition.setHeartbeatTimeout(100*1000);
+        definition.setFilter("test-filter");
 //        provider.setTimeout(5000);
         definition.setProvider(provider);
         
@@ -87,6 +88,7 @@ public class ServiceTest extends Assert
         refer.setInterface(HelloService.class.getName());
         ConsumerDefinition consumer = new ConsumerDefinition();
         consumer.setHost("localhost");
+        consumer.setFilter("test-filter");
         consumer.setPort(port);
 //        consumer.setProtocol("rmi");
 //        consumer.setPalyload(500);
@@ -94,7 +96,7 @@ public class ServiceTest extends Assert
 //        consumer.setHeartbeat(3*1000);
         consumer.setPipelines(8);
 //        consumer.setTransporter("mina");
-        consumer.setTimeout(5000);
+        consumer.setTimeout(50000);
         refer.setConsumer(consumer);
         
         try {

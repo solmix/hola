@@ -380,6 +380,7 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                                Dictionary<String, ?> monitor = getMonitorDictionary(consumer);
                                if (monitor != null) {
                                    dic.put(HOLA.MONITOR_KEY, monitor);
+                                   PropertiesUtils.putIfExitAsArray(dic, HOLA.FILTER_KEY, "monitor");
                                }
                                url.put(HOLA.DISCOVERY_KEY, dis);
                                RemoteReference<?> reference= factory.getReference(interfaceClass, info);

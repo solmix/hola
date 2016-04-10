@@ -1,0 +1,4 @@
+#
+org.solmix.hola.builder.filter.TestInvokeFilterFactory:org.solmix.hola.rs.filter.InvokeFilterFactory:true
+
+

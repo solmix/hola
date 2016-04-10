@@ -498,6 +498,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
                         Dictionary<String, ?> monitor = getMonitorDictionary(provider);
                         if (monitor != null) {
                             dic.put(HOLA.MONITOR_KEY, monitor);
+                            PropertiesUtils.putIfExitAsArray(dic, HOLA.FILTER_KEY, "monitor");
                         }
                         if (logger.isInfoEnabled()) {
                             logger.info("advertise Remote service " + interfaceClass.getName() + " to discovery " + PropertiesUtils.toAddress(dis));

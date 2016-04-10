@@ -21,12 +21,16 @@ package org.solmix.hola.rs.support;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 import org.solmix.commons.annotation.ThreadSafe;
 import org.solmix.commons.util.Assert;
 import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.common.HOLA;
+import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteListener;
 import org.solmix.hola.rs.RemoteReference;
@@ -34,8 +38,12 @@ import org.solmix.hola.rs.RemoteReference.ReferenceType;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.RemoteServiceFactory;
+import org.solmix.hola.rs.filter.InvokeFilter;
+import org.solmix.hola.rs.filter.InvokeFilterFactory;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
+import org.solmix.runtime.extension.ExtensionLoader;
+import org.solmix.runtime.helper.ProxyHelper;
 
 /**
  * 
@@ -78,17 +86,36 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
     public <S> RemoteRegistration<S> register(Class<S> clazz, S service, Dictionary<String, ?> properties) throws RemoteException {
         Assert.isNotNull(service, "register service is null");
         Assert.isNotNull(clazz, "register class is null");
-        RemoteRegistration<S> reg= doRegister(clazz, service, properties);
+        RemoteRegistration<S> reg;
+        //Invoker filter
+        List<?>   fstring =PropertiesUtils.getCommaSeparatedList(properties, HOLA.FILTER_KEY);
+        if(fstring!=null&&fstring.size()>0){
+            List<InvokeFilter> filters = new ArrayList<InvokeFilter>();
+            ExtensionLoader<InvokeFilterFactory> loader = container.getExtensionLoader(InvokeFilterFactory.class);
+            for(Object f:fstring){
+                InvokeFilterFactory factory = loader.getExtension(f.toString());
+                if(factory!=null){
+                    InvokeFilter ivf =factory.create(properties);
+                    filters.add(ivf);
+                }
+            }
+            reg= doRegister(clazz, getProxy(clazz,service,filters,properties), properties);
+        }else{
+            reg= doRegister(clazz, service, properties);
+        }
         if(reg!=null){
             registry.addServiceRegistration(reg);
         }
         return reg;
     }
 
-    @SuppressWarnings("rawtypes")
-    public abstract <S> RemoteRegistration<S> doRegister(Class<S> clazz, S service,  Dictionary properties) throws RemoteException;
+    @SuppressWarnings("unchecked")
+    private <S> S getProxy(Class<S> clazz,S service, List<InvokeFilter> filters,Dictionary properties) {
+        InvokeFilterWrapper wrapper = new InvokeFilterWrapper(service,filters,properties);
+        return (S)ProxyHelper.getProxy(clazz.getClassLoader(), new Class[]{ clazz}, wrapper);
+    }
 
-
+ 
 
     @Override
     public <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties) {
@@ -99,9 +126,6 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
         return refer;
     }
    
-
-
-
     protected <S> RemoteReference<S> doReference(Class<S> clazz, Dictionary<String, ?> properties) {
        return new RemoteReferenceImpl<S>(clazz,registry,properties,this);
     }
@@ -137,8 +161,11 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
             RemoteReferenceImpl<S> impl =(RemoteReferenceImpl<S>)reference;
             if(impl.getRemoteService()!=null){
                 return impl.getRemoteService();
+            }else{
+                RemoteService<S> rs = doGetRemoteService(impl);
+                impl.setRemoteService(rs);
             }
-            return doGetRemoteService(impl);
+            return impl.getRemoteService();
         }
         return null;
     }
@@ -148,7 +175,13 @@ public abstract class AbstractRemoteServiceFactory implements RemoteServiceFacto
         registry.destroy();
     }
     protected abstract <S> S doGetService(RemoteReference<S> reference) throws RemoteException ;
+    
     protected abstract <S> RemoteService<S> doGetRemoteService(RemoteReferenceImpl<S> reference) throws RemoteException ;
+    
+    @SuppressWarnings("rawtypes")
+    public abstract <S> RemoteRegistration<S> doRegister(Class<S> clazz, S service,  Dictionary properties) throws RemoteException;
+
+
     /**
      * 检查服务是否为接口的实例
      * 

@@ -53,7 +53,7 @@ public class RemoteProxyFactory
                     loader = ClassLoaderUtils.setThreadContextClassloader(cl);
                 }
             }
-            RemoteProxy proxyHandler = new RemoteProxy(remote);
+            RemoteProxy proxyHandler = new RemoteProxy(remote,container);
             Class<?> classes[] = new Class[] {remote.getServiceClass(), Closeable.class, RemoteService.class};
             Object object = ProxyHelper.getProxy(remote.getServiceClass().getClassLoader(), classes, proxyHandler);
             return (T) object;

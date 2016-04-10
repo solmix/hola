@@ -30,9 +30,9 @@ public class DefaultMonitor implements Monitor
     private final long monitorInterval;
     private final ConcurrentMap<StateUnit, AtomicReference<long[]>> statesMap = new ConcurrentHashMap<StateUnit, AtomicReference<long[]>>();
 
-   private RemoteReference<MonitorService> reference;
-   private MonitorService monitor;
-   private final String address;
+    private RemoteReference<MonitorService> reference;
+    private MonitorService monitor;
+    private final String address;
     public DefaultMonitor(RemoteReference<MonitorService> ref, MonitorService monitor,String address){
         this.reference=ref;
         this.monitor=monitor;

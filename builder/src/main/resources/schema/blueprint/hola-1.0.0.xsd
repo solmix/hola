@@ -137,6 +137,7 @@
     			<xsd:attribute name="serial" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="proxy" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="cluster" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="filter" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="scope" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="heartbeat" type="xsd:int"></xsd:attribute>
     			<xsd:attribute name="heartbeatTimeout" type="xsd:int"></xsd:attribute>

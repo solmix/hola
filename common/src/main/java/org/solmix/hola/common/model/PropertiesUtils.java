@@ -880,6 +880,13 @@ public class PropertiesUtils
         return registries;
     }
 
+    /**
+     * 如果不存在就添加
+     * 
+     * @param dic
+     * @param key
+     * @param value
+     */
     public static void putIfAbsent(Dictionary<String, Object> dic, String key, Object value) {
         if (key == null || key.length() == 0 || value == null) {
             return;
@@ -889,4 +896,27 @@ public class PropertiesUtils
         }
         dic.put(key, value);
     }
+    
+    /**
+     * 放入Dictionary中,如果不存在则添加,如果存在对象类型为List则add(value),否则按照逗号分隔的字符串处理.
+     * 
+     * @param dic
+     * @param key
+     * @param value
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static void putIfExitAsArray(Dictionary<String, Object> dic, String key, Object value){
+        if (key == null || key.length() == 0 || value == null) {
+            return;
+        }
+        Object o = dic.get(key);
+        if(o==null){
+            dic.put(key, value);
+        }else if( o instanceof List){
+            ((List)o).add(value);
+        }else{
+            dic.put(key, new StringBuilder().append( o.toString()).append(",").append(value.toString()).toString());
+        }
+    }
+
 }

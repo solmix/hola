@@ -57,11 +57,15 @@ public interface RemoteRequest
      * @return 返回非空对象数组
      */
     public Object[] getParameters();
+    
+    boolean isAsync();
 
     Map<String, Object> getRequestContext();
 
     Object getContextAttr(String key);
 
     Object getContextAttr(String key, Object defaultValue);
+    
+   
 
 }

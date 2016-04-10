@@ -1,5 +1,7 @@
 package org.solmix.hola.common.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -60,6 +62,22 @@ public class ServiceUtilsTest extends Assert
         assertTrue(PropertiesUtils.toAddress(dic).equals(PropertiesUtils.toAddress(dic2)));
 
         assertTrue(PropertiesUtils.toIndentityAddress(dic).equals(PropertiesUtils.toIndentityAddress(dic2)));
+    }
+    
+    @Test
+    public void test_putIfExitAsArray(){
+        Hashtable<String, Object> dic = new Hashtable<String, Object>();
+        dic.put(HOLA.FILTER_KEY, "test-filter");
+        PropertiesUtils.putIfExitAsArray(dic, HOLA.FILTER_KEY, "monitor");
+        assertEquals("test-filter,monitor", PropertiesUtils.getString(dic, HOLA.FILTER_KEY));
+        PropertiesUtils.putIfExitAsArray(dic, HOLA.PORT_KEY, 124);
+        assertEquals((Integer)124, PropertiesUtils.getInt(dic, HOLA.PORT_KEY));
+        
+        dic.clear();
+        
+        dic.put(HOLA.FILTER_KEY,  new ArrayList<String>(Arrays.asList("test-filter")));
+        PropertiesUtils.putIfExitAsArray(dic, HOLA.FILTER_KEY, "monitor");
+        assertEquals(2, PropertiesUtils.getList(dic, HOLA.FILTER_KEY).size());
     }
 
 }

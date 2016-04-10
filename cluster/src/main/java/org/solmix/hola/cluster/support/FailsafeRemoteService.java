@@ -23,6 +23,7 @@ public class FailsafeRemoteService<T> extends AbstractClusteredService<T> implem
         super(directory, container);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Object[] doInvoke(LoadBalance loadbalance, List<RemoteService<T>> services, RemoteRequest request, ClientCallback callback, boolean oneway)
         throws RemoteException {
