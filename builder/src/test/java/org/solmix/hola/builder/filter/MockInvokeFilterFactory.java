@@ -10,7 +10,7 @@ import org.solmix.runtime.Extension;
 
 
 @Extension(name="test-filter")
-public class TestInvokeFilterFactory implements InvokeFilterFactory
+public class MockInvokeFilterFactory implements InvokeFilterFactory
 {
 
 
