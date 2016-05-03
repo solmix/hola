@@ -81,15 +81,19 @@ public class HOLA
 
     public static final String DEFAULT_SERIAL = "java";
 
+    /**超时,值类型:int(ms)*/
     public static final String TIMEOUT_KEY = "timeout";
+    
+    /**写超时 值类型:int(ms)*/
+    public static final String WRITE_TIMEOUT_KEY = "write.timeout";
 
-    /** 连接超时时间 */
+    /** 连接超时时间 值类型:int(ms)*/
     public static final String CONNECT_TIMEOUT_KEY = "connect.timeout";
 
-    /** 接收超时时间 */
+    /** 接收超时时间 值类型:int(ms)*/
     public static final String READ_IDLE_TIMEOUT_KEY = "read.idle.timeout";
 
-    /** 写超时时间 */
+    /** 写超时时间 值类型:int(ms)*/
     public static final String WRITE_IDLE_TIMEOUT_KEY = "write.idle.timeout";
 
     public static final String ANY_VALUE = "*";
@@ -287,6 +291,7 @@ public class HOLA
 
     public static final int DEFAULT_RECONNECT_PERIOD = 2000;
 
+    /**默认的Io线程数,默认为处理器数量+1*/
     public static final int DEFAULT_IO_THREADS = Runtime.getRuntime().availableProcessors() + 1;
 
     public static final String KEY_IO_THREADS = "io.threads";

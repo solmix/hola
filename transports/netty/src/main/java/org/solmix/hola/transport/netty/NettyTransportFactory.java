@@ -128,7 +128,7 @@ public class NettyTransportFactory implements PipelineFactory,
     private NettyPipeline createPipeline(Container c, EndpointInfo info) {
         EventLoopGroup eventLoopGroup = c.getExtension(EventLoopGroup.class);
         if (eventLoopGroup == null) {
-            final EventLoopGroup group = new NioEventLoopGroup(2,new DefaultExecutorServiceFactory("Netty-client"));
+            final EventLoopGroup group = new NioEventLoopGroup(2,new DefaultExecutorServiceFactory("Netty-Client"));
             c.setExtension(group, EventLoopGroup.class);
             registerContainerListener(c, group);
         }
@@ -176,7 +176,7 @@ public class NettyTransportFactory implements PipelineFactory,
                                 HOLA.READ_IDLE_TIMEOUT_KEY,
                                 HOLA.WRITE_IDLE_TIMEOUT_KEY, 
                                 HOLA.IDLE_TIMEOUT_KEY,
-                                "writeTimeout",
+                                HOLA.WRITE_IDLE_TIMEOUT_KEY,
                                 HOLA.HEARTBEAT_KEY,
                                 HOLA.HEARTBEAT_TIMEOUT_KEY,
                                 HOLA.TIMEOUT_KEY, 

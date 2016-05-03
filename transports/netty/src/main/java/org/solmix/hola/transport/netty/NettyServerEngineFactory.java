@@ -66,8 +66,7 @@ public class NettyServerEngineFactory implements ContainerListener {
     public void handleEvent(ContainerEvent event) {
         switch (event.getType()) {
         case ContainerEvent.POSTCLOSE:
-            NettyServerEngine[] ens = engines.values().toArray(
-                new NettyServerEngine[engines.values().size()]);
+            NettyServerEngine[] ens = engines.values().toArray( new NettyServerEngine[engines.values().size()]);
             for (NettyServerEngine en : ens) {
                 en.shutdown();
             }

@@ -21,6 +21,7 @@ public class HeartbeatHandler extends ChannelHandlerAdapter
     private static final Logger LOG  = LoggerFactory.getLogger(HeartbeatHandler.class);
     
     public static final Object HEARTBEAT_EVENT =null;
+    
     private NettyConfiguration config;
 
     private volatile int state;
@@ -45,6 +46,9 @@ public class HeartbeatHandler extends ChannelHandlerAdapter
             }
             heartbeatTimeoutms = ht;
         }
+        long current = System.currentTimeMillis();
+        this.lastReadTime=current;
+        this.lastWriteTime=current;
     }
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {

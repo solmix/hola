@@ -88,14 +88,12 @@ public class NettyPipeline extends AbstractPipeline {
         this.clientInfo=ei.getExtension(NettyConfiguration.class);
         this.endpointInfo = ei;
         bootstrap = new Bootstrap();
-        bootstrap.option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE);
-        bootstrap.option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE);
-        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, clientInfo.getConnectTimeout());
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
+                .option(ChannelOption.TCP_NODELAY, Boolean.TRUE)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, clientInfo.getConnectTimeout());
         EventLoopGroup eventLoopGroup = container.getExtension(EventLoopGroup.class);
         bootstrap.group(eventLoopGroup);
         bootstrap.channel(NioSocketChannel.class);
-       
-       
     }
 
     @Override

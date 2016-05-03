@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.RemoteProtocol;
+import org.solmix.hola.transport.TransporterCreateException;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
 
@@ -49,6 +50,7 @@ import io.netty.util.concurrent.DefaultExecutorServiceFactory;
 public class NettyServerEngine implements NettyEngine {
 
     private static final Logger LOG  = LoggerFactory.getLogger(NettyServerEngine.class);
+    
     private volatile Channel channel;
 
     EventLoopGroup bossGroup;
@@ -68,6 +70,7 @@ public class NettyServerEngine implements NettyEngine {
     private final Map<String, NettyMessageHandler> handlerMap = new ConcurrentHashMap<String, NettyMessageHandler>();
 
     private Container container;
+    
     private RemoteProtocol protocol;
 
     public NettyServerEngine(String host, int port) {
@@ -106,11 +109,12 @@ public class NettyServerEngine implements NettyEngine {
     protected void checkRegistedPath(String path) {
         for (String registedPath : registedPaths) {
             if (path.equals(registedPath)) {
-                LOG.warn("path "+path+" already in use");
+                LOG.warn("path {} already in use",path);
                 registedPaths.remove(registedPath);
             }
         }
     }
+    /**Codec*/
     protected Codec getCodec(String codec){
         return  container.getExtensionLoader(Codec.class).getExtension(codec);
       }
@@ -119,11 +123,17 @@ public class NettyServerEngine implements NettyEngine {
         this.protocol=protocol;
         
         final ServerBootstrap bootstrap = new ServerBootstrap();
-        bossGroup = new NioEventLoopGroup( HOLA.DEFAULT_IO_THREADS,new DefaultExecutorServiceFactory("Netty-Server-Parent"));
-        workerGroup = new NioEventLoopGroup( HOLA.DEFAULT_IO_THREADS,new DefaultExecutorServiceFactory("Netty-Server-child"));
-        bootstrap.group(bossGroup, workerGroup).channel(
-            NioServerSocketChannel.class).option(ChannelOption.SO_REUSEADDR,
-            true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, info.getConnectTimeout());
+        int worker=  info.getThreadPoolSize();
+        int boss=HOLA.DEFAULT_IO_THREADS;
+        if(worker<=boss){
+            boss=worker;
+        }
+        bossGroup = new NioEventLoopGroup( boss,new DefaultExecutorServiceFactory("Netty-SP-"+port));
+        workerGroup = new NioEventLoopGroup(worker,new DefaultExecutorServiceFactory("Netty-SC-"+port));
+        bootstrap.group(bossGroup, workerGroup)
+            .channel(NioServerSocketChannel.class)
+            .option(ChannelOption.SO_REUSEADDR,true)
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, info.getConnectTimeout());
         channelFactory = new NettyServerChannelFactory(info, handlerMap,protocol);
         
         bootstrap.childHandler(channelFactory);
@@ -135,11 +145,15 @@ public class NettyServerEngine implements NettyEngine {
         }
         try {
             return bootstrap.bind(address).sync().channel();
-        } catch (InterruptedException ex) {
-            return null;
+        } catch (Exception ex) {
+            throw new TransporterCreateException("Error start Channel at :"+port+":", ex);
         }
     }
 
+    public RemoteProtocol getRemoteProtocol(){
+        return protocol;
+    }
+    
     public NettyConfiguration getNettyConfiguration() {
         return info;
     }
@@ -149,7 +163,7 @@ public class NettyServerEngine implements NettyEngine {
      * 
      * @param transportServerInfo
      */
-    public void setNettyConfiguration(NettyConfiguration transportServerInfo) {
+    void setNettyConfiguration(NettyConfiguration transportServerInfo) {
         this.info = transportServerInfo;
     }
 

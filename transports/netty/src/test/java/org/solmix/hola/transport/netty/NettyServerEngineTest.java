@@ -86,7 +86,12 @@ public class NettyServerEngineTest extends Assert
         nse.setNettyConfiguration(new NettyConfiguration());
         RemoteProtocol protocol = new RemoteProtocol(null, container, null);
         nse.start(protocol);
-        nse.addHandler(urlStr, new TestHandler("hello"));
+        NettyMessageHandler handler =new TestHandler("hello");
+        nse.addHandler(urlStr, handler);
+        NettyMessageHandler handler2 =nse.getHandler(urlStr);
+        Assert.assertSame(handler, handler2);
+        nse.removeHandler(urlStr);
+        Assert.assertNull(nse.getHandler(urlStr));
     }
     
     class TestHandler extends NettyMessageHandler{

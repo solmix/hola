@@ -23,6 +23,7 @@ import org.solmix.hola.transport.RemoteProtocol;
 
 
 /**
+ * Netty引擎
  * 
  * @author solmix.f@gmail.com
  * @version $Id$  2015年1月18日
@@ -31,17 +32,36 @@ import org.solmix.hola.transport.RemoteProtocol;
 public interface NettyEngine {
     
     /**
-     * 启动服务接收指定协议输入。
+     * 启动服务并指定传输协议。<br>
+     * <b>同一个端口不能解析不同协议</b>
      * 
      * @param protocol
      */
     void start(RemoteProtocol protocol);
 
+    /**
+     * 添加消息处理回调
+     * @param path
+     * @param handler
+     */
     void addHandler(String path, NettyMessageHandler handler);
 
+    /**
+     * 移除消息处理回调
+     * @param path
+     */
     void removeHandler(String path);
     
+    /**
+     * 取得path对应的handler
+     * 
+     * @param path
+     * @return
+     */
     NettyMessageHandler getHandler(String path);
 
+    /**
+     * 关闭引擎
+     */
     void shutdown();
 }

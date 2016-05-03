@@ -46,7 +46,9 @@ public class NettyServerChannelFactory extends ChannelInitializer<Channel>
     private final NettyConfiguration config;
 
     private final RemoteProtocol protocol;
+    
     private final NettyCodecAdapter codecAdapter;
+    
     public NettyServerChannelFactory(NettyConfiguration info, Map<String, NettyMessageHandler> handlerMap, RemoteProtocol protocol)
     {
         this.handlerMap = handlerMap;

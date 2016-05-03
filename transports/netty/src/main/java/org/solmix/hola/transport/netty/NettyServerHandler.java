@@ -82,6 +82,7 @@ public class NettyServerHandler extends ChannelHandlerAdapter
         allChannels.remove(ctx.channel());
         ctx.fireChannelInactive();
     }
+    
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof Message) {

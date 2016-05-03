@@ -35,6 +35,7 @@ public class NettyMessageHandler {
     private final NettyTransporter transporter;
 
     private String urlName;
+    
     public NettyMessageHandler(NettyTransporter transporter) {
         this.transporter = transporter;
     }
@@ -46,6 +47,7 @@ public class NettyMessageHandler {
     public String getName() {
         return urlName;
     }
+    
     public void handle( Message inMsg, Message outMsg)
         throws IOException {
             transporter.doService(inMsg, outMsg);

@@ -48,14 +48,14 @@ public class NettyCodecAdapter
 
     private final Codec codec;
 
-    private final NettyConfiguration config;
+    //private final NettyConfiguration config;
 
     private final Protocol protocol;
 
     public NettyCodecAdapter(NettyConfiguration config, RemoteProtocol protocol)
     {
         this.codec = protocol.getCodec();
-        this.config = config;
+        //this.config = config;
         this.protocol = protocol;
     }
 

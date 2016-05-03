@@ -38,8 +38,12 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.solmix.commons.collections.DataTypeMap;
+import org.solmix.commons.util.ArrayUtils;
+import org.solmix.commons.util.DataUtils;
 import org.solmix.commons.util.NetUtils;
+import org.solmix.commons.util.Reflection;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.hola.common.HOLA;
 
 
@@ -916,6 +920,31 @@ public class PropertiesUtils
             ((List)o).add(value);
         }else{
             dic.put(key, new StringBuilder().append( o.toString()).append(",").append(value.toString()).toString());
+        }
+    }
+    
+    /**把ConfigSupportedReference的配置放入extension中*/
+    public static  void makeConfigAsEndpointInfoExtension(
+        ConfigSupportedReference config, 
+        EndpointInfo endpointInfo,
+        Dictionary<String, ?> properties) {
+        String[] supported = config.getSupportedConfigs(properties);
+        Class<?> clazz = config.getSupportedConfigClass();
+        if(!ArrayUtils.isEmptyArray(supported)&&clazz!=null){
+            try {
+                Object bean = Reflection.newInstance(clazz);
+                Map<String,Object> copyed = new HashMap<String,Object>();
+                for(String key:supported){
+                    Object value = properties.get(key);
+                    if(value!=null){
+                        copyed.put(StringUtils.splitToCamelName(key, HOLA.CAMEL_SPLIT_KEY), properties.get(key));
+                    }
+                }
+                DataUtils.setProperties(copyed, bean, false);
+                endpointInfo.addExtension(bean);
+            } catch (Exception e) {
+               throw new IllegalArgumentException("Make ConfigSupportedReference into EndpointInfo extensions",e);
+            }
         }
     }
 

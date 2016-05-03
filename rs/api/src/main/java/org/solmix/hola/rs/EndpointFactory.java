@@ -21,16 +21,10 @@ package org.solmix.hola.rs;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solmix.commons.util.ArrayUtils;
-import org.solmix.commons.util.DataUtils;
-import org.solmix.commons.util.Reflection;
-import org.solmix.commons.util.StringUtils;
 import org.solmix.exchange.Endpoint;
 import org.solmix.exchange.EndpointException;
 import org.solmix.exchange.EndpointInfoFactory;
@@ -243,36 +237,13 @@ public abstract class EndpointFactory extends AbstractEndpointFactory {
         if(factorys!=null&&factorys.length>0){
             for(Object factory:factorys){
                 if(factory instanceof ConfigSupportedReference){
-                    makeConfigAsEndpointInfoExtension((ConfigSupportedReference)factory,endpointInfo,getProperties());
+                   PropertiesUtils. makeConfigAsEndpointInfoExtension((ConfigSupportedReference)factory,endpointInfo,getProperties());
                 }
             } 
         }
     }
 
-    /**把ConfigSupportedReference的配置放入extension中*/
-    protected  void makeConfigAsEndpointInfoExtension(
-        ConfigSupportedReference config, 
-        EndpointInfo endpointInfo,
-        Dictionary<String, ?> properties) {
-        String[] supported = config.getSupportedConfigs(properties);
-        Class<?> clazz = config.getSupportedConfigClass();
-        if(!ArrayUtils.isEmptyArray(supported)&&clazz!=null){
-            try {
-                Object bean = Reflection.newInstance(clazz);
-                Map<String,Object> copyed = new HashMap<String,Object>();
-                for(String key:supported){
-                    Object value = properties.get(key);
-                    if(value!=null){
-                        copyed.put(StringUtils.splitToCamelName(key, HOLA.CAMEL_SPLIT_KEY), properties.get(key));
-                    }
-                }
-                DataUtils.setProperties(copyed, bean, false);
-                endpointInfo.addExtension(bean);
-            } catch (Exception e) {
-               LOG.warn("Make ConfigSupportedReference into EndpointInfo extensions",e);
-            }
-        }
-    }
+   
 
     protected TransporterFactory getTransporterFactory(String transporter) {
         TransporterFactory transporterFactory = getContainer().getExtension(

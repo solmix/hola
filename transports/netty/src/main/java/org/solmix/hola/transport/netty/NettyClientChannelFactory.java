@@ -50,7 +50,12 @@ public class NettyClientChannelFactory extends ChannelInitializer<Channel> {
         if(config.enableHeartbeat()){
             pipeline.addLast("heartbeat", new HeartbeatHandler(config));
         }
-//        pipeline.addLast("idle",new IdleStateHandler( ));
+        //空闲检测
+        //XXX
+        // if(config.enableIdleHeartbeat()){
+        // pipeline.addLast("idle",new IdleStateHandler( ));
+        // }
+        //
         pipeline.addLast(new NettyClientHandler());
     }
 

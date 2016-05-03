@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 The Solmix Project
+ * Copyright 2015 The Solmix Project
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,25 +16,23 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
+package org.solmix.hola.karaf;
 
-package org.solmix.hola.transport;
-
-import java.util.Collection;
 
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2015年1月18日
+ * @version $Id$  2016年4月27日
  */
 
-public interface TransporterRegistry
+public interface KarafClusterService
 {
-
-    void add(AbstractRemoteTransporter transporter);
-
-    void remove(String path);
-
-    AbstractRemoteTransporter getTransporterForPath(String path);
-
-    Collection<AbstractRemoteTransporter> getTransporters();
+    
+    /**
+     * 远程命令
+     * @param commandline
+     * @return
+     * @throws Exception
+     */
+    Object rcmd(CharSequence commandline) throws Exception;
 }

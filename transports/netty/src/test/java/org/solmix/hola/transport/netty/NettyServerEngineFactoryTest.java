@@ -20,7 +20,6 @@ package org.solmix.hola.transport.netty;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.solmix.exchange.TransporterFactory;
 import org.solmix.exchange.TransporterFactoryManager;
@@ -37,7 +36,7 @@ import org.solmix.runtime.ContainerFactory;
 public class NettyServerEngineFactoryTest extends Assert
 {
 
-    Container container;
+   static Container container;
     
     @Test
     public void testGetEngine(){
@@ -53,13 +52,10 @@ public class NettyServerEngineFactoryTest extends Assert
         assertNotNull(nsef);
     }
     
-    @BeforeClass
-    public static void setUp(){
-        ContainerFactory.setDefaultContainer(null);
-    }
-    
     @AfterClass
     public static void tearDown(){
-        ContainerFactory.setDefaultContainer(null);
+        if(container!=null){
+            container.close();
+        }
     }
 }
