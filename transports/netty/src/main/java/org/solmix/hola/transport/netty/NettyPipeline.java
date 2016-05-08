@@ -80,11 +80,13 @@ public class NettyPipeline extends AbstractPipeline {
     
     volatile Channel channel;
     
+    private final Container container;
     /**
      * @param address
      */
     public NettyPipeline(Container container, EndpointInfo ei) {
         super(ei.getAddress());
+        this.container=container;
         this.clientInfo=ei.getExtension(NettyConfiguration.class);
         this.endpointInfo = ei;
         bootstrap = new Bootstrap();
@@ -130,7 +132,7 @@ public class NettyPipeline extends AbstractPipeline {
     }
     protected synchronized void connect(URI url) {
         RemoteProtocol protocol = (RemoteProtocol)getProtocol();
-        bootstrap.handler(new NettyClientChannelFactory(clientInfo,protocol));
+        bootstrap.handler(new NettyClientChannelFactory(clientInfo,protocol,container));
         ChannelFuture future = bootstrap.connect(new InetSocketAddress(url.getHost(), url.getPort()));
         try{
             boolean ret = future.awaitUninterruptibly(clientInfo.getConnectTimeout(), TimeUnit.MILLISECONDS);

@@ -185,7 +185,14 @@ public class NettyTransportFactory implements PipelineFactory,
                                 HOLA.ACCEPTS_KEY,
                                 HOLA.PATH_KEY, 
                                 HOLA.BUFFER_KEY ,
-                                HOLA.CODEC_KEY};
+                                HOLA.CODEC_KEY,
+                                HOLA.SSL_KEY_ALIAS,
+                                HOLA.SSL_KEY_AUTO,
+                                HOLA.SSL_KEY_CN,
+                                HOLA.SSL_KEY_FILE_PASSWORD,
+                                HOLA.SSL_KEY_FILEPATH,
+                                HOLA.SSL_KEY_MODE
+                                };
     }
 
   

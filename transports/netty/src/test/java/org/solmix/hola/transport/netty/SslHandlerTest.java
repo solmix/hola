@@ -16,7 +16,6 @@
  * http://www.gnu.org/licenses/ 
  * or see the FSF site: http://www.fsf.org. 
  */
-
 package org.solmix.hola.transport.netty;
 
 import java.io.IOException;
@@ -44,13 +43,14 @@ import org.solmix.test.ExContainerSupportTest;
 import io.netty.buffer.ByteBuf;
 import junit.framework.Assert;
 
+
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$ 2016年4月29日
+ * @version $Id$  2016年5月3日
  */
 
-public class HearbeatHandlerTest extends ExContainerSupportTest
+public class SslHandlerTest extends ExContainerSupportTest
 {
 
 
@@ -63,8 +63,8 @@ public class HearbeatHandlerTest extends ExContainerSupportTest
     @Test
     public void test() throws IOException {
         NettyTransportFactory factory = new NettyTransportFactory();
-        String address = "hola://localhost:" + PORT1 + "/heartbeat";
-        String client = address + "?heartbeat=100&heartbeat.timeout=500";
+        String address = "hola://localhost:" + PORT1 + "/ssl?key.alias=solmix&key.file.path=target/sslkey.jks&key.file.password=solmixpwd&key.mode=sacu&key.cn=";
+        String client = "hola://localhost:" + PORT1 + "/ssl?heartbeat=100&heartbeat.timeout=500&key.alias=solmix&key.file.path=target/sslkey.jks&key.file.password=solmixpwd&key.mode=sacu&key.cn=";
         EndpointInfo ei = getepi(address, factory);
         EndpointInfo cei = getepi(client, factory);
 
@@ -95,6 +95,7 @@ public class HearbeatHandlerTest extends ExContainerSupportTest
         };
         codec.setSerializationManager(container.getExtension(SerializationManager.class));
         codec.setSerialConfiguration(new SerialConfiguration("hola"));
+        
         EasyMock.expect(pro.getCodec()).andReturn(codec).anyTimes();
         EasyMock.expect(pro.createMessage()).andReturn(new DefaultMessage()).anyTimes();
         EasyMock.replay(pro);

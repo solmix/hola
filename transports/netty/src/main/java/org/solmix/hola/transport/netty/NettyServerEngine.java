@@ -134,7 +134,7 @@ public class NettyServerEngine implements NettyEngine {
             .channel(NioServerSocketChannel.class)
             .option(ChannelOption.SO_REUSEADDR,true)
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, info.getConnectTimeout());
-        channelFactory = new NettyServerChannelFactory(info, handlerMap,protocol);
+        channelFactory = new NettyServerChannelFactory(info, handlerMap,protocol,container);
         
         bootstrap.childHandler(channelFactory);
         InetSocketAddress address = null;

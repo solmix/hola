@@ -18,11 +18,18 @@
  */
 package org.solmix.hola.transport.netty;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+
 import org.solmix.hola.transport.RemoteProtocol;
+import org.solmix.runtime.Container;
+import org.solmix.runtime.security.DefaultSSLProvider;
+import org.solmix.runtime.security.SSLProvider;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import io.netty.handler.ssl.SslHandler;
 
 
 /**
@@ -36,15 +43,28 @@ public class NettyClientChannelFactory extends ChannelInitializer<Channel> {
     
    private final NettyCodecAdapter codecAdapter;
    private final NettyConfiguration config;
+   private final Container container;
    
-    public NettyClientChannelFactory(NettyConfiguration config,RemoteProtocol protocol) {
+    public NettyClientChannelFactory(NettyConfiguration config,RemoteProtocol protocol,Container container) {
         this.config=config;
         codecAdapter = new NettyCodecAdapter( config,protocol);
+        this.container=container;
     }
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
+        if(config.enableSSL()){
+            SSLProvider provider  = container.getExtension(SSLProvider.class);
+            if(provider==null){
+                 provider  = new DefaultSSLProvider(container,new KeystoreInfoWrapper(config),true);
+                 container.setExtension(provider, SSLProvider.class);
+            }
+            SSLContext ssl=provider.getSSLContext();
+            SSLEngine engine =ssl.createSSLEngine();
+            engine.setUseClientMode(true);
+            pipeline.addLast(new SslHandler(engine));
+        }
         pipeline.addLast("decoder", codecAdapter.getDecoder());
         pipeline.addLast("encoder", codecAdapter.getEncoder());
         if(config.enableHeartbeat()){

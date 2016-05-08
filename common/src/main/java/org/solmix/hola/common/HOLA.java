@@ -434,5 +434,19 @@ public class HOLA
 
     public static final String APPLICATION_KEY = "application";
 
+    /**
+     * SSL key 别名
+     */
+    public static final String SSL_KEY_ALIAS="key.alias";
+    /**SSL key文件路径*/
+    public static final String SSL_KEY_FILEPATH="key.file.path";
+    /**SSL key文件密码*/
+    public static final String SSL_KEY_FILE_PASSWORD="key.file.password";
+    /**是否允许自动生成key*/
+    public  static final String SSL_KEY_AUTO="key.auto";
+    /**SSL CN 信息*/
+    public static final String SSL_KEY_CN  ="key.cn";
+    /**SSL 认证方式,sacu saca*/
+    public static final String SSL_KEY_MODE="key.mode";
 
 }
