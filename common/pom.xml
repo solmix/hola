@@ -12,9 +12,9 @@
   		<artifactId>solmix-common-exchange</artifactId>
   	</dependency>
   	<dependency>
-		    <groupId>org.javassist</groupId>
-		    <artifactId>javassist</artifactId>
-		</dependency>
+	    <groupId>org.javassist</groupId>
+	    <artifactId>javassist</artifactId>
+	</dependency>
   </dependencies>
   <name>Hola :: Commons</name>
   <packaging>bundle</packaging>

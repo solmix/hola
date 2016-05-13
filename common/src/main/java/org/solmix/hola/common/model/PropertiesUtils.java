@@ -151,7 +151,8 @@ public class PropertiesUtils
                     }
                     buf.append(key);
                     buf.append("=");
-                    buf.append(properties.get(key).toString().trim());
+                    String v =properties.get(key).toString().trim();
+                    buf.append(encode(v));
                 }
             } else {
                 Enumeration<String> enums = properties.keys();
@@ -170,7 +171,8 @@ public class PropertiesUtils
                     }
                     buf.append(key);
                     buf.append("=");
-                    buf.append(properties.get(key).toString().trim());
+                    String v =properties.get(key).toString().trim();
+                    buf.append(encode(v));
                 }
             }
         }
@@ -235,9 +237,9 @@ public class PropertiesUtils
                 if (part.length() > 0) {
                     int j = part.indexOf('=');
                     if (j >= 0) {
-                        parameters.put(part.substring(0, j), part.substring(j + 1));
+                        parameters.put(part.substring(0, j), decode(part.substring(j + 1)));
                     } else {
-                        parameters.put(part, part);
+                        parameters.put(part, decode(part));
                     }
                 }
             }

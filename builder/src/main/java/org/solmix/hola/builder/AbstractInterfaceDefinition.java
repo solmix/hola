@@ -137,7 +137,18 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
      */
     private String networker;
     
-    
+    /**SSL key别名*/
+    private String keyAlias;
+    /**SSL key文件路径*/
+    private String keyFilePath;
+    /**SSL key文件密码*/
+    private String keyFilePassword;
+    /**是否允许自动生成key*/
+    private Boolean keyAuto;
+    /**SSL CN 信息*/
+    private String keyCN = "";
+    /**SSL 认证方式,sacu saca*/
+    private String keyMode;
     /**
      * 是否为默认设置
      */
@@ -392,6 +403,7 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
     public void setFilter(String filter) {
         this.filter = filter;
     }
+    
     /**   */
     public Integer getHeartbeat() {
         return heartbeat;
@@ -402,6 +414,54 @@ public class AbstractInterfaceDefinition extends AbstractMethodDefinition {
         this.heartbeat = heartbeat;
     }
     
+    
+    public String getKeyAlias() {
+        return keyAlias;
+    }
+    
+    public void setKeyAlias(String keyAlias) {
+        this.keyAlias = keyAlias;
+    }
+    
+    public String getKeyFilePath() {
+        return keyFilePath;
+    }
+    
+    public void setKeyFilePath(String keyFilePath) {
+        this.keyFilePath = keyFilePath;
+    }
+    
+    public String getKeyFilePassword() {
+        return keyFilePassword;
+    }
+    
+    public void setKeyFilePassword(String keyFilePassword) {
+        this.keyFilePassword = keyFilePassword;
+    }
+    
+    public Boolean getKeyAuto() {
+        return keyAuto;
+    }
+    
+    public void setKeyAuto(Boolean keyAuto) {
+        this.keyAuto = keyAuto;
+    }
+    
+    public String getKeyCN() {
+        return keyCN;
+    }
+    
+    public void setKeyCN(String keyCN) {
+        this.keyCN = keyCN;
+    }
+    
+    public String getKeyMode() {
+        return keyMode;
+    }
+    
+    public void setKeyMode(String keyMode) {
+        this.keyMode = keyMode;
+    }
     protected void checkInterfaceAndMethods(Class<?> interfaceClass, List<MethodDefinition> methods) {
         // 接口不能为空
         if (interfaceClass == null) {

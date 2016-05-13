@@ -65,7 +65,7 @@ public class NettyConfiguration
     /**SSL CN 信息*/
     private String keyCN = "";
     /**SSL 认证方式,sacu saca*/
-    private SSLMODE keyMode;
+    private String keyMode;
 
     /** 连接超时毫秒数 */
     private int connectTimeout = HOLA.DEFAULT_CONNECT_TIMEOUT;
@@ -286,12 +286,15 @@ public class NettyConfiguration
         this.keyCN = keyCN;
     }
     
-    public SSLMODE getKeyMode() {
+    public String getKeyMode() {
         return keyMode;
+    }
+    public SSLMODE getKEYMODE() {
+        return SSLMODE.fromValue(keyMode);
     }
     
     public void setKeyMode(String keyMode) {
-        this.keyMode = SSLMODE.fromValue(keyMode);
+        this.keyMode = keyMode;
     }
     
 }
