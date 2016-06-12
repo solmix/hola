@@ -123,7 +123,7 @@ public class NettyServerEngine implements NettyEngine {
         this.protocol=protocol;
         
         final ServerBootstrap bootstrap = new ServerBootstrap();
-        int worker=  info.getThreadPoolSize();
+        int worker=  info.getThreads();
         int boss=HOLA.DEFAULT_IO_THREADS;
         if(worker<=boss){
             boss=worker;

@@ -58,6 +58,7 @@ public class PropertiesUtils
     private PropertiesUtils(){
         
     }
+    public static final String KEY_PREFIX="key.";
     public static String[] ESCAPLES=new String[] { HOLA.ADDRESS_KEY, HOLA.PROTOCOL_KEY, HOLA.HOST_KEY,
         HOLA.PORT_KEY, HOLA.PATH_KEY, HOLA.USER_KEY, HOLA.PASSWORD_KEY,HOLA.MONITOR_KEY,HOLA.DISCOVERY_KEY };
     public static String toAddress(Dictionary<String, ?> properties){
@@ -140,6 +141,9 @@ public class PropertiesUtils
                 for(String key:sorted){
                     if (excludes.contains(key)) {
                         continue;
+                    }
+                    if(key.startsWith(KEY_PREFIX)){
+                    	continue;
                     }
                     if (first) {
                         if (concat) {

@@ -89,7 +89,7 @@ public class NettyConfiguration
     private String codec;
 
     /** 核心线程数,Netty中用于Child线程数,如果netty boss线程数小于该数字,boss也使用该线程数,默认boss线程数为处理器+1 */
-    private int threadPoolSize = 5;
+    private int threads = 5;
 
     /** 心跳周期 */
     private Integer heartbeat;
@@ -168,12 +168,12 @@ public class NettyConfiguration
     }
 
     /** 核心线程数,Netty中用于Child线程数,如果netty boss线程数小于该数字,boss也使用该线程数,默认boss线程数为处理器+1 */
-    public int getThreadPoolSize() {
-        return threadPoolSize;
+    public int getThreads() {
+        return threads;
     }
 
-    public void setThreadPoolSize(int threadPoolSize) {
-        this.threadPoolSize = threadPoolSize;
+    public void setThreads(int threadPoolSize) {
+        this.threads = threadPoolSize;
     }
 
     /** 心跳周期 */

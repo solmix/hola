@@ -132,23 +132,23 @@
 
     			<xsd:attribute name="id" type="xsd:ID"></xsd:attribute>
     			<xsd:attribute name="host" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="port" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="port" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="protocol" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="serial" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="proxy" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="cluster" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="filter" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="scope" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="heartbeat" type="xsd:int"></xsd:attribute>
-    			<xsd:attribute name="heartbeatTimeout" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="heartbeat" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="heartbeatTimeout" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="codec" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="palyload" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="palyload" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="transporter" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="buffer" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="executor" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="threads" type="xsd:int"></xsd:attribute>
-    			<xsd:attribute name="iothreads" type="xsd:int"></xsd:attribute>
-    			<xsd:attribute name="queues" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="threads" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="iothreads" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="queues" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="charset" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="networker" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="default" type="xsd:boolean"></xsd:attribute>
@@ -180,13 +180,13 @@
     		<xsd:extension base="abstractInterfaceType">
     			<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="group" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="weight" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="weight" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="document" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="dynamic" type="xsd:boolean"></xsd:attribute>
-    			<xsd:attribute name="executes" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="executes" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="publish" type="xsd:boolean"></xsd:attribute>
-    			<xsd:attribute name="delay" type="xsd:int"></xsd:attribute>
-    			<xsd:attribute name="accepts" type="xsd:int"></xsd:attribute>
+    			<xsd:attribute name="delay" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="accepts" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="generic" type="xsd:string"></xsd:attribute>
     		</xsd:extension>
     	</xsd:complexContent>
