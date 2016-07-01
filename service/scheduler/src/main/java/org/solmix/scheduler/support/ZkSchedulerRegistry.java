@@ -35,7 +35,8 @@ import com.google.common.base.Strings;
 
 public class ZkSchedulerRegistry implements SchedulerRegistry
 {
-
+	public static final String ZK_ACL_SCHEME="digest";
+	
     private static final Logger LOG = LoggerFactory.getLogger(ZkSchedulerRegistry.class);
 
     private CuratorFramework client;
@@ -51,9 +52,7 @@ public class ZkSchedulerRegistry implements SchedulerRegistry
 
     @Override
     public void init() {
-        if (zkInfo.isUseNestedZookeeper()) {
-            ZkServers.getInstance().startServerIfNotStarted(zkInfo.getNestedPort(), zkInfo.getNestedDataDir());
-        }
+    	setupNestedIfNecessary();
         LOG.debug("Init registry address :{}", zkInfo.getAddress());
         org.apache.curator.framework.CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder().connectString(
             zkInfo.getAddress()).retryPolicy(
@@ -66,7 +65,7 @@ public class ZkSchedulerRegistry implements SchedulerRegistry
             builder.connectionTimeoutMs(zkInfo.getConnectionTimeoutMilliseconds());
         }
         if (!Strings.isNullOrEmpty(zkInfo.getDigest())) {
-            builder.authorization("digest", zkInfo.getDigest().getBytes(Charset.forName("UTF-8"))).aclProvider(new ACLProvider() {
+            builder.authorization(ZK_ACL_SCHEME, zkInfo.getDigest().getBytes(Charset.forName("UTF-8"))).aclProvider(new ACLProvider() {
 
                 @Override
                 public List<ACL> getDefaultAcl() {
@@ -91,7 +90,9 @@ public class ZkSchedulerRegistry implements SchedulerRegistry
         }
     }
 
-    private void fillData() throws Exception {
+    protected void setupNestedIfNecessary() {}
+
+	private void fillData() throws Exception {
         for (Entry<Object, Object> entry : loadLocalProperties().entrySet()) {
             String key = entry.getKey().toString();
             byte[] value = entry.getValue().toString().getBytes(Charset.forName("UTF-8"));
@@ -129,10 +130,11 @@ public class ZkSchedulerRegistry implements SchedulerRegistry
         }
         waitForCacheClose();
         CloseableUtils.closeQuietly(client);
-        if (zkInfo.isUseNestedZookeeper()) {
-            ZkServers.getInstance().closeServer(zkInfo.getNestedPort());
-        }
+        colseNestedIfNecessary();
+        
     }
+    
+    protected void colseNestedIfNecessary(){}
 
     private void waitForCacheClose() {
         try {
@@ -293,5 +295,18 @@ public class ZkSchedulerRegistry implements SchedulerRegistry
     public Object getRawCache(String cachePath) {
         return caches.get(cachePath + "/");
     }
+    
+    public ZkInfo getZkInfo() {
+		return zkInfo;
+	}
 
+	@Override
+	public String persistSequential(String key) {
+		 try {
+	            return client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(key);
+	        } catch (final Exception ex) {
+	        	RegistryExceptionHandler.handleException(ex);
+	        }
+	        return null;
+	}
 }

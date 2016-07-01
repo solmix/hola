@@ -2,6 +2,11 @@ package org.solmix.scheduler;
 
 import java.util.List;
 
+/**
+ * 作业注册中心
+ * 
+ * @author solmix
+ */
 public interface SchedulerRegistry
 {
     
@@ -39,6 +44,13 @@ public interface SchedulerRegistry
      */
     void persist(String key, String value);
     
+    /**
+     * 持久化顺序注册数据.
+     *
+     * @param key 键
+     * @return 包含10位顺序数字的znode名称
+     */
+    String persistSequential(String key);
     /**
      * 更新注册数据.
      * 

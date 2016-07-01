@@ -1,7 +1,12 @@
 package org.solmix.scheduler.model;
 
-import com.google.common.base.Strings;
 
+/**
+ * zookeeper 配置信息
+ * 
+ * @author solmix
+ *
+ */
 public class ZkInfo
 {
 
@@ -15,18 +20,18 @@ public class ZkInfo
      * 等待重试的间隔时间的初始值.
      * 单位毫秒.
      */
-    private int baseSleepTimeMilliseconds;
+    private int baseSleepTimeMilliseconds = 1000;
     
     /**
      * 等待重试的间隔时间的最大值.
      * 单位毫秒.
      */
-    private int maxSleepTimeMilliseconds;
+    private int maxSleepTimeMilliseconds = 3000;
     
     /**
      * 最大重试次数.
      */
-    private int maxRetries;
+    private int maxRetries = 3;
     
     /**
      * 会话超时时间.
@@ -54,20 +59,14 @@ public class ZkInfo
      */
     private String digest;
     
-    /**
-     * 内嵌Zookeeper的端口号.
-     * -1表示不开启内嵌Zookeeper.
-     */
-    private int nestedPort = -1;
-    
-    /**
-     * 内嵌Zookeeper的数据存储路径.
-     * 为空表示不开启内嵌Zookeeper.
-     */
-    private String nestedDataDir;
+   
 
     private String address;
     
+    public ZkInfo(final String address, final String namespace){
+    	this.address = address;
+        this.namespace = namespace;
+    }
     /**
      * 包含了必需属性的构造器.
      * 
@@ -85,14 +84,7 @@ public class ZkInfo
         this.maxRetries = maxRetries;
     }
     
-    /**
-     * 判断是否需要开启内嵌Zookeeper.
-     * 
-     * @return 是否需要开启内嵌Zookeeper
-     */
-    public boolean isUseNestedZookeeper() {
-        return -1 != nestedPort && !Strings.isNullOrEmpty(nestedDataDir);
-    }
+    
 
     
     public String getNamespace() {
@@ -162,26 +154,6 @@ public class ZkInfo
     
     public void setDigest(String digest) {
         this.digest = digest;
-    }
-
-    
-    public int getNestedPort() {
-        return nestedPort;
-    }
-
-    
-    public void setNestedPort(int nestedPort) {
-        this.nestedPort = nestedPort;
-    }
-
-    
-    public String getNestedDataDir() {
-        return nestedDataDir;
-    }
-
-    
-    public void setNestedDataDir(String nestedDataDir) {
-        this.nestedDataDir = nestedDataDir;
     }
 
     

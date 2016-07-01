@@ -34,6 +34,10 @@ public final class ConfigNode
     public static final String DESCRIPTION = ROOT + "/description";
     
     public static final String MONITOR_PORT = ROOT + "/monitorPort";
+
+    public static final String SCRIPT_COMMAND_LINE = ROOT + "/scriptCommandLine";
+
+	public static final String STREAMING_PROCESS = ROOT + "/streamingProcess";
     
     private final JobNodePath jobNodePath;
     

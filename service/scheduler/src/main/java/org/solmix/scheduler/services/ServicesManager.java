@@ -52,7 +52,7 @@ public class ServicesManager
     }
     public void registryJobStart() {
         election.leaderElection();
-        config.persistConfig();
+        config.persistJobInfo();
         jobServer.persistServerOnline();
         jobServer.clearJobStoppedStatus();
         statistics.startProcessCountJob();
@@ -102,6 +102,7 @@ public class ServicesManager
         sharding.shardingIfNecessary();
         return execution.getJobExecutionShardingContext();
     }
+    
     public boolean misfireIfNecessary(final List<Integer> object) {
         return execution.misfireIfNecessary(object);
     }
@@ -227,5 +228,18 @@ public class ServicesManager
         for (JobListener each : jobListeners) {
             each.afterJobExecuted(shardingContext);
         }
+    }
+    
+    /**
+     * 获取脚本型作业执行命令行.
+     *
+     * <p>
+     * 仅脚本作业有效.
+     * </p>
+     *
+     * @return 脚本型作业执行命令行
+     */
+    public String getScriptCommandLine() {
+        return config.getScriptCommandLine();
     }
 }

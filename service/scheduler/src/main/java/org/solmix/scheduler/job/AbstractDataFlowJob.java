@@ -46,9 +46,9 @@ public abstract class AbstractDataFlowJob<T, C extends AbstractJobContext> exten
             }
             Type type = parameterizedType.getActualTypeArguments()[1];
             if (JobExecutionShardingContext.class == type) {
-                return JobType.CONCURRENT;
+                return JobType.FLOW;
             } else if (JobExecutionSimpleContext.class == type) {
-                return JobType.SEQUENCE;
+                return JobType.SIMPLE;
             } else {
                 throw new UnsupportedOperationException(String.format("Cannot support %s", type));
             }
@@ -67,13 +67,13 @@ public abstract class AbstractDataFlowJob<T, C extends AbstractJobContext> exten
 
     @Override
     protected void executeJob(JobExecutionShardingContext shardingContext) {
-        if (JobType.CONCURRENT == type) {
+        if (JobType.FLOW == type) {
             if (isStreamingProcess()) {
                 executeConcurrentStreamingJob(shardingContext);
             } else {
                 executeConcurrentOneOffJob(shardingContext);
             }
-        } else if (JobType.SEQUENCE == type) {
+        } else if (JobType.SIMPLE == type) {
             if (isStreamingProcess()) {
                 executeSequenceStreamingJob(shardingContext);
             } else {

@@ -24,7 +24,7 @@ public class DefaultConfigService implements ConfigService
         storage = new DefaultStorageService(registry, info);
     }
     @Override
-    public void persistConfig() {
+    public void persistJobInfo() {
         checkConflictJob();
         registerJobInfo();
     }
@@ -46,9 +46,6 @@ public class DefaultConfigService implements ConfigService
         storage.fillJobNodeIfNullOrOverwrite(ConfigNode.JOB_PARAMETER, storage.getJobInfo().getJobParameter());
         storage.fillJobNodeIfNullOrOverwrite(ConfigNode.CRON, storage.getJobInfo().getCron());
         storage.fillJobNodeIfNullOrOverwrite(ConfigNode.MONITOR_EXECUTION, storage.getJobInfo().isMonitorExecution());
-        storage.fillJobNodeIfNullOrOverwrite(ConfigNode.PROCESS_COUNT_INTERVAL_SECONDS, storage.getJobInfo().getProcessCountIntervalSeconds());
-        storage.fillJobNodeIfNullOrOverwrite(ConfigNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, storage.getJobInfo().getConcurrentDataProcessThreadCount());
-        storage.fillJobNodeIfNullOrOverwrite(ConfigNode.FETCH_DATA_COUNT, storage.getJobInfo().getFetchDataCount());
         storage.fillJobNodeIfNullOrOverwrite(ConfigNode.MAX_TIME_DIFF_SECONDS, storage.getJobInfo().getMaxTimeDiffSeconds());
         storage.fillJobNodeIfNullOrOverwrite(ConfigNode.FAILOVER, storage.getJobInfo().isFailover());
         storage.fillJobNodeIfNullOrOverwrite(ConfigNode.MISFIRE, storage.getJobInfo().isMisfire());
@@ -62,7 +59,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 作业分片总数
      */
-    public int getShardingTotalCount() {
+    @Override
+	public int getShardingTotalCount() {
         return Integer.parseInt(storage.getJobNodeDataDirectly(ConfigNode.SHARDING_TOTAL_COUNT));
     }
     
@@ -71,7 +69,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 分片序列号和个性化参数对照表
      */
-    public Map<Integer, String> getShardingItemParameters() {
+    @Override
+	public Map<Integer, String> getShardingItemParameters() {
         String value = storage.getJobNodeDataDirectly(ConfigNode.SHARDING_ITEM_PARAMETERS);
         if (StringUtils.isEmpty(value)) {
             return Collections.emptyMap();
@@ -97,7 +96,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 作业自定义参数
      */
-    public String getJobParameter() {
+    @Override
+	public String getJobParameter() {
         return storage.getJobNodeDataDirectly(ConfigNode.JOB_PARAMETER);
     }
     
@@ -106,7 +106,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 作业启动时间的cron表达式
      */
-    public String getCron() {
+    @Override
+	public String getCron() {
         return storage.getJobNodeDataDirectly(ConfigNode.CRON);
     }
     
@@ -140,7 +141,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 同时处理数据的并发线程数
      */
-    public int getConcurrentDataProcessThreadCount() {
+    @Override
+	public int getConcurrentDataProcessThreadCount() {
         return Integer.parseInt(storage.getJobNodeData(ConfigNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT));
     }
     
@@ -149,14 +151,16 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 每次抓取的数据量
      */
-    public int getFetchDataCount() {
+    @Override
+	public int getFetchDataCount() {
         return Integer.parseInt(storage.getJobNodeData(ConfigNode.FETCH_DATA_COUNT));
     }
     
     /**
      * 检查本机与注册中心的时间误差秒数是否在允许范围.
      */
-    public void checkMaxTimeDiffSecondsTolerable() {
+    @Override
+	public void checkMaxTimeDiffSecondsTolerable() {
         int maxTimeDiffSeconds =  Integer.parseInt(storage.getJobNodeData(ConfigNode.MAX_TIME_DIFF_SECONDS));
         if (-1  == maxTimeDiffSeconds) {
             return;
@@ -172,7 +176,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 是否开启失效转移
      */
-    public boolean isFailover() {
+    @Override
+	public boolean isFailover() {
         return isMonitorExecution() && Boolean.valueOf(storage.getJobNodeData(ConfigNode.FAILOVER));
     }
     
@@ -181,7 +186,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 是否开启misfire
      */
-    public boolean isMisfire() {
+    @Override
+	public boolean isMisfire() {
         return Boolean.valueOf(storage.getJobNodeData(ConfigNode.MISFIRE));
     }
     
@@ -190,7 +196,8 @@ public class DefaultConfigService implements ConfigService
      * 
      * @return 作业分片策略实现类全路径
      */
-    public String getJobShardingStrategyClass() {
+    @Override
+	public String getJobShardingStrategyClass() {
         return storage.getJobNodeData(ConfigNode.JOB_SHARDING_STRATEGY_CLASS);
     }
     
@@ -211,5 +218,9 @@ public class DefaultConfigService implements ConfigService
     public String getJobName() {
         return storage.getJobInfo().getJobName();
     }
+	@Override
+	public String getScriptCommandLine() {
+		return storage.getJobNodeData(ConfigNode.SCRIPT_COMMAND_LINE);
+	}
 
 }
