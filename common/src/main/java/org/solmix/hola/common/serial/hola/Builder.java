@@ -1074,6 +1074,8 @@ public abstract class Builder<T> implements DataFlags
 		addDesc(java.util.LinkedList.class);
 		addDesc(java.util.LinkedHashMap.class);
 		addDesc(java.util.LinkedHashSet.class);
+		addDesc(java.math.BigDecimal.class);
+		addDesc(java.math.BigInteger.class);
 
 		register(byte[].class, new Builder<byte[]>(){
 			@Override

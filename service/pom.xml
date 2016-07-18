@@ -10,6 +10,6 @@
   <version>0.6.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  	<module>hola-scheduler</module>
+  <module>scheduler</module>
   </modules>
 </project>
