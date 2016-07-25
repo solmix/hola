@@ -6,6 +6,7 @@ import java.util.Dictionary;
 import java.util.List;
 
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
+import org.apache.cxf.interceptor.InterceptorProvider;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.solmix.commons.util.Assert;
 import org.solmix.hola.common.HOLA;
@@ -55,7 +56,8 @@ public class JaxwsRemoteServiceFactory extends AbstractRemoteServiceFactory impl
                 }
             }
         }
-        return new JaxwsRemoteService<S>(bus,reference,filters);
+        InterceptorProvider provider=  container.getExtension(InterceptorProvider.class);
+        return new JaxwsRemoteService<S>(bus,reference,filters,provider);
     }
 
     @SuppressWarnings("unchecked")
@@ -64,6 +66,17 @@ public class JaxwsRemoteServiceFactory extends AbstractRemoteServiceFactory impl
         String address = PropertiesUtils.getString(properties, HOLA.PATH_KEY);
         Assert.assertNotNull(address,"cxf webservice publish address is null ,check <hola:service protocol=\"jaxws\" path/>");
         EndpointImpl jaxws = new EndpointImpl(bus,service);
+        InterceptorProvider provider=  container.getExtension(InterceptorProvider.class);
+        if(provider!=null){
+        	if(provider.getInInterceptors()!=null)
+        		jaxws.getInInterceptors().addAll(provider.getInInterceptors());
+            	if(provider.getOutInterceptors()!=null)
+            		jaxws.getOutInterceptors().addAll(provider.getOutInterceptors());
+            	if(provider.getInFaultInterceptors()!=null)
+            		jaxws.getInFaultInterceptors().addAll(provider.getInFaultInterceptors());
+            	if(provider.getOutFaultInterceptors()!=null)
+            		jaxws.getOutFaultInterceptors().addAll(provider.getOutFaultInterceptors());
+        }
         jaxws.setAddress(address);
         jaxws.publish();
         JaxwsRegistration<S> reg  = new JaxwsRegistration<S>(this, registry, clazz, service, properties);

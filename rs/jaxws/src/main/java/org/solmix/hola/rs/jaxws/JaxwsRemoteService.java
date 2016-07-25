@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.interceptor.InterceptorProvider;
 import org.apache.cxf.jaxws.JaxWsClientFactoryBean;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.solmix.commons.util.DataUtils;
@@ -37,7 +38,7 @@ public class JaxwsRemoteService<T> extends AbstractRemoteService<T> implements R
 
     private final List<InvokeFilter> filters;
 
-    public JaxwsRemoteService(Bus bus, RemoteReferenceImpl<T> refer, List<InvokeFilter> filters)
+    public JaxwsRemoteService(Bus bus, RemoteReferenceImpl<T> refer, List<InvokeFilter> filters,InterceptorProvider provider)
     {
         this.refer = refer;
         this.filters = filters;
@@ -51,7 +52,16 @@ public class JaxwsRemoteService<T> extends AbstractRemoteService<T> implements R
             cxfAddress.put(HOLA.PORT_KEY, refer.getProperty(HOLA.PORT_KEY));
         cxfAddress.put(HOLA.PATH_KEY, refer.getProperty(HOLA.PATH_KEY));
         clientFactory.setAddress(PropertiesUtils.toAddress(cxfAddress));
-
+        if(provider!=null){
+        	if(provider.getInInterceptors()!=null)
+        	clientFactory.getInInterceptors().addAll(provider.getInInterceptors());
+        	if(provider.getOutInterceptors()!=null)
+        	clientFactory.getOutInterceptors().addAll(provider.getOutInterceptors());
+        	if(provider.getInFaultInterceptors()!=null)
+        	clientFactory.getInFaultInterceptors().addAll(provider.getInFaultInterceptors());
+        	if(provider.getOutFaultInterceptors()!=null)
+        	clientFactory.getOutFaultInterceptors().addAll(provider.getOutFaultInterceptors());
+        }
         this.address = PropertiesUtils.toAddress(refer.getServiceProperties());
     }
 
