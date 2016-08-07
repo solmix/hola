@@ -166,7 +166,7 @@
     			<xsd:attribute name="version" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="group" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="check" type="xsd:boolean"></xsd:attribute>
-    			<xsd:attribute name="generic" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="generic" type="xsd:boolean"></xsd:attribute>
     			<xsd:attribute name="reconnect" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="lazy" type="xsd:boolean"></xsd:attribute>
     			<xsd:attribute name="connectTimeout" type="xsd:int"></xsd:attribute>
@@ -187,7 +187,7 @@
     			<xsd:attribute name="publish" type="xsd:boolean"></xsd:attribute>
     			<xsd:attribute name="delay" type="xsd:string"></xsd:attribute>
     			<xsd:attribute name="accepts" type="xsd:string"></xsd:attribute>
-    			<xsd:attribute name="generic" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="generic" type="xsd:boolean"></xsd:attribute>
     		</xsd:extension>
     	</xsd:complexContent>
     </xsd:complexType>

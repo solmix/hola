@@ -19,14 +19,6 @@
 
 package org.solmix.hola.builder.spring;
 
-import org.solmix.hola.builder.ApplicationDefinition;
-import org.solmix.hola.builder.ConsumerDefinition;
-import org.solmix.hola.builder.DiscoveryDefinition;
-import org.solmix.hola.builder.ModuleDefinition;
-import org.solmix.hola.builder.MonitorDefinition;
-import org.solmix.hola.builder.ProviderDefinition;
-import org.solmix.hola.builder.ReferenceDefinition;
-import org.solmix.hola.builder.ServiceDefinition;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
@@ -39,14 +31,14 @@ public class NamespaceHandler extends NamespaceHandlerSupport {
 
     @Override
     public void init() {
-        registerBeanDefinitionParser("application", new SpringDefinitionParser(ApplicationDefinition.class,true));
-        registerBeanDefinitionParser("module", new SpringDefinitionParser(ModuleDefinition.class,true));
-        registerBeanDefinitionParser("discovery", new SpringDefinitionParser(DiscoveryDefinition.class,true));
-        registerBeanDefinitionParser("monitor", new SpringDefinitionParser(MonitorDefinition.class,true));
-        registerBeanDefinitionParser("consumer", new SpringDefinitionParser(ConsumerDefinition.class,true));
-        registerBeanDefinitionParser("provider", new SpringDefinitionParser(ProviderDefinition.class,true));
-        registerBeanDefinitionParser("reference", new SpringDefinitionParser(ReferenceDefinition.class,true));
-        registerBeanDefinitionParser("service", new SpringDefinitionParser(ServiceDefinition.class,true));
+        registerBeanDefinitionParser("application", new ApplicationDefinitionParser());
+        registerBeanDefinitionParser("module", new ModuleDefinitionParser());
+        registerBeanDefinitionParser("discovery", new DiscoveryDefinitionParser());
+        registerBeanDefinitionParser("monitor", new MonitorDefinitionParser());
+        registerBeanDefinitionParser("consumer", new ConsumerDefinitionParser());
+        registerBeanDefinitionParser("provider", new ProviderDefinitionParser());
+        registerBeanDefinitionParser("reference", new ReferenceDefinitionParser());
+        registerBeanDefinitionParser("service", new ServiceDefinitionParser());
     }
 
 }

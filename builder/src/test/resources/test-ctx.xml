@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:hola="http://www.solmix.org/schema/hola/v1.0.0"
+	xmlns:c="http://www.solmix.org/schema/rt/v1.0.0"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		   http://www.solmix.org/schema/hola/v1.0.0
+		   http://www.solmix.org/schema/hola/hola-1.0.0.xsd
+		   http://www.solmix.org/schema/rt/v1.0.0
+		   http://www.solmix.org/schema/rt/rt-1.0.0.xsd">
+		   <c:container id="solmix"/>
+  	<hola:application id="app" name="appName" version="0.0.1" owner="solmix" organization="solmix.org" architecture="ppc" environment="test" default="true"/>
+  	<hola:module application="app" id="module" name="module1" version="0.0.1" owner="solmix" organization="solmix.org" ></hola:module>
+  	<hola:discovery id="discovery" name="discovery1" address="localhost:2181" username="user" password="psd" protocol="zk" port="2181" cluster="failback" group="group1" version="0.22.1" timeout="2322" check="true" dynamic="true" publish="true" subscribe="false" file="aaa.dis" default="true">
+ 		<hola:properties>
+			<entry key="dis-key" value="dis-value" />
+		</hola:properties>
+  	</hola:discovery>
+  	<hola:monitor id="monitor" name="monitor1" address="localhost:2181" username="user" password="psd" protocol="zk" group="group1" version="0.22.1"  default="true">
+ 		<hola:properties>
+			<entry key="dis-key" value="dis-value" />
+		</hola:properties>
+  	</hola:monitor>
+  	
+  	<hola:consumer id="consumer" timeout="1111" retries="5" actives="10" loadbalance="leastactive" async="false" asyncwait="true" protocol="hola" proxy="jdk" cluster="failback" scope="local" application="app" module="module" discovery="discovery" monitor="monitor" version="0.6.1" group="group2" check="false" generic="true" reconnect="12" lazy="true" connectTimeout="1222" pipelines="12">
+ 		<hola:properties>
+			<entry key="dis-key" value="dis-value" />
+		</hola:properties>
+  	</hola:consumer>
+	<hola:reference container="solmix" id="hello" timeout="1111" retries="5" actives="10" loadbalance="leastactive" async="false" asyncwait="true" protocol="hola" proxy="jdk" cluster="failback" scope="local" application="app" module="module" discovery="discovery" monitor="monitor" version="0.6.1" group="group2" check="false" generic="true" reconnect="12" lazy="true" connectTimeout="1222" pipelines="12" interface="org.solmix.hola.builder.service.HelloService" url="localhost:5715" consumer="consumer">
+	<hola:properties>
+			<entry key="dis-key" value="dis-value" />
+		</hola:properties>
+	</hola:reference>
+	<hola:provider id="provider" timeout="1111" retries="5" actives="10" loadbalance="leastactive" async="false" asyncwait="true" protocol="hola" proxy="jdk" cluster="failback" scope="local" application="app" module="module" discovery="discovery" monitor="monitor" version="0.6.1" group="group2" weight="12" document="xxxxx" executes="12" dynamic="true" publish="true" delay="12" accepts="12" generic="true" contextpath="/sss/sc">
+ 		<hola:properties>
+			<entry key="dis-key" value="dis-value" />
+		</hola:properties>
+  	</hola:provider>
+</beans>

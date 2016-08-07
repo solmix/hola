@@ -83,8 +83,8 @@ public class AbstractReferenceDefinition extends AbstractInterfaceDefinition {
     }
 
     /**   */
-    public Boolean isGeneric() {
-        return generic;
+    public boolean isGeneric() {
+        return generic!=null&&generic.booleanValue();
     }
 
     /**   */

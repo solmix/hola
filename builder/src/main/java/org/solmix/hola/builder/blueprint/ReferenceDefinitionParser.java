@@ -86,7 +86,7 @@ public class ReferenceDefinitionParser extends AbstractBPBeanDefinitionParser
     @Override
     protected void mapToProperty(MutableBeanMetadata bean, String propertyName, String val, ParserContext context) {
         if (!StringUtils.isEmpty(val)) {
-            if ("provider".equals(propertyName)||"module".equals(propertyName)||"monitor".equals(propertyName)||"application".equals(propertyName)) {
+            if ("consumer".equals(propertyName)||"module".equals(propertyName)||"monitor".equals(propertyName)||"application".equals(propertyName)) {
                 bean.addProperty(propertyName, createRef(context, val));
             } else if ("discovery".equals(propertyName)) {
                 bean.addProperty("discoveries", mapMultiProperty(bean,propertyName,val,context));
@@ -104,10 +104,6 @@ public class ReferenceDefinitionParser extends AbstractBPBeanDefinitionParser
         } else  {
           super.parseElement(ctx, bean, el, name);
         }
-    }
-    
-   static class ReferenceFactory extends ReferenceDefinition{
-        
     }
 
 }
