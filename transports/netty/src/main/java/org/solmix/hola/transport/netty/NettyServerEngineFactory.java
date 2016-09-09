@@ -19,6 +19,8 @@
 
 package org.solmix.hola.transport.netty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
@@ -45,6 +47,7 @@ public class NettyServerEngineFactory implements ContainerListener {
 
     private static ConcurrentHashMap<ServerKeyID, NettyServerEngine> engines = new ConcurrentHashMap<ServerKeyID, NettyServerEngine>();
 
+    private List<ServerKeyID> localCache=new ArrayList<ServerKeyID>(4);
     public NettyServerEngineFactory() {
     }
     
@@ -66,11 +69,19 @@ public class NettyServerEngineFactory implements ContainerListener {
     public void handleEvent(ContainerEvent event) {
         switch (event.getType()) {
         case ContainerEvent.POSTCLOSE:
+        	for(ServerKeyID key:localCache){
+        		NettyServerEngine engine=	engines.get(key);
+        		if(engine!=null){
+        			engines.remove(key);
+        			engine.shutdown();
+        		}
+        	}
+        	/*
             NettyServerEngine[] ens = engines.values().toArray( new NettyServerEngine[engines.values().size()]);
             for (NettyServerEngine en : ens) {
                 en.shutdown();
             }
-            engines.clear();
+            engines.clear();*/
             break;
         default:
             break;
@@ -91,6 +102,11 @@ public class NettyServerEngineFactory implements ContainerListener {
             engine.setContainer(container);
             engine.finalizeConfig();
             NettyServerEngine e = engines.putIfAbsent(serverKey, engine);
+            synchronized (localCache) {
+            	if(e==engine){
+            		localCache.add(serverKey);
+            	}
+			}
             if(e!=null){
                 engine =e;
             }
