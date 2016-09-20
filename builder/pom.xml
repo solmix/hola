@@ -85,7 +85,7 @@
 						<Export-Package>${solmix.osgi.export.pkg}</Export-Package>
 						<Import-Package>${solmix.osgi.import.pkg}</Import-Package>
 						<Private-Package>org.solmix.hola.builder.internal</Private-Package>
-						<!-- <DynamicImport-Package>${solmix.osgi.dynamic.import}</DynamicImport-Package> -->
+						<DynamicImport-Package>${solmix.osgi.dynamic.import}</DynamicImport-Package>
 						<Bundle-Activator>org.solmix.hola.builder.internal.Activator</Bundle-Activator>
 						<_failok>false</_failok>
 						<_removeheaders>Ignore-Package,Include-Resource,Private-Package</_removeheaders>

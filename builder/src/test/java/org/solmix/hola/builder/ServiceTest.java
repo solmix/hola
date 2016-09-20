@@ -27,7 +27,7 @@ public class ServiceTest extends Assert
     static AtomicInteger send=new  AtomicInteger();
     @BeforeClass
     public static void setup(){
-        container= ContainerFactory.getDefaultContainer(true);
+        container= ContainerFactory.newInstance().createContainer();
     }
 
     @AfterClass
@@ -41,14 +41,14 @@ public class ServiceTest extends Assert
     public void testRegister(){
         int port = NetUtils.getRandomPort();
         HelloService hs = new HelloServiceImpl();
-        ServiceDefinition<HelloService> definition = new ServiceDefinition<HelloService>(hs);
+        ServiceDefinition<HelloService> definition = new ServiceDefinition<HelloService>(container,hs);
         definition.setInterface(HelloService.class.getName());
         definition.setPath("hello");
         ProviderDefinition provider=new ProviderDefinition();
         provider.setPort(port);
         definition.setProvider(provider);
         
-        ReferenceDefinition<HelloService> refer = new ReferenceDefinition<HelloService>();
+        ReferenceDefinition<HelloService> refer = new ReferenceDefinition<HelloService>(container);
         refer.setInterface(HelloService.class.getName());
         refer.setUrl("hola://localhost:"+port+"/hello");
         
@@ -67,7 +67,7 @@ public class ServiceTest extends Assert
     public void testRegister2() throws InterruptedException{
         int port = NetUtils.getRandomPort();
         HelloService hs = new HelloServiceImpl();
-        ServiceDefinition<HelloService> definition = new ServiceDefinition<HelloService>(hs);
+        ServiceDefinition<HelloService> definition = new ServiceDefinition<HelloService>(container,hs);
         definition.setInterface(HelloService.class.getName());
         ProviderDefinition provider=new ProviderDefinition();
         definition.setPort(port);
@@ -84,7 +84,7 @@ public class ServiceTest extends Assert
 //        provider.setTimeout(5000);
         definition.setProvider(provider);
         
-        ReferenceDefinition<HelloService> refer = new ReferenceDefinition<HelloService>();
+        ReferenceDefinition<HelloService> refer = new ReferenceDefinition<HelloService>(container);
         refer.setInterface(HelloService.class.getName());
         ConsumerDefinition consumer = new ConsumerDefinition();
         consumer.setHost("localhost");
