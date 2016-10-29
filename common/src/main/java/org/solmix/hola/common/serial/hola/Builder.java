@@ -123,7 +123,9 @@ public abstract class Builder<T> implements DataFlags
             return (Builder<T>)HolaArrayBuilder;
 
         Builder<T> b = (Builder<T>)BuilderMap.get(c);
-        if(null != b) return b;
+        if(null != b) {
+        	return b;
+        }
         
         boolean isSerializable = Serializable.class.isAssignableFrom(c);
         if(!isAllowNonSerializable && !isSerializable) {
@@ -132,12 +134,14 @@ public abstract class Builder<T> implements DataFlags
         }
         
         b = (Builder<T>)nonSerializableBuilderMap.get(c);
-        if(null != b) return b;
+        if(null != b) {
+        	return b;
+        }
         
         b = newBuilder(c);
-        if(isSerializable)
-            BuilderMap.put(c, b);
-        else
+        if(isSerializable){
+        	BuilderMap.put(c, b);
+        }else
             nonSerializableBuilderMap.put(c, b);
         
         return b;
@@ -261,7 +265,7 @@ public abstract class Builder<T> implements DataFlags
 		cg.addMethod(cpf.toString());
 		try
 		{
-			Class<?> wc = cg.toClass();
+			Class<?> wc = cg.toClass(Builder.class);
 			// set static field.
 			if( builder != null )
 				wc.getField("builder").set(null, builder);
@@ -718,7 +722,7 @@ public abstract class Builder<T> implements DataFlags
 		cg.addMethod(cni.toString());
 		try
 		{
-			Class<?> wc = cg.toClass();
+			Class<?> wc = cg.toClass(Builder.class);
 			// set static field
 			wc.getField("fields").set(null, fs);
 			wc.getField("builders").set(null, builders.toArray(new Builder<?>[0]));
@@ -763,7 +767,7 @@ public abstract class Builder<T> implements DataFlags
 		cg.addMethod(cpf.toString());
 		try
 		{
-			Class<?> wc = cg.toClass();
+			Class<?> wc = cg.toClass(Builder.class);
 			return (Builder<?>)wc.newInstance();
 		}
 		catch(RuntimeException e)
