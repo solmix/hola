@@ -1,6 +1,13 @@
 
 package org.solmix.hola.transport.netty;
 
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.util.concurrent.EventExecutor;
+
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -9,14 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.support.DefaultMessage;
 
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerAdapter;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
-import io.netty.util.concurrent.EventExecutor;
-
-public class HeartbeatHandler extends ChannelHandlerAdapter
+public class HeartbeatHandler extends ChannelDuplexHandler
 {
     private static final Logger LOG  = LoggerFactory.getLogger(HeartbeatHandler.class);
     
@@ -62,6 +62,8 @@ public class HeartbeatHandler extends ChannelHandlerAdapter
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         destroy();
     }
+    
+    
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         if (ctx.channel().isActive()) {
@@ -166,6 +168,7 @@ public class HeartbeatHandler extends ChannelHandlerAdapter
             }
         }
     }
-   
+
+	
 
 }

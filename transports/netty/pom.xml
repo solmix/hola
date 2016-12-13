@@ -14,11 +14,27 @@
 			<artifactId>hola-transports-api</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>io.netty</groupId>
+		    <artifactId>netty-buffer</artifactId>
+		    <version>${netty.version}</version>
+		</dependency>
+		<dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-resolver</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
+		<dependency>
+		    <groupId>io.netty</groupId>
+		    <artifactId>netty-transport</artifactId>
+		    <version>4.1.6.Final</version>
+		</dependency> 
+		  <dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-codec</artifactId>
 			<version>${netty.version}</version>
-		</dependency>
-		<dependency>
+		</dependency> 
+		 
+		 <dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-codec-http</artifactId>
 			<version>${netty.version}</version>
@@ -27,7 +43,12 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-handler</artifactId>
 			<version>${netty.version}</version>
-		</dependency>
+		</dependency>  
+		<!-- <dependency>
+		    <groupId>io.netty</groupId>
+		    <artifactId>netty-example</artifactId>
+		    <version>4.1.6.Final</version>
+		</dependency> -->
 		<dependency>
 			<groupId>org.solmix.test</groupId>
 			<artifactId>solmix-test</artifactId>

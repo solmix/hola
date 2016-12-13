@@ -19,6 +19,13 @@
 
 package org.solmix.hola.transport.netty;
 
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +34,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.TransporterCreateException;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
-
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.concurrent.DefaultExecutorServiceFactory;
 
 /**
  * 
@@ -128,8 +128,8 @@ public class NettyServerEngine implements NettyEngine {
         if(worker<=boss){
             boss=worker;
         }
-        bossGroup = new NioEventLoopGroup( boss,new DefaultExecutorServiceFactory("Netty-SP-"+port));
-        workerGroup = new NioEventLoopGroup(worker,new DefaultExecutorServiceFactory("Netty-SC-"+port));
+        bossGroup = new NioEventLoopGroup( boss,new NamedThreadFactory("Netty-SP-"+port));
+        workerGroup = new NioEventLoopGroup(worker,new NamedThreadFactory("Netty-SC-"+port));
         bootstrap.group(bossGroup, workerGroup)
             .channel(NioServerSocketChannel.class)
             .option(ChannelOption.SO_REUSEADDR,true)

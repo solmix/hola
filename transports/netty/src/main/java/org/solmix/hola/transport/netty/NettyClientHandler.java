@@ -19,6 +19,10 @@
 
 package org.solmix.hola.transport.netty;
 
+import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.exchange.Message;
@@ -26,18 +30,13 @@ import org.solmix.exchange.MessageUtils;
 import org.solmix.exchange.support.DefaultMessage;
 import org.solmix.hola.transport.ResponseCallback;
 
-import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerAdapter;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
-
 /**
  * 
  * @author solmix.f@gmail.com
  * @version $Id$ 2015年1月15日
  */
 @Sharable
-public class NettyClientHandler extends ChannelHandlerAdapter
+public class NettyClientHandler extends ChannelInboundHandlerAdapter
 {
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientHandler.class);
 
@@ -101,11 +100,11 @@ public class NettyClientHandler extends ChannelHandlerAdapter
         ctx.flush();
     }
 
-    @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        super.write(ctx, msg, promise);
-
-    }
+//    @Override
+//    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+//        super.write(ctx, msg, promise);
+//
+//    }
     
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {

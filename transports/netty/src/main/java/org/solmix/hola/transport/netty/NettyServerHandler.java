@@ -19,6 +19,12 @@
 
 package org.solmix.hola.transport.netty;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.group.ChannelGroup;
+
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -31,19 +37,13 @@ import org.solmix.exchange.interceptor.FaultType;
 import org.solmix.exchange.support.DefaultMessage;
 import org.solmix.hola.common.HolaRuntimeException;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.group.ChannelGroup;
-
 /**
  * 
  * @author solmix.f@gmail.com
  * @version $Id$ 2015年1月18日
  */
 
-public class NettyServerHandler extends ChannelHandlerAdapter
+public class NettyServerHandler extends ChannelInboundHandlerAdapter
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerHandler.class);

@@ -19,6 +19,9 @@
 
 package org.solmix.hola.transport.netty;
 
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -26,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.commons.util.ObjectUtils;
 import org.solmix.exchange.Pipeline;
 import org.solmix.exchange.PipelineFactory;
@@ -43,10 +47,6 @@ import org.solmix.runtime.ContainerEvent;
 import org.solmix.runtime.ContainerListener;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.bean.BeanConfigurer;
-
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.util.concurrent.DefaultExecutorServiceFactory;
 
 /**
  * 
@@ -128,7 +128,7 @@ public class NettyTransportFactory implements PipelineFactory,
     private NettyPipeline createPipeline(Container c, EndpointInfo info) {
         EventLoopGroup eventLoopGroup = c.getExtension(EventLoopGroup.class);
         if (eventLoopGroup == null) {
-            final EventLoopGroup group = new NioEventLoopGroup(2,new DefaultExecutorServiceFactory("Netty-Client"));
+            final EventLoopGroup group = new NioEventLoopGroup(2,new NamedThreadFactory("Netty-Client"));
             c.setExtension(group, EventLoopGroup.class);
             registerContainerListener(c, group);
         }
