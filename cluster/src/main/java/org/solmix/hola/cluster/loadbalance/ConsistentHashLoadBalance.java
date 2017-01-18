@@ -16,7 +16,7 @@ import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.runtime.Extension;
 
-@Extension(name = ConsistentHashLoadBalance.NAME)
+@Extension( ConsistentHashLoadBalance.NAME)
 public class ConsistentHashLoadBalance extends AbstractLoadBalance
 {
 

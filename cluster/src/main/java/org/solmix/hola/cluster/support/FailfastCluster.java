@@ -7,7 +7,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name=FailfastCluster.NAME)
+@Extension(FailfastCluster.NAME)
 public class FailfastCluster implements Cluster,ContainerAware
 {
 

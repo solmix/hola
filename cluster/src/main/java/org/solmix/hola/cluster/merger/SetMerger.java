@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.solmix.hola.cluster.Merger;
 import org.solmix.runtime.Extension;
-@Extension(name="map")
+@Extension("map")
 public class SetMerger implements Merger<Set<?>> {
 
     @Override

@@ -10,7 +10,7 @@ import org.solmix.hola.discovery.DiscoveryProvider;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
-@Extension(name = ZookeeperProvider.NAME)
+@Extension( ZookeeperProvider.NAME)
 public class ZookeeperProvider implements DiscoveryProvider
 {
     public static final String NAME = "zk";

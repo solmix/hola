@@ -2,7 +2,7 @@ package org.solmix.hola.cluster.merger;
 
 import org.solmix.hola.cluster.Merger;
 import org.solmix.runtime.Extension;
-@Extension(name="char")
+@Extension("char")
 public class CharArrayMerger implements Merger<char[]> {
 
     @Override

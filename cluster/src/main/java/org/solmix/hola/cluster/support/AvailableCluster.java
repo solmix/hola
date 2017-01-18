@@ -8,7 +8,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name = AvailableCluster.NAME)
+@Extension( AvailableCluster.NAME)
 public class AvailableCluster implements Cluster,ContainerAware
 {
 

@@ -7,7 +7,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name=MergeableCluster.NAME)
+@Extension(MergeableCluster.NAME)
 public class MergeableCluster implements Cluster,ContainerAware
 {
 

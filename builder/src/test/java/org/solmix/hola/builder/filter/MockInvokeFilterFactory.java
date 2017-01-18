@@ -9,7 +9,7 @@ import org.solmix.hola.rs.filter.InvokeFilterFactory;
 import org.solmix.runtime.Extension;
 
 
-@Extension(name="test-filter")
+@Extension("test-filter")
 public class MockInvokeFilterFactory implements InvokeFilterFactory
 {
 

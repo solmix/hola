@@ -10,7 +10,7 @@ import org.solmix.hola.common.serial.SerialConfiguration;
 import org.solmix.hola.common.serial.Serialization;
 import org.solmix.runtime.Extension;
 
-@Extension(name="hola")
+@Extension("hola")
 public class HolaSerialization implements Serialization
 {
 

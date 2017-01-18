@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.solmix.hola.cluster.Merger;
 import org.solmix.runtime.Extension;
-@Extension(name="map")
+@Extension("map")
 public class MapMerger implements Merger<Map<?, ?>> {
 
     @Override

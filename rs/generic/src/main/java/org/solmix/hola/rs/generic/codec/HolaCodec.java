@@ -19,6 +19,8 @@
 package org.solmix.hola.rs.generic.codec;
 
 import static org.solmix.exchange.MessageUtils.getString;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -40,16 +42,13 @@ import org.solmix.hola.rs.generic.HolaRemoteServiceFactory;
 import org.solmix.hola.transport.codec.RemoteCodec;
 import org.solmix.runtime.Extension;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-
 
 /**
  * 
  * @author solmix.f@gmail.com
  * @version $Id$  2015年9月18日
  */
-@Extension(name=HolaRemoteServiceFactory.PROVIDER_ID)
+@Extension(HolaRemoteServiceFactory.PROVIDER_ID)
 public class HolaCodec extends RemoteCodec
 {
     private static final Logger LOG = LoggerFactory.getLogger(HolaCodec.class);

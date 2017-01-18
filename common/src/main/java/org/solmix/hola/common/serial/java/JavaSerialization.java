@@ -37,7 +37,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$  2015年1月19日
  */
-@Extension(name="java")
+@Extension("java")
 public class JavaSerialization implements Serialization {
 
     private Container container;

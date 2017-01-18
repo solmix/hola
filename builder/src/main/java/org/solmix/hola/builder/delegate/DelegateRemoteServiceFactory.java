@@ -34,7 +34,7 @@ import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.extension.ExtensionLoader;
 
-@Extension(name=DelegateRemoteServiceFactory.NAME)
+@Extension(DelegateRemoteServiceFactory.NAME)
 public class DelegateRemoteServiceFactory implements RemoteServiceFactory,ContainerAware
 {
 

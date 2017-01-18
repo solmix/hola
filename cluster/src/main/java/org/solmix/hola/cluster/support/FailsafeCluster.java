@@ -18,7 +18,7 @@ import org.solmix.runtime.Extension;
  * 
  * @author solmix.f@gmail.com
  */
-@Extension(name=FailsafeCluster.NAME)
+@Extension(FailsafeCluster.NAME)
 public class FailsafeCluster implements Cluster,ContainerAware
 {
 

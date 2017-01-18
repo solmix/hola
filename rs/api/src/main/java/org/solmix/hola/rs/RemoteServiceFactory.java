@@ -28,7 +28,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$  2014年11月17日
  */
-@Extension(name="hola")
+@Extension("hola")
 public interface RemoteServiceFactory {
 
     RemoteRegistration<?> register(String clazze,Object service,  Dictionary<String, ?> properties) throws RemoteException;

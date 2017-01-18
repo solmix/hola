@@ -32,7 +32,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$ 2015年1月23日
  */
-@Extension(name="hola")
+@Extension("hola")
 public interface Codec {
 
     void encode(ByteBuf buffer, Message outMsg) throws IOException;

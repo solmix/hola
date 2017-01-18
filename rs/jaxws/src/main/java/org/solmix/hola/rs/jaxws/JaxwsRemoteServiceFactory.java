@@ -24,7 +24,7 @@ import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 import org.solmix.runtime.extension.ExtensionLoader;
 
-@Extension(name=JaxwsRemoteServiceFactory.PROVIDER_ID)
+@Extension(JaxwsRemoteServiceFactory.PROVIDER_ID)
 public class JaxwsRemoteServiceFactory extends AbstractRemoteServiceFactory implements RemoteServiceFactory, ContainerAware
 {
     public static final String PROVIDER_ID = "jaxws";

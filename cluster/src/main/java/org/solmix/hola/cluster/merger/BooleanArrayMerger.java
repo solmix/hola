@@ -3,7 +3,7 @@ package org.solmix.hola.cluster.merger;
 import org.solmix.hola.cluster.Merger;
 import org.solmix.runtime.Extension;
 
-@Extension(name="boolean")
+@Extension("boolean")
 public class BooleanArrayMerger implements Merger<boolean[]> {
 
     @Override

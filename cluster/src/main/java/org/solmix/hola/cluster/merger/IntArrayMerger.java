@@ -2,7 +2,7 @@ package org.solmix.hola.cluster.merger;
 
 import org.solmix.hola.cluster.Merger;
 import org.solmix.runtime.Extension;
-@Extension(name="int")
+@Extension("int")
 public class IntArrayMerger implements Merger<int[]>{
 
     @Override

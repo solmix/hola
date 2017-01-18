@@ -7,7 +7,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name=ForkingCluster.NAME)
+@Extension(ForkingCluster.NAME)
 public class ForkingCluster implements Cluster,ContainerAware
 {
 

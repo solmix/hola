@@ -7,7 +7,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name=BroadcastCluster.NAME)
+@Extension(BroadcastCluster.NAME)
 public class BroadcastCluster implements Cluster,ContainerAware
 {
 

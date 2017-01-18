@@ -42,7 +42,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version $Id$  2015年9月18日
  */
-@Extension(name=ProtocolFactoryImpl.PROTOCOL_ID)
+@Extension(ProtocolFactoryImpl.PROTOCOL_ID)
 public class ProtocolFactoryImpl extends ProtocolFactorySupport implements ConfigSupportedReference
 {
     public static final String PROTOCOL_ID =HolaRemoteServiceFactory.PROVIDER_ID;

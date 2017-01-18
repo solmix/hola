@@ -5,7 +5,7 @@ import org.solmix.hola.cluster.Router;
 import org.solmix.hola.cluster.RouterFactory;
 import org.solmix.runtime.Extension;
 
-@Extension(name = ExpressionRouterFactory.NAME)
+@Extension( ExpressionRouterFactory.NAME)
 public class ExpressionRouterFactory implements RouterFactory
 {
 

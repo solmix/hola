@@ -7,7 +7,7 @@ import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerAware;
 import org.solmix.runtime.Extension;
 
-@Extension(name=FailbackCluster.NAME)
+@Extension(FailbackCluster.NAME)
 public class FailbackCluster implements Cluster,ContainerAware
 {
 

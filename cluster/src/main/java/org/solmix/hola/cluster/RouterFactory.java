@@ -2,7 +2,7 @@ package org.solmix.hola.cluster;
 
 import org.solmix.runtime.Extension;
 
-@Extension(name="expression")
+@Extension("expression")
 public interface RouterFactory
 {
 

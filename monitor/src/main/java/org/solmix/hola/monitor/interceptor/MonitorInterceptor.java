@@ -19,7 +19,7 @@ import org.solmix.hola.monitor.MonitorFactory;
 import org.solmix.hola.monitor.MonitorState;
 import org.solmix.runtime.Extension;
 
-@Extension(name="monitor")
+@Extension("monitor")
 public class MonitorInterceptor extends PhaseInterceptorSupport<Message>
 {
 

@@ -11,7 +11,7 @@ import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.runtime.Extension;
 
-@Extension(name = RoundRobinLoadBalance.NAME)
+@Extension( RoundRobinLoadBalance.NAME)
 public class RoundRobinLoadBalance extends AbstractLoadBalance
 {
     public static final String NAME = "roundrobin"; 

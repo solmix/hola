@@ -10,7 +10,7 @@ import org.solmix.hola.discovery.DiscoveryProvider;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.Extension;
 
-@Extension(name = RedisProvider.NAME)
+@Extension( RedisProvider.NAME)
 public class RedisProvider implements DiscoveryProvider
 {
 

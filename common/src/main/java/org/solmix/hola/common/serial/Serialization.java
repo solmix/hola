@@ -30,7 +30,7 @@ import org.solmix.runtime.Extension;
  * @author solmix.f@gmail.com
  * @version 0.0.1 2014年8月11日
  */
-@Extension(name = "java")
+@Extension( "java")
 public interface Serialization {
     
     String SERIALIZATION_ID = Serialization.class.getName() + ".SERIALIZATION_ID";

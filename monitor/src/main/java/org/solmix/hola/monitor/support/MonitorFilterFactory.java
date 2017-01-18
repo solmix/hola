@@ -6,7 +6,7 @@ import org.solmix.hola.rs.filter.InvokeFilter;
 import org.solmix.hola.rs.filter.InvokeFilterFactory;
 import org.solmix.runtime.Extension;
 
-@Extension(name = "monitor")
+@Extension( "monitor")
 public class MonitorFilterFactory implements InvokeFilterFactory
 {
 

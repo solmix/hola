@@ -53,7 +53,7 @@ import org.solmix.runtime.bean.BeanConfigurer;
  * @author solmix.f@gmail.com
  * @version $Id$ 2015年1月15日
  */
-@Extension(name = NettyTransportFactory.TRANSPORT_TYPE)
+@Extension( NettyTransportFactory.TRANSPORT_TYPE)
 public class NettyTransportFactory implements PipelineFactory,
     TransporterFactory, TypeDetectSupport,ConfigSupportedReference {
 

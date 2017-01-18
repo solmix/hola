@@ -8,7 +8,7 @@ import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.runtime.Extension;
 
-@Extension(name = RandomLoadBalance.NAME)
+@Extension( RandomLoadBalance.NAME)
 public class RandomLoadBalance extends AbstractLoadBalance
 {
 
