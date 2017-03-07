@@ -15,6 +15,11 @@
 	    <groupId>org.javassist</groupId>
 	    <artifactId>javassist</artifactId>
 	</dependency>
+  	<dependency>
+  		<groupId>org.solmix.test</groupId>
+  		<artifactId>solmix-test</artifactId>
+  		<scope>test</scope>
+  	</dependency>
   </dependencies>
   <name>Hola :: Commons</name>
   <packaging>bundle</packaging>

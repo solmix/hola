@@ -19,8 +19,12 @@
 
 package org.solmix.hola.transport.netty;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.Dictionary;
+
+import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -39,10 +43,6 @@ import org.solmix.hola.common.serial.SerializationManager;
 import org.solmix.hola.transport.RemoteAddress;
 import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.codec.RemoteCodec;
-import org.solmix.test.ExContainerSupportTest;
-
-import io.netty.buffer.ByteBuf;
-import junit.framework.Assert;
 
 /**
  * 
