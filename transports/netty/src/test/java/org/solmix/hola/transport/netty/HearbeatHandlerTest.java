@@ -50,7 +50,7 @@ import org.solmix.hola.transport.codec.RemoteCodec;
  * @version $Id$ 2016年4月29日
  */
 
-public class HearbeatHandlerTest extends ExContainerSupportTest
+public class HearbeatHandlerTest extends AbstractExContainerSupport
 {
 
 

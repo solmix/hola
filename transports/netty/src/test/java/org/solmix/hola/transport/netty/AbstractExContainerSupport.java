@@ -33,7 +33,7 @@ import org.solmix.runtime.ContainerFactory;
  * @version $Id$ 2016年5月4日
  */
 
-public class ExContainerSupportTest extends Assert
+public class AbstractExContainerSupport extends Assert
 {
 
     protected final Logger LOG = LoggerFactory.getLogger(this.getClass());

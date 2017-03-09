@@ -50,7 +50,7 @@ import org.solmix.hola.transport.codec.RemoteCodec;
  * @version $Id$  2016年5月3日
  */
 
-public class SslHandlerTest extends ExContainerSupportTest
+public class SslHandlerTest extends AbstractExContainerSupport
 {
 
 
