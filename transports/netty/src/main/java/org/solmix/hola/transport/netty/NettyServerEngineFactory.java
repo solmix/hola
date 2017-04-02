@@ -103,7 +103,7 @@ public class NettyServerEngineFactory implements ContainerListener {
             engine.finalizeConfig();
             NettyServerEngine e = engines.putIfAbsent(serverKey, engine);
             synchronized (localCache) {
-            	if(e==engine){
+            	if(e!=engine){
             		localCache.add(serverKey);
             	}
 			}

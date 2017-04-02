@@ -182,10 +182,10 @@ public class NettyServerEngine implements NettyEngine {
             channel.close();
         }
         if (bossGroup != null) {
-            bossGroup.shutdownGracefully();
+                bossGroup.shutdownGracefully().awaitUninterruptibly(5000);
         }
         if (workerGroup != null) {
-            workerGroup.shutdownGracefully();
+                workerGroup.shutdownGracefully().awaitUninterruptibly(5000);
         }
     }
 
