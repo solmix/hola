@@ -120,7 +120,8 @@ public class DecodeableMessage implements Decodeable, Message
         } catch (ClassNotFoundException cnf) {
             throw new IOException(StringUtils.toString("Read Response data failed.", cnf));
         } catch (Exception e) {
-            msg.setContent(Exception.class, e);
+        	throw new IOException(StringUtils.toString("Read Response data failed.", e));
+//            msg.setContent(Exception.class, e);
         }
     }
 
@@ -152,7 +153,8 @@ public class DecodeableMessage implements Decodeable, Message
         } catch (ClassNotFoundException cnf) {
             throw new IOException(StringUtils.toString("Read Request data failed.", cnf));
         } catch (Exception e) {
-            msg.setContent(Exception.class, e);
+//            msg.setContent(Exception.class, e);
+        	throw new IOException(StringUtils.toString("Read Request data failed.", e));
         }
 
     }
