@@ -3,12 +3,12 @@ package org.solmix.hola.common.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.apache.commons.io.IOUtils;
 import org.solmix.commons.util.Base64Exception;
 import org.solmix.commons.util.Base64Utils;
+import org.solmix.commons.util.ClassLoaderUtils;
+import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.hola.common.serial.hola.HolaObjectInput;
 import org.solmix.hola.common.serial.hola.HolaObjectOutput;
 
@@ -28,11 +28,15 @@ public final class HolaCodecUtils {
 		return out.toByteArray();
 	}
 
-	public static <T> T deserialize(byte[] value, Class<T> resClass)
-			throws IOException, ClassNotFoundException {
+	public static <T> T deserialize(byte[] value, Class<T> resClass)throws IOException, ClassNotFoundException {
+	    ClassLoaderHolder holder = ClassLoaderUtils.setThreadContextClassloader(resClass.getClassLoader());
+	    try{
 		ByteArrayInputStream bi = new ByteArrayInputStream(value);
 		HolaObjectInput oi = new HolaObjectInput(bi);
 		return oi.readObject(resClass);
+	    }finally{
+	        holder.reset();
+	    }
 
 	}
 
