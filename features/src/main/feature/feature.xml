@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="wmix-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+	
+	<repository>mvn:org.solmix.karaf.features/solmix-services-features/${solmix.version}/xml/features</repository>
+	
+	<feature name="hola-common" description="Hola Commons" version="${project.version}">
+		<feature version="${solmix.version}">solmix-common-exchange</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-common/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-transport" description="Hola transport layer" version="${project.version}">
+		<feature version="${project.version}">hola-common</feature>
+		<bundle start-level="35">mvn:io.netty/netty-common/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-handler/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-codec/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-transport/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-resolver/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-buffer/${netty.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-transports-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-transports-netty/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-rs" description="Hola remote service layer" version="${project.version}">
+		<feature version="${project.version}">hola-transport</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-rs-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-rs-generic/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-rs-jaxws" description="CXF Jaxws WebService " version="${project.version}">
+		<feature version="${project.version}">hola-transport</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-rs-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-rs-jaxws/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-discovery-mdns" description="Hola discovery service mDNS implementation" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-jmdns/${project.version}</bundle>
+	</feature>
+	<feature name="hola-discovery-redis" description="Hola discovery service redis implementation" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="35">mvn:org.apache.commons/commons-pool2/${commons-pool2.version}</bundle>
+		<bundle start-level="35">mvn:redis.clients/jedis/${jredis.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-redis/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-discovery-zookeeper" description="Hola discovery service zookeeper implementation" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="35">mvn:org.apache.zookeeper/zookeeper/${zookeeper.version}</bundle>
+		<bundle start-level="35">mvn:com.google.guava/guava/16.0.1</bundle>
+		<bundle start-level="35">mvn:org.apache.curator/curator-framework/${curator.version}</bundle>
+		<bundle start-level="35">mvn:org.apache.curator/curator-client/${curator.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-zookeeper/${project.version}</bundle>
+	</feature>
+	<feature name="hola-cluster" description="Hola remote service cluster" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-cluster/${project.version}</bundle>
+	</feature>
+	<feature name="hola-monitor" description="Hola monitor service" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-monitor/${project.version}</bundle>
+	</feature>
+	<feature name="hola-builder" description="Hola service builder" version="${project.version}">
+		<feature version="${project.version}">hola-cluster</feature>
+		<feature version="${project.version}">hola-monitor</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-builder/${project.version}</bundle>
+	</feature>
+	<feature name="hola-sample-provider" description="simple provider" version="${project.version}">
+		<feature version="${project.version}">hola-discovery-redis</feature>
+		<feature version="${project.version}">hola-discovery-zookeeper</feature>
+		<bundle start-level="65">mvn:org.solmix.hola.sample/simple-api/${project.version}</bundle>
+		<bundle start-level="65">mvn:org.solmix.hola.sample/simple-provider/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-sample-consumer" description="simple consumer" version="${project.version}">
+		<bundle start-level="65">mvn:org.solmix.hola.sample/simple-api/${project.version}</bundle>
+		<bundle start-level="65">mvn:org.solmix.hola.sample/simple-consumer/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-sample-monitor" description="simple Monitor" version="${project.version}">
+		<bundle start-level="65">mvn:org.solmix.hola.sample/simple-monitor/${project.version}</bundle>
+	</feature>
+</features>

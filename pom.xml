@@ -13,6 +13,7 @@
   	<module>common</module>
   	<module>rs/api</module>
   	<module>rs/generic</module>
+  	<module>rs/jaxws</module>
   	<module>transports/api</module>
   	<module>transports/netty</module>
   	<module>builder</module>
@@ -20,7 +21,7 @@
   	<module>discovery/api</module>
   	<module>discovery/zookeeper</module>
   	<module>monitor</module>
-  	<module>rs/jaxws</module>
+  	<module>features</module>
   </modules>
   <properties>
   <curator.version>2.10.0</curator.version>
