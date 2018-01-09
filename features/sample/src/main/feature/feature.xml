@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="hola-sample-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+	<repository>mvn:org.solmix.karaf.features/hola-core-features/${hola.version}/xml/features</repository>
 	
-<feature name="hola-sample-provider" description="simple provider" version="${project.version}">
+	<feature name="hola-sample-provider" description="simple provider" version="${project.version}">
 		<feature version="${project.version}">hola-discovery-redis</feature>
 		<feature version="${project.version}">hola-discovery-zookeeper</feature>
 		<bundle start-level="65">mvn:org.solmix.hola.sample/simple-api/${project.version}</bundle>

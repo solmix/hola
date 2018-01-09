@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="hola-jaxws-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 	
-	<repository>mvn:org.solmix.karaf.features/solmix-services-features/${solmix.version}/xml/features</repository>
+	<repository>mvn:org.solmix.karaf.features/hola-core-features/${solmix.version}/xml/features</repository>
+	<repository>mvn:org.apache.cxf.karaf/apache-cxf/3.1.4/xml/features</repository>
 	
 	<feature name="hola-common" description="Hola Commons" version="${project.version}">
 		<feature version="${solmix.version}">solmix-common-exchange</feature>

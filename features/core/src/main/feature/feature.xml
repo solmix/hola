@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="hola-core-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+	<repository>mvn:org.solmix.karaf.features/solmix-common-features/${hola.version}/xml/features</repository>
 	
 	<feature name="hola-common" description="Hola Commons" version="${project.version}">
 		<feature version="${solmix.version}">solmix-common-exchange</feature>
