@@ -1,11 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.solmix.karaf.features</groupId>
-    <artifactId>single-feature-parent</artifactId>
+    <groupId>org.solmix.hola</groupId>
+    <artifactId>hola</artifactId>
     <version>0.7.1-SNAPSHOT</version>
   </parent>
   <artifactId>hola-features</artifactId>
-  <packaging>feature</packaging>
-  <name>Solmix :: Hola :: Karaf  Features</name>
+  <name>Hola :: Karaf :: Parent Features</name>
+  <packaging>pom</packaging>
+  <modules>
+  	<module>core</module>
+  	<module>jaxws</module>
+  	<module>mdns</module>
+  	<module>redis</module>
+  	<module>zookeeper</module>
+  	<module>sample</module>
+  </modules>
 </project>

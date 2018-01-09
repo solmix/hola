@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="hola-mdns-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+	
+<feature name="hola-discovery-mdns" description="Hola discovery service mDNS implementation" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-jmdns/${project.version}</bundle>
+	</feature>
+	
+</features>

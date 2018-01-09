@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="hola-zookeeper-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+	
+	<feature name="hola-discovery-zookeeper" description="Hola discovery service zookeeper implementation" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="35">mvn:org.apache.zookeeper/zookeeper/${zookeeper.version}</bundle>
+		<bundle start-level="35">mvn:com.google.guava/guava/16.0.1</bundle>
+		<bundle start-level="35">mvn:org.apache.curator/curator-framework/${curator.version}</bundle>
+		<bundle start-level="35">mvn:org.apache.curator/curator-client/${curator.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-zookeeper/${project.version}</bundle>
+	</feature>
+	
+</features>

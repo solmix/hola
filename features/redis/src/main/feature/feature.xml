@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="hola-redis-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+	<feature name="hola-discovery-redis" description="Hola discovery service redis implementation" version="${project.version}">
+		<feature version="${project.version}">hola-rs</feature>
+		<bundle start-level="35">mvn:org.apache.commons/commons-pool2/${commons-pool2.version}</bundle>
+		<bundle start-level="35">mvn:redis.clients/jedis/${jredis.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
+		<bundle start-level="40">mvn:org.solmix.hola/hola-discovery-redis/${project.version}</bundle>
+	</feature>
+	
+</features>

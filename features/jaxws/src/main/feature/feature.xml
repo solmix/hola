@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="wmix-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+<features name="hola-jaxws-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 	
 	<repository>mvn:org.solmix.karaf.features/solmix-services-features/${solmix.version}/xml/features</repository>
 	
