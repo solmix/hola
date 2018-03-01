@@ -3,10 +3,10 @@ package org.solmix.hola.common.model;
 import java.util.Dictionary;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.hola.common.HOLA;
 
-import junit.framework.Assert;
 
 
 public class PropertiesUtilsTest

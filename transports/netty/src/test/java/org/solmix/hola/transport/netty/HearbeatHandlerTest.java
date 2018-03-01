@@ -24,9 +24,9 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.Dictionary;
 
-import junit.framework.Assert;
 
 import org.easymock.EasyMock;
+import org.junit.Assert;
 import org.junit.Test;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.exchange.ExchangeRuntimeException;
