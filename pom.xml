@@ -19,6 +19,7 @@
   	<module>builder</module>
   	<module>cluster</module>
   	<module>discovery/api</module>
+  	<module>discovery/redis</module>
   	<module>discovery/zookeeper</module>
   	<module>monitor</module>
   	<module>features</module>

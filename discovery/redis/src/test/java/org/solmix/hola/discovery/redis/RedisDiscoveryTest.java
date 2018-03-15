@@ -41,7 +41,7 @@ public class RedisDiscoveryTest extends Assert
     public void test(){
         
     }
-    @Test
+//    @Test
     public void testRegistor() throws InterruptedException {
         ExtensionLoader<DiscoveryProvider> loader = container.getExtensionLoader(DiscoveryProvider.class);
         DiscoveryProvider provider = loader.getExtension(RedisProvider.NAME);
