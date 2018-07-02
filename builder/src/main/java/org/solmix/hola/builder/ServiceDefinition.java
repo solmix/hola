@@ -432,11 +432,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         //RECHECK
         String host = PropertiesUtils.getString(dic, HOLA.HOST_KEY);
         if (NetUtils.isInvalidLocalHost(host)) {
-            try {
-                host = InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException e) {
-                logger.warn(e.getMessage(), e);
-            }
+            host = NetUtils.getLocalHost();
             if (NetUtils.isInvalidLocalHost(host)) {
                 if (discoveryDics != null && discoveryDics.size() > 0) {
                     for (Dictionary<String, ?> dis : discoveryDics) {

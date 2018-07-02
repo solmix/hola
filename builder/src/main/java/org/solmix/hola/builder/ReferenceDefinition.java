@@ -335,11 +335,7 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                Dictionary<String, Object> url =(Dictionary<String, Object>) info;
                String host = PropertiesUtils.getString(url, HOLA.HOST_KEY);
                if (NetUtils.isInvalidLocalHost(host)) {
-                   try {
-                       host = InetAddress.getLocalHost().getHostAddress();
-                   } catch (UnknownHostException e) {
-                       logger.warn(e.getMessage(), e);
-                   }
+                   host = NetUtils.getLocalHost();
                    if (NetUtils.isInvalidLocalHost(host)) {
                        if (NetUtils.isInvalidLocalHost(host)) {
                            host = NetUtils.getLocalHost();
