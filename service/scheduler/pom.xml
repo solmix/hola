@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.solmix.hola</groupId>
     <artifactId>hola-service</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2-SNAPSHOT</version>
   </parent>
   <artifactId>hola-service-scheduler</artifactId>
   <dependencies>

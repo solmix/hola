@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.solmix.hola</groupId>
 		<artifactId>hola</artifactId>
-		<version>0.7.1</version>
+		<version>0.7.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>hola-discovery-redis</artifactId>
 	<dependencies>

@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.solmix.hola</groupId>
     <artifactId>hola</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2-SNAPSHOT</version>
   </parent>
   <groupId>org.solmix.hola</groupId>
   <artifactId>hola-service</artifactId>
-  <version>0.7.1</version>
+  <version>0.7.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
   <module>scheduler</module>

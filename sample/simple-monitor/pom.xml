@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.solmix.hola</groupId>
     <artifactId>hola</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2-SNAPSHOT</version>
   </parent>
   <groupId>org.solmix.hola.sample</groupId>
   <artifactId>simple-monitor</artifactId>
@@ -39,7 +39,7 @@
   	<dependency>
   		<groupId>org.solmix.hola</groupId>
   		<artifactId>hola-monitor</artifactId>
-  		<version>0.7.1</version>
+  		<version>0.7.2-SNAPSHOT</version>
   	</dependency>
   </dependencies>
 </project>
