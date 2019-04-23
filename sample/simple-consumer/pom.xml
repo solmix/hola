@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.solmix.hola</groupId>
     <artifactId>hola</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>0.7.1</version>
   </parent>
   <groupId>org.solmix.hola.sample</groupId>
   <artifactId>simple-consumer</artifactId>
@@ -11,7 +11,7 @@
   	<dependency>
   		<groupId>org.solmix.hola.sample</groupId>
   		<artifactId>simple-api</artifactId>
-  		<version>0.7.1-SNAPSHOT</version>
+  		<version>0.7.1</version>
   	</dependency>
   </dependencies>
   <build>

@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.solmix.karaf.features</groupId>
     <artifactId>single-feature-parent</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>0.7.1</version>
   </parent>
   <artifactId>hola-mdns-features</artifactId>
   <packaging>feature</packaging>
