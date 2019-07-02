@@ -19,11 +19,9 @@
 package org.solmix.hola.builder;
 
 import java.lang.reflect.Method;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -40,6 +38,7 @@ import org.solmix.commons.util.DataUtils;
 import org.solmix.commons.util.NetUtils;
 import org.solmix.commons.util.StringUtils;
 import org.solmix.commons.util.SystemPropertyAction;
+import org.solmix.exchange.ProtocolNoFoundException;
 import org.solmix.hola.builder.delegate.DelegateRemoteServiceFactory;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.common.model.PropertiesUtils;
@@ -502,7 +501,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
                         dic.put(HOLA.DISCOVERY_KEY, dis);
                         RemoteServiceFactory factory= container.getExtensionLoader(RemoteServiceFactory.class).getExtension(DelegateRemoteServiceFactory.NAME);
                         if(factory==null){
-                            throw new IllegalStateException("Can't lookup RemoteServiceFactory for protocol:"+DelegateRemoteServiceFactory.NAME);
+                            throw new ProtocolNoFoundException("Can't lookup RemoteServiceFactory for protocol:"+DelegateRemoteServiceFactory.NAME);
                         }
                         RemoteRegistration<T> reg= factory.register(interfaceClass, ref, dic);
                         registrations.add(reg);
