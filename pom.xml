@@ -23,6 +23,7 @@
   	<module>discovery/zookeeper</module>
   	<module>monitor</module>
   	<module>features</module>
+  	<module>http</module>
   </modules>
   <properties>
   <curator.version>2.10.0</curator.version>
