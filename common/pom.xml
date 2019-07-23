@@ -50,6 +50,7 @@
 		<solmix.osgi.export.pkg>org.solmix.hola.common*</solmix.osgi.export.pkg>
 		<solmix.osgi.import.pkg>
 			!org.solmix.hola.common*,
+			javax.annotation;version="[1.0,1.1)",
 			org.springframework*;resolution:=optional;version="${spring.version}",
 			*
 		</solmix.osgi.import.pkg>

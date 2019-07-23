@@ -1,5 +1,6 @@
 package org.solmix.hola.http.client;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.solmix.commons.util.Base64Utils;
 import org.solmix.exchange.QueryParameters;
 import org.solmix.exchange.URL;
 
@@ -265,6 +267,28 @@ public class RequestBuilder {
         return this;
     }
 
+    public RequestBuilder addCredentials(String user,String pass,boolean isProxied) {
+    	 StringBuffer buffer = new StringBuffer(32);
+         if (isProxied) {
+             buffer.append("Proxy-Authorization");
+         } else {
+             buffer.append("WWW-Authenticate");
+         }
+         buffer.append(": Basic ");
+         
+         StringBuilder tmp = new StringBuilder();
+         tmp.append(user);
+         tmp.append(":");
+         tmp.append((pass == null) ? "null" : pass);
+         try {
+			buffer.append(Base64Utils.encode(tmp.toString().getBytes("UTF-8")));
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(e);
+		}
+         this.addHeader(HttpHeaderNames.AUTHORIZATION.toString(),buffer.toString());
+         return this;
+    }
+
     public Request build() {
         if (url == null) {
             throw new IllegalStateException("URL not set");
@@ -337,7 +361,7 @@ public class RequestBuilder {
                 timeoutInMillis, followRedirect, maxRedirects, 0, enableBackOff, backOff);
     }
 
-    private void addHeader(AsciiString name, Object value) {
+    public void addHeader(AsciiString name, Object value) {
         if (!headers.contains(name)) {
             headers.add(name, value);
         }

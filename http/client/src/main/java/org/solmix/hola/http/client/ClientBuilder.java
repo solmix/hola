@@ -3,6 +3,7 @@ package org.solmix.hola.http.client;
 import java.io.InputStream;
 import java.security.Provider;
 
+import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManagerFactory;
 
 import io.netty.buffer.ByteBufAllocator;
@@ -133,7 +134,10 @@ public class ClientBuilder {
         clientConfig.setSslProvider(sslProvider);
         return this;
     }
-
+    public ClientBuilder setSslEngine(SSLEngine sslEngine) {
+        clientConfig.setSslEngine(sslEngine);
+        return this;
+    }
     public ClientBuilder setJdkSslProvider() {
         clientConfig.setJdkSslProvider();
         return this;

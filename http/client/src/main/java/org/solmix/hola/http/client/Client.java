@@ -23,6 +23,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.exchange.util.NetworkUtils;
 import org.solmix.hola.http.client.handler.Http2ChannelInitializer;
 import org.solmix.hola.http.client.handler.HttpChannelInitializer;
@@ -55,10 +56,10 @@ public final class Client {
 
     private static final Logger logger = Logger.getLogger(Client.class.getName());
 
-    private static final ThreadFactory httpClientThreadFactory = new HttpClientThreadFactory();
+    private static final ThreadFactory httpClientThreadFactory = new NamedThreadFactory("Hola-HTTP-C",true);
 
     static {
-        if (System.getProperty("xbib.netty.http.client.extendsystemproperties") != null) {
+        if (System.getProperty("hola.http.client.properties") != null) {
             NetworkUtils.extendSystemProperties();
         }
         // change Netty defaults to safer ones, but still allow override from arg line
@@ -128,7 +129,7 @@ public final class Client {
             if (retries == null || retries < 0) {
                 retries = 0;
             }
-            ClientChannelPoolHandler clientChannelPoolHandler = new ClientChannelPoolHandler();
+            ClientChannelPoolHandler clientChannelPoolHandler = new ClientChannelPoolHandler(clientConfig);
             this.pool = new BoundedChannelPool<>(semaphore, clientConfig.getPoolVersion(),
                     nodes, bootstrap, clientChannelPoolHandler, retries,
                     BoundedChannelPool.PoolKeySelectorType.ROUNDROBIN);
@@ -200,7 +201,15 @@ public final class Client {
         if (httpAddress != null) {
             HttpVersion httpVersion = httpAddress.getVersion();
             ChannelInitializer<Channel> initializer;
-            SslHandler sslHandler = newSslHandler(clientConfig, byteBufAllocator, httpAddress);
+            
+            SslHandler sslHandler=null ;
+            if(httpAddress.isSecure()) {
+            	if(clientConfig.getSslEngine()!=null) {
+            		sslHandler=new SslHandler(clientConfig.getSslEngine());
+            	}else {
+            		sslHandler= newSslHandler(clientConfig, byteBufAllocator, httpAddress);
+            	}
+            }
             if (httpVersion.majorVersion() == 1) {
                 initializer = new HttpChannelInitializer(clientConfig, httpAddress, sslHandler,
                         new Http2ChannelInitializer(clientConfig, httpAddress, sslHandler));
@@ -386,21 +395,15 @@ public final class Client {
                         ApplicationProtocolNames.HTTP_2);
     }
 
-    static class HttpClientThreadFactory implements ThreadFactory {
-
-        private int number = 0;
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable, "org-xbib-netty-http-client-pool-" + (number++));
-            thread.setDaemon(true);
-            return thread;
-        }
-    }
 
     class ClientChannelPoolHandler implements ChannelPoolHandler {
+    	
+    	private ClientConfig clientConfig;
+        public ClientChannelPoolHandler(ClientConfig clientConfig) {
+			this.clientConfig=clientConfig;
+		}
 
-        @Override
+		@Override
         public void channelReleased(Channel channel) {
         }
 
@@ -412,7 +415,15 @@ public final class Client {
         public void channelCreated(Channel channel) {
             HttpAddress httpAddress = channel.attr(pool.getAttributeKey()).get();
             HttpVersion httpVersion = httpAddress.getVersion();
-            SslHandler sslHandler = newSslHandler(clientConfig, byteBufAllocator, httpAddress);
+            SslHandler sslHandler =null;
+            if(httpAddress.isSecure()) {
+            	if(clientConfig.getSslEngine()!=null) {
+            		sslHandler=  new SslHandler(clientConfig.getSslEngine());
+            	}else {
+            		sslHandler= newSslHandler(clientConfig, byteBufAllocator, httpAddress);
+            	}
+            	
+            }
             if (httpVersion.majorVersion() == 1) {
                 HttpChannelInitializer initializer = new HttpChannelInitializer(clientConfig, httpAddress, sslHandler,
                         new Http2ChannelInitializer(clientConfig, httpAddress, sslHandler));

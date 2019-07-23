@@ -6,37 +6,56 @@
 		<feature version="${solmix.version}">solmix-common-exchange</feature>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-common/${project.version}</bundle>
 	</feature>
-	
-	<feature name="hola-transport" description="Hola transport layer" version="${project.version}">
-		<feature version="${project.version}">hola-common</feature>
+	<feature name="hola-netty-core" description="Hola Netty Core-lib" version="${project.version}">
 		<bundle start-level="35">mvn:io.netty/netty-common/${netty.version}</bundle>
 		<bundle start-level="35">mvn:io.netty/netty-handler/${netty.version}</bundle>
 		<bundle start-level="35">mvn:io.netty/netty-codec/${netty.version}</bundle>
 		<bundle start-level="35">mvn:io.netty/netty-transport/${netty.version}</bundle>
 		<bundle start-level="35">mvn:io.netty/netty-resolver/${netty.version}</bundle>
 		<bundle start-level="35">mvn:io.netty/netty-buffer/${netty.version}</bundle>
+	</feature>
+	<feature name="hola-transport" description="Hola Transport Layer" version="${project.version}">
+		<feature version="${project.version}">hola-common</feature>
+		<feature version="${project.version}">hola-netty-core</feature>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-transports-api/${project.version}</bundle>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-transports-netty/${project.version}</bundle>
 	</feature>
 	
-	<feature name="hola-rs" description="Hola remote service layer" version="${project.version}">
+	<feature name="hola-rs" description="Hola Remote Service Layer" version="${project.version}">
 		<feature version="${project.version}">hola-transport</feature>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-rs-api/${project.version}</bundle>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-rs-generic/${project.version}</bundle>
 	</feature>
 	
-	<feature name="hola-cluster" description="Hola remote service cluster" version="${project.version}">
+	<feature name="hola-cluster" description="Hola Remote Service Cluster" version="${project.version}">
 		<feature version="${project.version}">hola-rs</feature>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-discovery-api/${project.version}</bundle>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-cluster/${project.version}</bundle>
 	</feature>
-	<feature name="hola-monitor" description="Hola monitor service" version="${project.version}">
+	<feature name="hola-monitor" description="Hola Monitor Service" version="${project.version}">
 		<feature version="${project.version}">hola-rs</feature>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-monitor/${project.version}</bundle>
 	</feature>
-	<feature name="hola-builder" description="Hola service builder" version="${project.version}">
+	<feature name="hola-builder" description="Hola Service Builder" version="${project.version}">
 		<feature version="${project.version}">hola-cluster</feature>
 		<feature version="${project.version}">hola-monitor</feature>
 		<bundle start-level="45">mvn:org.solmix.hola/hola-builder/${project.version}</bundle>
+	</feature>
+	<feature name="hola-http-client" description="Hola Http Client" version="${project.version}">
+		<feature version="${project.version}">hola-common</feature>
+		<feature version="${project.version}">hola-netty-core</feature>
+		<bundle start-level="35">mvn:io.netty/netty-codec-http/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-codec-http2/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-codec-socks/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-handler-proxy/${netty.version}</bundle>
+		<bundle start-level="45">mvn:org.solmix.hola/hola-http-client/${project.version}</bundle>
+	</feature>
+	
+	<feature name="hola-http-server" description="Hola Http Server" version="${project.version}">
+		<feature version="${project.version}">hola-common</feature>
+		<feature version="${project.version}">hola-netty-core</feature>
+		<bundle start-level="35">mvn:io.netty/netty-codec-http/${netty.version}</bundle>
+		<bundle start-level="35">mvn:io.netty/netty-codec-http2/${netty.version}</bundle>
+		<bundle start-level="45">mvn:org.solmix.hola/hola-http-server/${project.version}</bundle>
 	</feature>
 </features>

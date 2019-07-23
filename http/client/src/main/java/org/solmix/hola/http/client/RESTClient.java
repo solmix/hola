@@ -10,13 +10,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpMethod;
 
-public class RestClient {
+public class RESTClient {
 
     private static final Client client = new Client();
 
     private FullHttpResponse response;
 
-    private RestClient() {
+    private RESTClient() {
     }
 
     public void setResponse(FullHttpResponse response) {
@@ -46,31 +46,31 @@ public class RestClient {
         client.shutdownGracefully();
     }
 
-    public static RestClient get(String urlString) throws IOException {
+    public static RESTClient get(String urlString) throws IOException {
         return method(urlString, null, null, HttpMethod.GET);
     }
 
-    public static RestClient delete(String urlString) throws IOException {
+    public static RESTClient delete(String urlString) throws IOException {
         return method(urlString, null, null, HttpMethod.DELETE);
     }
 
-    public static RestClient post(String urlString, String body) throws IOException {
+    public static RESTClient post(String urlString, String body) throws IOException {
         return method(urlString, body, StandardCharsets.UTF_8, HttpMethod.POST);
     }
 
-    public static RestClient post(String urlString, ByteBuf content) throws IOException {
+    public static RESTClient post(String urlString, ByteBuf content) throws IOException {
         return method(urlString, content, HttpMethod.POST);
     }
 
-    public static RestClient put(String urlString, String body) throws IOException {
+    public static RESTClient put(String urlString, String body) throws IOException {
         return method(urlString, body, StandardCharsets.UTF_8, HttpMethod.PUT);
     }
 
-    public static RestClient put(String urlString, ByteBuf content) throws IOException {
+    public static RESTClient put(String urlString, ByteBuf content) throws IOException {
         return method(urlString, content, HttpMethod.PUT);
     }
 
-    public static RestClient method(String urlString,
+    public static RESTClient method(String urlString,
                                     String body, Charset charset,
                                     HttpMethod httpMethod) throws IOException {
         ByteBuf byteBuf = null;
@@ -81,17 +81,17 @@ public class RestClient {
         return method(urlString, byteBuf, httpMethod);
     }
 
-    public static RestClient method(String urlString,
+    public static RESTClient method(String urlString,
                                     ByteBuf byteBuf,
                                     HttpMethod httpMethod) throws IOException {
         URL url = URL.create(urlString);
-        RestClient restClient = new RestClient();
+        RESTClient rESTClient = new RESTClient();
         RequestBuilder requestBuilder = Request.builder(httpMethod).url(url);
         if (byteBuf != null) {
             requestBuilder.content(byteBuf);
         }
         client.newTransport(HttpAddress.http1(url))
-                .execute(requestBuilder.build().setResponseListener(restClient::setResponse)).get();
-        return restClient;
+                .execute(requestBuilder.build().setResponseListener(rESTClient::setResponse)).get();
+        return rESTClient;
     }
 }

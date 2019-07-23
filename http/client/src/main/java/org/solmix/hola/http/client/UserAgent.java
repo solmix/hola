@@ -1,8 +1,8 @@
 package org.solmix.hola.http.client;
 
-import io.netty.bootstrap.Bootstrap;
-
 import java.util.Optional;
+
+import io.netty.bootstrap.Bootstrap;
 
 /**
  * HTTP client user agent.
@@ -12,7 +12,7 @@ public final class UserAgent {
     /**
      * The default value for {@code User-Agent}.
      */
-    private static final String USER_AGENT = String.format("XbibHttpClient/%s (Java/%s/%s) (Netty/%s)",
+    private static final String USER_AGENT = String.format("HolaHttpClient/%s (Java/%s/%s) (Netty/%s)",
             httpClientVersion(), javaVendor(), javaVersion(), nettyVersion());
 
     private UserAgent() {

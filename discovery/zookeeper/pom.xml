@@ -47,6 +47,7 @@
 		org.solmix.hola.discovery.zk*
 		</solmix.osgi.export.pkg>
 		<solmix.osgi.import.pkg>
+		javax.annotation;version="[1.0,1.1)",
 			org.springframework*;resolution:=optional;version="${spring.version}",*
 		</solmix.osgi.import.pkg>
 	</properties>

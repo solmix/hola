@@ -31,7 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.solmix.commons.Version;
+import org.solmix.commons.timer.StopWatch;
 import org.solmix.commons.util.ClassLoaderUtils;
 import org.solmix.commons.util.ClassLoaderUtils.ClassLoaderHolder;
 import org.solmix.commons.util.DataUtils;
@@ -62,6 +65,8 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
 {
     /**    */
     private static final long serialVersionUID = -6412855348674400197L;
+    
+    private static final Logger LOG =LoggerFactory.getLogger(ServiceDefinition.class);
     
     private String interfaceName;
 
@@ -216,7 +221,7 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         }
     }
 
-    protected synchronized void doRegister(final ProviderDefinition provider) {
+    protected synchronized void doRegister(final ProviderDefinition provider,final StopWatch watch) {
         Boolean publish = isPublish();
         if(publish==null){
             publish = provider.isPublish();
@@ -244,14 +249,14 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
                         Thread.sleep(pdelay);
                     } catch (Throwable e) {
                     }
-                    doExportInteral(provider);
+                    doExportInteral(provider,watch);
                 }
             });
             thread.setDaemon(true);
             thread.setName("DelayRegisterServiceThread");
             thread.start();
         } else {
-            doExportInteral(provider);
+            doExportInteral(provider,watch);
         }
         
     }
@@ -312,11 +317,14 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
     }
     
  
-    protected synchronized void doExportInteral(ProviderDefinition provider) {
+    protected synchronized void doExportInteral(ProviderDefinition provider,StopWatch watch) {
         if(StringUtils.isEmpty(interfaceName)){
             throw new IllegalArgumentException("<hola:service interface=\"\"/> interface is null or empty");
         }
         ClassLoaderHolder origLoader = null;
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeBegin("checkInterfaceAndMethods");
+        }
         try {
             ClassLoader loader = container.getExtension(ClassLoader.class);
             if (loader != null) {
@@ -335,16 +343,27 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         }
         checkInterfaceAndMethods(interfaceClass, methods);
         checkRef();
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeEnd("checkInterfaceAndMethods");
+        }
         Dictionary<String, Object> dic = new Hashtable<String, Object>();
         List<Dictionary<String, ?>> discoveryDics = getDiscoveryDictionaries(provider);
         String protocol = getProtocol();
         if(protocol==null){
             protocol=provider.getProtocol();
         }
-        
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeBegin("getPid");
+        }
         int pid  = SystemPropertyAction.getPid();
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeEnd("getPid");
+        }
         if(pid>0){
             dic.put(HOLA.PID_KEY, pid);
+        }
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeBegin("appendDictionaries");
         }
         ApplicationDefinition app = getApplication();
         if(app==null){
@@ -410,7 +429,9 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
                 }
             }
         }//end methods
-        
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeEnd("appendDictionaries");
+        }
         String revision = Version.getVersion(interfaceClass, version);
         if(!StringUtils.isEmpty(revision)){
             dic.put(HOLA.VERSION, revision);
@@ -428,6 +449,9 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
         }
         dic.put(HOLA.PATH_KEY, path);
         
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeBegin("validAddress");
+        }
         //RECHECK
         String host = PropertiesUtils.getString(dic, HOLA.HOST_KEY);
         if (NetUtils.isInvalidLocalHost(host)) {
@@ -469,13 +493,17 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
             }
             logger.warn("Use random available port(" + port + ") for protocol " + protocol);
         }
-        
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeEnd("validAddress");
+        }
         
         dic.put(HOLA.HOST_KEY, host);
         dic.put(HOLA.PORT_KEY, port);
         dic.put(HOLA.CATEGORY_KEY, HOLA.PROVIDER_CATEGORY);
         dic.put(HOLA.TIMESTAMP_KEY, System.currentTimeMillis());
-        
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeBegin("register");
+        }
         String scope = PropertiesUtils.getString(dic,HOLA.SCOPE_KEY);
         if(!"none".equalsIgnoreCase(scope)){
             //默认在注册远程服务的时候依旧会注册本地服务,如果已在scope中指定了remote则不本地注册.
@@ -516,6 +544,11 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
                 }
             }
         }
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeEnd("register");
+        	LOG.debug("Register Service Used:"+watch.toString());
+        }
+        
        
     }
     //在OSGI环境下同时注册服务到本地OSGI中
@@ -536,11 +569,18 @@ public class ServiceDefinition<T> extends AbstractServiceDefinition implements C
             return;
         }
         registered=true;
+        StopWatch watch = new StopWatch();
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeBegin("appendSystemProperties");
+        }
         appendSystemProperties(this);
+        if(LOG.isDebugEnabled()) {
+        	watch.markTimeEnd("appendSystemProperties");
+        }
         checkProviders();
         List<ProviderDefinition> providers= getProviders();
         for(ProviderDefinition provider:providers){
-            doRegister(provider);
+            doRegister(provider,watch);
         }
     }
     

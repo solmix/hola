@@ -6,6 +6,7 @@ import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManagerFactory;
 
 import io.netty.channel.WriteBufferWaterMark;
@@ -164,6 +165,8 @@ public class ClientConfig {
         BackOff BACK_OFF = BackOff.ZERO_BACKOFF;
 
         Boolean ENABLE_NEGOTIATION = false;
+        
+        SSLEngine SSL_DEFAULT_ENGINE=null;
     }
 
     private static TrustManagerFactory TRUST_MANAGER_FACTORY;
@@ -251,6 +254,8 @@ public class ClientConfig {
     private BackOff backOff = Defaults.BACK_OFF;
 
     private boolean enableNegotiation = Defaults.ENABLE_NEGOTIATION;
+
+	private SSLEngine sslEngine= Defaults.SSL_DEFAULT_ENGINE;
 
     public ClientConfig setDebug(boolean debug) {
         this.debug = debug;
@@ -452,6 +457,12 @@ public class ClientConfig {
         this.sslContextProvider = sslContextProvider;
         return this;
     }
+    
+    //优先使用它，初始化ssl
+	public ClientConfig setSSLEngine(SSLEngine sslEngine) {
+		this.sslEngine = sslEngine;
+		return this;
+	}
 
     public Provider getSslContextProvider() {
         return sslContextProvider;
@@ -623,7 +634,15 @@ public class ClientConfig {
         return enableNegotiation;
     }
 
-    @Override
+	public SSLEngine getSslEngine() {
+		return sslEngine;
+	}
+
+	public void setSslEngine(SSLEngine sslEngine) {
+		this.sslEngine = sslEngine;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("SSL=").append(sslProvider)

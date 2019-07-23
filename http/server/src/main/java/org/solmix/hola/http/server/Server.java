@@ -5,13 +5,13 @@ import java.security.KeyStoreException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.solmix.commons.util.NamedThreadFactory;
 import org.solmix.exchange.util.NetworkUtils;
 import org.solmix.hola.http.server.context.VirtualServer;
 import org.solmix.hola.http.server.handler.Http2ChannelInitializer;
@@ -47,7 +47,7 @@ public final class Server {
 
     static {
         // extend Java system properties by detected network interfaces
-        if (System.getProperty("xbib.netty.http.client.extendsystemproperties") != null) {
+        if (System.getProperty("hola.http.server.properties") != null) {
             NetworkUtils.extendSystemProperties();
         }
         // change Netty defaults to safer ones, but still allow override from arg line
@@ -218,7 +218,7 @@ public final class Server {
         if (eventLoopGroup == null) {
             eventLoopGroup = /**serverConfig.isEpoll() ?
                     new EpollEventLoopGroup(serverConfig.getParentThreadCount(), new HttpServerParentThreadFactory()) :**/
-                    new NioEventLoopGroup(serverConfig.getParentThreadCount(), new HttpServerParentThreadFactory());
+                    new NioEventLoopGroup(serverConfig.getParentThreadCount(), new NamedThreadFactory("Hola-HTTP-SP",true));
         }
         return eventLoopGroup;
     }
@@ -229,7 +229,7 @@ public final class Server {
         if (eventLoopGroup == null) {
             eventLoopGroup = /**serverConfig.isEpoll() ?
                     new EpollEventLoopGroup(serverConfig.getChildThreadCount(), new HttpServerChildThreadFactory()) :**/
-                    new NioEventLoopGroup(serverConfig.getChildThreadCount(), new HttpServerChildThreadFactory());
+                    new NioEventLoopGroup(serverConfig.getChildThreadCount(), new  NamedThreadFactory("Hola-HTTP-SC",true));
         }
         return eventLoopGroup;
     }
@@ -270,27 +270,5 @@ public final class Server {
                 ApplicationProtocolNames.HTTP_1_1);
     }
 
-    static class HttpServerParentThreadFactory implements ThreadFactory {
 
-        private int number = 0;
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable, "org-xbib-netty-http-server-parent-" + (number++));
-            thread.setDaemon(true);
-            return thread;
-        }
-    }
-
-    static class HttpServerChildThreadFactory implements ThreadFactory {
-
-        private int number = 0;
-
-        @Override
-        public Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable, "org-xbib-netty-http-server-child-" + (number++));
-            thread.setDaemon(true);
-            return thread;
-        }
-    }
 }
