@@ -19,13 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +33,13 @@ import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.hola.transport.TransporterCreateException;
 import org.solmix.hola.transport.codec.Codec;
 import org.solmix.runtime.Container;
+
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
  * 
@@ -138,7 +138,7 @@ public class NettyServerEngine implements NettyEngine {
         
         bootstrap.childHandler(channelFactory);
         InetSocketAddress address = null;
-        if (host == null) {
+        if (host == null||"*".equals(host)) {
             address = new InetSocketAddress(port);
         } else {
             address = new InetSocketAddress(host, port);

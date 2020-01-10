@@ -27,7 +27,9 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solmix.commons.util.DataUtils;
 import org.solmix.commons.util.StringUtils;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.RemoteAddress;
 import org.solmix.hola.transport.identity.ServerKeyID;
 import org.solmix.runtime.Container;
@@ -98,7 +100,16 @@ public class NettyServerEngineFactory implements ContainerListener {
         ServerKeyID serverKey = remoteAddress.getServerKey();
         NettyServerEngine engine=engines.get(serverKey);
         if(engine==null){
-            engine = new NettyServerEngine(remoteAddress.getHost(),remoteAddress.getPort());
+        	//默认发布到本机的端口（多个IP），在传输层可以不用设置本机IP，但是在注册时，需要告知其他服务本服务IP，所以服务注册时也需要填写
+        	//本机IP（如果多个需要指定可联通的IP）
+        	String bindHost = remoteAddress.getAttributes().get(HOLA.EXPORT_BIND_HOST);
+        	//但是在传输层开启端口监听时，默认开启所有，除非指定了绑定IP
+        	boolean bind = DataUtils.asBoolean(bindHost);
+        	String host=null;
+        	if(bind) {
+        		host=remoteAddress.getHost();
+        	}
+            engine = new NettyServerEngine(host,remoteAddress.getPort());
             engine.setContainer(container);
             engine.finalizeConfig();
             NettyServerEngine e = engines.putIfAbsent(serverKey, engine);

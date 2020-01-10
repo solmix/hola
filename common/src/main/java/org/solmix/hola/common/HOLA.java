@@ -448,5 +448,8 @@ public class HOLA
     public static final String SSL_KEY_CN  ="key.cn";
     /**SSL 认证方式,sacu saca*/
     public static final String SSL_KEY_MODE="key.mode";
+    
+    /**在传输层，绑定端口时，是否指定绑定的IP，默认为false，即[*:port/:::port]，否则[ip:port]*/
+    public static final String EXPORT_BIND_HOST="bind.host";
 
 }

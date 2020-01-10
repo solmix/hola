@@ -19,8 +19,6 @@
 
 package org.solmix.hola.builder;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -361,8 +359,8 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                        info.put(HOLA.DISCOVERY_KEY, discoveryDics.get(0));
                        RemoteReference<?> reference= factory.getReference(interfaceClass, info);
                        remoteService= factory.getRemoteService(reference);
-                       if(LOG.isInfoEnabled()){
-                           LOG.info("Reference service :"+PropertiesUtils.toAddress(info));
+                       if(LOG.isDebugEnabled()){
+                           LOG.debug("Reference service :"+PropertiesUtils.toAddress(info));
                        }
                    }else{
                        List<RemoteService<?>> services = new ArrayList<RemoteService<?>>();
@@ -397,8 +395,8 @@ public class ReferenceDefinition<T> extends AbstractReferenceDefinition implemen
                    }
                    RemoteReference<?> reference=factory.getReference(interfaceClass, info);
                    remoteService=factory.getRemoteService(reference);
-                   if(LOG.isInfoEnabled()){
-                       LOG.info("Reference service :"+PropertiesUtils.toAddress(info));
+                   if(LOG.isDebugEnabled()){
+                       LOG.debug("Reference service :"+PropertiesUtils.toAddress(info));
                    }
                }else{
                    List<RemoteService<?>> services = new ArrayList<RemoteService<?>>();
