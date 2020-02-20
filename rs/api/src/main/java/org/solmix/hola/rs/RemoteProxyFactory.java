@@ -40,7 +40,7 @@ public class RemoteProxyFactory
     }
 
     public static <T> T getProxy(RemoteService<T> remote){
-        return getProxy(remote);
+        return getProxy(remote,null);
     }
     /**创建远程调用的本地代理*/
     @SuppressWarnings("unchecked")

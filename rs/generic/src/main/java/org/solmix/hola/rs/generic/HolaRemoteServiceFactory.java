@@ -32,9 +32,11 @@ import org.solmix.hola.common.model.PropertiesUtils;
 import org.solmix.hola.rs.RemoteException;
 import org.solmix.hola.rs.RemoteProxyFactory;
 import org.solmix.hola.rs.RemoteReference;
+import org.solmix.hola.rs.RemoteReference.ReferenceType;
 import org.solmix.hola.rs.RemoteRegistration;
 import org.solmix.hola.rs.RemoteService;
 import org.solmix.hola.rs.event.RemoteRegisteredEvent;
+import org.solmix.hola.rs.generic.duplex.DuplexRemoteService;
 import org.solmix.hola.rs.generic.exchange.HolaRemoteService;
 import org.solmix.hola.rs.generic.exchange.HolaServerFactory;
 import org.solmix.hola.rs.support.AbstractRemoteServiceFactory;
@@ -73,7 +75,6 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
                 factory.getInInterceptors().add(i);
                 factory.getOutInterceptors().add(i);
             }
-            
         }
         Server server =factory.create();
         RemoteRegistrationImpl<S> reg = new RemoteRegistrationImpl<S>(this, registry, clazz, service,properties);
@@ -146,6 +147,28 @@ public class HolaRemoteServiceFactory extends AbstractRemoteServiceFactory imple
        return new HolaRemoteService<S>(container, reference);
     }
 
-  
+    /**
+     * 双工模式
+     * <p>获取远程服务的时候，创建本地服务，远程服务可使用TCP信道，逆向发送请求。<br>
+     * <b>普通模式</b>：client(request) ----> server (invoke) ----> client（response)<br>
+     * <b>双工模式</b>：client(request) ----> server (invoke) ----> client（response) & server(request) ---->Client（invoke）---->server(response)<br>
+     * 双工模式下，client主动发起请求，serer处理后返回client，同时server也可以主动发起请求（但是不新建连接，使用client请求时创建的信道）,client收到请求消息后，处理请求返回给
+     * server。
+     * @param reference
+     * @param serviceClass client接收请求类
+     * @param service 处理client请求的服务
+     * @return
+     */
+    public <S,K> RemoteService<S> getDuplexRemoteService(RemoteReference<S> reference,Class<K> serviceClass,K service) {
+    	  ReferenceType type = reference.getReferenceType();
+    	 if(type==ReferenceType.LOCAL){
+             throw new IllegalArgumentException("Reference is Local"); 
+         }else if(type==ReferenceType.REMOTE){
+             RemoteReferenceImpl<S> impl =(RemoteReferenceImpl<S>)reference;
+             return new DuplexRemoteService<S,K>(container, impl,serviceClass,service);
+         }
+    	 return null;
+    	
+    }
 
 }

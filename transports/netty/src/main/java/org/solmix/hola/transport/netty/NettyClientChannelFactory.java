@@ -21,6 +21,7 @@ package org.solmix.hola.transport.netty;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
+import org.solmix.exchange.model.EndpointInfo;
 import org.solmix.hola.transport.RemoteProtocol;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.security.DefaultSSLProvider;
@@ -44,11 +45,15 @@ public class NettyClientChannelFactory extends ChannelInitializer<Channel> {
    private final NettyCodecAdapter codecAdapter;
    private final NettyConfiguration config;
    private final Container container;
-   
-    public NettyClientChannelFactory(NettyConfiguration config,RemoteProtocol protocol,Container container) {
+   private final RemoteProtocol protocol;
+   private final EndpointInfo ei;
+
+    public NettyClientChannelFactory(NettyConfiguration config,RemoteProtocol protocol,EndpointInfo ei,Container container) {
         this.config=config;
-        codecAdapter = new NettyCodecAdapter( config,protocol);
+        this.codecAdapter = new NettyCodecAdapter( config,protocol);
         this.container=container;
+        this.protocol=protocol;
+        this.ei=ei;
     }
 
     @Override
@@ -76,8 +81,13 @@ public class NettyClientChannelFactory extends ChannelInitializer<Channel> {
         // pipeline.addLast("idle",new IdleStateHandler( ));
         // }
         //
-        pipeline.addLast(new NettyClientHandler());
+        pipeline.addLast(new NettyClientHandler(protocol,this,config));
     }
+
+	public NettyTransporter getTransporter() {
+		
+		return ei.getExtension(NettyTransporter.class);
+	}
 
     
 }

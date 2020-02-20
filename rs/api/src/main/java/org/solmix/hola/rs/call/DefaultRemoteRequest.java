@@ -43,6 +43,10 @@ public class DefaultRemoteRequest implements RemoteRequest
        
         this(methodName,determineType(parameter),parameter,null);
     }
+    public DefaultRemoteRequest(String methodName, Object[] parameter,Map<String, Object> attachments){
+    	
+    	this(methodName,determineType(parameter),parameter,attachments);
+    }
      
     private static  Class<?>[] determineType(Object[] parameter){
         Class<?>[] types  = new Class<?>[parameter.length];

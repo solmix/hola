@@ -165,4 +165,9 @@ public class RemoteRegistrationImpl<S> implements RemoteRegistration<S> {
     public void setServer(Server server) {
         this.server=server;
     }
+
+	public Server getServer() {
+		return server;
+	}
+    
 }

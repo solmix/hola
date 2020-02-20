@@ -38,6 +38,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
@@ -171,7 +172,7 @@ public class NettyServerEngine implements NettyEngine {
     @Override
     public synchronized void shutdown() {
         if(LOG.isDebugEnabled()){
-            LOG.debug("Close netty engine ["+host+":"+port+"] "+(channel!=null?("channel:"+channel.toString()):""));
+            LOG.debug("Close netty engine ["+(host==null?"*":host)+":"+port+"] "+(channel!=null?("channel:"+channel.toString()):""));
         }
         handlerMap.clear();
         registedPaths.clear();
@@ -196,6 +197,10 @@ public class NettyServerEngine implements NettyEngine {
     public void setContainer(Container container) {
       this.container=container;
         
+    }
+    
+    public ChannelGroup getAllChannels() {
+        return channelFactory.getAllChannels();
     }
 
 }

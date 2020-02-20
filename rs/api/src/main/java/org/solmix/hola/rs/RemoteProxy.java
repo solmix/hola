@@ -56,7 +56,7 @@ public class RemoteProxy implements InvocationHandler, Closeable,InvokeFilterCha
     {
         this.remoteService=remoteService;
        List<?>   fstring =PropertiesUtils.getCommaSeparatedList(remoteService.getServiceProperties(), HOLA.FILTER_KEY);
-       if(fstring!=null){
+       if(fstring!=null&&container!=null){
            filters = new ArrayList<InvokeFilter>();
            ExtensionLoader<InvokeFilterFactory> loader = container.getExtensionLoader(InvokeFilterFactory.class);
            for(Object f:fstring){

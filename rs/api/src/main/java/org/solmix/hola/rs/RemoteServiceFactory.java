@@ -41,6 +41,7 @@ public interface RemoteServiceFactory {
      * @param clazz 带有注解的class
      * @return
      */
+    //TODO
     //<S> RemoteReference<S> getReference(Class<S> clazz);
     
     <S> RemoteReference<S> getReference(Class<S> clazz, Dictionary<String, ?> properties);

@@ -18,41 +18,59 @@
  */
 package org.solmix.hola.rs.generic.exchange;
 
+import org.solmix.exchange.Endpoint;
+import org.solmix.exchange.EndpointException;
 import org.solmix.exchange.ProtocolFactoryManager;
+import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.rs.ServerFactory;
 import org.solmix.hola.rs.interceptor.InBindingInterceptor;
 import org.solmix.runtime.Container;
 
-
 /**
  * 
  * @author solmix.f@gmail.com
- * @version $Id$  2015年9月17日
+ * @version $Id$ 2015年9月17日
  */
 
-public class HolaServerFactory extends ServerFactory
-{
+public class HolaServerFactory extends ServerFactory {
 
-    private static final long serialVersionUID = -8186449363629929908L;
+	private static final long serialVersionUID = -8186449363629929908L;
 
-    /**
-     * @param factory
-     */
-    public HolaServerFactory()
-    {
-        super(new HolaServiceFactory());
-        getInInterceptors().add(new InBindingInterceptor());
-    }
-    
-    @Override
-    public void setContainer(Container container){
-        super.setContainer(container);
-        ProtocolFactoryManager pfm= container.getExtension(ProtocolFactoryManager.class);
-        if(pfm!=null){
-            ProtocolFactoryImpl pf = new ProtocolFactoryImpl();
-            pf.setContainer(container);
-            pfm.register(ProtocolFactoryImpl.PROTOCOL_ID, pf);
-        }
-    }
-    
+	private boolean duplex;
+
+	/**
+	 * @param factory
+	 */
+	public HolaServerFactory() {
+		this(false);
+	}
+
+	public HolaServerFactory(boolean duplex) {
+		super(new HolaServiceFactory());
+		getInInterceptors().add(new InBindingInterceptor());
+		this.duplex = duplex;
+	}
+
+	@Override
+	public void setContainer(Container container) {
+		super.setContainer(container);
+		ProtocolFactoryManager pfm = container.getExtension(ProtocolFactoryManager.class);
+		if (pfm != null) {
+			ProtocolFactoryImpl pf = new ProtocolFactoryImpl();
+			pf.setContainer(container);
+			pfm.register(ProtocolFactoryImpl.PROTOCOL_ID, pf);
+		}
+	}
+
+	protected Endpoint createEndpoint() throws EndpointException {
+		Endpoint ep = super.createEndpoint();
+		if(duplex) {
+			// set duplex before
+			EndpointInfo ei = ep.getEndpointInfo();
+			ei.addExtensionAttribute(HOLA.DUPLEX_MODE_KEY, Boolean.TRUE);
+		}
+		return ep;
+	}
+
 }

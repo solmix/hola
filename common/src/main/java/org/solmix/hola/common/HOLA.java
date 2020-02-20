@@ -97,6 +97,9 @@ public class HOLA
     public static final String WRITE_IDLE_TIMEOUT_KEY = "write.idle.timeout";
 
     public static final String ANY_VALUE = "*";
+    
+    /** 是否工作在双工模式下 值类型:Boolean*/
+    public static final String DUPLEX_MODE_KEY = "duplex";
 
     /**
      * 默认连接超时时间

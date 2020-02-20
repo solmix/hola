@@ -25,9 +25,11 @@ import java.net.URISyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solmix.commons.util.Assert;
+import org.solmix.commons.util.DataUtils;
 import org.solmix.exchange.Message;
 import org.solmix.exchange.Processor;
 import org.solmix.exchange.model.EndpointInfo;
+import org.solmix.hola.common.HOLA;
 import org.solmix.hola.transport.AbstractRemoteTransporter;
 import org.solmix.hola.transport.RemoteAddress;
 import org.solmix.hola.transport.RemoteProtocol;
@@ -57,6 +59,8 @@ public class NettyTransporter extends AbstractRemoteTransporter
     protected RemoteAddress remoteAddress;
 
     private String serverPath;
+    
+    private final boolean duplex;
 
     public NettyTransporter(NettyServerEngineFactory factory, EndpointInfo endpointInfo, Container container, TransporterRegistry registry)
         throws IOException
@@ -66,14 +70,19 @@ public class NettyTransporter extends AbstractRemoteTransporter
         serverInfo = endpointInfo.getExtension(NettyConfiguration.class);
         remoteAddress = endpointInfo.getExtension(RemoteAddress.class);
         Assert.assertNotNull(remoteAddress);
-       
         serverPath = remoteAddress.getPath();
+        
+        Object dupleObj = endpointInfo.getExtensionAttribute(HOLA.DUPLEX_MODE_KEY);
+        this.duplex=DataUtils.asBoolean(dupleObj);
     }
 
     @Override
     public void finalizeConfig() {
+    	if(duplex) {
+    		return;
+    	}
         assert !configFinalized;
-
+        
         try {
             retrieveEngine();
         } catch (Exception e) {
@@ -91,10 +100,17 @@ public class NettyTransporter extends AbstractRemoteTransporter
 
         assert engine != null;
     }
+    
+    public NettyServerEngine getNettyEngine() {
+    	return this.engine;
+    }
 
     @Override
     protected void activate(Processor p) {
         super.activate(p);
+        if(duplex) {
+    		return;
+    	}
         engine.start((RemoteProtocol)protocol);
         engine.addHandler(serverPath, new NettyMessageHandler(this));
     }
@@ -102,6 +118,9 @@ public class NettyTransporter extends AbstractRemoteTransporter
     @Override
     protected void deactivate(Processor p) {
         super.deactivate(p);
+        if(duplex) {
+    		return;
+    	}
         engine.removeHandler(serverPath);
     }
 

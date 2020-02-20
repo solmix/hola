@@ -19,12 +19,6 @@
 
 package org.solmix.hola.transport.netty;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.group.ChannelGroup;
-
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -36,6 +30,13 @@ import org.solmix.exchange.interceptor.Fault;
 import org.solmix.exchange.interceptor.FaultType;
 import org.solmix.exchange.support.DefaultMessage;
 import org.solmix.hola.common.HolaRuntimeException;
+import org.solmix.hola.transport.ResponseCallback;
+
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.group.ChannelGroup;
 
 /**
  * 
@@ -86,17 +87,21 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof Message) {
-            Message response = (Message) msg;
+            Message inMsg = (Message) msg;
             try{
-                if(MessageUtils.getBoolean(response, Message.EVENT_MESSAGE)){
-                    handleEvent(ctx,response);
+                if(MessageUtils.getBoolean(inMsg, Message.EVENT_MESSAGE)){
+                    handleEvent(ctx,inMsg);
                 }else{
-                    handleMessage(ctx, response);
-                }
+                	if(inMsg.isRequest()) {
+                		handleMessage(ctx, inMsg);
+                	}else {
+                		ResponseCallback callback = inMsg.getExchange().get(ResponseCallback.class);
+    					callback.process(inMsg);
+                	}
+                } 
             }catch(Throwable e){
-                throw new NettyServerException(response.getId(), e);
+                throw new NettyServerException(inMsg.getId(), e);
             }
-            
         } else {
             super.channelRead(ctx, msg);
         }

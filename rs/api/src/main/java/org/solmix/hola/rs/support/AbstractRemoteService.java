@@ -112,7 +112,7 @@ public abstract class AbstractRemoteService<T> implements RemoteService<T>
         }
         if (method == null) {
             throw new RemoteException(
-                "Method :" + call.getMethod() + "(" + call.getParameterTypes() + ") is not found in class :" + getServiceClass().getName());
+                "Method :" + call.getMethodName() + "(" + call.getParameterTypes() + ") is not found in class :" + getServiceClass().getName());
         }
         return method;
     }

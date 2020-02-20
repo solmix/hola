@@ -19,7 +19,6 @@
 
 package org.solmix.hola.rs;
 
-
 /**
  * 根据protocol实现管理远程对象
  * 
@@ -27,10 +26,9 @@ package org.solmix.hola.rs;
  * @version $Id$ 2015年9月16日
  */
 
-public interface RemoteServiceManager
-{
+public interface RemoteServiceManager {
 
-    RemoteServiceFactory getRemoteServiceFactory(String protocol);
+	RemoteServiceFactory getRemoteServiceFactory(String protocol);
 
-     RemoteServiceFactory getFactoryForUri(String uri) ;
+	RemoteServiceFactory getFactoryForUri(String uri);
 }

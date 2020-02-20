@@ -81,6 +81,9 @@ public abstract class BaseRemoteService<T> extends AbstractRemoteService<T> impl
     public Object[] invoke(ClientCallback callback, RemoteRequest request, boolean oneway) throws RemoteException {
         Method method = findMethod(request);
         Client client = slectedClient(request);
+        if(request.getRequestContext()!=null) {
+        	client.getEndpoint().putAll(request.getRequestContext());
+        }
         OperationInfo oi = getOperationInfo(client, getServiceClass(), method);
         if (oi == null) {
             throw new RemoteException("Can't found OperationInfo for method :" + method.getName());

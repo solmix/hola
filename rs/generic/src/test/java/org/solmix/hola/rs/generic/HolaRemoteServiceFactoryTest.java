@@ -19,6 +19,7 @@
 
 package org.solmix.hola.rs.generic;
 
+import java.net.SocketAddress;
 import java.rmi.RemoteException;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -31,6 +32,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.solmix.exchange.Server;
 import org.solmix.hola.common.HOLA;
 import org.solmix.hola.rs.RemoteReference;
 import org.solmix.hola.rs.RemoteRegistration;
@@ -41,11 +43,15 @@ import org.solmix.hola.rs.call.DefaultRemoteRequest;
 import org.solmix.hola.rs.call.RemoteRequest;
 import org.solmix.hola.rs.call.RemoteRequestListener;
 import org.solmix.hola.rs.call.RemoteResponse;
+import org.solmix.hola.rs.support.RemoteRegistrationImpl;
+import org.solmix.hola.transport.netty.NettyTransporter;
 import org.solmix.runtime.Container;
 import org.solmix.runtime.ContainerFactory;
 import org.solmix.runtime.monitor.MonitorInfo;
 import org.solmix.runtime.monitor.support.MonitorServiceImpl;
 
+import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.ResourceLeakDetector.Level;
 
@@ -67,7 +73,14 @@ public class HolaRemoteServiceFactoryTest extends Assert
         RemoteServiceFactory rsf = rm.getRemoteServiceFactory("hola");
         assertNotNull(rsf);
         HelloServiceImpl hs = new HelloServiceImpl();
+        //注册
         RemoteRegistration<HelloService> reg=  rsf.register(HelloService.class, hs, mockConfig());
+        RemoteRegistrationImpl<HelloService> regImpl =(RemoteRegistrationImpl<HelloService>)reg;
+        Server server = regImpl.getServer();
+        NettyTransporter nettyTransporter = (NettyTransporter)server.getTransporter();
+        ChannelGroup group=nettyTransporter.getNettyEngine().getAllChannels();
+        
+        
         HelloService hello=rsf.getService(reg.getReference());
         assertSame(hs, hello);
         Dictionary<String, Object> properties=mockConfig();
@@ -80,6 +93,7 @@ public class HolaRemoteServiceFactoryTest extends Assert
         String str= getString();
         final String mock="hello "+str;
         ResourceLeakDetector.setLevel(Level.PARANOID);
+        
         Thread t = new Thread() {
 
             @Override
@@ -100,8 +114,8 @@ public class HolaRemoteServiceFactoryTest extends Assert
         };
         
 //        t.start();
-        for( i=0;i<2000;i++){
-            
+        //测试正常同步请求
+        for( i=0;i<1;i++){
         try {
             String returnString=remote.say(str);
             assertEquals(mock,returnString);
@@ -110,12 +124,20 @@ public class HolaRemoteServiceFactoryTest extends Assert
             e.printStackTrace();
         }
         }
+        group=nettyTransporter.getNettyEngine().getAllChannels();
+        for(Channel ch:group) {
+        	SocketAddress address=ch.remoteAddress();
+        	boolean active=ch.isActive();
+        	ch.writeAndFlush("aaaaa");
+        }
+        //使用RemoteService
         RemoteService<HelloService> rs = rsf.getRemoteService(reference);
         assertNotNull(rs);
         RemoteRequest request = new DefaultRemoteRequest("say", str);
         RemoteResponse res = rs.sync(request);
         assertNotNull(res); 
         assertEquals(mock,res.getValue());
+        //异步请求
         final CountDownLatch count= new CountDownLatch(1);
         rs.async(request, new RemoteRequestListener() {
             
@@ -132,6 +154,7 @@ public class HolaRemoteServiceFactoryTest extends Assert
             }
         });
         count.await();
+        //无返回请求
         RemoteRequest send = new DefaultRemoteRequest("send", str);
         rs.fireAsync(send);
         Future<RemoteResponse> future=rs.async(request);
@@ -159,6 +182,8 @@ public class HolaRemoteServiceFactoryTest extends Assert
         table.put(HOLA.TIMEOUT_KEY,1000*600);
 //        table.put(HOLA.TRANSPORTER_KEY, "local");
         table.put(HOLA.HOST_KEY, HOLA.LOCALHOST_VALUE);
+        //ipv6
+//        table.put(HOLA.HOST_KEY, "111::2");
         return table;
     }
 
